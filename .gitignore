@@ -1,0 +1,15 @@
+.project
+.settings/
+.classpath
+.factorypath
+target/
+service/.project
+service/.settings/
+service/.classpath
+service/.factorypath
+service/target/
+web-app/.project
+web-app/.settings/
+web-app/.classpath
+web-app/.factorypath
+web-app/target/
