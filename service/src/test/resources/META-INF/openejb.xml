@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openejb>
+	<Resource id="ExampleDS" type="javax.sql.DataSource">
+		JdbcDriver org.h2.Driver
+		JdbcUrl jdbc:h2:mem:test;
+		UserName test
+		Password test
+		DefaultTransactionIsolation READ_COMMITTED
+	</Resource>
+</openejb>

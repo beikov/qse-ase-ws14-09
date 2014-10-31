@@ -26,6 +26,20 @@
 			<groupId>${project.groupId}</groupId>
 			<artifactId>model</artifactId>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.deltaspike.core</groupId>
+			<artifactId>deltaspike-core-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.deltaspike.core</groupId>
+			<artifactId>deltaspike-core-impl</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.blazebit</groupId>
+			<artifactId>blaze-ee-utils</artifactId>
+		</dependency>
 
 		<!-- Test -->
 
@@ -33,6 +47,29 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.deltaspike.cdictrl</groupId>
+			<artifactId>deltaspike-cdictrl-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.deltaspike.cdictrl</groupId>
+			<artifactId>deltaspike-cdictrl-openejb</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.openejb</groupId>
+			<artifactId>openejb-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-entitymanager</artifactId>
+		</dependency>
+		
 	</dependencies>
 
 	<build>

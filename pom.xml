@@ -10,6 +10,13 @@
 	<packaging>pom</packaging>
 
 	<name>Portfolioverwaltung Parent</name>
+	
+	<properties>
+		<deltaspike.version>1.0.3</deltaspike.version>
+		<openejb.version>4.6.0.2</openejb.version>
+		<hibernate.version>4.2.14.Final</hibernate.version>
+		<blazeutils.version>0.1.7</blazeutils.version>
+	</properties>
 
 	<modules>
 		<module>model</module>
@@ -31,6 +38,34 @@
 				<artifactId>javaee-api</artifactId>
 				<version>6.0-2</version>
 				<scope>provided</scope>
+			</dependency>
+			
+			<!-- Deltaspike dependencies -->
+			
+			<dependency>
+				<groupId>org.apache.deltaspike.core</groupId>
+				<artifactId>deltaspike-core-api</artifactId>
+				<version>${deltaspike.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.deltaspike.core</groupId>
+				<artifactId>deltaspike-core-impl</artifactId>
+				<version>${deltaspike.version}</version>
+				<scope>runtime</scope>
+			</dependency>
+			
+			<!-- Blazebit dependencies -->
+			
+			<dependency>
+				<groupId>com.blazebit</groupId>
+				<artifactId>blaze-ee-utils</artifactId>
+				<version>${blazeutils.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.antlr</groupId>
+    					<artifactId>antlr4-maven-plugin</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			
 			<!-- Project dependencies -->
@@ -55,6 +90,41 @@
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
 				<version>4.11</version>
+				<scope>test</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>com.h2database</groupId>
+				<artifactId>h2</artifactId>
+				<version>1.4.182</version>
+				<scope>test</scope>
+			</dependency>
+	
+			<dependency>
+				<groupId>org.apache.openejb</groupId>
+				<artifactId>openejb-core</artifactId>
+				<version>${openejb.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-entitymanager</artifactId>
+				<version>${hibernate.version}</version>
+				<scope>test</scope>
+			</dependency>
+			
+			<!-- Deltaspike Test -->
+			
+			<dependency>
+				<groupId>org.apache.deltaspike.cdictrl</groupId>
+				<artifactId>deltaspike-cdictrl-api</artifactId>
+				<version>${deltaspike.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.deltaspike.cdictrl</groupId>
+				<artifactId>deltaspike-cdictrl-openejb</artifactId>
+				<version>${deltaspike.version}</version>
 				<scope>test</scope>
 			</dependency>
 		</dependencies>
