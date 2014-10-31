@@ -11,31 +11,16 @@
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
-	<artifactId>web-app</artifactId>
-	<packaging>war</packaging>
+	<artifactId>model</artifactId>
+	<packaging>jar</packaging>
 
-	<name>Portfolioverwaltung Web-App</name>
+	<name>Portfolioverwaltung Model</name>
 
 	<dependencies>
 	
-       <dependency>
-           <groupId>javax</groupId>
-           <artifactId>javaee-api</artifactId>
-       </dependency>
 		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>model</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>service</artifactId>
-		</dependency>
-
-		<!-- Test -->
-
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
+			<groupId>org.apache.openejb</groupId>
+			<artifactId>javaee-api</artifactId>
 		</dependency>
 	</dependencies>
 

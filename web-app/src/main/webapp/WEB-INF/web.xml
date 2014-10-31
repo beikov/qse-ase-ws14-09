@@ -66,14 +66,6 @@
 		<param-name>javax.faces.validator.DISABLE_DEFAULT_BEAN_VALIDATOR</param-name>
 		<param-value>true</param-value>
 	</context-param>
-	<context-param>
-		<param-name>javax.faces.CONFIG_FILES</param-name>
-		<param-value>/WEB-INF/classes/META-INF/faces-config.xml</param-value>
-	</context-param>
-	<context-param>
-		<param-name>javax.faces.FACELETS_LIBRARIES</param-name>
-		<param-value>/WEB-INF/classes/META-INF/blazeplatform-b.taglib.xml</param-value>
-	</context-param>
     
     <!-- Mojarra config -->
     <context-param>
@@ -105,44 +97,9 @@
         <param-value>false</param-value>
     </context-param>
     
-    <!-- Myfaces configuration -->
-	<context-param>
-		<param-name>org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION</param-name>
-		<param-value>10</param-value>
-	</context-param>
-	<context-param>
-		<param-name>org.apache.myfaces.COMPRESS_STATE_IN_SESSION</param-name>
-		<param-value>false</param-value>
-	</context-param>
-	<context-param>
-		<param-name>org.apache.myfaces.PRETTY_HTML</param-name>
-		<param-value>false</param-value>
-	</context-param>
-	<context-param>
-		<param-name>org.apache.myfaces.SERIALIZE_STATE_IN_SESSION</param-name>
-		<param-value>false</param-value>
-	</context-param>
-	<context-param>
-		<param-name>org.apache.myfaces.DEFAULT_RESPONSE_WRITER_CONTENT_TYPE_MODE</param-name>
-		<param-value>application/xhtml+xml</param-value>
-	</context-param> 
-	<context-param>
-		<param-name>org.apache.myfaces.RENDER_VIEWSTATE_ID</param-name>
-		<param-value>false</param-value>
-	</context-param> 
-	<context-param>
-		<param-name>org.apache.myfaces.CHECK_ID_PRODUCTION_MODE </param-name>
-		<param-value>false</param-value>
-	</context-param>
-	<context-param>
-        <param-name>org.apache.myfaces.SAVE_STATE_WITH_VISIT_TREE_ON_PSS</param-name>
-        <param-value>false</param-value>
-    </context-param>
-    
     <session-config>
         <session-timeout>15</session-timeout>
         <cookie-config>
-            <name>SID</name>
             <http-only>true</http-only>
         </cookie-config>
         <tracking-mode>COOKIE</tracking-mode>
@@ -154,7 +111,7 @@
     <filter>
 		<description>Sets the charset to UTF-8 if not set by browser such as IE, Chrome</description>
 		<filter-name>CharsetEncodingFilter</filter-name>
-		<filter-class>at.ac.tuwien.inso.ase09.webapp.CharsetEncodingFilter</filter-class>
+		<filter-class>at.ac.tuwien.ase09.webapp.CharsetEncodingFilter</filter-class>
 	</filter>
     <!--
             MAPPINGS
@@ -167,4 +124,8 @@
         <dispatcher>ERROR</dispatcher>
         <dispatcher>ASYNC</dispatcher>
     </filter-mapping>
+    
+    <welcome-file-list>
+    	<welcome-file>index.xhtml</welcome-file>
+    </welcome-file-list>
 </web-app>
