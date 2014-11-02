@@ -1,6 +1,7 @@
 package at.ac.tuwien.ase09.model;
 
 import javax.persistence.Entity;
+import javax.persistence.Table;
 
 @Entity
 public class User extends BaseEntity<Long>{

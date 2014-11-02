@@ -22,6 +22,7 @@
 		<module>model</module>
 		<module>service</module>
 		<module>web-app</module>
+		<module>data-app</module>
 	</modules>
 	
 	<dependencyManagement>
