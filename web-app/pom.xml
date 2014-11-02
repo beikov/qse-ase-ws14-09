@@ -68,7 +68,7 @@
 						<version>2.4</version>
 						<configuration>
 							<outputDirectory>deployments</outputDirectory>
-							<warName>ROOT</warName>
+							<warName>${project.artifact}</warName>
 						</configuration>
 					</plugin>
 				</plugins>
