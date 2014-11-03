@@ -4,5 +4,5 @@ import javax.persistence.Entity;
 
 @Entity
 public class Bond extends ValuePaper {
-
+	private String wkn;
 }

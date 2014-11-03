@@ -22,6 +22,10 @@
 			<groupId>${project.groupId}</groupId>
 			<artifactId>model</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>service</artifactId>
+		</dependency>
 
 		<!-- Test -->
 

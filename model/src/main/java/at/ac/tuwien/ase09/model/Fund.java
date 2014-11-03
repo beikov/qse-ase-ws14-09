@@ -4,5 +4,5 @@ import javax.persistence.Entity;
 
 @Entity
 public class Fund extends ValuePaper {
-
+	private String isin;
 }

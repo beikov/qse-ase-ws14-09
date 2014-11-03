@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<job id="intraDayATXExtractionJob" xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	version="1.0">
+	<properties>
+		<property name="baseUrl" value="http://www.finanzen.at/index/liste/ATX" />
+		<property name="retry-limit" value="10" />
+	</properties>
+	<step id="stockTablePriceExtraction">
+		<chunk retry-limit="10" item-count="10">
+			<reader ref="StockTablePriceReader" />
+			<processor ref="PriceEntryProcessor" />
+			<writer ref="PriceEntryWriter" />
+
+<!-- 			<retryable-exception-classes> -->
+<!-- 				<include -->
+<!-- 					class="com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException" /> -->
+<!-- 			</retryable-exception-classes> -->
+<!-- 			<skippable-exception-classes> -->
+<!-- 				<include -->
+<!-- 					class="com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException" /> -->
+<!-- 			</skippable-exception-classes> -->
+		</chunk>	    
+	</step>
+</job>
