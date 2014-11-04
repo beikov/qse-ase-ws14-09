@@ -4,8 +4,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Entity;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Table;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+
+import at.ac.tuwien.ase09.naming.CustomNamingStrategy;
 
 @Entity
 public class User extends BaseEntity<Long> {
@@ -24,4 +27,17 @@ public class User extends BaseEntity<Long> {
 		this.username = username;
 	}
 
+	@ManyToMany
+	@JoinTable(name="user_user", 
+		joinColumns={@JoinColumn(name="user1_id", referencedColumnName=CustomNamingStrategy.COLUMN_PREFIX + "id")},
+		inverseJoinColumns={@JoinColumn(name="user2_id", referencedColumnName=CustomNamingStrategy.COLUMN_PREFIX + "id")}
+	)
+	public Set<User> getFollowers() {
+		return followers;
+	}
+
+	public void setFollowers(Set<User> followers) {
+		this.followers = followers;
+	}
+	
 }

@@ -261,8 +261,8 @@
       <operations public="false" package="false" protected="false" private="false" static="false"/>    
     </display>  
   </class>  
-  <class id="29" language="java" name="at.ac.tuwien.ase09.model.order.OrderFeeTransactionEntry" project="model" 
-    file="/model/src/main/java/at/ac/tuwien/ase09/model/order/OrderFeeTransactionEntry.java" binary="false" 
+  <class id="29" language="java" name="at.ac.tuwien.ase09.model.transaction.OrderFeeTransactionEntry" project="model" 
+    file="/model/src/main/java/at/ac/tuwien/ase09/model/transaction/OrderFeeTransactionEntry.java" binary="false" 
     corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="491" y="1065"/>    
     <display autosize="true" stereotype="true" package="false" initial-value="false" signature="true" 
@@ -307,8 +307,8 @@
       <operations public="false" package="false" protected="false" private="false" static="false"/>    
     </display>  
   </class>  
-  <class id="34" language="java" name="at.ac.tuwien.ase09.model.order.OrderTransactionEntry" project="model" 
-    file="/model/src/main/java/at/ac/tuwien/ase09/model/order/OrderTransactionEntry.java" binary="false" 
+  <class id="34" language="java" name="at.ac.tuwien.ase09.model.transaction.OrderTransactionEntry" project="model" 
+    file="/model/src/main/java/at/ac/tuwien/ase09/model/transaction/OrderTransactionEntry.java" binary="false" 
     corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="820" y="1241"/>    
     <display autosize="true" stereotype="true" package="false" initial-value="false" signature="true" 
@@ -564,263 +564,255 @@
     <display labels="true" multiplicity="true"/>  
   </association>  
   <association id="107">    
-    <end type="SOURCE" refId="30" navigable="false">      
-      <attribute id="108" name="limitPrice"/>      
-      <multiplicity id="109" minimum="0" maximum="1"/>    
-    </end>    
-    <end type="TARGET" refId="13" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="110">    
     <bendpoint x="1783" y="1079"/>    
     <bendpoint x="1824" y="1087"/>    
     <bendpoint x="1817" y="1054"/>    
     <end type="SOURCE" refId="14" navigable="false">      
-      <attribute id="111" name="followers"/>      
-      <multiplicity id="112" minimum="0" maximum="2147483647"/>    
+      <attribute id="108" name="followers"/>      
+      <multiplicity id="109" minimum="0" maximum="2147483647"/>    
+    </end>    
+    <end type="TARGET" refId="14" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="110">    
+    <end type="SOURCE" refId="26" navigable="false">      
+      <attribute id="111" name="follower"/>      
+      <multiplicity id="112" minimum="0" maximum="1"/>    
     </end>    
     <end type="TARGET" refId="14" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
   <association id="113">    
-    <end type="SOURCE" refId="26" navigable="false">      
-      <attribute id="114" name="follower"/>      
-      <multiplicity id="115" minimum="0" maximum="1"/>    
-    </end>    
-    <end type="TARGET" refId="14" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="116">    
     <end type="SOURCE" refId="5" navigable="false">      
-      <attribute id="117" name="game"/>      
-      <multiplicity id="118" minimum="0" maximum="1"/>    
+      <attribute id="114" name="game"/>      
+      <multiplicity id="115" minimum="0" maximum="1"/>    
     </end>    
     <end type="TARGET" refId="17" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <generalization id="119">    
+  <generalization id="116">    
     <end type="SOURCE" refId="19"/>    
     <end type="TARGET" refId="9"/>  
   </generalization>  
-  <generalization id="120">    
+  <generalization id="117">    
     <bendpoint x="2395" y="650"/>    
     <bendpoint x="2395" y="417"/>    
     <bendpoint x="2395" y="204"/>    
     <end type="SOURCE" refId="14"/>    
     <end type="TARGET" refId="2"/>  
   </generalization>  
-  <generalization id="121">    
+  <generalization id="118">    
     <end type="SOURCE" refId="29"/>    
     <end type="TARGET" refId="38"/>  
   </generalization>  
-  <association id="122">    
+  <association id="119">    
     <end type="SOURCE" refId="17" navigable="false">      
-      <attribute id="123" name="allowedValuePapers"/>      
-      <multiplicity id="124" minimum="0" maximum="2147483647"/>    
+      <attribute id="120" name="allowedValuePapers"/>      
+      <multiplicity id="121" minimum="0" maximum="2147483647"/>    
     </end>    
     <end type="TARGET" refId="4" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <association id="125">    
+  <association id="122">    
     <bendpoint x="760" y="417"/>    
     <bendpoint x="760" y="650"/>    
     <end type="SOURCE" refId="5" navigable="false">      
-      <attribute id="126" name="currentCapital"/>      
-      <multiplicity id="127" minimum="0" maximum="1"/>    
+      <attribute id="123" name="currentCapital"/>      
+      <multiplicity id="124" minimum="0" maximum="1"/>    
     </end>    
     <end type="TARGET" refId="13" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <generalization id="128">    
+  <generalization id="125">    
     <end type="SOURCE" refId="5"/>    
     <end type="TARGET" refId="2"/>  
   </generalization>  
-  <generalization id="129">    
+  <generalization id="126">    
     <end type="SOURCE" refId="37"/>    
     <end type="TARGET" refId="38"/>  
   </generalization>  
-  <generalization id="130">    
+  <generalization id="127">    
     <end type="SOURCE" refId="24"/>    
     <end type="TARGET" refId="25"/>  
   </generalization>  
-  <generalization id="131">    
+  <generalization id="128">    
     <end type="SOURCE" refId="7"/>    
     <end type="TARGET" refId="2"/>  
   </generalization>  
-  <association id="132">    
+  <association id="129">    
     <end type="SOURCE" refId="7" navigable="false">      
+      <attribute id="130" name="valuePaper"/>      
+      <multiplicity id="131" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="9" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="132">    
+    <end type="SOURCE" refId="12" navigable="false">      
       <attribute id="133" name="valuePaper"/>      
       <multiplicity id="134" minimum="0" maximum="1"/>    
     </end>    
     <end type="TARGET" refId="9" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <association id="135">    
-    <end type="SOURCE" refId="12" navigable="false">      
-      <attribute id="136" name="valuePaper"/>      
-      <multiplicity id="137" minimum="0" maximum="1"/>    
-    </end>    
-    <end type="TARGET" refId="9" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <generalization id="138">    
+  <generalization id="135">    
     <end type="SOURCE" refId="3"/>    
     <end type="TARGET" refId="2"/>  
   </generalization>  
-  <association id="139">    
+  <association id="136">    
     <bendpoint x="842" y="417"/>    
     <end type="SOURCE" refId="5" navigable="false">      
-      <attribute id="140" name="setting"/>      
-      <multiplicity id="141" minimum="0" maximum="1"/>    
+      <attribute id="137" name="setting"/>      
+      <multiplicity id="138" minimum="0" maximum="1"/>    
     </end>    
     <end type="TARGET" refId="16" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <association id="142">    
+  <association id="139">    
     <end type="SOURCE" refId="1" navigable="false">      
-      <attribute id="143" name="admin"/>      
-      <multiplicity id="144" minimum="0" maximum="1"/>    
+      <attribute id="140" name="admin"/>      
+      <multiplicity id="141" minimum="0" maximum="1"/>    
     </end>    
     <end type="TARGET" refId="14" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <generalization id="145">    
+  <generalization id="142">    
     <end type="SOURCE" refId="8"/>    
     <end type="TARGET" refId="2"/>  
   </generalization>  
-  <generalization id="146">    
+  <generalization id="143">    
     <bendpoint x="1222" y="204"/>    
     <end type="SOURCE" refId="17"/>    
     <end type="TARGET" refId="2"/>  
   </generalization>  
-  <association id="147">    
+  <association id="144">    
     <end type="SOURCE" refId="28" navigable="false">      
-      <attribute id="148" name="status"/>      
-      <multiplicity id="149" minimum="0" maximum="1"/>    
+      <attribute id="145" name="status"/>      
+      <multiplicity id="146" minimum="0" maximum="1"/>    
     </end>    
     <end type="TARGET" refId="27" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <association id="150">    
+  <association id="147">    
     <end type="SOURCE" refId="4" navigable="false">      
-      <attribute id="151" name="id"/>      
-      <multiplicity id="152" minimum="0" maximum="1"/>    
+      <attribute id="148" name="id"/>      
+      <multiplicity id="149" minimum="0" maximum="1"/>    
     </end>    
     <end type="TARGET" refId="20" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <generalization id="153">    
+  <generalization id="150">    
     <bendpoint x="1594" y="417"/>    
     <bendpoint x="1441" y="204"/>    
     <end type="SOURCE" refId="1"/>    
     <end type="TARGET" refId="2"/>  
   </generalization>  
-  <association id="154">    
+  <association id="151">    
     <end type="SOURCE" refId="5" navigable="false">      
-      <attribute id="155" name="valuePapers"/>      
-      <multiplicity id="156" minimum="0" maximum="2147483647"/>    
+      <attribute id="152" name="valuePapers"/>      
+      <multiplicity id="153" minimum="0" maximum="2147483647"/>    
     </end>    
     <end type="TARGET" refId="9" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <generalization id="157">    
+  <generalization id="154">    
     <end type="SOURCE" refId="10"/>    
     <end type="TARGET" refId="2"/>  
   </generalization>  
-  <generalization id="158">    
+  <generalization id="155">    
     <end type="SOURCE" refId="23"/>    
     <end type="TARGET" refId="25"/>  
   </generalization>  
-  <association id="159">    
+  <association id="156">    
     <end type="SOURCE" refId="5" navigable="false">      
-      <attribute id="160" name="transactionEntries"/>      
-      <multiplicity id="161" minimum="0" maximum="2147483647"/>    
+      <attribute id="157" name="transactionEntries"/>      
+      <multiplicity id="158" minimum="0" maximum="2147483647"/>    
     </end>    
     <end type="TARGET" refId="38" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <association id="162">    
+  <association id="159">    
     <end type="SOURCE" refId="38" navigable="false">      
-      <attribute id="163" name="portfolio"/>      
-      <multiplicity id="164" minimum="0" maximum="1"/>    
+      <attribute id="160" name="portfolio"/>      
+      <multiplicity id="161" minimum="0" maximum="1"/>    
     </end>    
     <end type="TARGET" refId="5" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <association id="165">    
+  <association id="162">    
     <end type="SOURCE" refId="29" navigable="false">      
-      <attribute id="166" name="order"/>      
-      <multiplicity id="167" minimum="0" maximum="1"/>    
+      <attribute id="163" name="order"/>      
+      <multiplicity id="164" minimum="0" maximum="1"/>    
     </end>    
     <end type="TARGET" refId="28" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <association id="168">    
+  <association id="165">    
     <end type="SOURCE" refId="24" navigable="false">      
-      <attribute id="169" name="transactionEntry"/>      
-      <multiplicity id="170" minimum="0" maximum="1"/>    
+      <attribute id="166" name="transactionEntry"/>      
+      <multiplicity id="167" minimum="0" maximum="1"/>    
     </end>    
     <end type="TARGET" refId="38" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <association id="171">    
+  <association id="168">    
     <end type="SOURCE" refId="28" navigable="false">      
-      <attribute id="172" name="valuePaper"/>      
-      <multiplicity id="173" minimum="0" maximum="1"/>    
+      <attribute id="169" name="valuePaper"/>      
+      <multiplicity id="170" minimum="0" maximum="1"/>    
     </end>    
     <end type="TARGET" refId="9" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <generalization id="174">    
+  <generalization id="171">    
     <end type="SOURCE" refId="25"/>    
     <end type="TARGET" refId="2"/>  
   </generalization>  
-  <association id="175">    
+  <association id="172">    
     <end type="SOURCE" refId="39" navigable="false">      
-      <attribute id="176" name="valuePaper"/>      
-      <multiplicity id="177" minimum="0" maximum="1"/>    
+      <attribute id="173" name="valuePaper"/>      
+      <multiplicity id="174" minimum="0" maximum="1"/>    
     </end>    
     <end type="TARGET" refId="9" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <association id="178">    
+  <association id="175">    
     <end type="SOURCE" refId="17" navigable="false">      
-      <attribute id="179" name="owner"/>      
-      <multiplicity id="180" minimum="0" maximum="1"/>    
+      <attribute id="176" name="owner"/>      
+      <multiplicity id="177" minimum="0" maximum="1"/>    
     </end>    
     <end type="TARGET" refId="1" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <association id="181">    
+  <association id="178">    
     <end type="SOURCE" refId="17" navigable="false">      
-      <attribute id="182" name="setting"/>      
-      <multiplicity id="183" minimum="0" maximum="1"/>    
+      <attribute id="179" name="setting"/>      
+      <multiplicity id="180" minimum="0" maximum="1"/>    
     </end>    
     <end type="TARGET" refId="16" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <generalization id="184">    
+  <generalization id="181">    
     <end type="SOURCE" refId="12"/>    
     <end type="TARGET" refId="2"/>  
   </generalization>  
-  <generalization id="185">    
+  <generalization id="182">    
     <end type="SOURCE" refId="30"/>    
     <end type="TARGET" refId="28"/>  
   </generalization>  
-  <generalization id="186">    
+  <generalization id="183">    
     <bendpoint x="2183" y="204"/>    
     <end type="SOURCE" refId="9"/>    
     <end type="TARGET" refId="2"/>  
   </generalization>  
-  <generalization id="187">    
+  <generalization id="184">    
     <end type="SOURCE" refId="26"/>    
     <end type="TARGET" refId="25"/>  
   </generalization>  
-  <generalization id="188">    
+  <generalization id="185">    
     <end type="SOURCE" refId="15"/>    
     <end type="TARGET" refId="9"/>  
   </generalization>  
-  <generalization id="189">    
+  <generalization id="186">    
     <end type="SOURCE" refId="34"/>    
     <end type="TARGET" refId="38"/>  
   </generalization>  

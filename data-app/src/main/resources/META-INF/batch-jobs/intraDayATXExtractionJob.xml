@@ -7,7 +7,11 @@
 	</properties>
 	<step id="stockTablePriceExtraction">
 		<chunk retry-limit="10" item-count="10">
-			<reader ref="StockTablePriceReader" />
+			<reader ref="StockTablePriceReader" >
+			    <properties>
+			    	<property name="baseUrl" value="#{jobProperties['baseUrl']}" />
+			    </properties>
+			</reader>
 			<processor ref="PriceEntryProcessor" />
 			<writer ref="PriceEntryWriter" />
 

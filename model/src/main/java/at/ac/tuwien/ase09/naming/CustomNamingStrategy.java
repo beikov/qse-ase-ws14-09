@@ -1,7 +1,8 @@
 package at.ac.tuwien.ase09.naming;
 
 import org.hibernate.cfg.DefaultNamingStrategy;
-import org.hibernate.internal.util.StringHelper;
+
+import antlr.StringUtils;
 
 public class CustomNamingStrategy extends DefaultNamingStrategy {
 	/**
@@ -9,8 +10,8 @@ public class CustomNamingStrategy extends DefaultNamingStrategy {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	private static final String TABLE_PREFIX = "t_";
-	private static final String COLUMN_PREFIX = "c_";
+	public static final String TABLE_PREFIX = "t_";
+	public static final String COLUMN_PREFIX = "c_";
 	
 	private String prefixTable(String tableName){
 		return TABLE_PREFIX + tableName;
@@ -65,9 +66,31 @@ public class CustomNamingStrategy extends DefaultNamingStrategy {
 		return prefixTable(super.logicalCollectionTableName(tableName, ownerEntityTable, associatedEntityTable, propertyName));
 	}
 	
-	@Override
-	public String logicalCollectionColumnName(String columnName, String propertyName, String referencedColumn) {
-		return prefixColumn(super.logicalCollectionColumnName(columnName, propertyName, referencedColumn));
-	}
+//	@Override
+//	public String logicalCollectionColumnName(String columnName, String propertyName, String referencedColumn) {
+//		return prefixColumn(super.logicalCollectionColumnName(columnName, propertyName, referencedColumn));
+//	}
+//	
+//    @Override
+//    public String classToTableName(String className) {
+//        return super.classToTableName(className).toLowerCase();
+//    }
+//
+//    @Override
+//    public String collectionTableName(String ownerEntity, String ownerEntityTable, String associatedEntity,
+//            String associatedEntityTable, String propertyName) {
+//        return super.collectionTableName(ownerEntity, ownerEntityTable, associatedEntity, associatedEntityTable, propertyName).toLowerCase();
+//    }
+//
+//    @Override
+//    public String logicalCollectionTableName(String tableName, String ownerEntityTable, String associatedEntityTable,
+//            String propertyName) {
+//        return super.logicalCollectionTableName(tableName, ownerEntityTable, associatedEntityTable, propertyName).toLowerCase();
+//    }
+//
+//    @Override
+//    public String tableName(String tableName) {
+//        return super.tableName(tableName).toLowerCase();
+//    }
 
 }

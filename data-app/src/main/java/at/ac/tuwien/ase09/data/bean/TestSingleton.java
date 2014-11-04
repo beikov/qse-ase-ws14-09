@@ -1,6 +1,8 @@
 package at.ac.tuwien.ase09.data.bean;
 
 import javax.annotation.PostConstruct;
+import javax.batch.operations.JobOperator;
+import javax.batch.runtime.BatchRuntime;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.persistence.EntityManager;
@@ -16,7 +18,7 @@ public class TestSingleton {
 	
 	@PostConstruct
 	public void init(){
-		User u = new User();
-		em.persist(u);
+		JobOperator jobOperator = BatchRuntime.getJobOperator();
+		long executionId = jobOperator.start("intraDayATXExtractionJob", null);
 	}
 }
