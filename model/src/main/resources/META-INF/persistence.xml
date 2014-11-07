@@ -2,8 +2,6 @@
     <persistence-unit name="PortfolioPU" transaction-type="JTA">
 		<jta-data-source>java:jboss/datasources/PostgreSQLDS</jta-data-source>
 		
-    	<class>at.ac.tuwien.ase09.model.User</class>
-    	
     	<properties>
 			<property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
 			<property name="hibernate.hbm2ddl.auto" value="create-drop" />
