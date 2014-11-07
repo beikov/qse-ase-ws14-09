@@ -6,6 +6,7 @@ import java.util.Calendar;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
+import javax.persistence.PrePersist;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -36,6 +37,11 @@ public class ValuePaperPriceEntry extends BaseEntity<Long> {
 	}
 	public void setPrice(BigDecimal price) {
 		this.price = price;
+	}
+	
+	@PrePersist
+	private void onPrePersist(){
+		created = Calendar.getInstance();
 	}
 	
 	

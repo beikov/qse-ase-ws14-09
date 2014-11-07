@@ -1,5 +1,6 @@
 package at.ac.tuwien.ase09.model;
 
+import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.Transient;
@@ -9,8 +10,8 @@ import javax.persistence.Transient;
 public class Stock extends ValuePaper {
 	private static final long serialVersionUID = 1L;
 
-	private String certificatePageLink;
-	private String isin;
+	private String certificatePageUrl;
+	private String index;
 	
 	@Override
 	@Transient
@@ -18,20 +19,20 @@ public class Stock extends ValuePaper {
 		return ValuePaperType.STOCK;
 	}
 
-	public String getCertificatePageLink() {
-		return certificatePageLink;
+	public String getCertificatePageUrl() {
+		return certificatePageUrl;
 	}
 
-	public void setCertificatePageLink(String certificatePageLink) {
-		this.certificatePageLink = certificatePageLink;
+	public void setCertificatePageUrl(String certificatePageUrl) {
+		this.certificatePageUrl = certificatePageUrl;
 	}
 
-	public String getIsin() {
-		return isin;
+	public String getIndex() {
+		return index;
 	}
 
-	public void setIsin(String isin) {
-		this.isin = isin;
+	public void setIndex(String index) {
+		this.index = index;
 	}
 	
 }

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This job extracts all bonds from ATX stocks -->
+<job id="detailBondExtractionATX" xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	version="1.0">
+	<step id="stockDetailLinkExtraction" next="stockDetailExtraction">
+		<batchlet ref="StockDetailLinkReaderBatchlet">
+			<properties>
+				<property name="boerseUrl"
+					value="http://kurse.wienerborse.at/teledata_php/prices/dispatch_list.php" />
+				<property name="finanzenNetUrl" value="http://www.finanzen.at/index/liste" />
+				<property name="indexName" value="ATX" />
+			</properties>
+		</batchlet>
+		<listeners>
+		    <listener ref="StepBoundaryLogger" />
+		</listeners>
+	</step>
+	<step id="stockDetailExtraction">
+		<chunk retry-limit="10" item-count="10">
+			<reader ref="StockDetailReader" />
+			<processor ref="SimpleItemProcessor" />
+			<writer ref="StockDetailWriter" />
+		</chunk>
+		<listeners>
+		    <listener ref="StepBoundaryLogger" />
+			<listener ref="StockDetailStepListener" />
+		</listeners>
+	</step>
+	<!-- <step id="bondDetailExtraction"/> -->
+	
+	<listeners>
+	    <listener ref="JobBoundaryLogger" />
+	</listeners>
+</job>

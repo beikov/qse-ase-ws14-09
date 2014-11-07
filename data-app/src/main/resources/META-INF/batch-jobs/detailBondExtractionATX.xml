@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<job id="detailBondExtractionATX" xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	version="1.0">
+	<step id="bondDetailExtraction">
+		<chunk retry-limit="10" item-count="10">
+			<reader ref="BondDetailReader">
+				<property name="indexName" value="ATX" />
+			</reader>
+			<processor ref="SimpleItemProcessor" />
+			<writer ref="BondDetailWriter" />
+		</chunk>
+		<listeners>
+			<listener ref="StepBoundaryLogger" />
+		</listeners>
+	</step>
+	<!-- <step id="bondDetailExtraction"/> -->
+
+	<listeners>
+		<listener ref="JobBoundaryLogger" />
+	</listeners>
+</job>

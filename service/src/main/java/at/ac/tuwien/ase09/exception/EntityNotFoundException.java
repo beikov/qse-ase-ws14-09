@@ -1,5 +1,8 @@
 package at.ac.tuwien.ase09.exception;
 
+import javax.ejb.ApplicationException;
+
+@ApplicationException
 public class EntityNotFoundException extends AppException {
 	private static final long serialVersionUID = 1L;
 

@@ -1,9 +1,13 @@
 package at.ac.tuwien.ase09.service;
 
+import java.math.BigDecimal;
+
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import at.ac.tuwien.ase09.data.ValuePaperDataAccess;
 import at.ac.tuwien.ase09.model.ValuePaperPriceEntry;
 
 @Stateless
@@ -11,7 +15,17 @@ public class ValuePaperPriceEntryService {
 	@PersistenceContext
 	private EntityManager em;
 	
+	@Inject
+	private ValuePaperDataAccess valuePaperDataAccess;
+	
 	public void savePriceEntry(ValuePaperPriceEntry pe){
 		em.persist(pe);
+	}
+	
+	public void savePriceEntry(String isin, BigDecimal price){
+		ValuePaperPriceEntry priceEntry = new ValuePaperPriceEntry();
+		priceEntry.setPrice(price);
+		priceEntry.setValuePaper(valuePaperDataAccess.getStockByIsin(isin));
+		savePriceEntry(priceEntry);
 	}
 }

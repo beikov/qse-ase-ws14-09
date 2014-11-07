@@ -2,6 +2,7 @@ package at.ac.tuwien.ase09.model;
 
 import java.util.Currency;
 
+import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 import javax.persistence.Inheritance;
@@ -16,6 +17,16 @@ public abstract class ValuePaper extends BaseEntity<Long> {
 
 	private String name;
 	private Currency currency;
+	private String code;
+
+	@Column(unique=true)
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
 	
 	@Transient
 	public abstract ValuePaperType getType();
@@ -35,5 +46,11 @@ public abstract class ValuePaper extends BaseEntity<Long> {
 	public void setCurrency(Currency currency) {
 		this.currency = currency;
 	}
+
+	@Override
+	public String toString() {
+		return String.format("type=%s, code=%s, name=%s", getType(), code, name);
+	}
+	
 	
 }

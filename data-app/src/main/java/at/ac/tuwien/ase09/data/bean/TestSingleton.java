@@ -19,6 +19,7 @@ public class TestSingleton {
 	@PostConstruct
 	public void init(){
 		JobOperator jobOperator = BatchRuntime.getJobOperator();
-		long executionId = jobOperator.start("intraDayATXExtractionJob", null);
+//		long executionId = jobOperator.start("intraDayATXExtractionJob", null);
+		long executionId = jobOperator.start("detailStockExtractionATX", null);
 	}
 }

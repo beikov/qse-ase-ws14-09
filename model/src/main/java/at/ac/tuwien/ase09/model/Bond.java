@@ -9,16 +9,6 @@ import javax.persistence.Transient;
 public class Bond extends ValuePaper {
 	private static final long serialVersionUID = 1L;
 
-	private String wkn;
-
-	public String getWkn() {
-		return wkn;
-	}
-
-	public void setWkn(String wkn) {
-		this.wkn = wkn;
-	}
-
 	@Override
 	@Transient
 	public ValuePaperType getType() {
