@@ -1,0 +1,49 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<!-- content -->
+	<ui:define name="body">
+	
+		<f:metadata>
+			<f:viewParam name="portfolioId" value="#{portfolioDetailBean.portfolioId}" required="true" />
+		    <f:viewAction action="#{portfolioDetailBean.init}" />
+		</f:metadata>
+		
+		<h:outputText value="Portfolio: #{portfolioDetailBean.portfolio.name}" />
+		
+		<p:chart type="pie" model="#{portfolioDetailBean.valuePaperTypePie}" style="width:400px;height:300px" />
+		<p:chart type="pie" model="#{portfolioDetailBean.valuePaperCountryPie}" style="width:400px;height:300px" />
+		
+		<p:dataTable var="paper" value="#{portfolioDetailBean.portfolio.valuePapers}">
+			<f:facet name="header">
+		        Einzeltitel
+		    </f:facet>
+		
+		    <p:column headerText="Name">
+		        <h:outputText value="#{paper.name}" />
+		    </p:column>
+		    <p:column headerText="Typ">
+		        <h:outputText value="#{paper.type}" />
+		    </p:column>
+		    <p:column headerText="Währung">
+		        <h:outputText value="#{paper.currency.currencyCode} #{paper.currency.symbol}" />
+		    </p:column>
+		</p:dataTable>
+		
+		<p:dataTable var="trade" value="#{portfolioDetailBean.portfolio.transactionEntries}">
+			<f:facet name="header">
+		        Transaktionen
+		    </f:facet>
+		
+		    <p:column headerText="Id">
+		        <h:outputText value="#{trade.id}" />
+		    </p:column>
+		</p:dataTable>
+	</ui:define><!-- content -->
+
+</ui:composition>
