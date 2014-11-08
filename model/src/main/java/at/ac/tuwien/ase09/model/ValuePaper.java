@@ -18,6 +18,7 @@ public abstract class ValuePaper extends BaseEntity<Long> {
 	private String name;
 	private Currency currency;
 	private String code;
+	private String country;
 
 	@Column(unique=true)
 	public String getCode() {
@@ -50,6 +51,14 @@ public abstract class ValuePaper extends BaseEntity<Long> {
 	@Override
 	public String toString() {
 		return String.format("type=%s, code=%s, name=%s", getType(), code, name);
+	}
+
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
 	}
 	
 	
