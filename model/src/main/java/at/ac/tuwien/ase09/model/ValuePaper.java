@@ -18,6 +18,7 @@ public abstract class ValuePaper extends BaseEntity<Long> {
 	private String name;
 	private Currency currency;
 	private String isin;
+	private String country;
 
 	@Column(unique=true)
 	public String getIsin() {
@@ -52,5 +53,11 @@ public abstract class ValuePaper extends BaseEntity<Long> {
 		return String.format("[type=%s, code=%s, name=%s]", getType(), isin, name);
 	}
 	
-	
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
+	}
 }
