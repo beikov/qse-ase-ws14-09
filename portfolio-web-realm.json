@@ -1,0 +1,115 @@
+{
+  "realm" : "portfolio-web",
+  "notBefore" : 0,
+  "accessTokenLifespan" : 300,
+  "ssoSessionIdleTimeout" : 600,
+  "ssoSessionMaxLifespan" : 36000,
+  "accessCodeLifespan" : 60,
+  "accessCodeLifespanUserAction" : 300,
+  "enabled" : true,
+  "sslRequired" : "none",
+  "passwordCredentialGrantAllowed" : false,
+  "registrationAllowed" : true,
+  "rememberMe" : true,
+  "verifyEmail" : false,
+  "resetPasswordAllowed" : true,
+  "social" : true,
+  "updateProfileOnInitialSocialLogin" : true,
+  "bruteForceProtected" : false,
+  "maxFailureWaitSeconds" : 900,
+  "minimumQuickLoginWaitSeconds" : 60,
+  "waitIncrementSeconds" : 60,
+  "quickLoginCheckMilliSeconds" : 1000,
+  "maxDeltaTimeSeconds" : 43200,
+  "failureFactor" : 30,
+  "privateKey" : "MIICWwIBAAKBgQDoofcCWoR+Kr8jCWJCfWXhavMIcBvVPvz7CxpPuSa7mOjsfqbsuZ7roctIhx99wizEGwIAxWtZ/obJuMdE1uts0rqqtaqiKaaQkbXdn9RRH5lAxuX4ZerZl96tME64jdcRedllGlBphCFNjCRiJR0DLUCuSnIrDFzdj4CQdUVzIwIDAQABAoGAAr5uUGvK5kYQzRP+QbSC8B630SCpY2GD0F44KDqR12KdVLTFuUMTOcpFwIw/dddFeearpmCtvHkBE/4G86vpSPCNl25mK7mA9+5TO5lGn4FO5cgPojGNBL62wLpoGEMmHZO6YqkEOtuo68/D7g1I7paeK0PunfZ9s6Vj2BxKYJkCQQD1Q8zUi56Kr0vQSweXEeuBPCumiBtoj50wdBopqGJRDbMi4f4+F2r5LhDaxytILzS5NwUO/l3SdfzMCsg0/RuVAkEA8tCe9XRquY/MHBsMLccbIGIFPl3HZu6DCIjlb7ELT4nfjPXy0Kr19/sHeiSkviKBcCTbNN4k882pwfkYBSvl1wJAGreHAYQwAgV0ab0yl3dBQzOtwZdD/RDf255aFz2bcB7g66TYkCT25yvodByMD3Hs+VwP9gEpcTqfDg8CnhsQPQJABwGUBJsWVUJb7letc0iydK2/XvxPu52YNE/W5vEh1WqyA5w5JGI6dKxOm+ygwEe4mmbF2HGseUhu5ITud3+7wwJADXDEM9kIc0Iy1uxOo3/nLqZ7ImV6J4+MZ2cwb+855PyMGu5fjJl33RLO2EnUxbZOOq385pQAUh8dTK5tXcFAxA==",
+  "publicKey" : "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDoofcCWoR+Kr8jCWJCfWXhavMIcBvVPvz7CxpPuSa7mOjsfqbsuZ7roctIhx99wizEGwIAxWtZ/obJuMdE1uts0rqqtaqiKaaQkbXdn9RRH5lAxuX4ZerZl96tME64jdcRedllGlBphCFNjCRiJR0DLUCuSnIrDFzdj4CQdUVzIwIDAQAB",
+  "roles" : {
+    "realm" : [ {
+      "name" : "user",
+      "description" : "User privileges",
+      "composite" : false
+    } ]
+  },
+  "defaultRoles" : [ "user" ],
+  "requiredCredentials" : [ "password" ],
+  "users" : [ {
+    "username" : "test",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : true,
+    "firstName" : "Max",
+    "lastName" : "Mustermann",
+    "email" : "test@localhost",
+    "credentials" : [ {
+      "type" : "password",
+      "value" : "test",
+      "temporary" : false
+    } ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "user" ],
+    "applicationRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    }
+  } ],
+  "applications" : [ {
+    "name" : "security-admin-console",
+    "baseUrl" : "/auth/admin/portfolio-web/console/index.html",
+    "surrogateAuthRequired" : false,
+    "enabled" : true,
+    "secret" : "c6b7610c-8579-49c9-a541-dde7fff36b00",
+    "redirectUris" : [ "/auth/admin/portfolio-web/console/*" ],
+    "webOrigins" : [ ],
+    "claims" : {
+      "name" : true,
+      "username" : true,
+      "profile" : true,
+      "picture" : true,
+      "website" : true,
+      "email" : true,
+      "gender" : true,
+      "locale" : true,
+      "address" : true,
+      "phone" : true
+    },
+    "notBefore" : 0,
+    "bearerOnly" : false,
+    "publicClient" : true,
+    "fullScopeAllowed" : false
+  }, {
+    "name" : "portfolio-game",
+    "adminUrl" : "/",
+    "surrogateAuthRequired" : false,
+    "enabled" : true,
+    "secret" : "62fc806b-8ec9-4ebc-b02f-59e4882a21f3",
+    "redirectUris" : [ "/game/*" ],
+    "webOrigins" : [ ],
+    "claims" : {
+      "name" : true,
+      "username" : true,
+      "profile" : true,
+      "picture" : true,
+      "website" : true,
+      "email" : true,
+      "gender" : true,
+      "locale" : true,
+      "address" : true,
+      "phone" : true
+    },
+    "notBefore" : 0,
+    "bearerOnly" : false,
+    "publicClient" : false,
+    "fullScopeAllowed" : true
+  } ],
+  "oauthClients" : [ ],
+  "browserSecurityHeaders" : {
+    "xFrameOptions" : "SAMEORIGIN",
+    "contentSecurityPolicy" : "frame-src 'self'"
+  },
+  "socialProviders" : {
+    "google.key" : "554672226172-te48elq7mcnvbauq8p17p5shep98ms3e.apps.googleusercontent.com",
+    "facebook.key" : "854942991212154",
+    "google.secret" : "XMx47tHBWmBKqtzBI1gD6RN4",
+    "facebook.secret" : "7743958a3893781dc9241fa26a3da35d"
+  }
+}

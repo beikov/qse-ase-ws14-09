@@ -113,6 +113,10 @@
 		<filter-name>CharsetEncodingFilter</filter-name>
 		<filter-class>at.ac.tuwien.ase09.webapp.CharsetEncodingFilter</filter-class>
 	</filter>
+	<filter>
+		<filter-name>UserFilter</filter-name>
+		<filter-class>at.ac.tuwien.ase09.webapp.UserFilter</filter-class>
+	</filter>
     <!--
             MAPPINGS
     -->
@@ -124,6 +128,36 @@
         <dispatcher>ERROR</dispatcher>
         <dispatcher>ASYNC</dispatcher>
     </filter-mapping>
+    <filter-mapping>
+    	<filter-name>UserFilter</filter-name>
+    	<url-pattern>/game/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+        <dispatcher>ERROR</dispatcher>
+        <dispatcher>ASYNC</dispatcher>
+    </filter-mapping>
+    
+    <!-- 
+    		Security Constraints
+    -->
+    <security-constraint>
+    	<web-resource-collection>
+    		<web-resource-name>Game</web-resource-name>
+    		<url-pattern>/game/*</url-pattern>
+    	</web-resource-collection>
+    	<auth-constraint>
+    		<role-name>user</role-name>
+    	</auth-constraint>
+    </security-constraint>
+    
+    <login-config>
+    	<auth-method>KEYCLOAK</auth-method>
+    	<realm-name>portfolio-webapp</realm-name>
+    </login-config>
+    
+    <security-role>
+    	<role-name>user</role-name>
+    </security-role>
     
     <welcome-file-list>
     	<welcome-file>index.xhtml</welcome-file>
