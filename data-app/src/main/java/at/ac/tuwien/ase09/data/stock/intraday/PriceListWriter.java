@@ -9,6 +9,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
+import javax.persistence.FlushModeType;
 import javax.persistence.PersistenceContext;
 
 import at.ac.tuwien.ase09.data.model.IntradayPrice;
@@ -34,6 +35,7 @@ public class PriceListWriter extends AbstractItemWriter {
 	
 	@Override
 	public void writeItems(List<Object> items) throws Exception {
+		em.setFlushMode(FlushModeType.COMMIT);
 		for(Object item : items){
 			List<IntradayPrice> priceList = (List<IntradayPrice>) item;
 			for(IntradayPrice price : priceList){

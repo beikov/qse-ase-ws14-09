@@ -120,7 +120,8 @@ public class Portfolio extends BaseEntity<Long> {
 		this.visibility = visibility;
 	}
 
-	@OneToMany
+	@ManyToMany
+	@JoinTable(name="portfolio_valuepapers")
 	public Set<ValuePaper> getValuePapers() {
 		return valuePapers;
 	}

@@ -1,7 +1,7 @@
-package at.ac.tuwien.ase09.data.stock.detail;
+package at.ac.tuwien.ase09.data;
 
+import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.batch.api.listener.StepListener;
@@ -12,9 +12,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 @Dependent
-@Named("StockDetailStepListener")
-public class StockDetailStepListener implements StepListener {
-
+@Named("TransitioningStepListener")
+public class TransitioningStepListener implements StepListener {
 	@Inject
 	private JobContext jobContext;
 
@@ -23,13 +22,10 @@ public class StockDetailStepListener implements StepListener {
 
 	@Override
 	public void beforeStep() throws Exception {
-		stepContext.setPersistentUserData((ArrayList<String>) 
-						(List<String>) jobContext.getTransientUserData());
+		stepContext.setPersistentUserData((Serializable) jobContext.getTransientUserData());
 
 	}
 
 	@Override
-	public void afterStep() throws Exception {
-	}
-
+	public void afterStep() throws Exception {	}
 }

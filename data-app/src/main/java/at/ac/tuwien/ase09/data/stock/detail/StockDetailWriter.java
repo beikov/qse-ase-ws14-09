@@ -1,44 +1,40 @@
 package at.ac.tuwien.ase09.data.stock.detail;
 
-import java.io.Serializable;
-import java.util.List;
-import java.util.logging.Logger;
-
-import javax.batch.api.chunk.AbstractItemWriter;
 import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 import javax.inject.Named;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 
+import at.ac.tuwien.ase09.data.AbstractEntityWriter;
+import at.ac.tuwien.ase09.data.ValuePaperDataAccess;
+import at.ac.tuwien.ase09.exception.EntityNotFoundException;
 import at.ac.tuwien.ase09.model.Stock;
 
 @Dependent
 @Named("StockDetailWriter")
-public class StockDetailWriter extends AbstractItemWriter {
-	private static final Logger LOG = Logger.getLogger(StockDetailWriter.class.getName());
-	@PersistenceContext
-	private EntityManager em;
+public class StockDetailWriter extends AbstractEntityWriter {
+	@Inject
+	private ValuePaperDataAccess valuePaperDataAccess;
 	
 	@Override
-	public void open(Serializable checkpoint) throws Exception {
-		if(checkpoint != null){
-			em.clear();
+	protected void persistEntity(Object entity) {
+		Stock stock = (Stock) entity;
+		Stock existingStock = null;
+		try{
+			existingStock = valuePaperDataAccess.getStockByIsin(stock.getIsin());
+			// existingStock is managed
+		}catch(EntityNotFoundException nfe){
+			// ignore
 		}
-	}
-	
-	@Override
-	public void writeItems(List<Object> items) throws Exception {
-		for(int i = 0; i < items.size(); i++){
-			Stock stock = (Stock) items.get(i);
+		// TODO: set id on entity or copy fields to attached existingEntity?
+		if(existingStock != null){
+			existingStock.setCertificatePageUrl(stock.getCertificatePageUrl());
+			existingStock.setCurrency(stock.getCurrency());
+			existingStock.setIndex(stock.getIndex());
+			existingStock.setIsin(stock.getIsin());
+			existingStock.setName(stock.getName());
+		}else{
 			em.persist(stock);
-			LOG.info("Persisted " + stock.toString());
 		}
-		em.flush();
-		em.clear();
 	}
-	
-	@Override
-	public Serializable checkpointInfo() throws Exception {
-		return 0;
-	}
+
 }

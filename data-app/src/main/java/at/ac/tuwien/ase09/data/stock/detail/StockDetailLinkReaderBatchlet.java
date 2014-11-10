@@ -19,6 +19,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 import at.ac.tuwien.ase09.data.JsoupUtils;
+import at.ac.tuwien.ase09.data.StepExitStatus;
 import at.ac.tuwien.ase09.data.factory.WebClientFactory;
 import at.ac.tuwien.ase09.data.model.IntradayPrice;
 
@@ -40,7 +41,7 @@ public class StockDetailLinkReaderBatchlet extends AbstractBatchlet {
 	
 	@Inject
 	private JobContext jobContext;
-
+	
 	@Override
 	public String process() throws Exception {
 		Document boerse = JsoupUtils.tryGetPage(boerseUrl + "?TYPE=" + indexName);
@@ -56,7 +57,7 @@ public class StockDetailLinkReaderBatchlet extends AbstractBatchlet {
 		
 		LOG.info("Extracted " + stockDetailLinks.size() + " stock detail links");
 		
-		return "COMPLETED";
+		return StepExitStatus.COMPLETED.toString();
 	}
 
 }

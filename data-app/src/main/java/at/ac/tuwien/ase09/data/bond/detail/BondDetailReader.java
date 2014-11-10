@@ -1,47 +1,71 @@
 package at.ac.tuwien.ase09.data.bond.detail;
 
 import java.io.Serializable;
+import java.util.Currency;
 import java.util.Iterator;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import javax.batch.api.BatchProperty;
 import javax.batch.api.chunk.AbstractItemReader;
+import javax.batch.runtime.context.StepContext;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 
 import at.ac.tuwien.ase09.data.JsoupUtils;
-import at.ac.tuwien.ase09.data.ValuePaperDataAccess;
+import at.ac.tuwien.ase09.model.Bond;
 import at.ac.tuwien.ase09.model.Stock;
 
 @Dependent
 @Named("BondDetailReader")
 public class BondDetailReader extends AbstractItemReader {
 	@Inject
-	@BatchProperty
-	private String indexName;
+	private StepContext stepContext;
 	
-	@Inject
-	private ValuePaperDataAccess valuePaperDataAccess;
+	private List<String> bondDetailLinks;
+	private final Currency currency = Currency.getInstance("EUR");
 	
-	private Iterator<Stock> stockIter;
-	private int bondNumber;
+	private Integer linkNumber;
 	
 	@Override
 	public void open(Serializable checkpoint) throws Exception {
-		stockIter = valuePaperDataAccess.getStocksByIndex(indexName).iterator();
+		bondDetailLinks = ((List<String>) stepContext.getPersistentUserData());
+		if(checkpoint != null){
+			linkNumber = (Integer) checkpoint;
+		}else{
+			linkNumber = 0;
+		}
 	}
+	
 	@Override
 	public Object readItem() throws Exception {
-		if(!stockIter.hasNext()){
+		if(linkNumber >= bondDetailLinks.size()){
 			return null;
 		}
-		Stock stock = stockIter.next();
-		Document bondPage = JsoupUtils.tryGetPage(stock.getCertificatePageUrl());
-		bondNumber++;
-		// we should build the certificate url in the stocks as follows:
-		// http://kurse.wienerborse.at/teledata_php/prices/dispatch_list.php?TYPE=C&CATEGORYVALUE=9&CP=&ID_NOTATION_UNDERLYING=740752&LIFETIME=-1&QUOTINGTYPE=A
-		return stock;
+		String bondDetailLink = bondDetailLinks.get(linkNumber);
+		Document detailPage = JsoupUtils.tryGetPage(bondDetailLink);
+		Elements elements = detailPage.select("div.summary div.left td:nth-child(1)");
+		String name = elements.get(0).text();
+		String isin = elements.get(1).text().replaceAll("ISIN: ", "");
+		String currencyCode = detailPage.select("div.col100 tr:nth-child(8) td").get(0).text();
+		Bond bond = new Bond();
+		
+		bond.setIsin(isin);
+		bond.setCurrency(Currency.getInstance(currencyCode));
+		bond.setName(name);
+		
+		linkNumber++;
+		return bond;
 	}
+	
+	@Override
+	public Serializable checkpointInfo() throws Exception {
+		return linkNumber;
+	}
+	
 }

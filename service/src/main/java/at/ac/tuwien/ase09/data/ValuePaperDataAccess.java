@@ -9,6 +9,7 @@ import javax.persistence.PersistenceContext;
 
 import at.ac.tuwien.ase09.exception.AppException;
 import at.ac.tuwien.ase09.exception.EntityNotFoundException;
+import at.ac.tuwien.ase09.model.Bond;
 import at.ac.tuwien.ase09.model.Stock;
 
 @Stateless
@@ -19,6 +20,16 @@ public class ValuePaperDataAccess {
 	public Stock getStockByIsin(String isin){
 		try{
 			return em.createQuery("SELECT s FROM Stock s WHERE s.isin = :isin", Stock.class).setParameter("isin", isin).getSingleResult();
+		}catch(NoResultException e){
+			throw new EntityNotFoundException(e);
+		}catch(Exception e){
+			throw new AppException(e);
+		}
+	}
+	
+	public Bond getBondByIsin(String isin){
+		try{
+			return em.createQuery("SELECT b FROM Bond b WHERE b.isin = :isin", Bond.class).setParameter("isin", isin).getSingleResult();
 		}catch(NoResultException e){
 			throw new EntityNotFoundException(e);
 		}catch(Exception e){

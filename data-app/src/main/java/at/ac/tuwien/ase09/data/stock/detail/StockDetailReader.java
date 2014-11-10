@@ -45,15 +45,20 @@ public class StockDetailReader extends AbstractItemReader {
 	
 	@Override
 	public Object readItem() throws Exception {
-		if(linkNumber + 1 >= stockDetailLinks.size()){
+		if(linkNumber >= stockDetailLinks.size()){
 			return null;
 		}
-		String stockDetailLink = stockDetailLinks.get(linkNumber + 1);
+		String stockDetailLink = stockDetailLinks.get(linkNumber);
 		Document detailPage = JsoupUtils.tryGetPage(stockDetailLink);
 		Elements elements = detailPage.select("div.summary div.left td:nth-child(1)");
 		String name = elements.get(0).text();
 		String isin = elements.get(1).text().replaceAll("ISIN: ", "");
+		// we should build the certificate url for the stocks as follows:
+		// http://kurse.wienerborse.at/teledata_php/prices/dispatch_list.php?TYPE=C&CATEGORYVALUE=9&CP=&ID_NOTATION_UNDERLYING=740752&LIFETIME=-1&QUOTINGTYPE=A
 		String certificatePageUrl = detailPage.select("div.detail_list div.links a:nth-child(2)").get(0).attr("href");
+		certificatePageUrl = certificatePageUrl.replaceAll("TYPE=[^&]*", "TYPE=C").replace("..", "");
+		certificatePageUrl = "http://kurse.wienerborse.at/teledata_php" + certificatePageUrl + "&CATEGORYVALUE=9&LIFETIME=-1&QUOTINGTYPE=A";
+				
 		String indexName = null;
 		Matcher urlTypeMatcher = urlTypePattern.matcher(stockDetailLink);
 		if(urlTypeMatcher.find()){
@@ -62,7 +67,7 @@ public class StockDetailReader extends AbstractItemReader {
 		
 		
 		Stock stock = new Stock();
-		stock.setCode(isin);
+		stock.setIsin(isin);
 		stock.setName(name);
 		stock.setCurrency(currency);
 		stock.setCertificatePageUrl(certificatePageUrl);

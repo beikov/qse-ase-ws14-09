@@ -1,21 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <job id="detailBondExtractionATX" xmlns="http://xmlns.jcp.org/xml/ns/javaee"
 	version="1.0">
-	<step id="bondDetailExtraction">
-		<chunk retry-limit="10" item-count="10">
-			<reader ref="BondDetailReader">
+	<step id="bondDetailLinkExtraction" next="bondDetailExtraction">
+		<batchlet ref="BondDetailLinkReaderBatchlet">
+			<properties>
 				<property name="indexName" value="ATX" />
-			</reader>
-			<processor ref="SimpleItemProcessor" />
-			<writer ref="BondDetailWriter" />
-		</chunk>
+			</properties>
+		</batchlet>
 		<listeners>
 			<listener ref="StepBoundaryLogger" />
 		</listeners>
 	</step>
-	<!-- <step id="bondDetailExtraction"/> -->
+	<step id="bondDetailExtraction">
+		<chunk item-count="10">
+			<reader ref="BondDetailReader">
+				<properties>
+					<property name="indexName" value="ATX" />
+				</properties>
+			</reader>
+			<processor ref="SimpleItemProcessor" />
+			<writer ref="BondDetailWriter" />
 
+			<retryable-exception-classes>
+				<include class="java.net.SocketTimeoutException" />
+			</retryable-exception-classes>
+			<skippable-exception-classes>
+				<include class="java.net.SocketTimeoutException" />
+			</skippable-exception-classes>
+		</chunk>
+		<listeners>
+			<listener ref="StepBoundaryLogger" />
+			<listener ref="TransitioningStepListener" />
+			<listener ref="DefaultSkipListener" />
+			<listener ref="DefaultRetryListener" />
+		</listeners>
+	</step>
 	<listeners>
 		<listener ref="JobBoundaryLogger" />
+		<listener ref="SuccessorJobStarter">
+	        <properties>
+	        	<property name="successorJobIds" value="#{jobParameters['successorJobIds']}" />
+	        </properties>
+	    </listener>
 	</listeners>
 </job>

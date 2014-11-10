@@ -18,12 +18,12 @@ public class JobBoundaryLogger implements JobListener{
 	
 	@Override
 	public void beforeJob() throws Exception {
-		LOG.info("Starting step " + jobContext.getJobName());
+		LOG.info("Starting job " + jobContext.getJobName());
 	}
 
 	@Override
 	public void afterJob() throws Exception {
-		LOG.info("Step " + jobContext.getJobName() + " finished");
+		LOG.info("Job " + jobContext.getJobName() + " finished");
 	}
 
 }

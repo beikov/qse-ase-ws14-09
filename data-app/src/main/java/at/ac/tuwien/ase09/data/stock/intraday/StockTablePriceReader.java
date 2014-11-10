@@ -14,6 +14,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
+import at.ac.tuwien.ase09.data.JsoupUtils;
 import at.ac.tuwien.ase09.data.factory.WebClientFactory;
 import at.ac.tuwien.ase09.data.model.IntradayPrice;
 
@@ -38,7 +39,7 @@ public class StockTablePriceReader extends AbstractItemReader{
 		if(extractedPrices != null){
 			return null;
 		}
-		Document doc = Jsoup.connect(baseUrl + "?TYPE=" + indexName).get();
+		Document doc = JsoupUtils.tryGetPage(baseUrl + "?TYPE=" + indexName);
 		Elements isinCells = doc.select("#marketdata_list tbody td:nth-child(3)");
 		Elements priceCells = doc.select("#marketdata_list tbody td:nth-child(5)");
 		extractedPrices = new ArrayList<IntradayPrice>();

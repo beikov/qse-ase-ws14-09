@@ -1,8 +1,9 @@
 package at.ac.tuwien.ase09.data;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 
 import at.ac.tuwien.ase09.exception.AppException;
@@ -15,15 +16,18 @@ public class ValuePaperPriceEntryDataAccess {
 	@PersistenceContext
 	private EntityManager em;
 	
-	public ValuePaperPriceEntry getLastPriceEntry(String code){
+	public ValuePaperPriceEntry getLastPriceEntry(String isin){
+		List<ValuePaperPriceEntry> priceEntryList = null;
 		try{
-			return em.createQuery("SELECT price FROM ValuePaperPriceEntry price JOIN price.valuePaper vp WHERE vp.code=:code", ValuePaperPriceEntry.class)
-				.setParameter("code", code)
-				.getSingleResult();
-		}catch(NoResultException e){
-			throw new EntityNotFoundException(e);
+			priceEntryList = em.createQuery("SELECT price FROM ValuePaperPriceEntry price JOIN price.valuePaper vp WHERE vp.isin=:isin ORDER BY price.created DESC", ValuePaperPriceEntry.class)
+				.setParameter("isin", isin)
+				.getResultList();
 		}catch(Exception e){
 			throw new AppException(e);
 		}
+		if(priceEntryList.isEmpty()){
+			throw new EntityNotFoundException();
+		}
+		return priceEntryList.get(0);
 	}
 }

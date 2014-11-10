@@ -17,15 +17,15 @@ public abstract class ValuePaper extends BaseEntity<Long> {
 
 	private String name;
 	private Currency currency;
-	private String code;
+	private String isin;
 
 	@Column(unique=true)
-	public String getCode() {
-		return code;
+	public String getIsin() {
+		return isin;
 	}
 
-	public void setCode(String code) {
-		this.code = code;
+	public void setIsin(String isin) {
+		this.isin = isin;
 	}
 	
 	@Transient
@@ -49,7 +49,7 @@ public abstract class ValuePaper extends BaseEntity<Long> {
 
 	@Override
 	public String toString() {
-		return String.format("type=%s, code=%s, name=%s", getType(), code, name);
+		return String.format("[type=%s, code=%s, name=%s]", getType(), isin, name);
 	}
 	
 	

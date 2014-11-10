@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- This job extracts all bonds from ATX stocks -->
-<job id="detailBondExtractionATX" xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+<job id="detailStockExtractionATX" xmlns="http://xmlns.jcp.org/xml/ns/javaee"
 	version="1.0">
 	<step id="stockDetailLinkExtraction" next="stockDetailExtraction">
 		<batchlet ref="StockDetailLinkReaderBatchlet">
@@ -16,19 +16,31 @@
 		</listeners>
 	</step>
 	<step id="stockDetailExtraction">
-		<chunk retry-limit="10" item-count="10">
+		<chunk item-count="10">
 			<reader ref="StockDetailReader" />
 			<processor ref="SimpleItemProcessor" />
 			<writer ref="StockDetailWriter" />
+			
+			<retryable-exception-classes>
+				<include class="java.net.SocketTimeoutException" />
+			</retryable-exception-classes>
+			<skippable-exception-classes>
+				<include class="java.net.SocketTimeoutException" />
+			</skippable-exception-classes>
 		</chunk>
 		<listeners>
 		    <listener ref="StepBoundaryLogger" />
-			<listener ref="StockDetailStepListener" />
+			<listener ref="TransitioningStepListener" />
+			<listener ref="DefaultSkipListener" />
+			<listener ref="DefaultRetryListener" />
 		</listeners>
 	</step>
-	<!-- <step id="bondDetailExtraction"/> -->
-	
 	<listeners>
 	    <listener ref="JobBoundaryLogger" />
+	    <listener ref="SuccessorJobStarter">
+	        <properties>
+	        	<property name="successorJobIds" value="#{jobParameters['successorJobIds']}" />
+	        </properties>
+	    </listener>
 	</listeners>
 </job>

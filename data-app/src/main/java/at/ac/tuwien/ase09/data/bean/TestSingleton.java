@@ -1,5 +1,7 @@
 package at.ac.tuwien.ase09.data.bean;
 
+import java.util.Properties;
+
 import javax.annotation.PostConstruct;
 import javax.batch.operations.JobOperator;
 import javax.batch.runtime.BatchRuntime;
@@ -19,7 +21,9 @@ public class TestSingleton {
 	@PostConstruct
 	public void init(){
 		JobOperator jobOperator = BatchRuntime.getJobOperator();
-//		long executionId = jobOperator.start("intraDayATXExtractionJob", null);
-		long executionId = jobOperator.start("detailStockExtractionATX", null);
+		Properties props = new Properties();
+		props.put("successorJobIds", "intraDayATXExtraction;detailBondExtractionATX");
+//		jobOperator.start("detailStockExtractionATX", props);
+//		jobOperator.start("detailBondExtractionATX", null);
 	}
 }

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<job id="intradayExtractionATX" xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	version="1.0">
+	<step id="stockTablePriceExtraction">
+		<chunk item-count="10">
+			<reader ref="StockTablePriceReader" >
+			    <properties>
+			    	<property name="baseUrl" value="http://kurse.wienerborse.at/teledata_php/prices/dispatch_list.php" />
+			    	<property name="indexName" value="ATX" />
+			    </properties>
+			</reader>
+			<processor ref="PriceListProcessor" />
+			<writer ref="PriceListWriter" />
+			
+			<retryable-exception-classes>
+				<include class="java.net.SocketTimeoutException" />
+			</retryable-exception-classes>
+			<skippable-exception-classes>
+				<include class="java.net.SocketTimeoutException" />
+			</skippable-exception-classes>
+		</chunk>	    
+	</step>
+	<listeners>
+	    <listener ref="JobBoundaryLogger" />
+	    <listener ref="SuccessorJobStarter">
+	        <properties>
+	        	<property name="successorJobIds" value="#{jobParameters['successorJobIds']}" />
+	        </properties>
+	    </listener>
+	</listeners>
+</job>

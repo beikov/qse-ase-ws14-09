@@ -1,0 +1,26 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core">
+<head>
+<title>Data-App Ctrl</title>
+</head>
+<body>
+	<h:outputText value="Data-App Ctrl" />
+	<h:form>
+		<p>
+			<h:commandButton value="Start ATX Stock Detail Extraction"
+				actionListener="#{ctrlBean.startATXStockDetailExtraction()}" />
+		</p>
+		<p>
+			<h:commandButton value="Start ATX Intraday Price Extraction"
+				actionListener="#{ctrlBean.startATXIntradayPriceExtraction()}" />
+		</p>
+		<p>
+			<h:commandButton value="Start ATX Bond Detail Extraction"
+				actionListener="#{ctrlBean.startATXBondDetailExtraction()}" />
+		</p>
+	</h:form>
+</body>
+</html>
