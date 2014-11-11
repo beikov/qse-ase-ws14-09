@@ -10,16 +10,13 @@
 	<ui:define name="body">
 	
 		<f:metadata>
-			<f:viewParam name="portfolioId" value="#{portfolioDetailBean.portfolioId}" required="true" />
-		    <f:viewAction action="#{portfolioDetailBean.init}" />
+			<f:viewParam name="portfolioId" value="#{portfolioViewBean.portfolioId}" required="true" />
+		    <f:viewAction action="#{portfolioViewBean.init}" />
 		</f:metadata>
 		
-		<h:outputText value="Portfolio: #{portfolioDetailBean.portfolio.name}" />
+		<h:outputText value="Portfolio: #{portfolioViewBean.portfolio.name}" />
 		
-		<p:chart type="pie" model="#{portfolioDetailBean.valuePaperTypePie}" style="width:400px;height:300px" />
-		<p:chart type="pie" model="#{portfolioDetailBean.valuePaperCountryPie}" style="width:400px;height:300px" />
-		
-		<p:dataTable var="paper" value="#{portfolioDetailBean.portfolio.valuePapers}">
+		<p:dataTable var="paper" value="#{portfolioViewBean.portfolio.valuePapers}">
 			<f:facet name="header">
 		        Einzeltitel
 		    </f:facet>
@@ -30,20 +27,43 @@
 		    <p:column headerText="Typ">
 		        <h:outputText value="#{paper.type}" />
 		    </p:column>
+		    <p:column headerText="Code">
+		        <h:outputText value="#{paper.code}" />
+		    </p:column>
 		    <p:column headerText="Währung">
 		        <h:outputText value="#{paper.currency.currencyCode} #{paper.currency.symbol}" />
 		    </p:column>
+		    <p:column headerText="Land">
+		        <h:outputText value="#{paper.country}" />
+		    </p:column>
+		    <p:column headerText="Index">
+		        <h:outputText value="#{paper.index}" />
+		    </p:column>
 		</p:dataTable>
 		
-		<p:dataTable var="trade" value="#{portfolioDetailBean.portfolio.transactionEntries}">
+		<p:chart type="pie" model="#{portfolioViewBean.valuePaperTypePie}" style="width:400px;height:300px;display:inline-block;" />
+		<p:chart type="pie" model="#{portfolioViewBean.valuePaperCountryPie}" style="width:400px;height:300px;display:inline-block;" />
+		
+		<p:dataTable var="trade" value="#{portfolioViewBean.portfolio.transactionEntries}">
 			<f:facet name="header">
 		        Transaktionen
 		    </f:facet>
-		
-		    <p:column headerText="Id">
-		        <h:outputText value="#{trade.id}" />
+		    
+		    <p:column headerText="Transaktionstyp">
+		        <h:outputText value="#{trade.type}" />
+		    </p:column>
+		    <p:column headerText="Datum">
+		        <h:outputText value="#{trade.created.time}" />
+		    </p:column>
+		    <p:column headerText="Währung">
+		        <h:outputText value="#{trade.value.currency}" />
+		    </p:column>
+		    <p:column headerText="Wert">
+		        <h:outputText value="#{trade.value.value}" />
 		    </p:column>
 		</p:dataTable>
+		
+		<p:chart type="line" model="#{portfolioViewBean.portfolioChart}" style="height:400px;"/>
 	</ui:define><!-- content -->
 
 </ui:composition>

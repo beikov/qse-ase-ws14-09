@@ -8,6 +8,7 @@ import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import at.ac.tuwien.ase09.data.PortfolioDataAccess;
 import at.ac.tuwien.ase09.model.Portfolio;
 import at.ac.tuwien.ase09.service.PortfolioService;
 
@@ -18,12 +19,16 @@ public class PortfolioBean implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@Inject
+	private PortfolioDataAccess portfolioDataAccess;
+	
+	@Inject
 	private PortfolioService portfolioService;
+	
 
 	
 	
 	public List<Portfolio> getPortfolios() {
-		return portfolioService.getPortfolios();
+		return portfolioDataAccess.getPortfolios();
 	}
 
 		
