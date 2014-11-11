@@ -28,6 +28,7 @@ public class StockDetailWriter extends AbstractEntityWriter {
 		// TODO: set id on entity or copy fields to attached existingEntity?
 		if(existingStock != null){
 			existingStock.setCertificatePageUrl(stock.getCertificatePageUrl());
+			existingStock.setHistoricPricesPageUrl(stock.getHistoricPricesPageUrl());
 			existingStock.setCurrency(stock.getCurrency());
 			existingStock.setIndex(stock.getIndex());
 			existingStock.setIsin(stock.getIsin());

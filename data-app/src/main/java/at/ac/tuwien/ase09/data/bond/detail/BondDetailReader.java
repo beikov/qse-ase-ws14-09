@@ -48,7 +48,7 @@ public class BondDetailReader extends AbstractItemReader {
 			return null;
 		}
 		String bondDetailLink = bondDetailLinks.get(linkNumber);
-		Document detailPage = JsoupUtils.tryGetPage(bondDetailLink);
+		Document detailPage = JsoupUtils.getPage(bondDetailLink);
 		Elements elements = detailPage.select("div.summary div.left td:nth-child(1)");
 		String name = elements.get(0).text();
 		String isin = elements.get(1).text().replaceAll("ISIN: ", "");

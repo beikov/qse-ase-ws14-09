@@ -17,8 +17,8 @@ public class ValuePaperHistoryEntry extends BaseEntity<Long> {
 	private Calendar date;
 	private BigDecimal dayLowPrice;
 	private BigDecimal dayHighPrice;
-	private BigDecimal beginPrice;
-	private BigDecimal endPrice;
+	private BigDecimal openingPrice;
+	private BigDecimal closingPrice;
 	private Integer marketVolume;
 	
 	@ManyToOne(optional=false, fetch=FetchType.LAZY)
@@ -47,17 +47,17 @@ public class ValuePaperHistoryEntry extends BaseEntity<Long> {
 	public void setDayHighPrice(BigDecimal dayHighPrice) {
 		this.dayHighPrice = dayHighPrice;
 	}
-	public BigDecimal getBeginPrice() {
-		return beginPrice;
+	public BigDecimal getOpeningPrice() {
+		return openingPrice;
 	}
-	public void setBeginPrice(BigDecimal beginPrice) {
-		this.beginPrice = beginPrice;
+	public void setOpeningPrice(BigDecimal openingPrice) {
+		this.openingPrice = openingPrice;
 	}
-	public BigDecimal getEndPrice() {
-		return endPrice;
+	public BigDecimal getClosingPrice() {
+		return closingPrice;
 	}
-	public void setEndPrice(BigDecimal endPrice) {
-		this.endPrice = endPrice;
+	public void setClosingPrice(BigDecimal closingPrice) {
+		this.closingPrice = closingPrice;
 	}
 	public Integer getMarketVolume() {
 		return marketVolume;

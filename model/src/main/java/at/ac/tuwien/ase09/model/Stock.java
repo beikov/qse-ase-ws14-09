@@ -1,6 +1,5 @@
 package at.ac.tuwien.ase09.model;
 
-import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.Transient;
@@ -11,6 +10,7 @@ public class Stock extends ValuePaper {
 	private static final long serialVersionUID = 1L;
 
 	private String certificatePageUrl;
+	private String historicPricesPageUrl;
 	private String index;
 	
 	@Override
@@ -25,6 +25,14 @@ public class Stock extends ValuePaper {
 
 	public void setCertificatePageUrl(String certificatePageUrl) {
 		this.certificatePageUrl = certificatePageUrl;
+	}
+	
+	public String getHistoricPricesPageUrl() {
+		return historicPricesPageUrl;
+	}
+
+	public void setHistoricPricesPageUrl(String historicPricesPageUrl) {
+		this.historicPricesPageUrl = historicPricesPageUrl;
 	}
 
 	public String getIndex() {

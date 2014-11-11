@@ -1,31 +1,22 @@
 package at.ac.tuwien.ase09.data.stock.detail;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.batch.api.AbstractBatchlet;
 import javax.batch.api.BatchProperty;
-import javax.batch.api.chunk.AbstractItemReader;
 import javax.batch.runtime.context.JobContext;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.commons.lang3.RandomUtils;
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import at.ac.tuwien.ase09.data.JsoupUtils;
 import at.ac.tuwien.ase09.data.StepExitStatus;
-import at.ac.tuwien.ase09.data.factory.WebClientFactory;
-import at.ac.tuwien.ase09.data.model.IntradayPrice;
-
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.WebRequest;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 @Dependent
 @Named("StockDetailLinkReaderBatchlet")
@@ -34,6 +25,14 @@ public class StockDetailLinkReaderBatchlet extends AbstractBatchlet {
 	@Inject
 	@BatchProperty(name = "boerseUrl")
 	private String boerseUrl;
+	
+	@Inject
+	@BatchProperty(name = "finanzenNetIndexPath")
+	private String finanzenNetIndexPath;
+	
+	@Inject
+	@BatchProperty(name = "finanzenNetUrl")
+	private String finanzenNetUrl;
 
 	@Inject
 	@BatchProperty(name = "indexName")
@@ -44,13 +43,30 @@ public class StockDetailLinkReaderBatchlet extends AbstractBatchlet {
 	
 	@Override
 	public String process() throws Exception {
-		Document boerse = JsoupUtils.tryGetPage(boerseUrl + "?TYPE=" + indexName);
+		Document boerse = JsoupUtils.getPage(boerseUrl + "?TYPE=" + indexName);
 
 		Elements linkCells = boerse
-				.select("#marketdata_list tbody td:nth-child(3) a");
-		List<String> stockDetailLinks = new ArrayList<String>();
-		for (int i = 0; i < linkCells.size(); i++) {
-			stockDetailLinks.add(linkCells.get(i).attr("href"));
+				.select("#marketdata_list tbody td:nth-child(3)");
+		Map<String, String[]> stockDetailLinks = new HashMap<>();
+		
+		// boerse table
+		for (Element current : linkCells){
+			String[] cellLines = current.text().split("\\s");
+			String isin = cellLines[cellLines.length - 1];
+			stockDetailLinks.put(isin, new String[]{current.select("a").get(0).attr("href"), null});
+		}
+		
+		Document finanzenNet = JsoupUtils.getPage(finanzenNetUrl + finanzenNetIndexPath + "/" + indexName);
+		linkCells = finanzenNet.select("#index-list-container td:nth-child(1)");
+		// finanzen.net table
+		for (Element current : linkCells) {
+			String[] cellLines = current.text().split("\\s");
+			String isin = cellLines[cellLines.length - 1];
+			String[] mapEntry = stockDetailLinks.get(isin);
+			if(mapEntry != null){
+				// get historic prices link
+				mapEntry[1] = finanzenNetUrl + current.select("a").get(0).attr("href");
+			}
 		}
 		
 		jobContext.setTransientUserData(stockDetailLinks);

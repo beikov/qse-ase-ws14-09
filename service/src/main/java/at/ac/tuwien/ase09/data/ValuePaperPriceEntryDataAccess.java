@@ -1,5 +1,6 @@
 package at.ac.tuwien.ase09.data;
 
+import java.util.Calendar;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -29,5 +30,17 @@ public class ValuePaperPriceEntryDataAccess {
 			throw new EntityNotFoundException();
 		}
 		return priceEntryList.get(0);
+	}
+	
+	public List<Calendar> getHistoricPriceEntryDates(String isin) {
+		try {
+			return em
+					.createQuery(
+							"SELECT pe.date FROM ValuePaperHistoryEntry pe JOIN pe.valuePaper vp WHERE vp.isin = :isin",
+							Calendar.class)
+					.setParameter("isin", isin).getResultList();
+		} catch (Exception e) {
+			throw new AppException(e);
+		}
 	}
 }

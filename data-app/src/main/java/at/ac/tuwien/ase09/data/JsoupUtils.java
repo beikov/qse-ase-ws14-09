@@ -5,7 +5,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 public class JsoupUtils {
-	public static Document tryGetPage(String url)
+	public static Document getPage(String url)
 			throws Exception {
 		Exception ex = null;
 		for (int i = 0; i < 3; i++) {

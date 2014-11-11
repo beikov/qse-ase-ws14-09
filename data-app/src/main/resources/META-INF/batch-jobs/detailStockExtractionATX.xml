@@ -2,25 +2,34 @@
 <!-- This job extracts all bonds from ATX stocks -->
 <job id="detailStockExtractionATX" xmlns="http://xmlns.jcp.org/xml/ns/javaee"
 	version="1.0">
+	<properties>
+	    <property name="indexName" value="ATX" />
+	    <property name="finanzenNetUrl" value="http://www.finanzen.at" />
+	</properties>
 	<step id="stockDetailLinkExtraction" next="stockDetailExtraction">
 		<batchlet ref="StockDetailLinkReaderBatchlet">
 			<properties>
 				<property name="boerseUrl"
 					value="http://kurse.wienerborse.at/teledata_php/prices/dispatch_list.php" />
-				<property name="finanzenNetUrl" value="http://www.finanzen.at/index/liste" />
-				<property name="indexName" value="ATX" />
+				<property name="finanzenNetUrl" value="#{jobProperties['finanzenNetUrl']}" />
+				<property name="finanzenNetIndexPath" value="/index/liste" />
+				<property name="indexName" value="#{jobProperties['indexName']}" />
 			</properties>
 		</batchlet>
 		<listeners>
-		    <listener ref="StepBoundaryLogger" />
+			<listener ref="StepBoundaryLogger" />
 		</listeners>
 	</step>
-	<step id="stockDetailExtraction">
-		<chunk item-count="10">
-			<reader ref="StockDetailReader" />
+	<step id="stockDetailExtraction" next="stockHistoricPriceExtraction">
+		<chunk>
+			<reader ref="StockDetailReader">
+			    <properties>
+			        <property name="finanzenNetUrl" value="#{jobProperties['finanzenNetUrl']}" />
+			    </properties>
+		    </reader>
 			<processor ref="SimpleItemProcessor" />
 			<writer ref="StockDetailWriter" />
-			
+
 			<retryable-exception-classes>
 				<include class="java.net.SocketTimeoutException" />
 			</retryable-exception-classes>
@@ -29,18 +38,41 @@
 			</skippable-exception-classes>
 		</chunk>
 		<listeners>
-		    <listener ref="StepBoundaryLogger" />
+			<listener ref="StepBoundaryLogger" />
 			<listener ref="TransitioningStepListener" />
 			<listener ref="DefaultSkipListener" />
 			<listener ref="DefaultRetryListener" />
 		</listeners>
 	</step>
+	<step id="stockHistoricPriceExtraction">
+		<chunk item-count="5">
+			<reader ref="HistoricPriceReader">
+			    <properties>
+					<property name="indexName" value="#{jobProperties['indexName']}" />
+				</properties>
+			</reader>
+			<processor ref="HistoricPriceProcessor" />
+			<writer ref="HistoricPriceWriter" />
+
+			<retryable-exception-classes>
+				<include class="java.net.SocketTimeoutException" />
+			</retryable-exception-classes>
+			<skippable-exception-classes>
+				<include class="java.net.SocketTimeoutException" />
+			</skippable-exception-classes>
+		</chunk>
+		<listeners>
+			<listener ref="StepBoundaryLogger" />
+			<listener ref="DefaultSkipListener" />
+			<listener ref="DefaultRetryListener" />
+		</listeners>
+	</step>
 	<listeners>
-	    <listener ref="JobBoundaryLogger" />
-	    <listener ref="SuccessorJobStarter">
-	        <properties>
-	        	<property name="successorJobIds" value="#{jobParameters['successorJobIds']}" />
-	        </properties>
-	    </listener>
+		<listener ref="JobBoundaryLogger" />
+		<listener ref="SuccessorJobStarter">
+			<properties>
+				<property name="successorJobIds" value="#{jobParameters['successorJobIds']}" />
+			</properties>
+		</listener>
 	</listeners>
 </job>

@@ -39,7 +39,7 @@ public class StockTablePriceReader extends AbstractItemReader{
 		if(extractedPrices != null){
 			return null;
 		}
-		Document doc = JsoupUtils.tryGetPage(baseUrl + "?TYPE=" + indexName);
+		Document doc = JsoupUtils.getPage(baseUrl + "?TYPE=" + indexName);
 		Elements isinCells = doc.select("#marketdata_list tbody td:nth-child(3)");
 		Elements priceCells = doc.select("#marketdata_list tbody td:nth-child(5)");
 		extractedPrices = new ArrayList<IntradayPrice>();
