@@ -2,13 +2,14 @@ package at.ac.tuwien.ase09.service;
 
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import at.ac.tuwien.ase09.data.PortfolioDataAccess;
 import at.ac.tuwien.ase09.model.Portfolio;
 import at.ac.tuwien.ase09.model.ValuePaper;
 import at.ac.tuwien.ase09.model.ValuePaperType;
@@ -19,14 +20,8 @@ public class PortfolioService {
 	@PersistenceContext
 	private EntityManager em;
 	
-	
-	public List<Portfolio> getPortfolios() {
-		return em.createQuery("FROM Portfolio", Portfolio.class).getResultList();
-	}
-	
-	public Portfolio getPortfolioById(Long id) {
-		return em.createQuery("FROM Portfolio p JOIN FETCH p.valuePapers JOIN FETCH p.transactionEntries WHERE p.id = :id", Portfolio.class).setParameter("id", id).getSingleResult();
-	}
+	@Inject
+	private PortfolioDataAccess portfolioDataAccess;
 	
 	public Map<ValuePaperType, Integer> getValuePaperTypeCountMap(Portfolio portfolio) {
 		Map<ValuePaperType, Integer> valuePaperTypeCounterMap = new HashMap<ValuePaperType, Integer>();
