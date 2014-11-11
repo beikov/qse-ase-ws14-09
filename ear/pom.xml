@@ -1,0 +1,90 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>at.ac.tuwien.ase09</groupId>
+		<artifactId>app</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
+
+	<artifactId>ear</artifactId>
+	<packaging>ear</packaging>
+
+	<name>Portfolioverwaltung EAR</name>
+	
+	<dependencies>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>model</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>rest-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>rest-impl</artifactId>
+			<type>ejb</type>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>service</artifactId>
+			<type>ejb</type>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>web-final</artifactId>
+			<type>war</type>
+		</dependency>
+		<dependency>
+			<groupId>org.keycloak</groupId>
+			<artifactId>keycloak-server</artifactId>
+			<type>war</type>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-ear-plugin</artifactId>
+				<configuration>
+					<!-- Uncomment the following to use the predefined application.xml that uses a JavaEE 7 descriptor -->
+					<!-- <generateApplicationXml>false</generateApplicationXml> -->
+					
+					<version>6</version>
+					<defaultLibBundleDir>lib</defaultLibBundleDir>
+					<defaultJavaBundleDir>lib</defaultJavaBundleDir>
+					<skinnyWars>true</skinnyWars>
+					<modules>
+						<webModule>
+							<groupId>org.keycloak</groupId>
+							<artifactId>keycloak-server</artifactId>
+							<bundleFileName>keycloak-server.war</bundleFileName>
+							<contextRoot>/auth</contextRoot>
+						</webModule>
+						<webModule>
+							<groupId>${project.groupId}</groupId>
+							<artifactId>web-final</artifactId>
+							<bundleFileName>web-app.war</bundleFileName>
+							<contextRoot>/</contextRoot>
+						</webModule>
+						<ejbModule>
+							<groupId>${project.groupId}</groupId>
+							<artifactId>service</artifactId>
+							<bundleFileName>service.jar</bundleFileName>
+                        </ejbModule>
+						<ejbModule>
+							<groupId>${project.groupId}</groupId>
+							<artifactId>rest-impl</artifactId>
+							<bundleFileName>rest-impl.jar</bundleFileName>
+                        </ejbModule>
+					</modules>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
