@@ -10,6 +10,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import at.ac.tuwien.ase09.data.ValuePaperDataAccess;
+import at.ac.tuwien.ase09.data.ValuePaperPriceEntryDataAccess;
 import at.ac.tuwien.ase09.exception.AppException;
 import at.ac.tuwien.ase09.model.ValuePaperPriceEntry;
 
@@ -20,6 +21,9 @@ public class ValuePaperPriceEntryService {
 
 	@Inject
 	private ValuePaperDataAccess valuePaperDataAccess;
+	
+	@Inject
+	private ValuePaperPriceEntryDataAccess valuePaperPriceEntryDataAccess;
 
 	public void savePriceEntry(ValuePaperPriceEntry pe) {
 		em.persist(pe);
@@ -32,4 +36,7 @@ public class ValuePaperPriceEntryService {
 		savePriceEntry(priceEntry);
 	}
 	
+	public ValuePaperPriceEntry getLastPriceEntry(String isin){
+		return valuePaperPriceEntryDataAccess.getLastPriceEntry(isin);
+	}
 }
