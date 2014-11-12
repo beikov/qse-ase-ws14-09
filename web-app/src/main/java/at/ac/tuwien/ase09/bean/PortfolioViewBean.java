@@ -20,6 +20,7 @@ import org.primefaces.model.chart.PieChartModel;
 import at.ac.tuwien.ase09.data.PortfolioDataAccess;
 import at.ac.tuwien.ase09.model.Portfolio;
 import at.ac.tuwien.ase09.model.ValuePaperType;
+import at.ac.tuwien.ase09.model.order.Order;
 import at.ac.tuwien.ase09.model.transaction.TransactionEntry;
 import at.ac.tuwien.ase09.service.PortfolioService;
 

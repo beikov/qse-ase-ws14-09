@@ -27,7 +27,7 @@ public class PortfolioDataAccess {
 	
 	public Portfolio getPortfolioById(Long id) {
 		try {
-			return em.createQuery("FROM Portfolio p JOIN FETCH p.valuePapers JOIN FETCH p.transactionEntries WHERE p.id = :id", Portfolio.class).setParameter("id", id).getSingleResult();
+			return em.createQuery("FROM Portfolio p JOIN FETCH p.valuePapers JOIN FETCH p.transactionEntries JOIN FETCH p.orders WHERE p.id = :id", Portfolio.class).setParameter("id", id).getSingleResult();
 		} catch(NoResultException e) {
 			throw new EntityNotFoundException(e);
 		} catch(Exception e) {
