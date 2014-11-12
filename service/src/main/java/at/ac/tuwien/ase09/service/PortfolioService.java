@@ -43,6 +43,7 @@ public class PortfolioService {
 		while (iter.hasNext()) {
 			ValuePaper paper = iter.next();
 			String country = paper.getCountry();
+			//String country = paper.getIsin().substring(0, 2);
 			int current = 0;
 			if (valuePaperCountryCountMap.get(country) != null)
 				current = valuePaperCountryCountMap.get(country);
