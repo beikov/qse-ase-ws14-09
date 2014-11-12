@@ -4,6 +4,7 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	template="/WEB-INF/templates/template.xhtml">
 
 	<!-- content -->
@@ -13,7 +14,7 @@
 			<f:viewParam name="portfolioId" value="#{portfolioViewBean.portfolioId}" required="true" />
 		    <f:viewAction action="#{portfolioViewBean.init}" />
 		</f:metadata>
-		
+
 		<h:outputText value="Portfolio: #{portfolioViewBean.portfolio.name}" />
 		
 		<p:dataTable var="paper" value="#{portfolioViewBean.portfolio.valuePapers}">
@@ -37,9 +38,10 @@
 		        <h:outputText value="#{paper.isin}" />
 		    </p:column>
 		</p:dataTable>
-		
-		<p:chart type="pie" model="#{portfolioViewBean.valuePaperTypePie}" style="width:400px;height:300px;display:inline-block;" />
-		<p:chart type="pie" model="#{portfolioViewBean.valuePaperCountryPie}" style="width:400px;height:300px;display:inline-block;" />
+		<c:if test="#{not empty portfolioViewBean.portfolio.valuePapers}">
+			<p:chart type="pie" model="#{portfolioViewBean.valuePaperTypePie}" style="width:400px;height:300px;display:inline-block;" />
+			<p:chart type="pie" model="#{portfolioViewBean.valuePaperCountryPie}" style="width:400px;height:300px;display:inline-block;" />
+		</c:if>
 		<br />
 		<p:dataTable var="trade" value="#{portfolioViewBean.portfolio.transactionEntries}">
 			<f:facet name="header">
