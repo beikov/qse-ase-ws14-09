@@ -10,6 +10,7 @@ import javax.inject.Named;
 
 import at.ac.tuwien.ase09.data.PortfolioDataAccess;
 import at.ac.tuwien.ase09.model.Portfolio;
+import at.ac.tuwien.ase09.model.User;
 import at.ac.tuwien.ase09.service.PortfolioService;
 
 @Named
@@ -29,6 +30,9 @@ public class PortfolioBean implements Serializable {
 	public List<Portfolio> getPortfolios() {
 		return portfolioDataAccess.getPortfolios();
 	}
-		
+
+	public List<Portfolio> getUserPortfolios(User user) {
+		return portfolioDataAccess.getPortfoliosByUser(user);
+	}	
 	
 }

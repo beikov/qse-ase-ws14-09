@@ -10,6 +10,7 @@ import javax.persistence.PersistenceContext;
 import at.ac.tuwien.ase09.exception.AppException;
 import at.ac.tuwien.ase09.exception.EntityNotFoundException;
 import at.ac.tuwien.ase09.model.Portfolio;
+import at.ac.tuwien.ase09.model.User;
 
 @Stateless
 public class PortfolioDataAccess {
@@ -20,6 +21,14 @@ public class PortfolioDataAccess {
 	public List<Portfolio> getPortfolios() {
 		try{
 			return em.createQuery("FROM Portfolio", Portfolio.class).getResultList();
+		}catch(Exception e){
+			throw new AppException(e);
+		}
+	}
+	
+	public List<Portfolio> getPortfoliosByUser(User user) {
+		try{
+			return em.createQuery("FROM Portfolio p WHERE p.owner = :user", Portfolio.class).setParameter("user", user).getResultList();
 		}catch(Exception e){
 			throw new AppException(e);
 		}

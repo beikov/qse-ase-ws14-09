@@ -28,28 +28,24 @@
 		<p:tabView>
 			<p:tab title="Einzeltitel">
 	            <p:dataTable var="paper" value="#{portfolioViewBean.portfolio.valuePapers}">
-				    <p:column headerText="Name">
+				    <p:column headerText="Name" sortBy="#{paper.name}">
 				        <h:outputText value="#{paper.name}" />
 				    </p:column>
-				    <p:column headerText="Typ">
+				    <p:column headerText="Typ" sortBy="#{paper.type}">
 				        <h:outputText value="#{paper.type}" />
 				    </p:column>
-				    <p:column headerText="Währung">
+				    <p:column headerText="Währung" sortBy="#{paper.currency.currencyCode}">
 				        <h:outputText value="#{paper.currency.currencyCode} (#{paper.currency.symbol})" />
 				    </p:column>
-				    <p:column headerText="Land">
+				    <p:column headerText="Land" sortBy="#{paper.country}">
 				        <h:outputText value="#{paper.country}" />
 				    </p:column>
-				    <p:column headerText="ISIN">
+				    <p:column headerText="ISIN" sortBy="#{paper.isin}">
 				        <h:outputText value="#{paper.isin}" />
 				    </p:column>
 				    <p:column>
-				    	<h:link value="View" outcome="view">
-							<f:param name="valuePaperId" value="#{paper.id}" />
-						</h:link>
-						<h:link value="Order" outcome="/game/list">
-							<f:param name="valuePaperId" value="#{paper.id}" />
-						</h:link>
+				    	<a href="/protected/portfolio/list.xhtml?valuePaperId=#{paper.id}" class="btn btn-default btn-md"><span class="glyphicon glyphicon-search" aria-hidden="true" /></a>
+				    	<a href="/protected/portfolio/list.xhtml?valuePaperId=#{paper.id}" class="btn btn-default btn-md"><span class="glyphicon glyphicon glyphicon-usd" aria-hidden="true" /></a>
 			       </p:column>
 				</p:dataTable>
 	        </p:tab>
@@ -62,22 +58,22 @@
 	        <p:tab title="Orders">
 	            <p:dataTable var="order" value="#{portfolioViewBean.portfolio.orders}">
 				  
-				  	<p:column headerText="Datum">
+				  	<p:column headerText="Datum" sortBy="#{order.created.time}">
 				        <h:outputText value="#{order.created.time}" />
 				    </p:column>
-				    <p:column headerText="Wertpapier">
+				    <p:column headerText="Wertpapier" sortBy="#{order.valuePaper.name}">
 				        <h:outputText value="#{order.valuePaper.name}" />
 				    </p:column>
-				    <p:column headerText="Aktion">
+				    <p:column headerText="Aktion" sortBy="#{order.orderAction}">
 				        <h:outputText value="#{order.orderAction}" />
 				    </p:column>
-				    <p:column headerText="Anzahl">
+				    <p:column headerText="Anzahl" sortBy="#{order.volume}">
 				        <h:outputText value="#{order.volume}" />
 				    </p:column>
-				    <p:column headerText="Status">
+				    <p:column headerText="Status" sortBy="#{paper.status}">
 				        <h:outputText value="#{order.status}" />
 				    </p:column>
-				    <p:column headerText="Typ">
+				    <p:column headerText="Typ" sortBy="#{order.type}">
 				        <h:outputText value="#{order.type}" />
 				    </p:column>
 				</p:dataTable>
@@ -85,25 +81,25 @@
 	        <p:tab title="Transaktionen">
 	            <p:dataTable var="trade" value="#{portfolioViewBean.portfolio.transactionEntries}">
 				    
-				    <p:column headerText="Datum">
+				    <p:column headerText="Datum" sortBy="#{trade.created.time}">
 				        <h:outputText value="#{trade.created.time}" />
 				    </p:column>
-				    <p:column headerText="Wertpapier">
+				    <p:column headerText="Wertpapier" sortBy="#{trade.order.valuePaper.name}">
 				        <h:outputText value="#{trade.order.valuePaper.name}" />
 				    </p:column>
-				    <p:column headerText="Order-Aktion">
+				    <p:column headerText="Order-Aktion" sortBy="#{trade.order.orderAction}">
 				        <h:outputText value="#{trade.order.orderAction}" />
 				    </p:column>
-				    <p:column headerText="Anzahl">
+				    <p:column headerText="Anzahl" sortBy="#{trade.order.volume}">
 				        <h:outputText value="#{trade.order.volume}" />
 				    </p:column>
-				    <p:column headerText="Transaktionstyp">
+				    <p:column headerText="Transaktionstyp" sortBy="#{trade.type}">
 				        <h:outputText value="#{trade.type}" />
 				    </p:column>
-				    <p:column headerText="Währung">
+				    <p:column headerText="Währung" sortBy="#{trade.value.currency.currencyCode}">
 				        <h:outputText value="#{trade.value.currency.currencyCode} (#{trade.value.currency.symbol})" />
 				    </p:column>
-				    <p:column headerText="Wert">
+				    <p:column headerText="Wert" sortBy="#{trade.value.value}">
 				        <h:outputText value="#{trade.value.value}" />
 				    </p:column>
 				</p:dataTable>
