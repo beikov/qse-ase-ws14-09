@@ -31,6 +31,8 @@ public class PortfolioDataAccess {
 					+ "LEFT JOIN FETCH p.valuePapers "
 					+ "LEFT JOIN FETCH p.transactionEntries "
 					+ "LEFT JOIN FETCH p.orders "
+					+ "JOIN FETCH p.owner "
+					+ "LEFT JOIN FETCH p.followers "
 					+ "WHERE p.id = :id", Portfolio.class).setParameter("id", id).getSingleResult();
 		} catch(NoResultException e) {
 			throw new EntityNotFoundException(e);

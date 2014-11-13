@@ -97,7 +97,7 @@ public class PortfolioViewBean implements Serializable {
 		}
 		valuePaperTypePie.setTitle("Wertpapiere nach Typen");
 		valuePaperTypePie.setLegendPosition("w");
-		
+		valuePaperTypePie.setShowDataLabels(true);
 		/*valuePaperTypePie.set("Fonds", 240);
 		valuePaperTypePie.set("Anleihen", 525);
 		valuePaperTypePie.set("Aktien", 702);*/
@@ -141,10 +141,10 @@ public class PortfolioViewBean implements Serializable {
         
         portfolioChart.addSeries(series1);
         
-        portfolioChart.setTitle("Zoom for Details");
+        portfolioChart.setTitle("Zoom");
         portfolioChart.setZoom(true);
-        portfolioChart.getAxis(AxisType.Y).setLabel("Values");
-        DateAxis axis = new DateAxis("Dates");
+        portfolioChart.getAxis(AxisType.Y).setLabel("Wert");
+        DateAxis axis = new DateAxis("Datum");
         axis.setTickAngle(-50);
         axis.setMax("2014-12-24");
         axis.setTickFormat("%b %#d, %y");
