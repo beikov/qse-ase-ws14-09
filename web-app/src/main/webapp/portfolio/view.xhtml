@@ -15,82 +15,102 @@
 		    <f:viewAction action="#{portfolioViewBean.init}" />
 		</f:metadata>
 
-		<h:outputText value="Portfolio: #{portfolioViewBean.portfolio.name}" />
+		<p:panel id="stats" header="Übersicht" style="margin-bottom:20px">
+			<p:panelGrid columns="2">
+				<h:outputText value="Portfolio:" />
+				<h:outputText value="#{portfolioViewBean.portfolio.name}" />
+				
+				<h:outputText value="Besitzer:" />
+				<h:outputText value="#{portfolioViewBean.portfolio.owner.username}" />
+			</p:panelGrid>
+	    </p:panel>
 		
-		<p:dataTable var="paper" value="#{portfolioViewBean.portfolio.valuePapers}">
-			<f:facet name="header">
-		        Einzeltitel
-		    </f:facet>
 		
-		    <p:column headerText="Name">
-		        <h:outputText value="#{paper.name}" />
-		    </p:column>
-		    <p:column headerText="Typ">
-		        <h:outputText value="#{paper.type}" />
-		    </p:column>
-		    <p:column headerText="Währung">
-		        <h:outputText value="#{paper.currency.currencyCode} (#{paper.currency.symbol})" />
-		    </p:column>
-		    <p:column headerText="Land">
-		        <h:outputText value="#{paper.country}" />
-		    </p:column>
-		    <p:column headerText="ISIN">
-		        <h:outputText value="#{paper.isin}" />
-		    </p:column>
-		</p:dataTable>
-		<c:if test="#{not empty portfolioViewBean.portfolio.valuePapers}">
-			<p:chart type="pie" model="#{portfolioViewBean.valuePaperTypePie}" style="width:400px;height:300px;display:inline-block;" />
-			<p:chart type="pie" model="#{portfolioViewBean.valuePaperCountryPie}" style="width:400px;height:300px;display:inline-block;" />
-		</c:if>
-		<br />
-		<p:dataTable var="trade" value="#{portfolioViewBean.portfolio.transactionEntries}">
-			<f:facet name="header">
-		        Transaktionen
-		    </f:facet>
-		    
-		    <p:column headerText="Transaktionstyp">
-		        <h:outputText value="#{trade.type}" />
-		    </p:column>
-		    <p:column headerText="Datum">
-		        <h:outputText value="#{trade.created.time}" />
-		    </p:column>
-		    <p:column headerText="Währung">
-		        <h:outputText value="#{trade.value.currency.currencyCode} (#{trade.value.currency.symbol})" />
-		    </p:column>
-		    <p:column headerText="Wert">
-		        <h:outputText value="#{trade.value.value}" />
-		    </p:column>
-		    <p:column headerText="Wertpapier">
-		        <h:outputText value="#{trade.order.valuePaper.name}" />
-		    </p:column>
-		</p:dataTable>
-		<br />
-		<p:dataTable var="order" value="#{portfolioViewBean.portfolio.orders}">
-			<f:facet name="header">
-		        Orders
-		    </f:facet>
-		  
-		  	<p:column headerText="Datum">
-		        <h:outputText value="#{order.created.time}" />
-		    </p:column>
-		    <p:column headerText="Wertpapier">
-		        <h:outputText value="#{order.valuePaper.name}" />
-		    </p:column>
-		    <p:column headerText="Aktion">
-		        <h:outputText value="#{order.orderAction}" />
-		    </p:column>
-		    <p:column headerText="Anzahl">
-		        <h:outputText value="#{order.volume}" />
-		    </p:column>
-		    <p:column headerText="Status">
-		        <h:outputText value="#{order.status}" />
-		    </p:column>
-		    <p:column headerText="Typ">
-		        <h:outputText value="#{order.type}" />
-		    </p:column>
-		    
-		</p:dataTable>
-		
+		<p:tabView>
+			<p:tab title="Einzeltitel">
+	            <p:dataTable var="paper" value="#{portfolioViewBean.portfolio.valuePapers}">
+				    <p:column headerText="Name">
+				        <h:outputText value="#{paper.name}" />
+				    </p:column>
+				    <p:column headerText="Typ">
+				        <h:outputText value="#{paper.type}" />
+				    </p:column>
+				    <p:column headerText="Währung">
+				        <h:outputText value="#{paper.currency.currencyCode} (#{paper.currency.symbol})" />
+				    </p:column>
+				    <p:column headerText="Land">
+				        <h:outputText value="#{paper.country}" />
+				    </p:column>
+				    <p:column headerText="ISIN">
+				        <h:outputText value="#{paper.isin}" />
+				    </p:column>
+				    <p:column>
+				    	<h:link value="View" outcome="view">
+							<f:param name="valuePaperId" value="#{paper.id}" />
+						</h:link>
+						<h:link value="Order" outcome="/game/list">
+							<f:param name="valuePaperId" value="#{paper.id}" />
+						</h:link>
+			       </p:column>
+				</p:dataTable>
+	        </p:tab>
+	        <p:tab title="Charts">
+	            <c:if test="#{not empty portfolioViewBean.portfolio.valuePapers}">
+					<p:chart type="pie" model="#{portfolioViewBean.valuePaperTypePie}" style="width:400px;height:300px;display:inline-block;" />
+					<p:chart type="pie" model="#{portfolioViewBean.valuePaperCountryPie}" style="width:400px;height:300px;display:inline-block;" />
+				</c:if>
+	        </p:tab>
+	        <p:tab title="Orders">
+	            <p:dataTable var="order" value="#{portfolioViewBean.portfolio.orders}">
+				  
+				  	<p:column headerText="Datum">
+				        <h:outputText value="#{order.created.time}" />
+				    </p:column>
+				    <p:column headerText="Wertpapier">
+				        <h:outputText value="#{order.valuePaper.name}" />
+				    </p:column>
+				    <p:column headerText="Aktion">
+				        <h:outputText value="#{order.orderAction}" />
+				    </p:column>
+				    <p:column headerText="Anzahl">
+				        <h:outputText value="#{order.volume}" />
+				    </p:column>
+				    <p:column headerText="Status">
+				        <h:outputText value="#{order.status}" />
+				    </p:column>
+				    <p:column headerText="Typ">
+				        <h:outputText value="#{order.type}" />
+				    </p:column>
+				</p:dataTable>
+	        </p:tab>
+	        <p:tab title="Transaktionen">
+	            <p:dataTable var="trade" value="#{portfolioViewBean.portfolio.transactionEntries}">
+				    
+				    <p:column headerText="Datum">
+				        <h:outputText value="#{trade.created.time}" />
+				    </p:column>
+				    <p:column headerText="Wertpapier">
+				        <h:outputText value="#{trade.order.valuePaper.name}" />
+				    </p:column>
+				    <p:column headerText="Order-Aktion">
+				        <h:outputText value="#{trade.order.orderAction}" />
+				    </p:column>
+				    <p:column headerText="Anzahl">
+				        <h:outputText value="#{trade.order.volume}" />
+				    </p:column>
+				    <p:column headerText="Transaktionstyp">
+				        <h:outputText value="#{trade.type}" />
+				    </p:column>
+				    <p:column headerText="Währung">
+				        <h:outputText value="#{trade.value.currency.currencyCode} (#{trade.value.currency.symbol})" />
+				    </p:column>
+				    <p:column headerText="Wert">
+				        <h:outputText value="#{trade.value.value}" />
+				    </p:column>
+				</p:dataTable>
+	        </p:tab>
+    	</p:tabView>
+    			
 		<p:chart type="line" model="#{portfolioViewBean.portfolioChart}" style="height:400px;"/>
 	</ui:define><!-- content -->
 
