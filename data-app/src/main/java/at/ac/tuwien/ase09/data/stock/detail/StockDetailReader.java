@@ -81,7 +81,7 @@ public class StockDetailReader extends AbstractItemReader {
 		stock.setIsin(isin);
 		stock.setName(name);
 		stock.setCurrency(currency);
-		stock.setCertificatePageUrl(certificatePageUrl);
+		stock.setBoerseCertificatePageUrl(certificatePageUrl);
 		stock.setHistoricPricesPageUrl(historicPricesPageUrl);
 		stock.setIndex(indexName);
 		linkNumber++;

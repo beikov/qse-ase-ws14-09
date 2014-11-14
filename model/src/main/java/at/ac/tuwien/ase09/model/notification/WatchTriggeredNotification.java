@@ -21,7 +21,7 @@ public class WatchTriggeredNotification extends Notification {
 		return NotificationType.WATCH_TRIGGERED;
 	}
 	
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(optional=false, fetch=FetchType.LAZY)
 	public Watch getWatch() {
 		return watch;
 	}

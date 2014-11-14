@@ -18,7 +18,7 @@ import at.ac.tuwien.ase09.model.Money;
 import at.ac.tuwien.ase09.model.Portfolio;
 
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "TRANSACTION_TYPE")
 public abstract class TransactionEntry extends BaseEntity<Long> {
 	private static final long serialVersionUID = 1L;
