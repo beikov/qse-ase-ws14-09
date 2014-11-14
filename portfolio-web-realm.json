@@ -77,12 +77,12 @@
     "publicClient" : true,
     "fullScopeAllowed" : false
   }, {
-    "name" : "portfolio-game",
+    "name" : "protected",
     "adminUrl" : "/",
     "surrogateAuthRequired" : false,
     "enabled" : true,
     "secret" : "62fc806b-8ec9-4ebc-b02f-59e4882a21f3",
-    "redirectUris" : [ "/game/*" ],
+    "redirectUris" : [ "/protected/*" ],
     "webOrigins" : [ ],
     "claims" : {
       "name" : true,

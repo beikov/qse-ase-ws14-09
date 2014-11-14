@@ -130,7 +130,7 @@
     </filter-mapping>
     <filter-mapping>
     	<filter-name>UserFilter</filter-name>
-    	<url-pattern>/game/*</url-pattern>
+    	<url-pattern>/protected/*</url-pattern>
         <dispatcher>REQUEST</dispatcher>
         <dispatcher>FORWARD</dispatcher>
         <dispatcher>ERROR</dispatcher>
@@ -142,8 +142,8 @@
     -->
     <security-constraint>
     	<web-resource-collection>
-    		<web-resource-name>Game</web-resource-name>
-    		<url-pattern>/game/*</url-pattern>
+    		<web-resource-name>Protected</web-resource-name>
+    		<url-pattern>/protected/*</url-pattern>
     	</web-resource-collection>
     	<auth-constraint>
     		<role-name>user</role-name>
