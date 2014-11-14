@@ -83,23 +83,32 @@
 				    <p:column headerText="Datum" sortBy="#{trade.created.time}">
 				        <h:outputText value="#{trade.created.time}" />
 				    </p:column>
-				    <p:column headerText="Wertpapier" sortBy="#{trade.order.valuePaper.name}">
-				        <h:outputText value="#{trade.order.valuePaper.name}" />
-				    </p:column>
-				    <p:column headerText="Order-Aktion" sortBy="#{trade.order.orderAction}">
-				        <h:outputText value="#{trade.order.orderAction}" />
-				    </p:column>
-				    <p:column headerText="Anzahl" sortBy="#{trade.order.volume}">
-				        <h:outputText value="#{trade.order.volume}" />
-				    </p:column>
-				    <p:column headerText="Transaktionstyp" sortBy="#{trade.type}">
-				        <h:outputText value="#{trade.type}" />
-				    </p:column>
 				    <p:column headerText="Währung" sortBy="#{trade.value.currency.currencyCode}">
 				        <h:outputText value="#{trade.value.currency.currencyCode} (#{trade.value.currency.symbol})" />
 				    </p:column>
 				    <p:column headerText="Wert" sortBy="#{trade.value.value}">
 				        <h:outputText value="#{trade.value.value}" />
+				    </p:column>
+				    <p:column headerText="Transaktionstyp" sortBy="#{trade.type}">
+				        <h:outputText value="#{trade.type}" />
+				    </p:column>
+				    <p:column headerText="Wertpapier">
+				    	<h:outputText value="#{portfolioViewBean.getTransactionValuePaperName(trade)}" />
+				    </p:column>
+				    <p:column headerText="Order-Aktion">
+				    	<c:if test="#{trade.type == 'ORDER' or trade.type == 'ORDER_FEE'}">
+				        	<h:outputText value="#{trade.order.orderAction}" />
+				    	</c:if>
+				    </p:column>
+				    <p:column headerText="Anzahl">
+				    	<c:if test="#{trade.type == 'ORDER' or trade.type == 'ORDER_FEE'}">
+				        	<h:outputText value="#{trade.order.volume}" />
+				    	</c:if>
+				    </p:column>
+				    <p:column headerText="Beschreibung">
+				    	<c:if test="#{trade.type == 'FEE'}">
+				    		<h:outputText value="#{trade.description}" />
+				    	</c:if>
 				    </p:column>
 				</p:dataTable>
 	        </p:tab>

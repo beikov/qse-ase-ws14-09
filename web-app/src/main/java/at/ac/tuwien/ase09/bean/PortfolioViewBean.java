@@ -19,8 +19,12 @@ import org.primefaces.model.chart.PieChartModel;
 
 import at.ac.tuwien.ase09.data.PortfolioDataAccess;
 import at.ac.tuwien.ase09.model.Portfolio;
+import at.ac.tuwien.ase09.model.ValuePaper;
 import at.ac.tuwien.ase09.model.ValuePaperType;
 import at.ac.tuwien.ase09.model.order.Order;
+import at.ac.tuwien.ase09.model.transaction.OrderFeeTransactionEntry;
+import at.ac.tuwien.ase09.model.transaction.OrderTransactionEntry;
+import at.ac.tuwien.ase09.model.transaction.PayoutTransactionEntry;
 import at.ac.tuwien.ase09.model.transaction.TransactionEntry;
 import at.ac.tuwien.ase09.service.PortfolioService;
 
@@ -76,6 +80,19 @@ public class PortfolioViewBean implements Serializable {
 		return portfolioChart;
 	}
 	
+	public String getTransactionValuePaperName(TransactionEntry t) {
+		if (t instanceof OrderTransactionEntry) {
+			OrderTransactionEntry ot = (OrderTransactionEntry)t;
+			return ot.getOrder().getValuePaper().getName();
+		} else if (t instanceof OrderFeeTransactionEntry) {
+			OrderFeeTransactionEntry oft = (OrderFeeTransactionEntry)t;
+			return oft.getOrder().getValuePaper().getName();
+		} else if (t instanceof PayoutTransactionEntry) {
+			PayoutTransactionEntry pt = (PayoutTransactionEntry)t;
+			return pt.getValuePaper().getName();
+		}
+		return "";
+	}
 	
 	
 	private void loadPortfolio(Long portfolioId) {
