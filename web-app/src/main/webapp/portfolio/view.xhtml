@@ -56,8 +56,7 @@
 				</c:if>
 	        </p:tab>
 	        <p:tab title="Orders">
-	            <p:dataTable var="order" value="#{portfolioViewBean.portfolio.orders}">
-				  
+	            <p:dataTable var="order" value="#{portfolioViewBean.portfolio.orders}">				  
 				  	<p:column headerText="Datum" sortBy="#{order.created.time}">
 				        <h:outputText value="#{order.created.time}" />
 				    </p:column>

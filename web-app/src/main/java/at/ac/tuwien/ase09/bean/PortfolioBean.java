@@ -26,7 +26,6 @@ public class PortfolioBean implements Serializable {
 	private PortfolioService portfolioService;
 	
 	
-	
 	public List<Portfolio> getPortfolios() {
 		return portfolioDataAccess.getPortfolios();
 	}
