@@ -8,6 +8,7 @@ import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
@@ -19,6 +20,7 @@ import at.ac.tuwien.ase09.model.ValuePaper;
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "ORDER_TYPE")
+@Table()
 public abstract class Order extends BaseEntity<Long> {
 	private static final long serialVersionUID = 1L;
 	

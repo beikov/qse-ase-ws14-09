@@ -21,7 +21,7 @@ public class FollowerTransactionAddedNotification extends Notification {
 		return NotificationType.FOLLOWER_TRANSACTION_ADDED;
 	}
 
-	@ManyToOne(optional=false, fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.LAZY)
 	public TransactionEntry getTransactionEntry() {
 		return transactionEntry;
 	}

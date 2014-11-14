@@ -9,8 +9,8 @@ import javax.persistence.Transient;
 public class Stock extends ValuePaper {
 	private static final long serialVersionUID = 1L;
 
-	private String certificatePageUrl;
-	private String historicPricesPageUrl;
+	private String boerseCertificatePageUrl;
+	private String finanzenCertificatePageUrl;
 	private String index;
 	
 	@Override
@@ -19,20 +19,20 @@ public class Stock extends ValuePaper {
 		return ValuePaperType.STOCK;
 	}
 
-	public String getCertificatePageUrl() {
-		return certificatePageUrl;
+	public String getBoerseCertificatePageUrl() {
+		return boerseCertificatePageUrl;
 	}
 
-	public void setCertificatePageUrl(String certificatePageUrl) {
-		this.certificatePageUrl = certificatePageUrl;
-	}
-	
-	public String getHistoricPricesPageUrl() {
-		return historicPricesPageUrl;
+	public void setBoerseCertificatePageUrl(String boerseCertificatePageUrl) {
+		this.boerseCertificatePageUrl = boerseCertificatePageUrl;
 	}
 
-	public void setHistoricPricesPageUrl(String historicPricesPageUrl) {
-		this.historicPricesPageUrl = historicPricesPageUrl;
+	public String getFinanzenCertificatePageUrl() {
+		return finanzenCertificatePageUrl;
+	}
+
+	public void setFinanzenCertificatePageUrl(String finanzenCertificatePageUrl) {
+		this.finanzenCertificatePageUrl = finanzenCertificatePageUrl;
 	}
 
 	public String getIndex() {
