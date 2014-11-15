@@ -22,7 +22,35 @@
 				
 				<h:outputText value="Besitzer:" />
 				<h:outputText value="#{portfolioViewBean.portfolio.owner.username}" />
+				
+				<h:outputText value="Erstellt:" />
+				<h:outputText value="#{portfolioViewBean.portfolio.created.time}" />
+				
+				<h:outputText value="Aktuelles Kapital:" />
+				<h:outputText value="#{portfolioViewBean.portfolio.currentCapital}" />
 			</p:panelGrid>
+			<p:panelGrid columns="2">
+				<h:outputText value="Startkapital:" />
+				<h:outputText value="#{portfolioViewBean.portfolio.setting.startCapital}" />
+				
+				<h:outputText value="Ordergebühr:" />
+				<h:outputText value="#{portfolioViewBean.portfolio.setting.orderFee}" />
+				
+				<h:outputText value="Portfoliogebühr:" />
+				<h:outputText value="#{portfolioViewBean.portfolio.setting.portfolioFee}" />
+				
+				<h:outputText value="Kapitalertragssteuer:" />
+				<h:outputText value="#{portfolioViewBean.portfolio.setting.capitalReturnTax}" />
+			</p:panelGrid>
+			<p:dataTable var="follower" value="#{portfolioViewBean.portfolio.followers}">
+				<f:facet name="header">
+			        Followers
+			    </f:facet>
+				<p:column headerText="Name" sortBy="#{follower.username}">
+					<h:outputText value="#{follower.username}" />
+				</p:column>
+				<h:outputText value="#{portfolioViewBean.portfolio.followers}" />
+			</p:dataTable>
 	    </p:panel>
 	    
 		<p:tabView>
@@ -30,9 +58,6 @@
 	            <p:dataTable var="paper" value="#{portfolioViewBean.portfolio.valuePapers}">
 				    <p:column headerText="Name" sortBy="#{paper.name}">
 				        <h:outputText value="#{paper.name}" />
-				    </p:column>
-				    <p:column headerText="Typ" sortBy="#{paper.type}">
-				        <h:outputText value="#{paper.type}" />
 				    </p:column>
 				    <p:column headerText="Währung" sortBy="#{paper.currency.currencyCode}">
 				        <h:outputText value="#{paper.currency.currencyCode} (#{paper.currency.symbol})" />
@@ -42,6 +67,9 @@
 				    </p:column>
 				    <p:column headerText="ISIN" sortBy="#{paper.isin}">
 				        <h:outputText value="#{paper.isin}" />
+				    </p:column>
+				    <p:column headerText="Typ" sortBy="#{paper.type}">
+				        <h:outputText value="#{paper.type}" />
 				    </p:column>
 				    <p:column>
 				    	<a href="/protected/portfolio/list.xhtml?valuePaperId=#{paper.id}" class="btn btn-default btn-md"><span class="glyphicon glyphicon-search" aria-hidden="true" /></a>
@@ -69,11 +97,23 @@
 				    <p:column headerText="Anzahl" sortBy="#{order.volume}">
 				        <h:outputText value="#{order.volume}" />
 				    </p:column>
+				    <p:column headerText="Gültig von" sortBy="#{order.validFrom.time}">
+				        <h:outputText value="#{order.validFrom.time}" />
+				    </p:column>
+				    <p:column headerText="Gültig bis" sortBy="#{order.validTo.time}">
+				        <h:outputText value="#{order.validTo.time}" />
+				    </p:column>
 				    <p:column headerText="Status" sortBy="#{paper.status}">
 				        <h:outputText value="#{order.status}" />
 				    </p:column>
 				    <p:column headerText="Typ" sortBy="#{order.type}">
 				        <h:outputText value="#{order.type}" />
+				    </p:column>
+				    <p:column headerText="Limit">
+				        <h:outputText value="#{order.limit.value}" rendered="#{order.type == 'LIMIT'}"/>
+				    </p:column>
+				    <p:column headerText="LimitStop">
+				        <h:outputText value="#{order.stopLimit.value}" rendered="#{order.type == 'LIMIT'}"/>
 				    </p:column>
 				</p:dataTable>
 	        </p:tab>
@@ -93,22 +133,17 @@
 				        <h:outputText value="#{trade.type}" />
 				    </p:column>
 				    <p:column headerText="Wertpapier">
-				    	<h:outputText value="#{portfolioViewBean.getTransactionValuePaperName(trade)}" />
+				    	<h:outputText value="#{trade.order.valuePaper.name}" rendered="#{trade.type == 'ORDER' or trade.type == 'ORDER_FEE'}"/>
+				    	<h:outputText value="#{trade.valuePaper.name}" rendered="#{trade.type == 'PAYOUT'}"/>
 				    </p:column>
 				    <p:column headerText="Order-Aktion">
-				    	<c:if test="#{trade.type == 'ORDER' or trade.type == 'ORDER_FEE'}">
-				        	<h:outputText value="#{trade.order.orderAction}" />
-				    	</c:if>
+			        	<h:outputText value="#{trade.order.orderAction}" rendered="#{trade.type == 'ORDER' or trade.type == 'ORDER_FEE'}"/>
 				    </p:column>
 				    <p:column headerText="Anzahl">
-				    	<c:if test="#{trade.type == 'ORDER' or trade.type == 'ORDER_FEE'}">
-				        	<h:outputText value="#{trade.order.volume}" />
-				    	</c:if>
+				    	<h:outputText value="#{trade.order.volume}" rendered="#{trade.type == 'ORDER' or trade.type == 'ORDER_FEE'}"/>
 				    </p:column>
 				    <p:column headerText="Beschreibung">
-				    	<c:if test="#{trade.type == 'FEE'}">
-				    		<h:outputText value="#{trade.description}" />
-				    	</c:if>
+				    	<h:outputText value="#{trade.description}" rendered="#{trade.type == 'FEE'}"/>
 				    </p:column>
 				</p:dataTable>
 	        </p:tab>
