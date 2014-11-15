@@ -11,6 +11,7 @@ import javax.persistence.PersistenceContext;
 
 import at.ac.tuwien.ase09.data.PortfolioDataAccess;
 import at.ac.tuwien.ase09.model.Portfolio;
+import at.ac.tuwien.ase09.model.User;
 import at.ac.tuwien.ase09.model.ValuePaper;
 import at.ac.tuwien.ase09.model.ValuePaperType;
 
@@ -50,5 +51,13 @@ public class PortfolioService {
 			valuePaperCountryCountMap.put(country, ++current);
 		}
 		return valuePaperCountryCountMap;
+	}
+	
+	public void savePortfolio(Portfolio portfolio){
+		em.persist(portfolio);
+	}
+
+	public boolean existsPortfolioWithNameForUser(String portfolioName, User user) {
+		return portfolioDataAccess.getPortfolioByNameForUser(portfolioName, user) != null;
 	}
 }

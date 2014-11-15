@@ -49,4 +49,18 @@ public class PortfolioDataAccess {
 			throw new AppException(e);
 		}
 	}
+	
+	public Portfolio getPortfolioByNameForUser(String portfolioName, User user){
+		try{
+			List<Portfolio> results;
+			results = em.createQuery("FROM Portfolio p WHERE p.owner = :user AND p.name = :name", Portfolio.class).setParameter("user", user).setParameter("name", portfolioName).getResultList();
+			if (results.isEmpty()){
+				return null;
+			}else{
+				return results.get(0);
+			}
+		}catch(Exception e){
+			throw new AppException(e);
+		}
+	}
 }
