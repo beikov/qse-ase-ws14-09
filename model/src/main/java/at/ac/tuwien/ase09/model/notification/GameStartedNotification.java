@@ -2,6 +2,8 @@ package at.ac.tuwien.ase09.model.notification;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
 import at.ac.tuwien.ase09.model.StockMarketGame;
@@ -19,6 +21,7 @@ public class GameStartedNotification extends Notification {
 		return NotificationType.GAME_STARTED;
 	}
 
+	@ManyToOne(optional=false, fetch=FetchType.LAZY)
 	public StockMarketGame getGame() {
 		return game;
 	}

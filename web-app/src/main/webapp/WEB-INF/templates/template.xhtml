@@ -12,11 +12,18 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 		<title><ui:insert name="title">Übersicht</ui:insert> - Portfolioverwaltung</title>
+		<h:outputStylesheet library="bootstrap/css" name="bootstrap.min.css" />
         <ui:insert name="head"/>
     </h:head>
     
     <h:body>
-        <ui:insert name="body"/>
+    	<ui:include src="/WEB-INF/includes/navi.xhtml" />
+    	
+    	<div class="container">
+        	<ui:insert name="body"/>
+    	</div>
+        
+        <h:outputScript library="boostrap/js" name="bootstrap.min.js" />
     </h:body>
     
 </f:view>

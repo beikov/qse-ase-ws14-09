@@ -19,6 +19,7 @@ public abstract class ValuePaper extends BaseEntity<Long> {
 	private Currency currency;
 	private String isin;
 	private String country;
+	private String historicPricesPageUrl;
 
 	@Column(unique=true)
 	public String getIsin() {
@@ -59,5 +60,13 @@ public abstract class ValuePaper extends BaseEntity<Long> {
 
 	public void setCountry(String country) {
 		this.country = country;
+	}
+
+	public String getHistoricPricesPageUrl() {
+		return historicPricesPageUrl;
+	}
+
+	public void setHistoricPricesPageUrl(String historicPricesPageUrl) {
+		this.historicPricesPageUrl = historicPricesPageUrl;
 	}
 }
