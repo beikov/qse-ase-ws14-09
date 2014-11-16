@@ -11,6 +11,7 @@ import at.ac.tuwien.ase09.exception.AppException;
 import at.ac.tuwien.ase09.exception.EntityNotFoundException;
 import at.ac.tuwien.ase09.model.Bond;
 import at.ac.tuwien.ase09.model.Stock;
+import at.ac.tuwien.ase09.model.ValuePaper;
 
 @Stateless
 public class ValuePaperDataAccess {
@@ -30,6 +31,16 @@ public class ValuePaperDataAccess {
 	public Bond getBondByIsin(String isin){
 		try{
 			return em.createQuery("SELECT b FROM Bond b WHERE b.isin = :isin", Bond.class).setParameter("isin", isin).getSingleResult();
+		}catch(NoResultException e){
+			throw new EntityNotFoundException(e);
+		}catch(Exception e){
+			throw new AppException(e);
+		}
+	}
+	
+	public ValuePaper getValuePaperByIsin(String isin){
+		try{
+			return em.createQuery("SELECT v FROM ValuePaper v WHERE v.isin = :isin", ValuePaper.class).setParameter("isin", isin).getSingleResult();
 		}catch(NoResultException e){
 			throw new EntityNotFoundException(e);
 		}catch(Exception e){
