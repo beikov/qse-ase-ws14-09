@@ -36,7 +36,8 @@ public class ValuePaperScreenerAccess {
 		}
 		
 		if (valuePaper.getIsin() != null) {
-			wherePredicates.add( builder.equal(rootValuePaper.get("c_isin"), valuePaper.getIsin()));
+			String isin = valuePaper.getIsin().replace('*', '%').replace('?', '_').toUpperCase();
+			wherePredicates.add( builder.like( builder.upper(rootValuePaper.<String>get("c_isin")), isin));
 		}
 
 		if (valuePaper.getCountry() != null) {
