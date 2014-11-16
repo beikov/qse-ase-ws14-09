@@ -2,6 +2,7 @@ package at.ac.tuwien.ase09.bean;
 
 import java.io.Serializable;
 
+import javax.enterprise.context.RequestScoped;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -12,7 +13,7 @@ import at.ac.tuwien.ase09.service.ValuePaperPriceEntryService;
 import at.ac.tuwien.ase09.service.ValuePaperService;
 
 @Named
-@ViewScoped
+@RequestScoped
 public class ValuePaperViewBean implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -49,9 +50,9 @@ public class ValuePaperViewBean implements Serializable{
 		this.valuePaper = valuePaper;
 	}
 	
-	private void loadValuePaper(String valuePaperIsin) {
-		//this.valuePaper = valuePaperService.getValuePaperByIsin(valuePaperIsin);
-		this.valuePaper = valuePaperService.getValuePaperByIsin("AT0000730007");
+	private void loadValuePaper(String valuePaperIsin) {		
+		this.valuePaper = valuePaperService.getValuePaperByIsin(valuePaperIsin);
+		//this.valuePaper = valuePaperService.getValuePaperByIsin("AT0000730007");
 	}
 
 
