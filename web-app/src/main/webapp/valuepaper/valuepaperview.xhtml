@@ -5,10 +5,21 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
 	template="/WEB-INF/templates/template.xhtml">
-	
+
 	<ui:define name="body">
-		Einzeltitelansicht!
-		Kurs: #{valuePaperBean.lastPriceEntry.price}
-	</ui:define>
+
+		<f:metadata>
+
+			<f:viewParam name="valuePaperIsin"
+				value="#{valuePaperViewBean.valuePaperIsin}" required="true" />
+			<f:viewAction action="#{valuePaperViewBean.init}" />
+
+		</f:metadata>
 	
+	
+		Einzeltitelansicht!
+		Name: #{valuePaperViewBean.valuePaper.name}
+		<!-- Aktueller Kurs: #{valuePaperViewBean.lastPriceEntry}  -->
+	</ui:define>
+
 </ui:composition>
