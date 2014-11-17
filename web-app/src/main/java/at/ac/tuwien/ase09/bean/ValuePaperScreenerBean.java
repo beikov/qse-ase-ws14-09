@@ -1,0 +1,117 @@
+package at.ac.tuwien.ase09.bean;
+
+import java.util.Currency;
+import java.util.List;
+
+import javax.annotation.ManagedBean;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.RequestScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import at.ac.tuwien.ase09.model.Stock;
+import at.ac.tuwien.ase09.model.ValuePaper;
+import at.ac.tuwien.ase09.model.ValuePaperType;
+import at.ac.tuwien.ase09.service.ValuePaperScreenerService;
+
+@ManagedBean
+@Named
+@RequestScoped
+public class ValuePaperScreenerBean {
+
+		
+		@Inject
+		private ValuePaperScreenerService screenerService;
+		
+		private ValuePaper valuePaper;
+		private ValuePaperType paperType;
+		private Boolean isTypeSpecificated=false;
+		private String valuePaperName, isin, country, currencyCode;
+		private List<ValuePaper> searchedValuePapers;
+		
+		@PostConstruct
+		public void init() {
+			
+		}
+		
+		public ValuePaperType[] getValuePaperTypes()
+		{
+			return ValuePaperType.values();
+		}
+		
+		public void setValuePaperType(ValuePaperType paperType)
+		{
+			this.paperType=paperType;
+		}
+
+		public String getValuePaperName() {
+			return valuePaperName;
+		}
+
+		public void setValuePaperName(String valuePaperName) {
+			this.valuePaperName = valuePaperName;
+		}
+
+		public String getIsin() {
+			return isin;
+		}
+
+		public void setIsin(String isin) {
+			this.isin = isin;
+		}
+
+		public String getCountry() {
+			return country;
+		}
+
+		public void setCountry(String country) {
+			this.country = country;
+		}
+
+		public String getCurrencyCode() {
+			return currencyCode;
+		}
+
+		public void setCurrency(String currencyCode) {
+			this.currencyCode=currencyCode;
+		}
+		
+		public void search()
+		{
+			if(valuePaper!=null)
+			{
+				isTypeSpecificated=true;
+				try {
+					valuePaper=(ValuePaper) Class.forName(paperType.toString()).newInstance();
+				} catch (InstantiationException | IllegalAccessException
+						| ClassNotFoundException e) {
+					e.printStackTrace();
+				}
+			}
+			else
+			{
+				valuePaper=new Stock();
+			}
+			valuePaper.setCountry(country);
+			valuePaper.setIsin(isin);
+			valuePaper.setName(valuePaperName);
+			
+			if(Currency.getAvailableCurrencies().contains(currencyCode))
+				valuePaper.setCurrency( Currency.getInstance(currencyCode));
+			else
+			{
+				System.out.println("currencyCode doesnt exists");
+				FacesMessage facesMessage = new FacesMessage("Error: Currency-Code does not exist");
+			      FacesContext.getCurrentInstance().addMessage("searchValuePapers:currency", facesMessage);
+			      
+			}
+			
+			searchedValuePapers=screenerService.search(valuePaper, isTypeSpecificated);
+		}
+		
+		
+		
+		
+}
