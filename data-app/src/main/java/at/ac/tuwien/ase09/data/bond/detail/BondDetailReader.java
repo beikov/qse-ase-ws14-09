@@ -20,6 +20,7 @@ import org.jsoup.select.Elements;
 import at.ac.tuwien.ase09.data.JsoupUtils;
 import at.ac.tuwien.ase09.model.Bond;
 import at.ac.tuwien.ase09.model.Stock;
+import at.ac.tuwien.ase09.model.constants.Country;
 
 @Dependent
 @Named("BondDetailReader")
@@ -58,6 +59,8 @@ public class BondDetailReader extends AbstractItemReader {
 		bond.setIsin(isin);
 		bond.setCurrency(Currency.getInstance(currencyCode));
 		bond.setName(name);
+		bond.setCountry(Country.AUSTRIA.toString());
+//		bond.setHistoricPricesPageUrl(historicPricesPageUrl);
 		
 		linkNumber++;
 		return bond;

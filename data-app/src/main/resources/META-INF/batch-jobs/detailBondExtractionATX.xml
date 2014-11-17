@@ -35,6 +35,29 @@
 			<listener ref="DefaultRetryListener" />
 		</listeners>
 	</step>
+	<step id="bondHistoricPriceExtraction">
+		<chunk item-count="5">
+			<reader ref="HistoricPriceReader">
+			    <properties>
+					<property name="indexName" value="#{jobProperties['indexName']}" />
+				</properties>
+			</reader>
+			<processor ref="HistoricPriceProcessor" />
+			<writer ref="HistoricPriceWriter" />
+
+			<retryable-exception-classes>
+				<include class="java.net.SocketTimeoutException" />
+			</retryable-exception-classes>
+			<skippable-exception-classes>
+				<include class="java.net.SocketTimeoutException" />
+			</skippable-exception-classes>
+		</chunk>
+		<listeners>
+			<listener ref="StepBoundaryLogger" />
+			<listener ref="DefaultSkipListener" />
+			<listener ref="DefaultRetryListener" />
+		</listeners>
+	</step>
 	<listeners>
 		<listener ref="JobBoundaryLogger" />
 		<listener ref="SuccessorJobStarter">

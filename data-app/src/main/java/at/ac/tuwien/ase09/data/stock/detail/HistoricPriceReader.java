@@ -26,6 +26,7 @@ import org.jsoup.select.Elements;
 import at.ac.tuwien.ase09.data.JsoupUtils;
 import at.ac.tuwien.ase09.data.ValuePaperDataAccess;
 import at.ac.tuwien.ase09.model.Stock;
+import at.ac.tuwien.ase09.model.ValuePaper;
 import at.ac.tuwien.ase09.model.ValuePaperHistoryEntry;
 
 @Dependent
@@ -64,9 +65,9 @@ public class HistoricPriceReader extends AbstractItemReader {
 			return null;
 		}
 		final DateFormat df = new SimpleDateFormat("dd.MM.yyyy", Locale.GERMANY);
-		Stock stock = stocks.get(linkNumber);
-		LOG.info("Extracting historic prices for " + stock.getName());
-		String historicPricesPageUrl = stock.getHistoricPricesPageUrl() + "/" + df.format(from.getTime()) + "_" + df.format(to.getTime());
+		ValuePaper vp= stocks.get(linkNumber);
+		LOG.info("Extracting historic prices for " + vp.getName());
+		String historicPricesPageUrl = vp.getHistoricPricesPageUrl() + "/" + df.format(from.getTime()) + "_" + df.format(to.getTime());
 		Document p = JsoupUtils.getPage(historicPricesPageUrl);
 		
 		String __atts = p.getElementsByAttributeValue("name", "__atts").get(0).attr("value");
@@ -100,7 +101,7 @@ public class HistoricPriceReader extends AbstractItemReader {
 			historicPriceEntry.setDayHighPrice(new BigDecimal(dayHighStr));
 			historicPriceEntry.setDayLowPrice(new BigDecimal(dayLowStr));
 			historicPriceEntry.setMarketVolume(new Integer(marketVolStr));
-			historicPriceEntry.setValuePaper(stock);
+			historicPriceEntry.setValuePaper(vp);
 			
 			historicPriceEntries.add(historicPriceEntry);
 		}

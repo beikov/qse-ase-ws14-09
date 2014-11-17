@@ -39,11 +39,11 @@ public class BondDetailLinkReaderBatchlet extends AbstractBatchlet {
 	@Override
 	public String process() throws Exception {
 		Iterator<Stock> stockIter = valuePaperDataAccess.getStocksByIndex(indexName).iterator();
-		List<String> bondDetailLinks = new ArrayList<String>();
+		List<String> bondDetailLinks = new ArrayList<>();
 		while(stockIter.hasNext()){
 			Stock stock = stockIter.next();
-			Document bondPage = JsoupUtils.getPage(stock.getCertificatePageUrl());
-			Elements linkCells = bondPage.select("#marketdata_list td:nth-child(2) a");
+			Document finanzenBondList = JsoupUtils.getPage(stock.getFinanzenCertificatePageUrl());
+			Elements linkCells = finanzenBondList.select("#marketdata_list td:nth-child(2) a");
 			for(Element link : linkCells){
 				bondDetailLinks.add(link.attr("href"));
 			}

@@ -29,6 +29,7 @@ public class BondDetailWriter extends AbstractEntityWriter {
 			existingBond.setCurrency(bond.getCurrency());
 			existingBond.setIsin(bond.getIsin());
 			existingBond.setName(bond.getName());
+			existingBond.setCountry(bond.getCountry());
 		}else{
 			em.persist(entity);
 		}

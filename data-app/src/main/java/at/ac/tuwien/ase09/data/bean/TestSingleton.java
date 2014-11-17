@@ -22,7 +22,7 @@ public class TestSingleton {
 	public void init(){
 		JobOperator jobOperator = BatchRuntime.getJobOperator();
 		Properties props = new Properties();
-		props.put("successorJobIds", "intraDayATXExtraction;detailBondExtractionATX");
+		props.put("successorJobIds", "detailBondExtractionATX");
 		jobOperator.start("detailStockExtractionATX", null);
 //		jobOperator.start("detailBondExtractionATX", null);
 	}
