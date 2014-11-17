@@ -21,7 +21,7 @@ public class FollowerAddedNotification extends Notification {
 		return NotificationType.FOLLOWER_ADDED;
 	}
 	
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(optional=false, fetch=FetchType.LAZY)
 	public User getFollower() {
 		return follower;
 	}

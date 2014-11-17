@@ -2,6 +2,7 @@ package at.ac.tuwien.ase09.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.text.NumberFormat;
 import java.util.Currency;
 
 import javax.persistence.Embeddable;
@@ -70,5 +71,11 @@ public class Money implements Serializable {
 		} else if (!value.equals(other.value))
 			return false;
 		return true;
+	}
+	
+	@Override
+	public String toString() {
+		NumberFormat frmt = NumberFormat.getCurrencyInstance();
+		return frmt.format(value);
 	}
 }

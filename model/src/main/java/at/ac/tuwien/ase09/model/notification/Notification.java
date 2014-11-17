@@ -16,7 +16,7 @@ import at.ac.tuwien.ase09.model.BaseEntity;
 import at.ac.tuwien.ase09.model.User;
 
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "NOTIFICATION_TYPE")
 public abstract class Notification extends BaseEntity<Long> {
 	private static final long serialVersionUID = 1L;

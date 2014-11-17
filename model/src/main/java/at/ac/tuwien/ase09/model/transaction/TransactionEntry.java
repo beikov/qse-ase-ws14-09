@@ -21,7 +21,7 @@ import at.ac.tuwien.ase09.model.Portfolio;
 import at.ac.tuwien.ase09.model.order.OrderType;
 
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "TRANSACTION_TYPE")
 @Check(constraints = "C_TRANSACTION_TYPE NOT IN('" + TransactionType.TYPE_ORDER_FEE + "', '" + TransactionType.TYPE_ORDER + "') OR C_ORDER IS NOT NULL")
 public abstract class TransactionEntry extends BaseEntity<Long> {

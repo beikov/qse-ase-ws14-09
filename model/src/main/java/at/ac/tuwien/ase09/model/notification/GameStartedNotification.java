@@ -21,7 +21,7 @@ public class GameStartedNotification extends Notification {
 		return NotificationType.GAME_STARTED;
 	}
 
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(optional=false, fetch=FetchType.LAZY)
 	public StockMarketGame getGame() {
 		return game;
 	}

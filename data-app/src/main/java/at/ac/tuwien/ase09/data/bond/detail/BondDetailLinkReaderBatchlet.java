@@ -42,8 +42,13 @@ public class BondDetailLinkReaderBatchlet extends AbstractBatchlet {
 		List<String> bondDetailLinks = new ArrayList<>();
 		while(stockIter.hasNext()){
 			Stock stock = stockIter.next();
+<<<<<<< HEAD
 			Document finanzenBondList = JsoupUtils.getPage(stock.getFinanzenCertificatePageUrl());
 			Elements linkCells = finanzenBondList.select("#marketdata_list td:nth-child(2) a");
+=======
+			Document bondPage = JsoupUtils.getPage(stock.getBoerseCertificatePageUrl());
+			Elements linkCells = bondPage.select("#marketdata_list td:nth-child(2) a");
+>>>>>>> a35e4887cd488b4aef028301f72bec00d49381ef
 			for(Element link : linkCells){
 				bondDetailLinks.add(link.attr("href"));
 			}

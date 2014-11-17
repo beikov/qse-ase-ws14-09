@@ -87,8 +87,12 @@ public class StockDetailReader extends AbstractItemReader {
 		stock.setCountry(Country.AUSTRIA.toString());
 		stock.setName(name);
 		stock.setCurrency(currency);
+<<<<<<< HEAD
 		stock.setBoerseCertificatePageUrl(boerseCertificatePageUrl);
 		stock.setFinanzenCertificatePageUrl(finanzenCertificateLink);
+=======
+		stock.setBoerseCertificatePageUrl(certificatePageUrl);
+>>>>>>> a35e4887cd488b4aef028301f72bec00d49381ef
 		stock.setHistoricPricesPageUrl(historicPricesPageUrl);
 		stock.setIndex(indexName);
 		

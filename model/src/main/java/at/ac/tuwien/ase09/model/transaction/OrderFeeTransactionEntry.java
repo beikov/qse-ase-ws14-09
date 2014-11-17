@@ -21,7 +21,7 @@ public class OrderFeeTransactionEntry extends TransactionEntry {
 		return TransactionType.ORDER_FEE;
 	}
 
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(optional=false, fetch=FetchType.LAZY)
 	public Order getOrder() {
 		return order;
 	}
