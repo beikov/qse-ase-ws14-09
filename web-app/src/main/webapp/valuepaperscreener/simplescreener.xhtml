@@ -13,7 +13,7 @@
 	<h:form id="searchValuePapers">
 			<h:panelGrid columns="4" cellpadding="5">
 				<p:outputLabel value="Aktienname: " />
-				<p:inputText id="name" value="#{valuepaperscreenerbean.name}" />
+				<p:inputText id="name" value="#{valuepaperscreenerbean.valuePaperName}" />
 
 
 				<p:outputLabel value="Aktientyp: " />
@@ -21,7 +21,7 @@
 					<f:selectItem itemLabel="Beliebig" itemValue="#{null}" />
 					<f:selectItems value="#{valuepaperscreenerbean.valuepapertypes}" />
 				</h:selectOneMenu>
-				<h:outputText value="" />
+				
 
 
 				<p:outputLabel for="isin" value="ISIN: " />
@@ -38,7 +38,7 @@
 				<h:outputText value="#{valuepaperscreenerbean.country}" />
 
 
-				<h:outputText for="currency" value="Währung: " />
+				<h:outputLabel for="currency" value="Währungscode: " />
 				<p:inputText id="currency"
 					value="#{valuepaperscreenerbean.currencyCode}" >
 					 <f:validateRegex pattern="^[A-Z]{3}$" />
