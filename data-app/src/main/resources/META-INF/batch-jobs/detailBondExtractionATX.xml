@@ -1,25 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <job id="detailBondExtractionATX" xmlns="http://xmlns.jcp.org/xml/ns/javaee"
 	version="1.0">
+	<properties>
+	    <property name="indexName" value="ATX" />
+	    <property name="finanzenNetUrl" value="http://www.finanzen.at" />
+	    <property name="finanzenNetCertificatesUrl" value="http://zertifikate.finanzen.at" />
+	</properties>
 	<step id="bondDetailLinkExtraction" next="bondDetailExtraction">
 		<batchlet ref="BondDetailLinkReaderBatchlet">
 			<properties>
-				<property name="indexName" value="ATX" />
+				<property name="indexName" value="#{jobProperties['indexName']}" />
+				<property name="finanzenNetCertificatesUrl" value="#{jobProperties['finanzenNetCertificatesUrl']}" />
 			</properties>
 		</batchlet>
 		<listeners>
 			<listener ref="StepBoundaryLogger" />
 		</listeners>
 	</step>
-	<step id="bondDetailExtraction">
+	<step id="bondDetailExtraction" next="bondHistoricPriceExtraction">
 		<chunk item-count="10">
 			<reader ref="BondDetailReader">
 				<properties>
-					<property name="indexName" value="ATX" />
+					<property name="finanzenNetCertificatesUrl" value="#{jobProperties['finanzenNetCertificatesUrl']}" />
 				</properties>
 			</reader>
-			<processor ref="SimpleItemProcessor" />
-			<writer ref="BondDetailWriter" />
+			<processor ref="bondDetailProcessor" />
+			<writer ref="bondDetailWriter" />
 
 			<retryable-exception-classes>
 				<include class="java.net.SocketTimeoutException" />
@@ -37,13 +43,13 @@
 	</step>
 	<step id="bondHistoricPriceExtraction">
 		<chunk item-count="5">
-			<reader ref="HistoricPriceReader">
+			<reader ref="historicBondPriceReader">
 			    <properties>
 					<property name="indexName" value="#{jobProperties['indexName']}" />
 				</properties>
 			</reader>
-			<processor ref="HistoricPriceProcessor" />
-			<writer ref="HistoricPriceWriter" />
+			<processor ref="historicPriceProcessor" />
+			<writer ref="historicPriceWriter" />
 
 			<retryable-exception-classes>
 				<include class="java.net.SocketTimeoutException" />

@@ -1,5 +1,7 @@
 package at.ac.tuwien.ase09.model;
 
+import java.util.Currency;
+
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.Transient;
@@ -9,9 +11,12 @@ import javax.persistence.Transient;
 public class Stock extends ValuePaper {
 	private static final long serialVersionUID = 1L;
 
+	private Currency currency;
+	private String country;
 	private String boerseCertificatePageUrl;
 	private String finanzenCertificatePageUrl;
 	private String index;
+	
 	
 	@Override
 	@Transient
@@ -41,6 +46,22 @@ public class Stock extends ValuePaper {
 
 	public void setIndex(String index) {
 		this.index = index;
+	}
+
+	public Currency getCurrency() {
+		return currency;
+	}
+
+	public void setCurrency(Currency currency) {
+		this.currency = currency;
+	}
+
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
 	}
 	
 }

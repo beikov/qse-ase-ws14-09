@@ -11,11 +11,15 @@ public class CtrlBean {
 		BatchRuntime.getJobOperator().start("detailStockExtractionATX", null);
 	}
 
-	public void startATXIntradayPriceExtraction(){
-		BatchRuntime.getJobOperator().start("intradayExtractionATX", null);
+	public void startATXIntradayStockPriceExtraction(){
+		BatchRuntime.getJobOperator().start("intradayStockExtractionATX", null);
 	}
 	
 	public void startATXBondDetailExtraction(){
 		BatchRuntime.getJobOperator().start("detailBondExtractionATX", null);
+	}
+	
+	public void startATXIntradayBondPriceExtraction(){
+		BatchRuntime.getJobOperator().start("intradayBondExtractionATX", null);
 	}
 }

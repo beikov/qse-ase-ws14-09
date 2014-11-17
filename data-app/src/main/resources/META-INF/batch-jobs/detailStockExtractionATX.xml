@@ -46,13 +46,13 @@
 	</step>
 	<step id="stockHistoricPriceExtraction">
 		<chunk item-count="5">
-			<reader ref="HistoricPriceReader">
+			<reader ref="historicStockPriceReader">
 			    <properties>
 					<property name="indexName" value="#{jobProperties['indexName']}" />
 				</properties>
 			</reader>
-			<processor ref="HistoricPriceProcessor" />
-			<writer ref="HistoricPriceWriter" />
+			<processor ref="historicPriceProcessor" />
+			<writer ref="historicPriceWriter" />
 
 			<retryable-exception-classes>
 				<include class="java.net.SocketTimeoutException" />

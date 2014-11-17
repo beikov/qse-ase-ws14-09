@@ -7,29 +7,30 @@ import javax.inject.Named;
 import at.ac.tuwien.ase09.data.AbstractEntityWriter;
 import at.ac.tuwien.ase09.data.ValuePaperDataAccess;
 import at.ac.tuwien.ase09.exception.EntityNotFoundException;
-import at.ac.tuwien.ase09.model.Bond;
+import at.ac.tuwien.ase09.model.StockBond;
 
 @Dependent
-@Named("BondDetailWriter")
+@Named
 public class BondDetailWriter extends AbstractEntityWriter {
 	@Inject
 	private ValuePaperDataAccess valuePaperDataAccess;
 	
 	@Override
 	protected void persistEntity(Object entity) {
-		Bond bond = (Bond) entity;
-		Bond existingBond = null;
+		StockBond bond = (StockBond) entity;
+		StockBond existingBond = null;
 		try{
-			existingBond = valuePaperDataAccess.getBondByIsin(bond.getIsin());
+			existingBond = valuePaperDataAccess.getValuePaperByIsin(bond.getIsin(), StockBond.class);
 		}catch(EntityNotFoundException nfe){
 			// ignore
 		}
 		// TODO: set id on entity or copy fields to attached existingEntity?
 		if(existingBond != null){
-			existingBond.setCurrency(bond.getCurrency());
 			existingBond.setIsin(bond.getIsin());
 			existingBond.setName(bond.getName());
-			existingBond.setCountry(bond.getCountry());
+			existingBond.setBaseStock(bond.getBaseStock());
+			existingBond.setHistoricPricesPageUrl(bond.getHistoricPricesPageUrl());
+			existingBond.setDetailUrl(bond.getDetailUrl());
 		}else{
 			em.persist(entity);
 		}

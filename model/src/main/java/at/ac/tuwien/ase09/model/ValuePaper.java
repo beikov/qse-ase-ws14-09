@@ -16,9 +16,7 @@ public abstract class ValuePaper extends BaseEntity<Long> {
 	private static final long serialVersionUID = 1L;
 
 	private String name;
-	private Currency currency;
 	private String isin;
-	private String country;
 	private String historicPricesPageUrl;
 
 	@Column(unique=true)
@@ -41,27 +39,11 @@ public abstract class ValuePaper extends BaseEntity<Long> {
 		this.name = name;
 	}
 
-	public Currency getCurrency() {
-		return currency;
-	}
-
-	public void setCurrency(Currency currency) {
-		this.currency = currency;
-	}
-
 	@Override
 	public String toString() {
 		return String.format("[type=%s, code=%s, name=%s]", getType(), isin, name);
 	}
 	
-	public String getCountry() {
-		return country;
-	}
-
-	public void setCountry(String country) {
-		this.country = country;
-	}
-
 	public String getHistoricPricesPageUrl() {
 		return historicPricesPageUrl;
 	}
@@ -69,4 +51,6 @@ public abstract class ValuePaper extends BaseEntity<Long> {
 	public void setHistoricPricesPageUrl(String historicPricesPageUrl) {
 		this.historicPricesPageUrl = historicPricesPageUrl;
 	}
+	
+	
 }

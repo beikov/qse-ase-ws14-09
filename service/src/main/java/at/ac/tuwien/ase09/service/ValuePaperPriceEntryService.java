@@ -28,7 +28,7 @@ public class ValuePaperPriceEntryService {
 	public void savePriceEntry(String isin, BigDecimal price) {
 		ValuePaperPriceEntry priceEntry = new ValuePaperPriceEntry();
 		priceEntry.setPrice(price);
-		priceEntry.setValuePaper(valuePaperDataAccess.getStockByIsin(isin));
+		priceEntry.setValuePaper(valuePaperDataAccess.getValuePaperByIsin(isin));
 		savePriceEntry(priceEntry);
 	}
 	
