@@ -18,7 +18,7 @@ public class ValuePaperService {
 	private ValuePaperDataAccess valuePaperDataAccess;
 	
 	public ValuePaper getValuePaperByIsin(String isin){
-		return valuePaperDataAccess.getValuePaperByIsin(isin);
+		return valuePaperDataAccess.getValuePaperByIsin(isin, ValuePaper.class);
 	}
 	
 }

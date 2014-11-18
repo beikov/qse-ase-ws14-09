@@ -1,7 +1,5 @@
 package at.ac.tuwien.ase09.model;
 
-import java.util.Currency;
-
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
@@ -16,10 +14,9 @@ public abstract class ValuePaper extends BaseEntity<Long> {
 	private static final long serialVersionUID = 1L;
 
 	private String name;
-	private Currency currency;
 	private String isin;
-	private String country;
-	private String historicPricesPageUrl;
+	private String detailUrl;
+	
 
 	@Column(unique=true)
 	public String getIsin() {
@@ -41,32 +38,18 @@ public abstract class ValuePaper extends BaseEntity<Long> {
 		this.name = name;
 	}
 
-	public Currency getCurrency() {
-		return currency;
-	}
-
-	public void setCurrency(Currency currency) {
-		this.currency = currency;
-	}
-
 	@Override
 	public String toString() {
 		return String.format("[type=%s, code=%s, name=%s]", getType(), isin, name);
 	}
+
+	@Column(columnDefinition="TEXT")
+	public String getDetailUrl() {
+		return detailUrl;
+	}
+
+	public void setDetailUrl(String detailUrl) {
+		this.detailUrl = detailUrl;
+	}
 	
-	public String getCountry() {
-		return country;
-	}
-
-	public void setCountry(String country) {
-		this.country = country;
-	}
-
-	public String getHistoricPricesPageUrl() {
-		return historicPricesPageUrl;
-	}
-
-	public void setHistoricPricesPageUrl(String historicPricesPageUrl) {
-		this.historicPricesPageUrl = historicPricesPageUrl;
-	}
 }

@@ -35,11 +35,8 @@
 							<h:outputText value="Typ:" />
 							<h:outputText value="#{valuePaperViewBean.valuePaper.type}" />
 
-							<h:outputText value="Land:" />
-							<h:outputText value="#{valuePaperViewBean.valuePaper.country}" />
-
-							<h:outputText value="Währung:" />
-							<h:outputText value="#{valuePaperViewBean.valuePaper.currency}" />
+							<h:outputText value="Details:" />
+							<h:outputText value="#{valuePaperViewBean.valuePaper.detailUrl}" />
 
 							<h:outputText value="Aktueller Kurs:" />
 							<c:choose>
@@ -52,10 +49,6 @@
 									<h:outputText value="kein aktueller Kurs vorhanden" />
 								</c:otherwise>
 							</c:choose>
-
-							<h:outputText value="URL der historischen Preise:" />
-							<h:outputText
-								value="#{valuePaperViewBean.valuePaper.historicPricesPageUrl}" />
 
 							<c:forEach var="attribute"
 								items="#{valuePaperViewBean.valuePaperAttributes}">

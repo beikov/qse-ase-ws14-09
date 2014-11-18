@@ -9,38 +9,18 @@ import javax.persistence.PersistenceContext;
 
 import at.ac.tuwien.ase09.exception.AppException;
 import at.ac.tuwien.ase09.exception.EntityNotFoundException;
-import at.ac.tuwien.ase09.model.Bond;
 import at.ac.tuwien.ase09.model.Stock;
+import at.ac.tuwien.ase09.model.StockBond;
 import at.ac.tuwien.ase09.model.ValuePaper;
 
 @Stateless
 public class ValuePaperDataAccess {
 	@PersistenceContext
 	private EntityManager em;
-	
-	public Stock getStockByIsin(String isin){
+
+	public <T extends ValuePaper> T getValuePaperByIsin(String isin, Class<T> clazz){
 		try{
-			return em.createQuery("SELECT s FROM Stock s WHERE s.isin = :isin", Stock.class).setParameter("isin", isin).getSingleResult();
-		}catch(NoResultException e){
-			throw new EntityNotFoundException(e);
-		}catch(Exception e){
-			throw new AppException(e);
-		}
-	}
-	
-	public Bond getBondByIsin(String isin){
-		try{
-			return em.createQuery("SELECT b FROM Bond b WHERE b.isin = :isin", Bond.class).setParameter("isin", isin).getSingleResult();
-		}catch(NoResultException e){
-			throw new EntityNotFoundException(e);
-		}catch(Exception e){
-			throw new AppException(e);
-		}
-	}
-	
-	public ValuePaper getValuePaperByIsin(String isin){
-		try{
-			return em.createQuery("SELECT v FROM ValuePaper v WHERE v.isin = :isin", ValuePaper.class).setParameter("isin", isin).getSingleResult();
+			return em.createQuery("SELECT v FROM " + clazz.getSimpleName() + " v WHERE v.isin = :isin", clazz).setParameter("isin", isin).getSingleResult();
 		}catch(NoResultException e){
 			throw new EntityNotFoundException(e);
 		}catch(Exception e){
@@ -51,6 +31,22 @@ public class ValuePaperDataAccess {
 	public List<Stock> getStocksByIndex(String indexName){
 		try{
 			return em.createQuery("SELECT s FROM Stock s WHERE s.index = :index", Stock.class).setParameter("index", indexName).getResultList();
+		}catch(Exception e){
+			throw new AppException(e);
+		}
+	}
+	
+	public List<StockBond> getStockBondsByBaseStockIndex(String indexName){
+		try{
+			return em.createQuery("SELECT bond FROM StockBond bond JOIN bond.baseStock baseStock WHERE baseStock.index = :index", StockBond.class).setParameter("index", indexName).getResultList();
+		}catch(Exception e){
+			throw new AppException(e);
+		}
+	}
+
+	public <T extends ValuePaper> List<T> getValuePapers(Class<T> clazz){
+		try{
+			return em.createQuery("SELECT v FROM " + clazz.getSimpleName() + " v", clazz).getResultList();
 		}catch(Exception e){
 			throw new AppException(e);
 		}

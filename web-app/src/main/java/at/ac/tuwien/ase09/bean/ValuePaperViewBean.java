@@ -18,9 +18,9 @@ import org.primefaces.model.chart.LineChartModel;
 import org.primefaces.model.chart.LineChartSeries;
 
 import at.ac.tuwien.ase09.exception.EntityNotFoundException;
-import at.ac.tuwien.ase09.model.Bond;
 import at.ac.tuwien.ase09.model.Fund;
 import at.ac.tuwien.ase09.model.Stock;
+import at.ac.tuwien.ase09.model.StockBond;
 import at.ac.tuwien.ase09.model.ValuePaper;
 import at.ac.tuwien.ase09.model.ValuePaperPriceEntry;
 import at.ac.tuwien.ase09.model.ValuePaperHistoryEntry;
@@ -120,13 +120,31 @@ public class ValuePaperViewBean implements Serializable{
 
 			Stock s = (Stock)valuePaper;
 
-			this.valuePaperAttributes.put("Börse-CertificatePageUrl", s.getBoerseCertificatePageUrl());
-			this.valuePaperAttributes.put("Finanzen-CertificatePageUrl", s.getFinanzenCertificatePageUrl());
-			this.valuePaperAttributes.put("Index", s.getIndex());
+			this.valuePaperAttributes.put("Währung:", s.getCurrency().getCurrencyCode());
+			this.valuePaperAttributes.put("URL der historischen Preise:", s.getHistoricPricesPageUrl());
+			this.valuePaperAttributes.put("Börse-CertificatePageUrl:", s.getBoerseCertificatePageUrl());
+			this.valuePaperAttributes.put("Finanzen-CertificatePageUrl:", s.getFinanzenCertificatePageUrl());
+			this.valuePaperAttributes.put("Index:", s.getIndex());
 		}
 		if(valuePaper.getType() == ValuePaperType.BOND){
 
-			Bond b = (Bond)valuePaper;
+			StockBond sb = (StockBond)valuePaper;
+			Stock baseStock = sb.getBaseStock();
+			
+			this.valuePaperAttributes.put("URL der historischen Preise:", sb.getHistoricPricesPageUrl());
+			
+			if(baseStock != null){
+				
+				this.valuePaperAttributes.put("Bezeichnung (Basis-Aktie):", baseStock.getName());
+				this.valuePaperAttributes.put("ISIN (Basis-Aktie):", baseStock.getIsin());
+				this.valuePaperAttributes.put("Details (Basis-Aktie):", baseStock.getDetailUrl());
+				this.valuePaperAttributes.put("Aktueller Kurs (Basis-Aktie):", valuePaperPriceEntryService.getLastPriceEntry(baseStock.getIsin()).toString());
+				this.valuePaperAttributes.put("Währung (Basis-Aktie):", baseStock.getCurrency().getCurrencyCode());
+				this.valuePaperAttributes.put("URL der historischen Preise (Basis-Aktie):", baseStock.getHistoricPricesPageUrl());
+				this.valuePaperAttributes.put("Börse-CertificatePageUrl (Basis-Aktie):", baseStock.getBoerseCertificatePageUrl());
+				this.valuePaperAttributes.put("Finanzen-CertificatePageUrl (Basis-Aktie):", baseStock.getFinanzenCertificatePageUrl());
+				this.valuePaperAttributes.put("Index (Basis-Aktie):", baseStock.getIndex());
+			}
 
 		}
 		if(valuePaper.getType() == ValuePaperType.FUND){

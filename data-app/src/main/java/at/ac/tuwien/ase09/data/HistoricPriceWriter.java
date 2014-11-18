@@ -1,4 +1,4 @@
-package at.ac.tuwien.ase09.data.stock.detail;
+package at.ac.tuwien.ase09.data;
 
 import java.io.Serializable;
 import java.util.List;
@@ -11,11 +11,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.FlushModeType;
 import javax.persistence.PersistenceContext;
 
-import at.ac.tuwien.ase09.data.AbstractEntityWriter;
 import at.ac.tuwien.ase09.model.ValuePaperHistoryEntry;
 
 @Dependent
-@Named("HistoricPriceWriter")
+@Named
 public class HistoricPriceWriter extends AbstractItemWriter {
 	private static final Logger LOG = Logger.getLogger(AbstractEntityWriter.class.getName());
 	@PersistenceContext
