@@ -17,28 +17,34 @@
 
 		</f:metadata>
 
-		<p:panel id="test" header="Einzeltitelansicht"
-			style="margin-bottom:20px">
-			<p:panelGrid columns="2">
-				<h:outputText value="Bezeichnung:" />
-				<h:outputText value="#{valuePaperViewBean.valuePaper.name}" />
+		<h3 style="margin-top: 0">Einzeltitelansicht</h3>
 
-				<h:outputText value="ISIN:" />
-				<h:outputText value="#{valuePaperViewBean.valuePaper.isin}" />
+		<p:tabView>
+			<p:tab title="Allgemeine Informationen">
+				<p:panelGrid columns="2">
+					<h:outputText value="Bezeichnung:" />
+					<h:outputText value="#{valuePaperViewBean.valuePaper.name}" />
 
-				<h:outputText value="Typ:" />
-				<h:outputText value="#{valuePaperViewBean.valuePaper.type}" />
+					<h:outputText value="ISIN:" />
+					<h:outputText value="#{valuePaperViewBean.valuePaper.isin}" />
 
-				<h:outputText value="Land:" />
-				<h:outputText value="#{valuePaperViewBean.valuePaper.country}" />
+					<h:outputText value="Typ:" />
+					<h:outputText value="#{valuePaperViewBean.valuePaper.type}" />
 
-				<h:outputText value="Währung:" />
-				<h:outputText value="#{valuePaperViewBean.valuePaper.currency}" />
+					<h:outputText value="Land:" />
+					<h:outputText value="#{valuePaperViewBean.valuePaper.country}" />
 
-				<h:outputText value="Aktueller Kurs:" />
-				<h:outputText value="#{valuePaperViewBean.lastPriceEntry.price}" />
-			</p:panelGrid>
-		</p:panel>
+					<h:outputText value="Währung:" />
+					<h:outputText value="#{valuePaperViewBean.valuePaper.currency}" />
+
+					<h:outputText value="Aktueller Kurs:" />
+					<h:outputText value="#{valuePaperViewBean.lastPriceEntry.price}" />
+				</p:panelGrid>
+			</p:tab>
+			<p:tab title="Kursverlauf">
+				<p:chart type="line" model="#{valuePaperViewBean.valuePaperHistoricPriceLineChartModel}" style="height:400px;" />
+			</p:tab>
+		</p:tabView>
 
 	</ui:define>
 
