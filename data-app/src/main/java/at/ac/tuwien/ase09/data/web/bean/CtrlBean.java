@@ -22,4 +22,12 @@ public class CtrlBean {
 	public void startATXIntradayBondPriceExtraction(){
 		BatchRuntime.getJobOperator().start("intradayBondExtractionATX", null);
 	}
+	
+	public void startFundDetailExtraction(){
+		BatchRuntime.getJobOperator().start("detailFundExtraction", null);
+	}
+	
+	public void startIntradayFundPriceExtraction(){
+		BatchRuntime.getJobOperator().start("intradayFundExtraction", null);
+	}
 }

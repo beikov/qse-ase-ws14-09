@@ -43,4 +43,12 @@ public class ValuePaperDataAccess {
 			throw new AppException(e);
 		}
 	}
+
+	public <T extends ValuePaper> List<T> getValuePapers(Class<T> clazz){
+		try{
+			return em.createQuery("SELECT v FROM " + clazz.getSimpleName() + " v", clazz).getResultList();
+		}catch(Exception e){
+			throw new AppException(e);
+		}
+	}
 }

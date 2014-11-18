@@ -1,7 +1,5 @@
 package at.ac.tuwien.ase09.model;
 
-import java.util.Currency;
-
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
@@ -17,7 +15,8 @@ public abstract class ValuePaper extends BaseEntity<Long> {
 
 	private String name;
 	private String isin;
-	private String historicPricesPageUrl;
+	private String detailUrl;
+	
 
 	@Column(unique=true)
 	public String getIsin() {
@@ -43,14 +42,14 @@ public abstract class ValuePaper extends BaseEntity<Long> {
 	public String toString() {
 		return String.format("[type=%s, code=%s, name=%s]", getType(), isin, name);
 	}
-	
-	public String getHistoricPricesPageUrl() {
-		return historicPricesPageUrl;
+
+	@Column(columnDefinition="TEXT")
+	public String getDetailUrl() {
+		return detailUrl;
 	}
 
-	public void setHistoricPricesPageUrl(String historicPricesPageUrl) {
-		this.historicPricesPageUrl = historicPricesPageUrl;
+	public void setDetailUrl(String detailUrl) {
+		this.detailUrl = detailUrl;
 	}
-	
 	
 }

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This job extracts all bonds from ATX funds -->
+<job id="detailFundExtraction" xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	version="1.0">
+	<properties>
+	    <property name="profitwebUrl" value="https://www.profitweb.at/public/main/start.jsp" />
+	</properties>
+	<step id="fundDetailLinkExtraction" next="fundDetailExtraction">
+		<batchlet ref="fundDetailLinkReaderBatchlet">
+			<properties>
+				<property name="profitwebUrl" value="#{jobProperties['profitwebUrl']}" />
+			</properties>
+		</batchlet>
+		<listeners>
+			<listener ref="StepBoundaryLogger" />
+		</listeners>
+	</step>
+	<step id="fundDetailExtraction" item-count="5">
+		<chunk>
+			<reader ref="fundDetailReader" />
+			<writer ref="fundDetailWriter" />
+
+			<retryable-exception-classes>
+				<include class="java.net.SocketTimeoutException" />
+			</retryable-exception-classes>
+			<skippable-exception-classes>
+				<include class="java.net.SocketTimeoutException" />
+			</skippable-exception-classes>
+		</chunk>
+		<listeners>
+			<listener ref="StepBoundaryLogger" />
+			<listener ref="TransitioningStepListener" />
+			<listener ref="DefaultSkipListener" />
+			<listener ref="DefaultRetryListener" />
+		</listeners>
+	</step>
+<!-- 	<step id="fundHistoricPriceExtraction"> -->
+<!-- 		<chunk item-count="5"> -->
+<!-- 			<reader ref="historicFundPriceReader"> -->
+<!-- 			    <properties> -->
+<!-- 					<property name="indexName" value="#{jobProperties['indexName']}" /> -->
+<!-- 				</properties> -->
+<!-- 			</reader> -->
+<!-- 			<processor ref="historicPriceProcessor" /> -->
+<!-- 			<writer ref="historicPriceWriter" /> -->
+
+<!-- 			<retryable-exception-classes> -->
+<!-- 				<include class="java.net.SocketTimeoutException" /> -->
+<!-- 			</retryable-exception-classes> -->
+<!-- 			<skippable-exception-classes> -->
+<!-- 				<include class="java.net.SocketTimeoutException" /> -->
+<!-- 			</skippable-exception-classes> -->
+<!-- 		</chunk> -->
+<!-- 		<listeners> -->
+<!-- 			<listener ref="StepBoundaryLogger" /> -->
+<!-- 			<listener ref="DefaultSkipListener" /> -->
+<!-- 			<listener ref="DefaultRetryListener" /> -->
+<!-- 		</listeners> -->
+<!-- 	</step> -->
+	<listeners>
+		<listener ref="JobBoundaryLogger" />
+		<listener ref="SuccessorJobStarter">
+			<properties>
+				<property name="successorJobIds" value="#{jobParameters['successorJobIds']}" />
+			</properties>
+		</listener>
+	</listeners>
+</job>

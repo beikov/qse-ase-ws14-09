@@ -13,6 +13,7 @@ public class Stock extends ValuePaper {
 
 	private Currency currency;
 	private String country;
+	private String historicPricesPageUrl;
 	private String boerseCertificatePageUrl;
 	private String finanzenCertificatePageUrl;
 	private String index;
@@ -62,6 +63,14 @@ public class Stock extends ValuePaper {
 
 	public void setCountry(String country) {
 		this.country = country;
+	}
+	
+	public String getHistoricPricesPageUrl() {
+		return historicPricesPageUrl;
+	}
+
+	public void setHistoricPricesPageUrl(String historicPricesPageUrl) {
+		this.historicPricesPageUrl = historicPricesPageUrl;
 	}
 	
 }

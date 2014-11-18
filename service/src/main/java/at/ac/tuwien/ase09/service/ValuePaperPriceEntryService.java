@@ -11,6 +11,7 @@ import javax.persistence.PersistenceContext;
 
 import at.ac.tuwien.ase09.data.ValuePaperDataAccess;
 import at.ac.tuwien.ase09.exception.AppException;
+import at.ac.tuwien.ase09.model.ValuePaper;
 import at.ac.tuwien.ase09.model.ValuePaperPriceEntry;
 
 @Stateless
@@ -28,7 +29,7 @@ public class ValuePaperPriceEntryService {
 	public void savePriceEntry(String isin, BigDecimal price) {
 		ValuePaperPriceEntry priceEntry = new ValuePaperPriceEntry();
 		priceEntry.setPrice(price);
-		priceEntry.setValuePaper(valuePaperDataAccess.getValuePaperByIsin(isin));
+		priceEntry.setValuePaper(valuePaperDataAccess.getValuePaperByIsin(isin, ValuePaper.class));
 		savePriceEntry(priceEntry);
 	}
 	

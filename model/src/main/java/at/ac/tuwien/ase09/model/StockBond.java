@@ -12,7 +12,8 @@ public class StockBond extends ValuePaper {
 	private static final long serialVersionUID = 1L;
 
 	private Stock baseStock;
-	private String detailUrl;
+	
+	private String historicPricesPageUrl;
 	
 	@Override
 	@Transient
@@ -28,13 +29,13 @@ public class StockBond extends ValuePaper {
 	public void setBaseStock(Stock baseStock) {
 		this.baseStock = baseStock;
 	}
-
-	public String getDetailUrl() {
-		return detailUrl;
+	
+	public String getHistoricPricesPageUrl() {
+		return historicPricesPageUrl;
 	}
 
-	public void setDetailUrl(String detailUrl) {
-		this.detailUrl = detailUrl;
+	public void setHistoricPricesPageUrl(String historicPricesPageUrl) {
+		this.historicPricesPageUrl = historicPricesPageUrl;
 	}
 	
 }

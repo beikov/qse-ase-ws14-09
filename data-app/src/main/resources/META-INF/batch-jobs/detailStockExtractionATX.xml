@@ -27,7 +27,6 @@
 			        <property name="finanzenNetUrl" value="#{jobProperties['finanzenNetUrl']}" />
 			    </properties>
 		    </reader>
-			<processor ref="SimpleItemProcessor" />
 			<writer ref="StockDetailWriter" />
 
 			<retryable-exception-classes>
