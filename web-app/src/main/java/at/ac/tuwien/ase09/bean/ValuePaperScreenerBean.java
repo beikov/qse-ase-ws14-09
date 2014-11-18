@@ -33,11 +33,20 @@ public class ValuePaperScreenerBean {
 		private String valuePaperName, isin, country, currencyCode;
 		private List<ValuePaper> searchedValuePapers;
 		
+		
 		@PostConstruct
 		public void init() {
 			
 		}
 		
+		public List<ValuePaper> getSearchedValuePapers() {
+			return searchedValuePapers;
+		}
+
+		public void setSearchedValuePapers(List<ValuePaper> searchedValuePapers) {
+			this.searchedValuePapers = searchedValuePapers;
+		}
+
 		public ValuePaperType[] getValuePaperTypes()
 		{
 			return ValuePaperType.values();

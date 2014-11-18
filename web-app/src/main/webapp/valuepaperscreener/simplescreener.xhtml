@@ -9,53 +9,71 @@
 
 	<!-- content -->
 	<ui:define name="body">
-	Aktiensuche
+	
 	<h:form id="searchValuePapers">
-			<h:panelGrid columns="4" cellpadding="10000" cellspacing="4">
-				<p:outputLabel value="Aktienname: " />
+	 <p:panel header="Aktiensuche" style="margin-bottom:10px;">
+			<h:panelGrid columns="4" cellpadding="5">
+				<p:outputLabel for="name" value="Aktienname: " style="padding: 10px;"/>
 				<p:inputText id="name" value="#{valuePaperScreenerBean.valuePaperName}" />
-
 				
-				<p:outputLabel value="Aktientyp: " />
-				<h:selectOneMenu value="#{valuePaperScreenerBean.valuePaperType}" >
+				<p:outputLabel for="type" value="Aktientyp: " style="padding: 10px;"/>
+				<p:selectOneMenu id="type" value="#{valuePaperScreenerBean.valuePaperType}" style="width:190px">
 					<f:selectItem itemLabel="Beliebig" itemValue="#{null}" />
 					<f:selectItems value="#{valuePaperScreenerBean.valuePaperTypes}" />
-				</h:selectOneMenu>
+				</p:selectOneMenu>
 				
-
-
-				<p:outputLabel for="isin" value="ISIN: " />
+				<p:outputLabel for="isin" value="ISIN: " style="padding: 10px;"/>
 				<p:inputText id="isin"
 					value="#{valuePaperScreenerBean.isin}" >
 					 <f:validateRegex pattern="^([a-zA-Z]|\?|\*){2}([a-zA-Z0-9]|\?|\*)*" />
 				</p:inputText>
 		
-
-				<h:outputLabel value="Land: " />
+				<p:outputLabel for="country" value="Land: " style="padding: 10px;"/>
 				<p:inputText id="country" value="#{valuePaperScreenerBean.country}" />
 
-
-				<h:outputLabel for="currency" value="Währungscode: " />
+				<p:outputLabel for="currency" value="Währungscode: " style="padding: 10px;"/>
 				<p:inputText id="currency"
 					value="#{valuePaperScreenerBean.currencyCode}" >
 					 <f:validateRegex pattern="^[A-Z]{3}$" />
-				</p:inputText>
+				</p:inputText>			
+			</h:panelGrid>
+		</p:panel>
+		
+				<center>
+					<p:commandButton value="Reset" type="reset" />
+					<p:commandButton value="Suche"
+						action="#{valuePaperScreenerBean.search()}" update="searchValuePapers"
+						ajax="true" />
+					</center>
+				<br/>
 				
-				</h:panelGrid>
+				<p:message for="isin" style="color:red" />
+				<p> </p>
+				<p:message for="currency" style="color:red" />
 
-				<p:commandButton value="Reset" type="reset" />
-				<p:commandButton value="Suche"
-					action="#{valuePaperScreenerBean.search()}" update="searchValuePapers"
-					ajax="true" />
-				
-				
-				
-				<h:message for="isin" style="color:red" />
-				<h:message for="currency" style="color:red" />
-
-			
-			<hr/>
-		</h:form>
+		<p:separator />
+		
+		<p:dataTable var="valuePaper" value="#{valuePaperScreenerBean.searchedValuePapers}">
+				    <p:column headerText="Name" sortBy="#{valuePaper.name}">
+				        <h:outputText value="#{valuePaper.name}" />
+				    </p:column>
+				    <p:column headerText="Währung" sortBy="#{valuePaper.currency.currencyCode}">
+				        <h:outputText value="#{valuePaper.currency.currencyCode} (#{valuePaper.currency.symbol})" />
+				    </p:column>
+				    <p:column headerText="Land" sortBy="#{valuePaper.country}">
+				        <h:outputText value="#{valuePaper.country}" />
+				    </p:column>
+				    <p:column headerText="ISIN" sortBy="#{valuePaper.isin}">
+				        <h:outputText value="#{valuePaper.isin}" />
+				    </p:column>
+				    <p:column headerText="Typ" sortBy="#{valuePaper.type}">
+				        <h:outputText value="#{valuePaper.type}" />
+				    </p:column>
+				    <p:column >
+				        <h:commandButton action="#{valuePaperScreenerBean.search()}" value="Details" /> 
+				    </p:column>
+				</p:dataTable>
+			</h:form>
 	</ui:define>
 	<!-- content -->
 
