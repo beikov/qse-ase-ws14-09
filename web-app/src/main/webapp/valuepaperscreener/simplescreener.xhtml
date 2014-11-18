@@ -11,48 +11,49 @@
 	<ui:define name="body">
 	Aktiensuche
 	<h:form id="searchValuePapers">
-			<h:panelGrid columns="4" cellpadding="5">
+			<h:panelGrid columns="4" cellpadding="10000" cellspacing="4">
 				<p:outputLabel value="Aktienname: " />
-				<p:inputText id="name" value="#{valuepaperscreenerbean.valuePaperName}" />
+				<p:inputText id="name" value="#{valuePaperScreenerBean.valuePaperName}" />
 
-
+				
 				<p:outputLabel value="Aktientyp: " />
-				<h:selectOneMenu value="#{valuepaperscreenerbean.valuepapertype}" >
+				<h:selectOneMenu value="#{valuePaperScreenerBean.valuePaperType}" >
 					<f:selectItem itemLabel="Beliebig" itemValue="#{null}" />
-					<f:selectItems value="#{valuepaperscreenerbean.valuepapertypes}" />
+					<f:selectItems value="#{valuePaperScreenerBean.valuePaperTypes}" />
 				</h:selectOneMenu>
 				
 
 
 				<p:outputLabel for="isin" value="ISIN: " />
 				<p:inputText id="isin"
-					value="#{valuepaperscreenerbean.isin}" >
-					 <f:validateRegex pattern="^([a-zA-Z]{2}|\?" />
+					value="#{valuePaperScreenerBean.isin}" >
+					 <f:validateRegex pattern="^([a-zA-Z]|\?|\*){2}([a-zA-Z0-9]|\?|\*)*" />
 				</p:inputText>
-				<h:message for="isin" style="color:red" />
-
-
+		
 
 				<h:outputLabel value="Land: " />
-				<p:inputText id="country" value="" />
-				<h:outputText value="#{valuepaperscreenerbean.country}" />
+				<p:inputText id="country" value="#{valuePaperScreenerBean.country}" />
 
 
 				<h:outputLabel for="currency" value="Währungscode: " />
 				<p:inputText id="currency"
-					value="#{valuepaperscreenerbean.currencyCode}" >
+					value="#{valuePaperScreenerBean.currencyCode}" >
 					 <f:validateRegex pattern="^[A-Z]{3}$" />
 				</p:inputText>
-				<h:message for="currency" style="color:red" />
-
+				
+				</h:panelGrid>
 
 				<p:commandButton value="Reset" type="reset" />
 				<p:commandButton value="Suche"
-					action="#{valuepaperscreenerbean.search()}" update="searchValuePapers"
+					action="#{valuePaperScreenerBean.search()}" update="searchValuePapers"
 					ajax="true" />
+				
+				
+				
+				<h:message for="isin" style="color:red" />
+				<h:message for="currency" style="color:red" />
 
-
-			</h:panelGrid>
+			
 			<hr/>
 		</h:form>
 	</ui:define>

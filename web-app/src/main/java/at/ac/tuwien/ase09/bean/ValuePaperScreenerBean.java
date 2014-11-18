@@ -11,6 +11,8 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import at.ac.tuwien.ase09.model.Bond;
+import at.ac.tuwien.ase09.model.Fund;
 import at.ac.tuwien.ase09.model.Stock;
 import at.ac.tuwien.ase09.model.ValuePaper;
 import at.ac.tuwien.ase09.model.ValuePaperType;
@@ -45,6 +47,11 @@ public class ValuePaperScreenerBean {
 		{
 			this.paperType=paperType;
 		}
+		
+		public ValuePaperType getValuePaperType()
+		{
+			return paperType;
+		}
 
 		public String getValuePaperName() {
 			return valuePaperName;
@@ -74,41 +81,67 @@ public class ValuePaperScreenerBean {
 			return currencyCode;
 		}
 
-		public void setCurrency(String currencyCode) {
+		public void setCurrencyCode(String currencyCode) {
 			this.currencyCode=currencyCode;
 		}
 		
 		public void search()
 		{
-			if(valuePaper!=null)
+			if(paperType!=null)
 			{
+				System.out.println(""+paperType.toString());
 				isTypeSpecificated=true;
+				
+				if(paperType.equals(ValuePaperType.BOND))
+				{
+					valuePaper=new Bond();
+				}
+				else if(paperType.equals(ValuePaperType.STOCK))
+				{
+					valuePaper=new Stock();
+				}
+				else
+				{
+					valuePaper=new Fund();
+				}
+				/**
 				try {
-					valuePaper=(ValuePaper) Class.forName(paperType.toString()).newInstance();
+					valuePaper=(ValuePaper) Class.forName(paperType.toString().charAt(0)+paperType.toString().substring(1).toLowerCase()).newInstance();
 				} catch (InstantiationException | IllegalAccessException
 						| ClassNotFoundException e) {
 					e.printStackTrace();
-				}
+				}*/
 			}
 			else
 			{
+				isTypeSpecificated=false;
 				valuePaper=new Stock();
 			}
 			valuePaper.setCountry(country);
 			valuePaper.setIsin(isin);
 			valuePaper.setName(valuePaperName);
 			
-			if(Currency.getAvailableCurrencies().contains(currencyCode))
-				valuePaper.setCurrency( Currency.getInstance(currencyCode));
-			else
-			{
-				System.out.println("currencyCode doesnt exists");
-				FacesMessage facesMessage = new FacesMessage("Error: Currency-Code does not exist");
-			      FacesContext.getCurrentInstance().addMessage("searchValuePapers:currency", facesMessage);
-			      
+			if (!currencyCode.isEmpty() && currencyCode != null) {
+				try{
+					valuePaper.setCurrency(Currency.getInstance(currencyCode));
+				}
+				catch(IllegalArgumentException e)
+				 {
+					System.out.println("currencyCode does not exists");
+					FacesMessage facesMessage = new FacesMessage(
+							"Error: Currency-Code does not exist");
+					FacesContext.getCurrentInstance().addMessage(
+							"searchValuePapers:currency", facesMessage);
+
+				}
 			}
 			
 			searchedValuePapers=screenerService.search(valuePaper, isTypeSpecificated);
+			
+			for(ValuePaper p: searchedValuePapers)
+			{
+				System.out.println(p.toString());
+			}
 		}
 		
 		
