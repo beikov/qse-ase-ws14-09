@@ -5,6 +5,7 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	template="/WEB-INF/templates/template.xhtml">
 
 	<ui:define name="body">
@@ -19,32 +20,76 @@
 
 		<h3 style="margin-top: 0">Einzeltitelansicht</h3>
 
-		<p:tabView>
-			<p:tab title="Allgemeine Informationen">
-				<p:panelGrid columns="2">
-					<h:outputText value="Bezeichnung:" />
-					<h:outputText value="#{valuePaperViewBean.valuePaper.name}" />
+		<c:choose>
+			<c:when test="#{valuePaperViewBean.valuePaper != null}">
 
-					<h:outputText value="ISIN:" />
-					<h:outputText value="#{valuePaperViewBean.valuePaper.isin}" />
+				<p:tabView>
+					<p:tab title="Allgemeine Informationen">
+						<p:panelGrid columns="2">
+							<h:outputText value="Bezeichnung:" />
+							<h:outputText value="#{valuePaperViewBean.valuePaper.name}" />
 
-					<h:outputText value="Typ:" />
-					<h:outputText value="#{valuePaperViewBean.valuePaper.type}" />
+							<h:outputText value="ISIN:" />
+							<h:outputText value="#{valuePaperViewBean.valuePaper.isin}" />
 
-					<h:outputText value="Land:" />
-					<h:outputText value="#{valuePaperViewBean.valuePaper.country}" />
+							<h:outputText value="Typ:" />
+							<h:outputText value="#{valuePaperViewBean.valuePaper.type}" />
 
-					<h:outputText value="Währung:" />
-					<h:outputText value="#{valuePaperViewBean.valuePaper.currency}" />
+							<h:outputText value="Land:" />
+							<h:outputText value="#{valuePaperViewBean.valuePaper.country}" />
 
-					<h:outputText value="Aktueller Kurs:" />
-					<h:outputText value="#{valuePaperViewBean.lastPriceEntry.price}" />
-				</p:panelGrid>
-			</p:tab>
-			<p:tab title="Kursverlauf">
-				<p:chart type="line" model="#{valuePaperViewBean.valuePaperHistoricPriceLineChartModel}" style="height:400px;" />
-			</p:tab>
-		</p:tabView>
+							<h:outputText value="Währung:" />
+							<h:outputText value="#{valuePaperViewBean.valuePaper.currency}" />
+
+							<h:outputText value="Aktueller Kurs:" />
+							<c:choose>
+								<c:when test="#{valuePaperViewBean.lastPriceEntry != null}">
+									<h:outputText
+										value="#{valuePaperViewBean.lastPriceEntry.price}" />
+								</c:when>
+
+								<c:otherwise>
+									<h:outputText value="kein aktueller Kurs vorhanden" />
+								</c:otherwise>
+							</c:choose>
+
+							<h:outputText value="URL der historischen Preise:" />
+							<h:outputText
+								value="#{valuePaperViewBean.valuePaper.historicPricesPageUrl}" />
+
+							<c:forEach var="attribute"
+								items="#{valuePaperViewBean.valuePaperAttributes}">
+								<h:outputText value="#{attribute.key}" />
+								<h:outputText value="#{attribute.value}" />
+							</c:forEach>
+
+						</p:panelGrid>
+					</p:tab>
+					<p:tab title="Kursverlauf">
+
+						<c:choose>
+							<c:when
+								test="#{valuePaperViewBean.valuePaperHistoricPriceLineChartModel != null}">
+								<p:chart type="line"
+									model="#{valuePaperViewBean.valuePaperHistoricPriceLineChartModel}"
+									style="height:400px;" />
+							</c:when>
+
+							<c:otherwise>
+								<h:outputText value="keine Kursdaten vorhanden" />
+							</c:otherwise>
+						</c:choose>
+
+					</p:tab>
+				</p:tabView>
+
+			</c:when>
+
+			<c:otherwise>
+				<h:outputText value="Wertpapier-ISIN existiert nicht" />
+			</c:otherwise>
+
+		</c:choose>
 
 	</ui:define>
 
