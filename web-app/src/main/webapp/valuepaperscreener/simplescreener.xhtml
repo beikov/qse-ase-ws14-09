@@ -70,7 +70,10 @@
 				        <h:outputText value="#{valuePaper.type}" />
 				    </p:column>
 				    <p:column >
-				        <h:commandButton action="#{valuePaperScreenerBean.search()}" value="Details" /> 
+				    	<h:button value="Details" outcome="/valuepaper/valuepaperview">
+							<!--  includeViewParams="true" -->
+							<f:param name="valuePaperIsin" value="#{valuePaper.isin}" />
+						</h:button> 
 				    </p:column>
 				</p:dataTable>
 			</h:form>
