@@ -12,6 +12,7 @@ import javax.persistence.PersistenceContext;
 import at.ac.tuwien.ase09.data.ValuePaperDataAccess;
 import at.ac.tuwien.ase09.data.ValuePaperPriceEntryDataAccess;
 import at.ac.tuwien.ase09.exception.AppException;
+import at.ac.tuwien.ase09.model.ValuePaperHistoryEntry;
 import at.ac.tuwien.ase09.model.ValuePaper;
 import at.ac.tuwien.ase09.model.ValuePaperPriceEntry;
 
@@ -39,5 +40,9 @@ public class ValuePaperPriceEntryService {
 	
 	public ValuePaperPriceEntry getLastPriceEntry(String isin){
 		return valuePaperPriceEntryDataAccess.getLastPriceEntry(isin);
+	}
+	
+	public List<ValuePaperHistoryEntry> getValuePaperPriceHistoryEntries(String isin){
+		return valuePaperPriceEntryDataAccess.getValuePaperPriceHistoryEntries(isin);
 	}
 }
