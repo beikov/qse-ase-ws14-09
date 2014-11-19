@@ -9,14 +9,17 @@
 
 	<!-- content -->
 	<ui:define name="body">
-	Neues Portfolio
 	<h:form id="createForm">
+		 <p:panel header="Neues Portfolio">
+			
 			<h:panelGrid columns="3" cellpadding="5">
-				<p:outputLabel for="name" value="Portfolioame: " />
+			
+				<h:outputText value="Portfolioame: " />
 				<p:inputText id="name"
 					value="#{portfolioCreationViewBean.portfolio.name}" required="true" >
 					<f:validateRegex pattern="[a-zA-Z]+[a-zA-z0-9]*"></f:validateRegex>	
 				</p:inputText>
+				
 				<h:message for="name" style="color:red" />
 
 				<h:outputText value="Sichtbarkeit " />
@@ -24,32 +27,32 @@
 				<h:outputText value="" />
 
 
-				<h:outputText value="publicVisible: " />
+				<h:outputText value="Alles: " />
 				<p:selectBooleanCheckbox
 					value="#{portfolioCreationViewBean.portfolio.visibility.publicVisible}" />
 				<h:outputText value="" />
 
 
-				<h:outputText value="statisticsVisible: " />
+				<h:outputText value="Statistiken: " />
 				<p:selectBooleanCheckbox
 					value="#{portfolioCreationViewBean.portfolio.visibility.statisticsVisible}" />
 				<h:outputText value="" />
 
 
-				<h:outputText value="historyVisible: " />
+				<h:outputText value="Geschichte: " />
 				<p:selectBooleanCheckbox
 					value="#{portfolioCreationViewBean.portfolio.visibility.historyVisible}" />
 				<h:outputText value="" />
 
 
-				<h:outputText value="valuePaperListVisible: " />
+				<h:outputText value="Wertpapiere: " />
 				<p:selectBooleanCheckbox
 					value="#{portfolioCreationViewBean.portfolio.visibility.valuePaperListVisible}" />
 				<h:outputText value="" />
 
 
 
-				<p:outputLabel for="startCapital" value="Startkapital(€): " />
+				<h:outputText value="Startkapital(€): " />
 				<p:inputText id="startCapital"
 					value="#{portfolioCreationViewBean.startCapital}" required="true">
 				</p:inputText>
@@ -63,6 +66,7 @@
 
 
 			</h:panelGrid>
+			</p:panel>
 		</h:form>
 	</ui:define>
 	<!-- content -->

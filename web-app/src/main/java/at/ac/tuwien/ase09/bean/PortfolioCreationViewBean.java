@@ -53,9 +53,13 @@ public class PortfolioCreationViewBean {
 	public void create(){
 		
 		if( portfolioService.existsPortfolioWithNameForUser(portfolio.getName(), userContext.getUser()) ){
-			System.out.println("already exists");
 			FacesMessage facesMessage = new FacesMessage("Error: User already has portfolio with the given name");
 		      FacesContext.getCurrentInstance().addMessage("createForm:name", facesMessage);
+		      return;
+		}
+		if( startCapital.compareTo(new BigDecimal(0)) == -1 ){
+			FacesMessage facesMessage = new FacesMessage("Error: Startcapital has to be either zero for infinite capital or a number greater than zero");
+		      FacesContext.getCurrentInstance().addMessage("createForm:startCapital", facesMessage);
 		      return;
 		}
 		
