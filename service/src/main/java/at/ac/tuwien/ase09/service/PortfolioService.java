@@ -11,6 +11,7 @@ import javax.persistence.PersistenceContext;
 
 import at.ac.tuwien.ase09.data.PortfolioDataAccess;
 import at.ac.tuwien.ase09.model.Portfolio;
+import at.ac.tuwien.ase09.model.Stock;
 import at.ac.tuwien.ase09.model.User;
 import at.ac.tuwien.ase09.model.ValuePaper;
 import at.ac.tuwien.ase09.model.ValuePaperType;
@@ -43,7 +44,12 @@ public class PortfolioService {
 		Iterator<ValuePaper> iter = portfolio.getValuePapers().iterator(); 
 		while (iter.hasNext()) {
 			ValuePaper paper = iter.next();
-			String country = paper.getCountry();
+			if (!(paper instanceof Stock)) {
+				continue;
+			}
+			Stock stock = (Stock)paper;
+			
+			String country = stock.getCountry();
 			//String country = paper.getIsin().substring(0, 2);
 			int current = 0;
 			if (valuePaperCountryCountMap.get(country) != null)
