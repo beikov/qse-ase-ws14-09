@@ -1,4 +1,4 @@
-package at.ac.tuwien.ase09.data.stock.detail;
+package at.ac.tuwien.ase09.data;
 
 import java.util.Calendar;
 import java.util.HashSet;
@@ -15,7 +15,7 @@ import at.ac.tuwien.ase09.data.ValuePaperPriceEntryDataAccess;
 import at.ac.tuwien.ase09.model.ValuePaperHistoryEntry;
 
 @Dependent
-@Named("HistoricPriceProcessor")
+@Named
 public class HistoricPriceProcessor implements ItemProcessor {
 	@Inject
 	private ValuePaperPriceEntryDataAccess valuePaperPriceDataAccess;

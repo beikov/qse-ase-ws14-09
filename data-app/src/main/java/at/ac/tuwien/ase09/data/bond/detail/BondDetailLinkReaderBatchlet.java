@@ -31,6 +31,10 @@ public class BondDetailLinkReaderBatchlet extends AbstractBatchlet {
 	private String indexName;
 	
 	@Inject
+	@BatchProperty(name="finanzenNetCertificatesUrl")
+	private String finanzenNetCertificatesBaseUrl;
+	
+	@Inject
 	private JobContext jobContext;
 	
 	@Inject
@@ -39,13 +43,25 @@ public class BondDetailLinkReaderBatchlet extends AbstractBatchlet {
 	@Override
 	public String process() throws Exception {
 		Iterator<Stock> stockIter = valuePaperDataAccess.getStocksByIndex(indexName).iterator();
-		List<String> bondDetailLinks = new ArrayList<String>();
+		List<String> bondDetailLinks = new ArrayList<>();
 		while(stockIter.hasNext()){
 			Stock stock = stockIter.next();
-			Document bondPage = JsoupUtils.getPage(stock.getBoerseCertificatePageUrl());
-			Elements linkCells = bondPage.select("#marketdata_list td:nth-child(2) a");
-			for(Element link : linkCells){
-				bondDetailLinks.add(link.attr("href"));
+			Document finanzenCertificateTypes = JsoupUtils.getPage(stock.getFinanzenCertificatePageUrl());
+			Elements certificateTypeRows = finanzenCertificateTypes.select("div.content tbody tr");
+			String bondListLink = null;
+			for(Element certificateTypeRow : certificateTypeRows){
+				Elements cells = certificateTypeRow.getElementsByTag("td");
+				if("Aktienanleihe".equals(cells.get(0).text())){
+					bondListLink = finanzenNetCertificatesBaseUrl + cells.get(1).getElementsByTag("a").attr("href");
+					break;
+				}
+			}
+			if(bondListLink != null){
+				Document bondList = JsoupUtils.getPage(bondListLink);
+				Elements linkCells = bondList.select("div.searchResultTable tbody:nth-child(3) td:nth-child(2) a");
+				for(Element link : linkCells){
+					bondDetailLinks.add(finanzenNetCertificatesBaseUrl + link.attr("href"));
+				}
 			}
 		}
 		

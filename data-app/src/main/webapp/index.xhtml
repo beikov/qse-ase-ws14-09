@@ -14,12 +14,24 @@
 				actionListener="#{ctrlBean.startATXStockDetailExtraction()}" />
 		</p>
 		<p>
-			<h:commandButton value="Start ATX Intraday Price Extraction"
-				actionListener="#{ctrlBean.startATXIntradayPriceExtraction()}" />
+			<h:commandButton value="Start ATX Intraday Stock Price Extraction"
+				actionListener="#{ctrlBean.startATXIntradayStockPriceExtraction()}" />
 		</p>
 		<p>
 			<h:commandButton value="Start ATX Bond Detail Extraction"
 				actionListener="#{ctrlBean.startATXBondDetailExtraction()}" />
+		</p>
+		<p>
+			<h:commandButton value="Start ATX Intraday Bond Price Extraction"
+				actionListener="#{ctrlBean.startATXIntradayBondPriceExtraction()}" />
+		</p>
+		<p>
+			<h:commandButton value="Start Fund Detail Extraction (no historic prices yet)"
+				actionListener="#{ctrlBean.startFundDetailExtraction()}" />
+		</p>
+		<p>
+			<h:commandButton value="Start Fund Intraday Price Extraction"
+				actionListener="#{ctrlBean.startIntradayFundPriceExtraction()}" />
 		</p>
 	</h:form>
 </body>
