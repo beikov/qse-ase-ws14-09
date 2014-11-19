@@ -28,17 +28,17 @@
 
 						<h4 style="margin-top: 0">Allgemeine Informationen</h4>
 
-						<p:panelGrid columns="2">
-							<h:outputText value="Bezeichnung:" />
+						<p:panelGrid columns="2" >
+							<h:outputText value="Bezeichnung:" style="font-weight:bold" />
 							<h:outputText value="#{valuePaperViewBean.valuePaper.name}" />
 
-							<h:outputText value="ISIN:" />
+							<h:outputText value="ISIN:" style="font-weight:bold"/>
 							<h:outputText value="#{valuePaperViewBean.valuePaper.isin}" />
 
-							<h:outputText value="Typ:" />
+							<h:outputText value="Typ:" style="font-weight:bold"/>
 							<h:outputText value="#{valuePaperViewBean.valuePaper.type}" />
 
-							<h:outputText value="Aktueller Kurs:" />
+							<h:outputText value="Aktueller Kurs:" style="font-weight:bold"/>
 							<c:choose>
 								<c:when test="#{valuePaperViewBean.lastPriceEntry != null}">
 									<h:outputText
@@ -50,7 +50,7 @@
 								</c:otherwise>
 							</c:choose>
 
-							<h:outputText value="Details:" />
+							<h:outputText value="Details:" style="font-weight:bold"/>
 							<h:outputText value="#{valuePaperViewBean.valuePaper.detailUrl}" />
 
 						</p:panelGrid>
@@ -62,7 +62,7 @@
 						<p:panelGrid columns="2">
 							<c:forEach var="attribute"
 								items="#{valuePaperViewBean.valuePaperAttributes}">
-								<h:outputText value="#{attribute.key}" />
+								<h:outputText value="#{attribute.key}" style="font-weight:bold"/>
 								<h:outputText value="#{attribute.value}" />
 							</c:forEach>
 						</p:panelGrid>
