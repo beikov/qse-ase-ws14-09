@@ -11,7 +11,7 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import at.ac.tuwien.ase09.model.Bond;
+import at.ac.tuwien.ase09.model.StockBond;
 import at.ac.tuwien.ase09.model.Fund;
 import at.ac.tuwien.ase09.model.Stock;
 import at.ac.tuwien.ase09.model.ValuePaper;
@@ -103,7 +103,7 @@ public class ValuePaperScreenerBean {
 				
 				if(paperType.equals(ValuePaperType.BOND))
 				{
-					valuePaper=new Bond();
+					valuePaper=new StockBond();
 				}
 				else if(paperType.equals(ValuePaperType.STOCK))
 				{
@@ -126,13 +126,15 @@ public class ValuePaperScreenerBean {
 				isTypeSpecificated=false;
 				valuePaper=new Stock();
 			}
-			valuePaper.setCountry(country);
+			if (valuePaper.getType() == ValuePaperType.STOCK) {
+				((Stock)valuePaper).setCountry(country);
+			}
 			valuePaper.setIsin(isin);
 			valuePaper.setName(valuePaperName);
 			
-			if (!currencyCode.isEmpty() && currencyCode != null) {
+			if (valuePaper.getType() == ValuePaperType.STOCK && !currencyCode.isEmpty() && currencyCode != null) {
 				try{
-					valuePaper.setCurrency(Currency.getInstance(currencyCode));
+					((Stock)valuePaper).setCurrency(Currency.getInstance(currencyCode));
 				}
 				catch(IllegalArgumentException e)
 				 {

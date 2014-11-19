@@ -15,7 +15,9 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 
+import at.ac.tuwien.ase09.model.Stock;
 import at.ac.tuwien.ase09.model.ValuePaper;
+import at.ac.tuwien.ase09.model.ValuePaperType;
 
 @Stateless
 public class ValuePaperScreenerAccess {
@@ -33,15 +35,15 @@ public class ValuePaperScreenerAccess {
 			String name = valuePaper.getName().replace('*', '%').replace('?', '_');
 			crit.add(Restrictions.ilike("valuePaper.name", name));
 		}
-		if (valuePaper.getCurrency() != null) {
-			crit.add(Restrictions.eq("valuePaper.currency", valuePaper.getCurrency()));
+		if (valuePaper.getType() == ValuePaperType.STOCK && ((Stock)valuePaper).getCurrency() != null) {
+			crit.add(Restrictions.eq("valuePaper.currency", ((Stock)valuePaper).getCurrency()));
 		}
 		if (valuePaper.getIsin() != null && !valuePaper.getIsin().isEmpty()) {
 			String isin = valuePaper.getIsin().replace('*', '%').replace('?', '_');
 			crit.add(Restrictions.ilike("valuePaper.isin", isin));
 		}
-		if (valuePaper.getCountry() != null && !valuePaper.getCountry().isEmpty()) {
-			String co = valuePaper.getCountry().replace('*', '%').replace('?', '_');
+		if (valuePaper.getType() == ValuePaperType.STOCK && ((Stock)valuePaper).getCountry() != null && !((Stock)valuePaper).getCountry().isEmpty()) {
+			String co = ((Stock)valuePaper).getCountry().replace('*', '%').replace('?', '_');
 			crit.add(Restrictions.ilike("valuePaper.country", co));
 		}
 			
