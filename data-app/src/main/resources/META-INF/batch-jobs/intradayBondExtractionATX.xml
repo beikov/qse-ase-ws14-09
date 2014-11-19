@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<job id="intradayExtractionATX" xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+<job id="intradayBondExtractionATX" xmlns="http://xmlns.jcp.org/xml/ns/javaee"
 	version="1.0">
-	<step id="stockTablePriceExtraction">
+	<step id="bondPriceExtraction">
 		<chunk item-count="10">
-			<reader ref="StockTablePriceReader" >
+			<reader ref="bondPriceReader" >
 			    <properties>
-			    	<property name="baseUrl" value="http://kurse.wienerborse.at/teledata_php/prices/dispatch_list.php" />
 			    	<property name="indexName" value="ATX" />
 			    </properties>
 			</reader>
-			<processor ref="PriceListProcessor" />
-			<writer ref="PriceListWriter" />
+			<processor ref="bondPriceProcessor" />
+			<writer ref="intradayPriceWriter" />
 			
 			<retryable-exception-classes>
 				<include class="java.net.SocketTimeoutException" />

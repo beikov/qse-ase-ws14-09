@@ -64,7 +64,7 @@ public class StockDetailLinkReaderBatchlet extends AbstractBatchlet {
 			String isin = cellLines[cellLines.length - 1];
 			String[] mapEntry = stockDetailLinks.get(isin);
 			if(mapEntry != null){
-				// get historic prices link
+				// get finanzen.net details link
 				mapEntry[1] = finanzenNetUrl + current.select("a").get(0).attr("href");
 			}
 		}
