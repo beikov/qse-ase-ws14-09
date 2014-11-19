@@ -24,7 +24,10 @@
 			<c:when test="#{valuePaperViewBean.valuePaper != null}">
 
 				<p:tabView>
-					<p:tab title="Allgemeine Informationen">
+					<p:tab title="Informationen">
+
+						<h4 style="margin-top: 0">Allgemeine Informationen</h4>
+
 						<p:panelGrid columns="2">
 							<h:outputText value="Bezeichnung:" />
 							<h:outputText value="#{valuePaperViewBean.valuePaper.name}" />
@@ -34,9 +37,6 @@
 
 							<h:outputText value="Typ:" />
 							<h:outputText value="#{valuePaperViewBean.valuePaper.type}" />
-
-							<h:outputText value="Details:" />
-							<h:outputText value="#{valuePaperViewBean.valuePaper.detailUrl}" />
 
 							<h:outputText value="Aktueller Kurs:" />
 							<c:choose>
@@ -50,12 +50,21 @@
 								</c:otherwise>
 							</c:choose>
 
+							<h:outputText value="Details:" />
+							<h:outputText value="#{valuePaperViewBean.valuePaper.detailUrl}" />
+
+						</p:panelGrid>
+
+						<p:separator />
+
+						<h4 style="margin-top: 50">Zusätzliche Informationen</h4>
+
+						<p:panelGrid columns="2">
 							<c:forEach var="attribute"
 								items="#{valuePaperViewBean.valuePaperAttributes}">
 								<h:outputText value="#{attribute.key}" />
 								<h:outputText value="#{attribute.value}" />
 							</c:forEach>
-
 						</p:panelGrid>
 					</p:tab>
 					<p:tab title="Kursverlauf">

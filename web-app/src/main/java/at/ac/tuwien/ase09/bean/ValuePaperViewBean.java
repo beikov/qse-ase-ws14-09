@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -11,7 +12,11 @@ import java.util.TreeMap;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
+import javax.persistence.PersistenceContext;
 
+import org.hibernate.Transaction;
 import org.primefaces.model.chart.AxisType;
 import org.primefaces.model.chart.DateAxis;
 import org.primefaces.model.chart.LineChartModel;
@@ -47,6 +52,9 @@ public class ValuePaperViewBean implements Serializable{
 
 	@Inject
 	private ValuePaperService valuePaperService;
+	
+	@PersistenceContext
+	private EntityManager em;
 
 	public void init() {
 		loadValuePaper(valuePaperIsin);
@@ -114,18 +122,19 @@ public class ValuePaperViewBean implements Serializable{
 	}
 
 	private void loadValuePaperAttributes() {
-		this.valuePaperAttributes = new TreeMap<String, String>();
+		this.valuePaperAttributes = new LinkedHashMap<String, String>();
 
 		if(valuePaper.getType() == ValuePaperType.STOCK){
 
 			Stock s = (Stock)valuePaper;
 
 			this.valuePaperAttributes.put("Währung:", s.getCurrency().getCurrencyCode());
-			this.valuePaperAttributes.put("URL der historischen Preise:", s.getHistoricPricesPageUrl());
-			this.valuePaperAttributes.put("Börse-CertificatePageUrl:", s.getBoerseCertificatePageUrl());
-			this.valuePaperAttributes.put("Finanzen-CertificatePageUrl:", s.getFinanzenCertificatePageUrl());
 			this.valuePaperAttributes.put("Index:", s.getIndex());
+			this.valuePaperAttributes.put("Historische Preise:", s.getHistoricPricesPageUrl());
+			this.valuePaperAttributes.put("Börse-Zertifikate:", s.getBoerseCertificatePageUrl());
+			this.valuePaperAttributes.put("Finanzen-Zertifikate:", s.getFinanzenCertificatePageUrl());
 		}
+		
 		if(valuePaper.getType() == ValuePaperType.BOND){
 
 			StockBond sb = (StockBond)valuePaper;
@@ -137,13 +146,14 @@ public class ValuePaperViewBean implements Serializable{
 				
 				this.valuePaperAttributes.put("Bezeichnung (Basis-Aktie):", baseStock.getName());
 				this.valuePaperAttributes.put("ISIN (Basis-Aktie):", baseStock.getIsin());
-				this.valuePaperAttributes.put("Details (Basis-Aktie):", baseStock.getDetailUrl());
-				this.valuePaperAttributes.put("Aktueller Kurs (Basis-Aktie):", valuePaperPriceEntryService.getLastPriceEntry(baseStock.getIsin()).toString());
+				this.valuePaperAttributes.put("Typ (Basis-Aktie):", baseStock.getType().toString());
+				this.valuePaperAttributes.put("Aktueller Kurs (Basis-Aktie):", valuePaperPriceEntryService.getLastPriceEntry(baseStock.getIsin()).getPrice().toString());
 				this.valuePaperAttributes.put("Währung (Basis-Aktie):", baseStock.getCurrency().getCurrencyCode());
-				this.valuePaperAttributes.put("URL der historischen Preise (Basis-Aktie):", baseStock.getHistoricPricesPageUrl());
-				this.valuePaperAttributes.put("Börse-CertificatePageUrl (Basis-Aktie):", baseStock.getBoerseCertificatePageUrl());
-				this.valuePaperAttributes.put("Finanzen-CertificatePageUrl (Basis-Aktie):", baseStock.getFinanzenCertificatePageUrl());
 				this.valuePaperAttributes.put("Index (Basis-Aktie):", baseStock.getIndex());
+				this.valuePaperAttributes.put("Details (Basis-Aktie):", baseStock.getDetailUrl());
+				this.valuePaperAttributes.put("Historische Preise (Basis-Aktie):", baseStock.getHistoricPricesPageUrl());
+				this.valuePaperAttributes.put("Börse-Zertifikate (Basis-Aktie):", baseStock.getBoerseCertificatePageUrl());
+				this.valuePaperAttributes.put("Finanzen-Zertifikate (Basis-Aktie):", baseStock.getFinanzenCertificatePageUrl());	
 			}
 
 		}
