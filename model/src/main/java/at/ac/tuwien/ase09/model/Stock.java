@@ -63,14 +63,14 @@ public class Stock extends ValuePaper {
 	private BigDecimal p_200_DayMovingAverage;
 	private BigDecimal avgVol_3month;
 	private BigDecimal avgVol_10day;
-	private Long sharesOutstanding;
-	private Long floatVal;
+	private BigDecimal sharesOutstanding;
+	private BigDecimal floatVal;
 	private BigDecimal percentageHeldbyInsiders;
 	private BigDecimal percentageHeldbyInstitutions;
-	private Long sharesShortCurrentMonth;
+	private BigDecimal sharesShortCurrentMonth;
 	private BigDecimal shortRatio;
 	private BigDecimal shortPercentageofFloat;
-	private Long sharesShortPriorMonth;
+	private BigDecimal sharesShortPriorMonth;
 	private BigDecimal forwardAnnualDividendRate;
 	private BigDecimal forwardAnnualDividendYield;
 	private BigDecimal trailingAnnualDividendYieldAbsolute;
@@ -79,9 +79,6 @@ public class Stock extends ValuePaper {
 	private BigDecimal payoutRatio;
 	private Calendar dividendDate;
 	private Calendar ex_DividendDate;
-	private BigDecimal lastSplitFactor;
-	private Calendar lastSplitDate;
-	
 	
 	@Override
 	@Transient
@@ -489,19 +486,19 @@ public class Stock extends ValuePaper {
 		this.avgVol_10day = avgVol_10day;
 	}
 
-	public Long getSharesOutstanding() {
+	public BigDecimal getSharesOutstanding() {
 		return sharesOutstanding;
 	}
 
-	public void setSharesOutstanding(Long sharesOutstanding) {
+	public void setSharesOutstanding(BigDecimal sharesOutstanding) {
 		this.sharesOutstanding = sharesOutstanding;
 	}
 
-	public Long getFloatVal() {
+	public BigDecimal getFloatVal() {
 		return floatVal;
 	}
 
-	public void setFloatVal(Long floatVal) {
+	public void setFloatVal(BigDecimal floatVal) {
 		this.floatVal = floatVal;
 	}
 
@@ -524,11 +521,11 @@ public class Stock extends ValuePaper {
 		this.percentageHeldbyInstitutions = percentageHeldbyInstitutions;
 	}
 	
-	public Long getSharesShortCurrentMonth() {
+	public BigDecimal getSharesShortCurrentMonth() {
 		return sharesShortCurrentMonth;
 	}
 
-	public void setSharesShortCurrentMonth(Long sharesShortCurrentMonth) {
+	public void setSharesShortCurrentMonth(BigDecimal sharesShortCurrentMonth) {
 		this.sharesShortCurrentMonth = sharesShortCurrentMonth;
 	}
 
@@ -550,11 +547,11 @@ public class Stock extends ValuePaper {
 		this.shortPercentageofFloat = shortPercentageofFloat;
 	}
 
-	public Long getSharesShortPriorMonth() {
+	public BigDecimal getSharesShortPriorMonth() {
 		return sharesShortPriorMonth;
 	}
 
-	public void setSharesShortPriorMonth(Long sharesShortPriorMonth) {
+	public void setSharesShortPriorMonth(BigDecimal sharesShortPriorMonth) {
 		this.sharesShortPriorMonth = sharesShortPriorMonth;
 	}
 
@@ -631,24 +628,6 @@ public class Stock extends ValuePaper {
 
 	public void setEx_DividendDate(Calendar ex_DividendDate) {
 		this.ex_DividendDate = ex_DividendDate;
-	}
-
-	@Column(precision=19, scale=2)
-	public BigDecimal getLastSplitFactor() {
-		return lastSplitFactor;
-	}
-
-	public void setLastSplitFactor(BigDecimal lastSplitFactor) {
-		this.lastSplitFactor = lastSplitFactor;
-	}
-
-	@Temporal(TemporalType.DATE)
-	public Calendar getLastSplitDate() {
-		return lastSplitDate;
-	}
-
-	public void setLastSplitDate(Calendar lastSplitDate) {
-		this.lastSplitDate = lastSplitDate;
 	}
 	
 }

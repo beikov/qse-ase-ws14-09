@@ -27,7 +27,7 @@ public class HistoricPriceProcessor implements ItemProcessor {
 		if(historicEntries.isEmpty()){
 			return null;
 		}
-		String isin = historicEntries.get(0).getValuePaper().getIsin();
+		String isin = historicEntries.get(0).getValuePaper().getCode();
 		Set<Calendar> availableDates = new HashSet<>(valuePaperPriceDataAccess.getHistoricPriceEntryDates(isin));
 		
 		Iterator<ValuePaperHistoryEntry> iter = historicEntries.iterator();

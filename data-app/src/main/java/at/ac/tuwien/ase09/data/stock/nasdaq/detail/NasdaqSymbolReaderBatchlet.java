@@ -17,6 +17,7 @@ import org.jsoup.select.Elements;
 
 import at.ac.tuwien.ase09.data.JsoupUtils;
 import at.ac.tuwien.ase09.data.StepExitStatus;
+import at.ac.tuwien.ase09.data.model.SymbolModel;
 
 @Dependent
 @Named
@@ -33,17 +34,19 @@ public class NasdaqSymbolReaderBatchlet extends AbstractBatchlet {
 	public String process() throws Exception {
 		Document boerse = JsoupUtils.getPage(nasdaqListUrl);
 
-		Elements symbolCells = boerse
-				.select("table.data.quoteTable td.first.text a");
-		List<String> symbols = new ArrayList<>();
+		Elements symbolTableRows = boerse
+				.select("table.data.quoteTable tr");
+		List<SymbolModel> symbolModels = new ArrayList<>();
 		
-		for (Element symbolCell : symbolCells){
-			symbols.add(symbolCell.text());
+		for (Element symbolTableRow : symbolTableRows){
+			String symbol = symbolTableRow.getElementsByAttributeValue("data-field", "symbol").text();
+			String name = symbolTableRow.getElementsByAttributeValue("data-field", "name").text();
+			symbolModels.add(new SymbolModel(symbol, name));
 		}
 		
-		jobContext.setTransientUserData(symbols);
+		jobContext.setTransientUserData(symbolModels);
 		
-		LOG.info("Extracted " + symbols.size() + " stock symbols");
+		LOG.info("Extracted " + symbolModels.size() + " stock symbol models");
 		
 		return StepExitStatus.COMPLETED.toString();
 	}

@@ -20,13 +20,13 @@ public class FundDetailWriter extends AbstractEntityWriter {
 		Fund fund = (Fund) entity;
 		Fund existingFund = null;
 		try{
-			existingFund = valuePaperDataAccess.getValuePaperByIsin(fund.getIsin(), Fund.class);
+			existingFund = valuePaperDataAccess.getValuePaperByCode(fund.getCode(), Fund.class);
 			// existingFund is managed
 		}catch(EntityNotFoundException nfe){
 			// ignore
 		}
 		if(existingFund != null){
-			existingFund.setIsin(fund.getIsin());
+			existingFund.setCode(fund.getCode());
 			existingFund.setName(fund.getName());
 			existingFund.setDetailUrl(fund.getDetailUrl());
 			existingFund.setHistoricPricesPageUrl(fund.getHistoricPricesPageUrl());

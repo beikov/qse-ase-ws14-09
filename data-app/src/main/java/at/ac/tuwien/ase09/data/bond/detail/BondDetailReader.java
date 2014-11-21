@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.Currency;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.batch.api.BatchProperty;
@@ -20,8 +19,6 @@ import org.jsoup.select.Elements;
 
 import at.ac.tuwien.ase09.data.JsoupUtils;
 import at.ac.tuwien.ase09.data.model.StockBondModel;
-import at.ac.tuwien.ase09.model.StockBond;
-import at.ac.tuwien.ase09.model.constants.Country;
 
 @Dependent
 @Named("BondDetailReader")

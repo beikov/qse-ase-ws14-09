@@ -4,6 +4,7 @@
 	version="1.0">
 	<properties>
 	    <property name="nasdaqListUrl" value="http://www.cnbc.com/id/28141521#." />
+		<property name="indexName" value="NASDAQ100" />		    
 	</properties>
 	<step id="symbolExtraction" next="stockDetailExtraction">
 		<batchlet ref="nasdaqSymbolReaderBatchlet">
@@ -18,9 +19,9 @@
 	<step id="stockDetailExtraction">
 		<chunk>
 			<reader ref="yahooStockDetailReader">
-<!-- 			    <properties> -->
-<!-- 			        <property name="finanzenNetUrl" value="#{jobProperties['finanzenNetUrl']}" /> -->
-<!-- 			    </properties> -->
+			    <properties>
+			        <property name="indexName" value="#{jobProperties['indexName']}" />
+			    </properties>
 		    </reader>
 			<writer ref="StockDetailWriter" />
 

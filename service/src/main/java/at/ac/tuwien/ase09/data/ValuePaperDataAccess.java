@@ -18,9 +18,9 @@ public class ValuePaperDataAccess {
 	@Inject
 	private EntityManager em;
 
-	public <T extends ValuePaper> T getValuePaperByIsin(String isin, Class<T> clazz){
+	public <T extends ValuePaper> T getValuePaperByCode(String code, Class<T> clazz){
 		try{
-			return em.createQuery("SELECT v FROM " + clazz.getSimpleName() + " v WHERE v.isin = :isin", clazz).setParameter("isin", isin).getSingleResult();
+			return em.createQuery("SELECT v FROM " + clazz.getSimpleName() + " v WHERE v.code = :code", clazz).setParameter("code", code).getSingleResult();
 		}catch(NoResultException e){
 			throw new EntityNotFoundException(e);
 		}catch(Exception e){

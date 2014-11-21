@@ -64,7 +64,7 @@ public class FundDetailReader extends AbstractItemReader {
 			.filter(elem -> elem.children().stream().filter(child -> "colorth".equals(child.className()) || "colortd".equals(child.className())).count() == 2)
 			.collect(Collectors.toMap(elem -> elem.getElementsByClass("labelB").get(0).text(), elem -> elem.getElementsByClass("label").get(0).text()));
 		Fund fund = new Fund();
-		fund.setIsin(tableRows.get("ISIN"));
+		fund.setCode(tableRows.get("ISIN"));
 		fund.setName(tableRows.get("Bezeichnung"));
 		fund.setDetailUrl(fundDetailLink.getDetailUrl());
 		fund.setHistoricPricesPageUrl(historyBaseUrl + "?" + detailLinkParameterTemplate.replaceAll("#\\{keyPlaceholder\\}", fundDetailLink.getKey()));

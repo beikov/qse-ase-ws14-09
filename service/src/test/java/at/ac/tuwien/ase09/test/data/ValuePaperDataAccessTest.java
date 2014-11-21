@@ -24,34 +24,34 @@ public class ValuePaperDataAccessTest extends AbstractContainerTest<ValuePaperDa
 	
 	@Test(expected=EntityNotFoundException.class)
 	public void testGetValuePaperByNonExistentIsin(){
-		valuePaperDataAccess.getValuePaperByIsin("ABC", ValuePaper.class);
+		valuePaperDataAccess.getValuePaperByCode("ABC", ValuePaper.class);
 	}
 	
 	@Test
-	public void testGetStockByIsin(){
+	public void testGetStockByCode(){
 		//Given
 		Stock s = new Stock();
-		s.setIsin("AT123456");
+		s.setCode("AT123456");
 		dataManager.persist(s);
 		em.clear();
 		
 		// When
-		Stock actual = valuePaperDataAccess.getValuePaperByIsin("AT123456", Stock.class);
+		Stock actual = valuePaperDataAccess.getValuePaperByCode("AT123456", Stock.class);
 		
 		// Then
 		assertEquals(s, actual);
 	}
 	
 	@Test
-	public void testGetFundByIsin(){
+	public void testGetFundByCode(){
 		//Given
 		Fund f = new Fund();
-		f.setIsin("AT123456");
+		f.setCode("AT123456");
 		dataManager.persist(f);
 		em.clear();
 		
 		// When
-		Fund actual = valuePaperDataAccess.getValuePaperByIsin("AT123456", Fund.class);
+		Fund actual = valuePaperDataAccess.getValuePaperByCode("AT123456", Fund.class);
 		
 		// Then
 		assertEquals(f, actual);

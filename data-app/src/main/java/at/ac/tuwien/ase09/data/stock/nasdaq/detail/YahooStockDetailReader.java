@@ -9,11 +9,12 @@ import java.util.Calendar;
 import java.util.Currency;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import javax.batch.api.BatchProperty;
 import javax.batch.api.chunk.AbstractItemReader;
 import javax.batch.runtime.context.StepContext;
 import javax.enterprise.context.Dependent;
@@ -25,26 +26,30 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import at.ac.tuwien.ase09.data.JsoupUtils;
+import at.ac.tuwien.ase09.data.model.SymbolModel;
 import at.ac.tuwien.ase09.model.Stock;
 
 @Dependent
 @Named
 public class YahooStockDetailReader extends AbstractItemReader {
-	private static final Pattern urlTypePattern = Pattern
-			.compile("TYPE=([^&]*)");
 	private static final String yqlKeyStatsQueryTemplate = "https://query.yahooapis.com/v1/public/yql?q=SELECT%20*%20FROM%20yahoo.finance.keystats%20WHERE%20symbol%3D'#{symbolPlaceholder}'&diagnostics=true&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys";
-	private static final DateFormat yahooDateFormat = new SimpleDateFormat(
-			"MMM dd, yyyy");
+	private static final DateFormat yahooDateFormat = new SimpleDateFormat("MMM dd, yyyy", Locale.US);
+	private static final DateFormat yahooRepeatingDateFormat = new SimpleDateFormat("MMM dd", Locale.US);
+	private static final Currency currency = Currency.getInstance("USD");
+	
 	@Inject
 	private StepContext stepContext;
 
-	private final Currency currency = Currency.getInstance("USD");
+	@Inject
+	@BatchProperty(name="indexName")
+	private String indexName;
+	
 	private Integer symbolNumber;
-	private List<String> stockSymbols;
+	private List<SymbolModel> stockSymbolModels;
 
 	@Override
 	public void open(Serializable checkpoint) throws Exception {
-		stockSymbols = (List<String>) stepContext.getPersistentUserData();
+		stockSymbolModels = (List<SymbolModel>) stepContext.getPersistentUserData();
 		if (checkpoint != null) {
 			symbolNumber = (Integer) checkpoint;
 		} else {
@@ -54,87 +59,85 @@ public class YahooStockDetailReader extends AbstractItemReader {
 
 	@Override
 	public Object readItem() throws Exception {
-		if(symbolNumber >= stockSymbols.size()){
+		if(symbolNumber >= stockSymbolModels.size()){
 			return null;
 		}
-		String stockSymbol = stockSymbols.get(symbolNumber);
-		
-		Document d = JsoupUtils.getPage(yqlKeyStatsQueryTemplate.replaceAll("#\\{symbolPlaceholder\\}", stockSymbol));
+		SymbolModel stockSymbolModel = stockSymbolModels.get(symbolNumber);
+		Document d = JsoupUtils.getPage(yqlKeyStatsQueryTemplate.replaceAll("#\\{symbolPlaceholder\\}", stockSymbolModel.getSymbol()));
 
-		Elements keyStats = d.select("results stats");
-		Map<String, Element> keyStatsMap = keyStats.stream().collect(Collectors.toMap(elem -> getKeyForStatsElement(elem), Function.<Element>identity()));
+		Elements keyStats = d.select("results stats").first().children();
+		Map<String, Element> keyStatsMap = keyStats.stream().filter(elem -> !elem.text().isEmpty() && !"N/A".equals(elem.text())).collect(Collectors.toMap(elem -> getKeyForStatsElement(elem), Function.<Element>identity()));
 		
+		Element elem;
 		Stock stock = new Stock();
-		stock.setMarketCap(new BigDecimal(keyStatsMap.get("MarketCap_intraday").text()));
-		stock.setEnterpriseValue(new BigDecimal(keyStatsMap.get("EnterpriseValue_date").text()));
-		stock.setTrailingPE(new BigDecimal(keyStatsMap.get("TrailingPE_ttm_intraday").text()));
-		stock.setForwardPE(new BigDecimal(keyStatsMap.get("ForwardPE_fye").text()));
-		stock.setpEGRatio(new BigDecimal(keyStatsMap.get("PEGRatio_5_yr_expected").text()));
-		stock.setPriceSales(new BigDecimal(keyStatsMap.get("PriceSales_ttm").text()));
-		stock.setPriceBook(new BigDecimal(keyStatsMap.get("PriceBook_mrq").text()));
-		stock.setEnterpriseValueRevenue(new BigDecimal(keyStatsMap.get("EnterpriseValueRevenue_ttm").text()));
-		stock.setEnterpriseValueEBITDA(new BigDecimal(keyStatsMap.get("EnterpriseValueEBITDA_ttm").text()));
-		stock.setFiscalYearEnds(getYahooDate(keyStatsMap.get("FiscalYearEnds").text()));
-		stock.setMostRecentQuarter(getYahooDate(keyStatsMap.get("MostRecentQuarter_mrq").text()));
-		stock.setProfitMargin(new BigDecimal(keyStatsMap.get("ProfitMargin_ttm").text()));
-		stock.setOperatingMargin(new BigDecimal(keyStatsMap.get("OperatingMargin_ttm").text()));
-		stock.setReturnonAssets(new BigDecimal(keyStatsMap.get("ReturnonAssets_ttm").text()));
-		stock.setReturnonEquity(new BigDecimal(keyStatsMap.get("ReturnonEquity_ttm").text()));
-		stock.setRevenue(new BigDecimal(keyStatsMap.get("Revenue_ttm").text()));
-		stock.setRevenuePerShare(new BigDecimal(keyStatsMap.get("RevenuePerShare_ttm").text()));
-		stock.setQtrlyRevenueGrowth(new BigDecimal(keyStatsMap.get("QtrlyRevenueGrowth_yoy").text()));
-		stock.setGrossProfit(new BigDecimal(keyStatsMap.get("GrossProfit_ttm").text()));
-		stock.setEbitda(new BigDecimal(keyStatsMap.get("EBITDA_ttm").text()));
-		stock.setNetIncomeAvltoCommon(new BigDecimal(keyStatsMap.get("NetIncomeAvltoCommon_ttm").text()));
-		stock.setDilutedEPS(new BigDecimal(keyStatsMap.get("DilutedEPS_ttm").text()));
-		stock.setQtrlyEarningsGrowth(new BigDecimal(keyStatsMap.get("QtrlyEarningsGrowth_yoy").text()));
-		stock.setTotalCash(new BigDecimal(keyStatsMap.get("TotalCash_mrq").text()));
-		stock.setTotalCashPerShare(new BigDecimal(keyStatsMap.get("TotalCashPerShare_mrq").text()));
-		keyStatsMap.get("TotalDebt_mrq");
-		keyStatsMap.get("TotalDebtEquity_mrq");
-		keyStatsMap.get("CurrentRatio_mrq");
-		keyStatsMap.get("BookValuePerShare_mrq");
-		keyStatsMap.get("OperatingCashFlow_ttm");
-		keyStatsMap.get("LeveredFreeCashFlow_ttm");
-		keyStatsMap.get("Beta");
-		keyStatsMap.get("p_52_WeekChange_relative");
-		keyStatsMap.get("SP50052_WeekChange_relative");
-		keyStatsMap.get("p_52_WeekHigh_date");
-		keyStatsMap.get("p_52_WeekLow_date");
-		keyStatsMap.get("p_50_DayMovingAverage");
-		keyStatsMap.get("p_200_DayMovingAverage");
-		keyStatsMap.get("AvgVol_3_month");
-		keyStatsMap.get("AvgVol_10_day");
-		keyStatsMap.get("SharesOutstanding");
-		keyStatsMap.get("Float");
-		keyStatsMap.get("PercentageHeldbyInsiders_relative");
-		keyStatsMap.get("PercentageHeldbyInstitutions_relative");
-		keyStatsMap.get("SharesShort_date");
-		keyStatsMap.get("ShortRatio_date");
-		keyStatsMap.get("ShortPercentageofFloat_date");
-		keyStatsMap.get("SharesShort_prior_month");
-		keyStatsMap.get("ForwardAnnualDividendRate");
-		keyStatsMap.get("ForwardAnnualDividendYield");
-		keyStatsMap.get("TrailingAnnualDividendYield");
-		keyStatsMap.get("TrailingAnnualDividendYield_relative");
-		keyStatsMap.get("p_5YearAverageDividendYield_relative");
-		keyStatsMap.get("PayoutRatio_relative");
-		keyStatsMap.get("DividendDate");
-		keyStatsMap.get("Ex_DividendDate");
-		keyStatsMap.get("LastSplitFactor_new_per_old");
-		keyStatsMap.get("LastSplitDate");
-//		Stock stock = new Stock();
-//		stock.setIsin(isin);
-//		stock.setCountry(Country.AUSTRIA.toString());
-//		stock.setName(name);
-//		stock.setCurrency(currency);
-//		stock.setBoerseCertificatePageUrl(boerseCertificatePageUrl);
-//		stock.setFinanzenCertificatePageUrl(finanzenCertificateLink);
-//		stock.setHistoricPricesPageUrl(historicPricesPageUrl);
-//		stock.setIndex(indexName);
 		
+		stock.setCode(stockSymbolModel.getSymbol());
+		stock.setName(stockSymbolModel.getName());
+		stock.setIndex(indexName);
+		stock.setCountry(Locale.US.getCountry());
+		stock.setCurrency(currency);
+		try{
+		if((elem = keyStatsMap.get("marketcap_intraday")) != null){ stock.setMarketCap(new BigDecimal(elem.text().replaceAll(",", ""))); }
+		if((elem = keyStatsMap.get("enterprisevalue")) != null){ stock.setEnterpriseValue(new BigDecimal(elem.text().replaceAll(",", ""))); }
+		if((elem = keyStatsMap.get("trailingpe_ttm_intraday")) != null){ stock.setTrailingPE(new BigDecimal(elem.text().replaceAll(",", ""))); }
+		if((elem = keyStatsMap.get("forwardpe")) != null){ stock.setForwardPE(new BigDecimal(elem.text().replaceAll(",", ""))); }
+		if((elem = keyStatsMap.get("pegratio_5_yr_expected")) != null){ stock.setpEGRatio(new BigDecimal(elem.text().replaceAll(",", ""))); }
+		if((elem = keyStatsMap.get("pricesales_ttm")) != null){ stock.setPriceSales(new BigDecimal(elem.text().replaceAll(",", ""))); }
+		if((elem = keyStatsMap.get("pricebook_mrq")) != null){ stock.setPriceBook(new BigDecimal(elem.text().replaceAll(",", ""))); }
+		if((elem = keyStatsMap.get("enterprisevaluerevenue_ttm")) != null){ stock.setEnterpriseValueRevenue(new BigDecimal(elem.text().replaceAll(",", ""))); }
+		if((elem = keyStatsMap.get("enterprisevalueebitda_ttm")) != null){ stock.setEnterpriseValueEBITDA(new BigDecimal(elem.text().replaceAll(",", ""))); }
+		if((elem = keyStatsMap.get("fiscalyearends")) != null){ stock.setFiscalYearEnds(getYahooRepeatingDate(elem.text())); }
+		if((elem = keyStatsMap.get("mostrecentquarter_mrq")) != null){ stock.setMostRecentQuarter(getYahooDate(elem.text())); }
+		if((elem = keyStatsMap.get("profitmargin_ttm")) != null){ stock.setProfitMargin(new BigDecimal(trimPercent(elem.text().replaceAll(",", "")))); }
+		if((elem = keyStatsMap.get("operatingmargin_ttm")) != null){ stock.setOperatingMargin(new BigDecimal(trimPercent(elem.text().replaceAll(",", "")))); }
+		if((elem = keyStatsMap.get("returnonassets_ttm")) != null){ stock.setReturnonAssets(new BigDecimal(trimPercent(elem.text()))); }
+		if((elem = keyStatsMap.get("returnonequity_ttm")) != null){ stock.setReturnonEquity(new BigDecimal(trimPercent(elem.text().replaceAll(",", "")))); }
+		if((elem = keyStatsMap.get("revenue_ttm")) != null){ stock.setRevenue(new BigDecimal(elem.text().replaceAll(",", ""))); }
+		if((elem = keyStatsMap.get("revenuepershare_ttm")) != null){ stock.setRevenuePerShare(new BigDecimal(elem.text().replaceAll(",", ""))); }
+		if((elem = keyStatsMap.get("qtrlyrevenuegrowth_yoy")) != null){ stock.setQtrlyRevenueGrowth(new BigDecimal(trimPercent(elem.text().replaceAll(",", "")))); }
+		if((elem = keyStatsMap.get("grossprofit_ttm")) != null){ stock.setGrossProfit(new BigDecimal(elem.text().replaceAll(",", ""))); }
+		if((elem = keyStatsMap.get("ebitda_ttm")) != null){ stock.setEbitda(new BigDecimal(elem.text().replaceAll(",", ""))); }
+		if((elem = keyStatsMap.get("netincomeavltocommon_ttm")) != null){ stock.setNetIncomeAvltoCommon(new BigDecimal(elem.text().replaceAll(",", ""))); }
+		if((elem = keyStatsMap.get("dilutedeps_ttm")) != null){ stock.setDilutedEPS(new BigDecimal(elem.text().replaceAll(",", ""))); }
+		if((elem = keyStatsMap.get("qtrlyearningsgrowth_yoy")) != null){ stock.setQtrlyEarningsGrowth(new BigDecimal(trimPercent(elem.text().replaceAll(",", "")))); }
+		if((elem = keyStatsMap.get("totalcash_mrq")) != null){ stock.setTotalCash(new BigDecimal(elem.text().replaceAll(",", ""))); }
+		if((elem = keyStatsMap.get("totalcashpershare_mrq")) != null){ stock.setTotalCashPerShare(new BigDecimal(elem.text().replaceAll(",", ""))); }
+		if((elem = keyStatsMap.get("totaldebt_mrq")) != null){ stock.setTotalDebt(new BigDecimal(elem.text().replaceAll(",", ""))); }
+		if((elem = keyStatsMap.get("totaldebtequity_mrq")) != null){ stock.setTotalDebtEquity(new BigDecimal(elem.text().replaceAll(",", ""))); }
+		if((elem = keyStatsMap.get("currentratio_mrq")) != null){ stock.setCurrentRatio(new BigDecimal(trimPercent(elem.text()))); }
+		if((elem = keyStatsMap.get("bookvaluepershare_mrq")) != null){ stock.setBookValuePerShare(new BigDecimal(elem.text().replaceAll(",", ""))); }
+		if((elem = keyStatsMap.get("operatingcashflow_ttm")) != null){ stock.setOperatingCashFlow(new BigDecimal(elem.text().replaceAll(",", ""))); }
+		if((elem = keyStatsMap.get("leveredfreecashflow_ttm")) != null){ stock.setLeveredFreeCashFlow(new BigDecimal(elem.text().replaceAll(",", ""))); }
+		if((elem = keyStatsMap.get("beta")) != null){ stock.setBeta(new BigDecimal(elem.text().replaceAll(",", ""))); }
+		if((elem = keyStatsMap.get("p_52_weekchange_relative")) != null){ stock.setP_52_WeekChange(new BigDecimal(trimPercent(elem.text().replaceAll(",", "")))); }
+		if((elem = keyStatsMap.get("sp50052_weekchange_relative")) != null){ stock.setsP50052_WeekChange(new BigDecimal(trimPercent(elem.text().replaceAll(",", "")))); }
+		if((elem = keyStatsMap.get("p_52_weekhigh")) != null){ stock.setP_52_WeekHigh(new BigDecimal(elem.text().replaceAll(",", ""))); }
+		if((elem = keyStatsMap.get("p_52_weeklow")) != null){ stock.setP_52_WeekLow(new BigDecimal(elem.text().replaceAll(",", ""))); }
+		if((elem = keyStatsMap.get("p_50_daymovingaverage")) != null){ stock.setP_50_DayMovingAverage(new BigDecimal(elem.text().replaceAll(",", ""))); }
+		if((elem = keyStatsMap.get("p_200_daymovingaverage")) != null){ stock.setP_200_DayMovingAverage(new BigDecimal(elem.text().replaceAll(",", ""))); }
+		if((elem = keyStatsMap.get("avgvol_3_month")) != null){ stock.setAvgVol_3month(new BigDecimal(elem.text().replaceAll(",", ""))); }
+		if((elem = keyStatsMap.get("avgvol_10_day")) != null){ stock.setAvgVol_10day(new BigDecimal(elem.text().replaceAll(",", ""))); }
+		if((elem = keyStatsMap.get("sharesoutstanding")) != null){ stock.setSharesOutstanding(new BigDecimal(elem.text().replaceAll(",", ""))); }
+		if((elem = keyStatsMap.get("float")) != null){ stock.setFloatVal(new BigDecimal(elem.text().replaceAll(",", ""))); }
+		if((elem = keyStatsMap.get("percentageheldbyinsiders_relative")) != null){ stock.setPercentageHeldbyInsiders(new BigDecimal(trimPercent(elem.text().replaceAll(",", "")))); }
+		if((elem = keyStatsMap.get("percentageheldbyinstitutions_relative")) != null){ stock.setPercentageHeldbyInstitutions(new BigDecimal(trimPercent(elem.text().replaceAll(",", "")))); }
+		if((elem = keyStatsMap.get("sharesshort")) != null){ stock.setSharesShortCurrentMonth(new BigDecimal(elem.text().replaceAll(",", ""))); }
+		if((elem = keyStatsMap.get("shortratio")) != null){ stock.setShortRatio(new BigDecimal(trimPercent(elem.text().replaceAll(",", "")))); }
+		if((elem = keyStatsMap.get("shortpercentageoffloat")) != null){ stock.setShortPercentageofFloat(new BigDecimal(trimPercent(elem.text().replaceAll(",", "")))); }
+		if((elem = keyStatsMap.get("sharesshort_prior_month")) != null){ stock.setSharesShortPriorMonth(new BigDecimal(elem.text().replaceAll(",", ""))); }
+		if((elem = keyStatsMap.get("forwardannualdividendrate")) != null){ stock.setForwardAnnualDividendRate(new BigDecimal(elem.text().replaceAll(",", ""))); }
+		if((elem = keyStatsMap.get("forwardannualdividendyield_relative")) != null){ stock.setForwardAnnualDividendYield(new BigDecimal(trimPercent(elem.text().replaceAll(",", "")))); }
+		if((elem = keyStatsMap.get("trailingannualdividendyield")) != null){ stock.setTrailingAnnualDividendYieldAbsolute(new BigDecimal(elem.text().replaceAll(",", ""))); }
+		if((elem = keyStatsMap.get("trailingannualdividendyield_relative")) != null){ stock.setTrailingAnnualDividendYieldRelative(new BigDecimal(trimPercent(elem.text().replaceAll(",", "")))); }
+		if((elem = keyStatsMap.get("p_5yearaveragedividendyield_relative")) != null){ stock.setP_5YearAverageDividendYield(new BigDecimal(trimPercent(elem.text().replaceAll(",", "")))); }
+		if((elem = keyStatsMap.get("payoutyatio_relative")) != null){ stock.setPayoutRatio(new BigDecimal(trimPercent(elem.text().replaceAll(",", "")))); }
+		if((elem = keyStatsMap.get("DividendDate")) != null){ stock.setDividendDate(getYahooDate(elem.text())); }
+		if((elem = keyStatsMap.get("ex_dividenddate")) != null){ stock.setEx_DividendDate(getYahooDate(elem.text())); }
+		}catch(NumberFormatException e){
+			e.printStackTrace();
+		}
 		symbolNumber++;
-		return null;
+		return stock;
 	}
 
 	@Override
@@ -146,19 +149,19 @@ public class YahooStockDetailReader extends AbstractItemReader {
 
 		String tagName = elem.tagName();
 		String termAttr;
-		if ((termAttr = elem.attr("term")) != null) {
-			if (isYahooDate(termAttr) || termAttr.startsWith("as of")) {
-				return tagName;
-			} else {
-				return tagName + "_"
-						+ termAttr.replace(' ', '_').replaceAll(",", "");
-			}
-		} else {
+		if ((termAttr = elem.attr("term")).isEmpty()) {
 			String elemVal = elem.text();
 			if (elemVal.endsWith("%")) {
 				return tagName + "_relative";
 			} else {
 				return tagName;
+			}
+		} else {
+			if (isYahooDate(termAttr) || termAttr.startsWith("as of") || termAttr.startsWith("fye")) {
+				return tagName;
+			} else {
+				return tagName + "_"
+						+ termAttr.replace(' ', '_').replaceAll(",", "");
 			}
 		}
 	}
@@ -180,6 +183,25 @@ public class YahooStockDetailReader extends AbstractItemReader {
 			return cal;
 		} catch (ParseException e) {
 			throw new RuntimeException(e);
+		}
+	}
+
+	private static Calendar getYahooRepeatingDate(String dateStr) {
+		try {
+			Date date = yahooRepeatingDateFormat.parse(dateStr);
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(date);
+			return cal;
+		} catch (ParseException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	private static String trimPercent(String str){
+		if(str.endsWith("%")){
+			return str.substring(0, str.length()-1);
+		}else{
+			return str;
 		}
 	}
 
