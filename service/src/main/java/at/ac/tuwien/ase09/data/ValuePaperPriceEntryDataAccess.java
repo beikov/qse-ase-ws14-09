@@ -4,8 +4,8 @@ import java.util.Calendar;
 import java.util.List;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 
 import at.ac.tuwien.ase09.exception.AppException;
 import at.ac.tuwien.ase09.exception.EntityNotFoundException;
@@ -14,7 +14,7 @@ import at.ac.tuwien.ase09.model.ValuePaperPriceEntry;
 @Stateless
 public class ValuePaperPriceEntryDataAccess {
 
-	@PersistenceContext
+	@Inject
 	private EntityManager em;
 	
 	public ValuePaperPriceEntry getLastPriceEntry(String isin){

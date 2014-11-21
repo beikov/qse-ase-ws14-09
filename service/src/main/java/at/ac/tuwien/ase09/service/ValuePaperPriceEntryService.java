@@ -16,7 +16,7 @@ import at.ac.tuwien.ase09.model.ValuePaperPriceEntry;
 
 @Stateless
 public class ValuePaperPriceEntryService {
-	@PersistenceContext
+	@Inject
 	private EntityManager em;
 
 	@Inject

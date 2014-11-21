@@ -29,6 +29,7 @@ public class FundDetailWriter extends AbstractEntityWriter {
 			existingFund.setIsin(fund.getIsin());
 			existingFund.setName(fund.getName());
 			existingFund.setDetailUrl(fund.getDetailUrl());
+			existingFund.setHistoricPricesPageUrl(fund.getHistoricPricesPageUrl());
 		}else{
 			em.persist(fund);
 		}

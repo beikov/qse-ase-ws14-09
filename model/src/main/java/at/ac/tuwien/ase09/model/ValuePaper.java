@@ -16,6 +16,7 @@ public abstract class ValuePaper extends BaseEntity<Long> {
 	private String name;
 	private String isin;
 	private String detailUrl;
+	private String historicPricesPageUrl;
 	
 
 	@Column(unique=true)
@@ -50,6 +51,15 @@ public abstract class ValuePaper extends BaseEntity<Long> {
 
 	public void setDetailUrl(String detailUrl) {
 		this.detailUrl = detailUrl;
+	}
+
+	@Column(columnDefinition="TEXT")
+	public String getHistoricPricesPageUrl() {
+		return historicPricesPageUrl;
+	}
+
+	public void setHistoricPricesPageUrl(String historicPricesPageUrl) {
+		this.historicPricesPageUrl = historicPricesPageUrl;
 	}
 	
 }

@@ -1,16 +1,16 @@
 package at.ac.tuwien.ase09.data;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
-import javax.persistence.PersistenceContext;
 
 import at.ac.tuwien.ase09.exception.AppException;
 import at.ac.tuwien.ase09.model.User;
 
 @Stateless
 public class UserDataAccess {
-	@PersistenceContext
+	@Inject
 	private EntityManager em;
 
 	public User getByUsername(String username) {

@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import javax.batch.api.BatchProperty;
 import javax.batch.api.chunk.AbstractItemReader;
 import javax.batch.runtime.context.StepContext;
 import javax.enterprise.context.Dependent;
@@ -19,24 +20,30 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import at.ac.tuwien.ase09.data.JsoupUtils;
+import at.ac.tuwien.ase09.data.model.FundDetailLinkModel;
 import at.ac.tuwien.ase09.model.Fund;
 
 @Dependent
 @Named
 public class FundDetailReader extends AbstractItemReader {
 	private static final Pattern urlTypePattern = Pattern.compile("TYPE=([^&]*)");
+	private static final String detailLinkParameterTemplate = "todo=hist&rxpath=&xsl=/present/fund_hist_kz.xsl&sxpath=*[@key=%27#{keyPlaceholder}|%27]&context=/pool_data/fonds_stammdaten/fonds&dxpath=*[head[*]%20and%20tab[fps[preis[preis_e1[preis[wert%20and%20whrg[iso]%20and%20whrg/iso=%27EUR%27%20and%20@hist_date%3E=getHistDate(%27MONTH%27,-1)]]]]]]";
+	
+	@Inject
+	@BatchProperty(name="profitwebHistoryUrl")
+	private String historyBaseUrl;
 	
 	@Inject
 	private StepContext stepContext;
 	
-	private List<String> fundDetailLinks;
+	private List<FundDetailLinkModel> fundDetailLinks;
 	private final Currency currency = Currency.getInstance("EUR");
 	
 	private Integer linkNumber;
 	
 	@Override
 	public void open(Serializable checkpoint) throws Exception {
-		fundDetailLinks = (List<String>) stepContext.getPersistentUserData();
+		fundDetailLinks = (List<FundDetailLinkModel>) stepContext.getPersistentUserData();
 		if(checkpoint != null){
 			linkNumber = (Integer) checkpoint;
 		}else{
@@ -49,8 +56,8 @@ public class FundDetailReader extends AbstractItemReader {
 		if(linkNumber >= fundDetailLinks.size()){
 			return null;
 		}
-		String fundDetailLink = fundDetailLinks.get(linkNumber);
-		Document detailPage = JsoupUtils.getPage(fundDetailLink, Method.POST, 3000);
+		FundDetailLinkModel fundDetailLink = fundDetailLinks.get(linkNumber);
+		Document detailPage = JsoupUtils.getPage(fundDetailLink.getDetailUrl(), Method.POST, 3000);
 		
 		Elements tableRowElems = detailPage.select("tr");
 		Map<String, String> tableRows =tableRowElems.stream()
@@ -59,7 +66,8 @@ public class FundDetailReader extends AbstractItemReader {
 		Fund fund = new Fund();
 		fund.setIsin(tableRows.get("ISIN"));
 		fund.setName(tableRows.get("Bezeichnung"));
-		fund.setDetailUrl(fundDetailLink);
+		fund.setDetailUrl(fundDetailLink.getDetailUrl());
+		fund.setHistoricPricesPageUrl(historyBaseUrl + "?" + detailLinkParameterTemplate.replaceAll("#\\{keyPlaceholder\\}", fundDetailLink.getKey()));
 		
 		linkNumber++;
 		return fund;

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This job extracts all bonds from ATX stocks -->
+<job id="detailStockExtractionNasdaq100" xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	version="1.0">
+	<properties>
+	    <property name="nasdaqListUrl" value="http://www.cnbc.com/id/28141521#." />
+	</properties>
+	<step id="symbolExtraction" next="stockDetailExtraction">
+		<batchlet ref="nasdaqSymbolReaderBatchlet">
+			<properties>
+				<property name="nasdaqListUrl" value="#{jobProperties['nasdaqListUrl']}" />
+			</properties>
+		</batchlet>
+		<listeners>
+			<listener ref="StepBoundaryLogger" />
+		</listeners>
+	</step>
+	<step id="stockDetailExtraction">
+		<chunk>
+			<reader ref="yahooStockDetailReader">
+<!-- 			    <properties> -->
+<!-- 			        <property name="finanzenNetUrl" value="#{jobProperties['finanzenNetUrl']}" /> -->
+<!-- 			    </properties> -->
+		    </reader>
+			<writer ref="StockDetailWriter" />
+
+			<retryable-exception-classes>
+				<include class="java.net.SocketTimeoutException" />
+			</retryable-exception-classes>
+			<skippable-exception-classes>
+				<include class="java.net.SocketTimeoutException" />
+			</skippable-exception-classes>
+		</chunk>
+		<listeners>
+			<listener ref="StepBoundaryLogger" />
+			<listener ref="TransitioningStepListener" />
+			<listener ref="DefaultSkipListener" />
+			<listener ref="DefaultRetryListener" />
+		</listeners>
+	</step>
+<!-- 	<step id="stockHistoricPriceExtraction"> -->
+<!-- 		<chunk item-count="5"> -->
+<!-- 			<reader ref="historicStockPriceReader"> -->
+<!-- 			    <properties> -->
+<!-- 					<property name="indexName" value="#{jobProperties['indexName']}" /> -->
+<!-- 				</properties> -->
+<!-- 			</reader> -->
+<!-- 			<processor ref="historicPriceProcessor" /> -->
+<!-- 			<writer ref="historicPriceWriter" /> -->
+
+<!-- 			<retryable-exception-classes> -->
+<!-- 				<include class="java.net.SocketTimeoutException" /> -->
+<!-- 			</retryable-exception-classes> -->
+<!-- 			<skippable-exception-classes> -->
+<!-- 				<include class="java.net.SocketTimeoutException" /> -->
+<!-- 			</skippable-exception-classes> -->
+<!-- 		</chunk> -->
+<!-- 		<listeners> -->
+<!-- 			<listener ref="StepBoundaryLogger" /> -->
+<!-- 			<listener ref="DefaultSkipListener" /> -->
+<!-- 			<listener ref="DefaultRetryListener" /> -->
+<!-- 		</listeners> -->
+<!-- 	</step> -->
+	<listeners>
+		<listener ref="JobBoundaryLogger" />
+		<listener ref="SuccessorJobStarter">
+			<properties>
+				<property name="successorJobIds" value="#{jobParameters['successorJobIds']}" />
+			</properties>
+		</listener>
+	</listeners>
+</job>

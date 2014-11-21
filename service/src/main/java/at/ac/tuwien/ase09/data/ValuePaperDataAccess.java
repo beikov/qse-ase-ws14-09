@@ -3,9 +3,9 @@ package at.ac.tuwien.ase09.data;
 import java.util.List;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
-import javax.persistence.PersistenceContext;
 
 import at.ac.tuwien.ase09.exception.AppException;
 import at.ac.tuwien.ase09.exception.EntityNotFoundException;
@@ -15,7 +15,7 @@ import at.ac.tuwien.ase09.model.ValuePaper;
 
 @Stateless
 public class ValuePaperDataAccess {
-	@PersistenceContext
+	@Inject
 	private EntityManager em;
 
 	public <T extends ValuePaper> T getValuePaperByIsin(String isin, Class<T> clazz){

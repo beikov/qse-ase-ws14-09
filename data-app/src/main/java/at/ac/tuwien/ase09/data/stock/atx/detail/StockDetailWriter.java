@@ -1,4 +1,4 @@
-package at.ac.tuwien.ase09.data.stock.detail;
+package at.ac.tuwien.ase09.data.stock.atx.detail;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;

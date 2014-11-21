@@ -1,4 +1,4 @@
-package at.ac.tuwien.ase09.data.stock.intraday;
+package at.ac.tuwien.ase09.data.stock.atx.intraday;
 
 import java.io.Serializable;
 import java.util.List;
@@ -23,7 +23,7 @@ public class PriceListWriter extends AbstractItemWriter {
 	@Inject
 	private ValuePaperPriceEntryService service;
 
-	@PersistenceContext
+	@Inject
 	private EntityManager em;
 	
 	@Override
