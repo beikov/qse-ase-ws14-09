@@ -17,8 +17,8 @@ public class ValuePaperService {
 	@Inject
 	private ValuePaperDataAccess valuePaperDataAccess;
 	
-	public ValuePaper getValuePaperByIsin(String isin){
-		return valuePaperDataAccess.getValuePaperByIsin(isin, ValuePaper.class);
+	public ValuePaper getValuePaperByCode(String code){
+		return valuePaperDataAccess.getValuePaperByCode(code, ValuePaper.class);
 	}
 	
 }

@@ -32,7 +32,7 @@ public class BondPriceProcessor implements ItemProcessor {
 		}catch(EntityNotFoundException e1){
 			// check if the value paper itself exists in our db
 			try{
-				valuePaperDataAccess.getValuePaperByIsin(price.getIsin(), StockBond.class);
+				valuePaperDataAccess.getValuePaperByCode(price.getIsin(), StockBond.class);
 			}catch(EntityNotFoundException e2) {
 				// if the value paper is unknown, skip this item
 				return null;
