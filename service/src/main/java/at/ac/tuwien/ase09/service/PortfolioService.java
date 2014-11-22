@@ -11,6 +11,7 @@ import javax.persistence.PersistenceContext;
 
 import at.ac.tuwien.ase09.data.PortfolioDataAccess;
 import at.ac.tuwien.ase09.model.Portfolio;
+import at.ac.tuwien.ase09.model.PortfolioValuePaper;
 import at.ac.tuwien.ase09.model.Stock;
 import at.ac.tuwien.ase09.model.User;
 import at.ac.tuwien.ase09.model.ValuePaper;
@@ -27,9 +28,10 @@ public class PortfolioService {
 	
 	public Map<ValuePaperType, Integer> getValuePaperTypeCountMap(Portfolio portfolio) {
 		Map<ValuePaperType, Integer> valuePaperTypeCounterMap = new HashMap<ValuePaperType, Integer>();
-		Iterator<ValuePaper> iter = portfolio.getValuePapers().iterator(); 
+		Iterator<PortfolioValuePaper> iter = portfolio.getValuePapers().iterator(); 
 		while (iter.hasNext()) {
-			ValuePaper paper = iter.next();
+			PortfolioValuePaper association = iter.next();
+			ValuePaper paper = association.getValuePaper();
 			ValuePaperType type = paper.getType();
 			int current = 0;
 			if (valuePaperTypeCounterMap.get(type) != null)
@@ -41,9 +43,10 @@ public class PortfolioService {
 	
 	public Map<String, Integer> getValuePaperCountryCountMap(Portfolio portfolio) {
 		Map<String, Integer> valuePaperCountryCountMap = new HashMap<String, Integer>();
-		Iterator<ValuePaper> iter = portfolio.getValuePapers().iterator(); 
+		Iterator<PortfolioValuePaper> iter = portfolio.getValuePapers().iterator(); 
 		while (iter.hasNext()) {
-			ValuePaper paper = iter.next();
+			PortfolioValuePaper portfolioValuePaper = iter.next();
+			ValuePaper paper = portfolioValuePaper.getValuePaper();
 			if (!(paper instanceof Stock)) {
 				continue;
 			}

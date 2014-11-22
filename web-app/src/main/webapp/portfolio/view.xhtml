@@ -55,9 +55,14 @@
 	    
 		<p:tabView>
 			<p:tab title="Einzeltitel">
-	            <p:dataTable var="paper" value="#{portfolioViewBean.portfolio.valuePapers}">
+	            <p:dataTable var="association" value="#{portfolioViewBean.portfolio.valuePapers}">
+	            	<c:set var="paper" value="#{association.valuePaper}"/>
+	            	
 				    <p:column headerText="Name" sortBy="#{paper.name}">
-				        <h:outputText value="#{paper.name}" />
+				        <h:outputText value="#{paper.name}"></h:outputText>
+				    </p:column>
+				    <p:column headerText="Stück">
+				        <h:outputText value="#{association.volume}"></h:outputText>
 				    </p:column>
 				    <p:column headerText="Währung" sortBy="#{paper.currency.currencyCode}">
 				        <h:outputText value="#{paper.currency.currencyCode} (#{paper.currency.symbol})" />
