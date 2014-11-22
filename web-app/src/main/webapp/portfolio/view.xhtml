@@ -17,45 +17,51 @@
 
 		<p:panel id="stats" header="Übersicht" style="margin-bottom:20px">
 			<p:panelGrid columns="2">
-				<h:outputText value="Portfolio:" />
-				<h:outputText value="#{portfolioViewBean.portfolio.name}" />
+			
+				<p:panelGrid columns="2">
+					<h:outputText value="Portfolio:" />
+					<h:outputText value="#{portfolioViewBean.portfolio.name}" />
+					
+					<h:outputText value="Besitzer:" />
+					<h:outputText value="#{portfolioViewBean.portfolio.owner.username}" />
+					
+					<h:outputText value="Erstellt:" />
+					<h:outputText value="#{portfolioViewBean.portfolio.created.time}" />
+					
+					<h:outputText value="Aktuelles Kapital:" />
+					<h:outputText value="#{portfolioViewBean.portfolio.currentCapital}" />
+					
+					<h:outputText value="Startkapital:" />
+					<h:outputText value="#{portfolioViewBean.portfolio.setting.startCapital}" />
+					
+					<h:outputText value="Ordergebühr:" />
+					<h:outputText value="#{portfolioViewBean.portfolio.setting.orderFee}" />
+					
+					<h:outputText value="Portfoliogebühr:" />
+					<h:outputText value="#{portfolioViewBean.portfolio.setting.portfolioFee}" />
+					
+					<h:outputText value="Kapitalertragssteuer:" />
+					<h:outputText value="#{portfolioViewBean.portfolio.setting.capitalReturnTax}" />
+				</p:panelGrid>
 				
-				<h:outputText value="Besitzer:" />
-				<h:outputText value="#{portfolioViewBean.portfolio.owner.username}" />
+				<p:dataTable var="follower" value="#{portfolioViewBean.followerList}" style="width:300px;" >
+					<f:facet name="header">
+				        Followers
+				    </f:facet>
+					<p:column headerText="Name" sortBy="#{follower.username}">
+						<h:outputText value="#{follower.username}" />
+					</p:column>
+					<h:outputText value="#{portfolioViewBean.portfolio.followers}" />
+				</p:dataTable>
 				
-				<h:outputText value="Erstellt:" />
-				<h:outputText value="#{portfolioViewBean.portfolio.created.time}" />
-				
-				<h:outputText value="Aktuelles Kapital:" />
-				<h:outputText value="#{portfolioViewBean.portfolio.currentCapital}" />
-			</p:panelGrid>
-			<p:panelGrid columns="2">
-				<h:outputText value="Startkapital:" />
-				<h:outputText value="#{portfolioViewBean.portfolio.setting.startCapital}" />
-				
-				<h:outputText value="Ordergebühr:" />
-				<h:outputText value="#{portfolioViewBean.portfolio.setting.orderFee}" />
-				
-				<h:outputText value="Portfoliogebühr:" />
-				<h:outputText value="#{portfolioViewBean.portfolio.setting.portfolioFee}" />
-				
-				<h:outputText value="Kapitalertragssteuer:" />
-				<h:outputText value="#{portfolioViewBean.portfolio.setting.capitalReturnTax}" />
-			</p:panelGrid>
-			<p:dataTable var="follower" value="#{portfolioViewBean.portfolio.followers}">
-				<f:facet name="header">
-			        Followers
-			    </f:facet>
-				<p:column headerText="Name" sortBy="#{follower.username}">
-					<h:outputText value="#{follower.username}" />
-				</p:column>
-				<h:outputText value="#{portfolioViewBean.portfolio.followers}" />
-			</p:dataTable>
+			</p:panelGrid>	
+			
+			
 	    </p:panel>
 	    
 		<p:tabView>
 			<p:tab title="Einzeltitel">
-	            <p:dataTable var="association" value="#{portfolioViewBean.portfolio.valuePapers}">
+	            <p:dataTable var="association" value="#{portfolioViewBean.valuePaperList}">
 	            	<c:set var="paper" value="#{association.valuePaper}"/>
 	            	
 				    <p:column headerText="Name" sortBy="#{paper.name}">
@@ -89,7 +95,7 @@
 				</c:if>
 	        </p:tab>
 	        <p:tab title="Orders">
-	            <p:dataTable var="order" value="#{portfolioViewBean.portfolio.orders}">				  
+	            <p:dataTable var="order" value="#{portfolioViewBean.orderList}">				  
 				  	<p:column headerText="Datum" sortBy="#{order.created.time}">
 				        <h:outputText value="#{order.created.time}" />
 				    </p:column>
@@ -123,7 +129,7 @@
 				</p:dataTable>
 	        </p:tab>
 	        <p:tab title="Transaktionen">
-	            <p:dataTable var="trade" value="#{portfolioViewBean.portfolio.transactionEntries}">
+	            <p:dataTable var="trade" value="#{portfolioViewBean.transactionList}">
 				    
 				    <p:column headerText="Datum" sortBy="#{trade.created.time}">
 				        <h:outputText value="#{trade.created.time}" />

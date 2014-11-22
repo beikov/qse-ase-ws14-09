@@ -3,6 +3,8 @@ package at.ac.tuwien.ase09.bean;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -19,6 +21,8 @@ import org.primefaces.model.chart.PieChartModel;
 
 import at.ac.tuwien.ase09.data.PortfolioDataAccess;
 import at.ac.tuwien.ase09.model.Portfolio;
+import at.ac.tuwien.ase09.model.PortfolioValuePaper;
+import at.ac.tuwien.ase09.model.User;
 import at.ac.tuwien.ase09.model.ValuePaper;
 import at.ac.tuwien.ase09.model.ValuePaperType;
 import at.ac.tuwien.ase09.model.order.Order;
@@ -94,6 +98,22 @@ public class PortfolioViewBean implements Serializable {
 		return "";
 	}
 	
+	public List<PortfolioValuePaper> getValuePaperList() {
+		return new LinkedList<PortfolioValuePaper>(portfolio.getValuePapers());
+	}
+	
+	public List<Order> getOrderList() {
+		return new LinkedList<Order>(portfolio.getOrders());
+	}
+	
+	public List<TransactionEntry> getTransactionList() {
+		return new LinkedList<TransactionEntry>(portfolio.getTransactionEntries());
+	}
+	
+	public List<User> getFollowerList() {
+		return new LinkedList<User>(portfolio.getFollowers());
+	}
+	
 	
 	private void loadPortfolio(Long portfolioId) {
 		this.portfolio = portfolioDataAccess.getPortfolioById(portfolioId);
@@ -140,6 +160,9 @@ public class PortfolioViewBean implements Serializable {
 		portfolioChart = new LineChartModel();
         LineChartSeries series1 = new LineChartSeries();
         series1.setLabel("Series 1");
+        series1.set("2014-01-01", portfolio.getSetting().getStartCapital().getValue());
+        
+        series1.set("2014-01-03", BigDecimal.valueOf(30+portfolio.getSetting().getStartCapital().getValue().longValue()));
         
         Set<TransactionEntry> transactionSet = portfolio.getTransactionEntries();
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
