@@ -3,6 +3,7 @@ package at.ac.tuwien.ase09.data.stock.nasdaq.detail;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.batch.api.AbstractBatchlet;
 import javax.batch.api.BatchProperty;
@@ -23,6 +24,7 @@ import at.ac.tuwien.ase09.data.model.SymbolModel;
 @Named
 public class NasdaqSymbolReaderBatchlet extends AbstractBatchlet {
 	private static final Logger LOG = Logger.getLogger(NasdaqSymbolReaderBatchlet.class.getName());
+	
 	@Inject
 	@BatchProperty(name = "nasdaqListUrl")
 	private String nasdaqListUrl;
@@ -35,18 +37,15 @@ public class NasdaqSymbolReaderBatchlet extends AbstractBatchlet {
 		Document boerse = JsoupUtils.getPage(nasdaqListUrl);
 
 		Elements symbolTableRows = boerse
-				.select("table.data.quoteTable tr");
-		List<SymbolModel> symbolModels = new ArrayList<>();
+				.select("table.data.quoteTable tbody tr");
+		List<String> symbols = symbols = symbolTableRows.stream().map(elem -> elem.getElementsByAttributeValue("data-field", "symbol").text()).collect(Collectors.toList());
+
+		//		String symbolsStr = symbols.stream().collect(StringBuilder::new, (StringBuilder result, String elem) -> result.append('|').append(elem),
+//                                          StringBuilder::append).toString();
 		
-		for (Element symbolTableRow : symbolTableRows){
-			String symbol = symbolTableRow.getElementsByAttributeValue("data-field", "symbol").text();
-			String name = symbolTableRow.getElementsByAttributeValue("data-field", "name").text();
-			symbolModels.add(new SymbolModel(symbol, name));
-		}
+		jobContext.setTransientUserData(symbols);
 		
-		jobContext.setTransientUserData(symbolModels);
-		
-		LOG.info("Extracted " + symbolModels.size() + " stock symbol models");
+		LOG.info("Extracted " + symbols.size() + " stock symbol models");
 		
 		return StepExitStatus.COMPLETED.toString();
 	}

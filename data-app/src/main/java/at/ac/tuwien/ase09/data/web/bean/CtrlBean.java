@@ -19,6 +19,10 @@ public class CtrlBean {
 		BatchRuntime.getJobOperator().start("detailStockExtractionNasdaq100", null);
 	}
 	
+	public void startNasdaq100IntradayStockPriceExtraction(){
+		BatchRuntime.getJobOperator().start("intradayStockExtractionNasdaq100", null);
+	}
+	
 	public void startATXBondDetailExtraction(){
 		BatchRuntime.getJobOperator().start("detailBondExtractionATX", null);
 	}
