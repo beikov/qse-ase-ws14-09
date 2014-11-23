@@ -20,13 +20,13 @@ public class BondDetailWriter extends AbstractEntityWriter {
 		StockBond bond = (StockBond) entity;
 		StockBond existingBond = null;
 		try{
-			existingBond = valuePaperDataAccess.getValuePaperByIsin(bond.getIsin(), StockBond.class);
+			existingBond = valuePaperDataAccess.getValuePaperByCode(bond.getCode(), StockBond.class);
 		}catch(EntityNotFoundException nfe){
 			// ignore
 		}
 		// TODO: set id on entity or copy fields to attached existingEntity?
 		if(existingBond != null){
-			existingBond.setIsin(bond.getIsin());
+			existingBond.setCode(bond.getCode());
 			existingBond.setName(bond.getName());
 			existingBond.setBaseStock(bond.getBaseStock());
 			existingBond.setHistoricPricesPageUrl(bond.getHistoricPricesPageUrl());

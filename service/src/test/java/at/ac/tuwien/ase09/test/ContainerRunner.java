@@ -45,7 +45,7 @@ import com.blazebit.exception.ExceptionUtils;
  * 
  */
 public class ContainerRunner extends BlockJUnit4ClassRunner {
-
+	private static String persistenceXmlPrefix = "test-";
     private static boolean inUse = false;
     private static int testRun = 1;
     private static CdiContainer container;
@@ -77,7 +77,7 @@ public class ContainerRunner extends BlockJUnit4ClassRunner {
         // E.g.: (CoreServiceImpl)/CarrierRestoreService
         // E.g.: (CarrierServiceImpl)/CarrierRestoreService
         // both implement the Restorable interface
-        System.setProperty("openejb.deploymentId.format", "{moduleId}/{ejbName}");
+//        System.setProperty("openejb.deploymentId.format", "{moduleId}/{ejbName}");
         System.setProperty("openejb.embedded.initialcontext.close", "destroy");
         
         // Load the default EJB configuration file
@@ -86,6 +86,9 @@ public class ContainerRunner extends BlockJUnit4ClassRunner {
         } catch (URISyntaxException e) {
             throw new RuntimeException("could not load openejb.xml");
         }
+        
+        System.setProperty("openejb.validation.output.level", "verbose");
+        System.setProperty("openejb.altdd.prefix", persistenceXmlPrefix);
         
         // Actually start the container
         container = CdiContainerLoader.getCdiContainer();
@@ -163,7 +166,7 @@ public class ContainerRunner extends BlockJUnit4ClassRunner {
                             ex = e;
                         }
                         
-                        if(!expected.isAssignableFrom(AppException.class)) {
+                        if(!AppException.class.isAssignableFrom(expected)) {
                             // if we expect a non core exception but get one
                             // the original was probably wrapped, so we unwrap that
                             if(ex instanceof AppException && ex.getCause() != null) {
@@ -237,8 +240,8 @@ public class ContainerRunner extends BlockJUnit4ClassRunner {
                                 properties.put("javax.persistence.jtaDataSource", null);
                                 properties.put("javax.persistence.transactionType", "RESOURCE_LOCAL");
                                 properties.put("javax.persistence.jdbc.driver", "org.h2.Driver");
-                                properties.put("javax.persistence.jdbc.user", "clcadmin");
-                                properties.put("javax.persistence.jdbc.password", "clcadmin");
+                                properties.put("javax.persistence.jdbc.user", "test");
+                                properties.put("javax.persistence.jdbc.password", "test");
                                 properties.put("javax.persistence.jdbc.url", "jdbc:h2:mem:test;" + 
                                         "INIT=CREATE SCHEMA IF NOT EXISTS CLCADMIN\\;" + 
                                         "SET SCHEMA CLCADMIN");

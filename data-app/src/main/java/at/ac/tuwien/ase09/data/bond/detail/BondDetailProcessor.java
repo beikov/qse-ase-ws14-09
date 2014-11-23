@@ -27,11 +27,11 @@ public class BondDetailProcessor implements ItemProcessor{
 		StockBondModel bondModel = (StockBondModel) item;
 		StockBond stockBond = new StockBond();
 		try{
-			Stock baseStock = valuePaperDataAccess.getValuePaperByIsin(bondModel.getBaseValueIsin(), Stock.class);
+			Stock baseStock = valuePaperDataAccess.getValuePaperByCode(bondModel.getBaseValueIsin(), Stock.class);
 			stockBond.setBaseStock(baseStock);
 			stockBond.setHistoricPricesPageUrl(bondModel.getHistoricPricesPageUrl());
 			stockBond.setDetailUrl(bondModel.getDetailUrl());
-			stockBond.setIsin(bondModel.getIsin());
+			stockBond.setCode(bondModel.getIsin());
 			stockBond.setName(bondModel.getName());
 			return stockBond;
 		}catch(ElementNotFoundException e){

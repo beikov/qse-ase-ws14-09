@@ -3,9 +3,9 @@ package at.ac.tuwien.ase09.data;
 import java.util.List;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
-import javax.persistence.PersistenceContext;
 
 import at.ac.tuwien.ase09.exception.AppException;
 import at.ac.tuwien.ase09.exception.EntityNotFoundException;
@@ -16,29 +16,12 @@ import at.ac.tuwien.ase09.model.ValuePaperType;
 
 @Stateless
 public class ValuePaperDataAccess {
-	@PersistenceContext
+	@Inject
 	private EntityManager em;
 
-//	public <T extends ValuePaper> T getValuePaperByIsin(String isin, Class<T> clazz){
-//		try{
-//			return em.createQuery("SELECT v FROM " + clazz.getSimpleName() + " v WHERE v.isin = :isin", clazz).setParameter("isin", isin).getSingleResult();
-//		}catch(NoResultException e){
-//			throw new EntityNotFoundException(e);
-//		}catch(Exception e){
-//			throw new AppException(e);
-//		}
-//	}
-	
-	public <T extends ValuePaper> T getValuePaperByIsin(String isin, Class<T> clazz){
+	public <T extends ValuePaper> T getValuePaperByCode(String code, Class<T> clazz){
 		try{
-			ValuePaper p = em.createQuery("SELECT v FROM " + clazz.getSimpleName() + " v WHERE v.isin = :isin", clazz).setParameter("isin", isin).getSingleResult();
-		
-			if(p.getType() == ValuePaperType.BOND){
-				if(((StockBond)p).getBaseStock() != null)
-				em.createQuery("SELECT b.baseStock FROM StockBond b WHERE b.isin = :isin", clazz).setParameter("isin", isin).getSingleResult();
-			}
-			
-			return (T) p;
+			return em.createQuery("SELECT v FROM " + clazz.getSimpleName() + " v WHERE v.code = :code", clazz).setParameter("code", code).getSingleResult();
 		}catch(NoResultException e){
 			throw new EntityNotFoundException(e);
 		}catch(Exception e){

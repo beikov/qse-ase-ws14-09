@@ -25,6 +25,7 @@ import org.jsoup.select.Elements;
 import at.ac.tuwien.ase09.data.JsoupUtils;
 import at.ac.tuwien.ase09.data.StepExitStatus;
 import at.ac.tuwien.ase09.data.ValuePaperDataAccess;
+import at.ac.tuwien.ase09.data.model.FundDetailLinkModel;
 import at.ac.tuwien.ase09.model.Stock;
 
 @Dependent
@@ -43,7 +44,7 @@ public class FundDetailLinkReaderBatchlet extends AbstractBatchlet {
 	
 	@Override
 	public String process() throws Exception {
-		List<String> fundDetailLinks = new ArrayList<>();
+		List<FundDetailLinkModel> fundDetailLinks = new ArrayList<>();
 		Document smallDetailLinkPage = JsoupUtils.getPage(profitwebUrl + "?" + simpleDetailLinkPageParameters, Method.POST, 10000);
 		Element linkNumberField = smallDetailLinkPage.select("table.level_start td.blaettern:nth-child(2)").get(0);
 		int linkNumber = Integer.parseInt(linkNumberField.text().split(" ")[0]);
@@ -56,7 +57,7 @@ public class FundDetailLinkReaderBatchlet extends AbstractBatchlet {
 			Matcher keyMatcher = keyPattern.matcher(rawDetailLink);
 			if(keyMatcher.find()){
 				String key = keyMatcher.group(1);
-				fundDetailLinks.add(profitwebUrl + "?" + detailLinkParameterTemplate.replaceAll("\\#\\{keyPlaceholder\\}", key));
+				fundDetailLinks.add(new FundDetailLinkModel(profitwebUrl + "?" + detailLinkParameterTemplate.replaceAll("\\#\\{keyPlaceholder\\}", key), key));
 			}
 			
 		}
