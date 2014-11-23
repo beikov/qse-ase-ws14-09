@@ -14,6 +14,9 @@ public abstract class ValuePaper extends BaseEntity<Long> {
 	private static final long serialVersionUID = 1L;
 
 	private String name;
+	/**
+	 * The code is either an ISIN or a symbol (for US stocks)
+	 */
 	private String code;
 	private String detailUrl;
 	private String historicPricesPageUrl;
