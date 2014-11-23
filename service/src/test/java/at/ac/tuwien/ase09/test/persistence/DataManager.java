@@ -15,6 +15,7 @@ public class DataManager {
 	
     public <I extends Serializable, E extends BaseEntity<I>> void persist(final E entity) {
         em.persist(entity);
+        em.flush();
     }
     
     public <I extends Serializable, E extends BaseEntity<I>> E detach(final E entity) {

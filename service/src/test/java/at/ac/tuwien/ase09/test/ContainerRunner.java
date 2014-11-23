@@ -242,9 +242,7 @@ public class ContainerRunner extends BlockJUnit4ClassRunner {
                                 properties.put("javax.persistence.jdbc.driver", "org.h2.Driver");
                                 properties.put("javax.persistence.jdbc.user", "test");
                                 properties.put("javax.persistence.jdbc.password", "test");
-                                properties.put("javax.persistence.jdbc.url", "jdbc:h2:mem:test;" + 
-                                        "INIT=CREATE SCHEMA IF NOT EXISTS CLCADMIN\\;" + 
-                                        "SET SCHEMA CLCADMIN");
+                                properties.put("javax.persistence.jdbc.url", "jdbc:h2:mem:test");
                                 
                                 emf = Persistence.createEntityManagerFactory(databaseAwareAnnotation.unitName(), properties);
                             }
