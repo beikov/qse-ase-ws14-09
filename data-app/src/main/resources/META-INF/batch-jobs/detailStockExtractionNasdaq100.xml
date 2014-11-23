@@ -16,7 +16,7 @@
 			<listener ref="StepBoundaryLogger" />
 		</listeners>
 	</step>
-	<step id="stockDetailExtraction">
+	<step id="stockDetailExtraction" next="stockHistoricPriceExtraction">
 		<chunk>
 			<reader ref="yahooStockDetailReader">
 			    <properties>
@@ -39,29 +39,29 @@
 			<listener ref="DefaultRetryListener" />
 		</listeners>
 	</step>
-<!-- 	<step id="stockHistoricPriceExtraction"> -->
-<!-- 		<chunk item-count="5"> -->
-<!-- 			<reader ref="historicStockPriceReader"> -->
-<!-- 			    <properties> -->
-<!-- 					<property name="indexName" value="#{jobProperties['indexName']}" /> -->
-<!-- 				</properties> -->
-<!-- 			</reader> -->
-<!-- 			<processor ref="historicPriceProcessor" /> -->
-<!-- 			<writer ref="historicPriceWriter" /> -->
+	<step id="stockHistoricPriceExtraction">
+		<chunk item-count="5">
+			<reader ref="yahooHistoricStockPriceReader">
+			    <properties>
+					<property name="indexName" value="#{jobProperties['indexName']}" />
+				</properties>
+			</reader>
+			<processor ref="historicPriceProcessor" />
+			<writer ref="historicPriceWriter" />
 
-<!-- 			<retryable-exception-classes> -->
-<!-- 				<include class="java.net.SocketTimeoutException" /> -->
-<!-- 			</retryable-exception-classes> -->
-<!-- 			<skippable-exception-classes> -->
-<!-- 				<include class="java.net.SocketTimeoutException" /> -->
-<!-- 			</skippable-exception-classes> -->
-<!-- 		</chunk> -->
-<!-- 		<listeners> -->
-<!-- 			<listener ref="StepBoundaryLogger" /> -->
-<!-- 			<listener ref="DefaultSkipListener" /> -->
-<!-- 			<listener ref="DefaultRetryListener" /> -->
-<!-- 		</listeners> -->
-<!-- 	</step> -->
+			<retryable-exception-classes>
+				<include class="java.net.SocketTimeoutException" />
+			</retryable-exception-classes>
+			<skippable-exception-classes>
+				<include class="java.net.SocketTimeoutException" />
+			</skippable-exception-classes>
+		</chunk>
+		<listeners>
+			<listener ref="StepBoundaryLogger" />
+			<listener ref="DefaultSkipListener" />
+			<listener ref="DefaultRetryListener" />
+		</listeners>
+	</step>
 	<listeners>
 		<listener ref="JobBoundaryLogger" />
 		<listener ref="SuccessorJobStarter">

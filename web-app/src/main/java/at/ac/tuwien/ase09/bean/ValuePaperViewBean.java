@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import javax.enterprise.context.RequestScoped;
+import javax.faces.bean.ManagedBean;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
@@ -33,6 +34,7 @@ import at.ac.tuwien.ase09.model.ValuePaperType;
 import at.ac.tuwien.ase09.service.ValuePaperPriceEntryService;
 import at.ac.tuwien.ase09.service.ValuePaperService;
 
+@ManagedBean
 @Named
 @RequestScoped
 public class ValuePaperViewBean implements Serializable{
