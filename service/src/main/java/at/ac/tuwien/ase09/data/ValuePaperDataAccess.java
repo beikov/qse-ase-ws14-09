@@ -51,4 +51,12 @@ public class ValuePaperDataAccess {
 			throw new AppException(e);
 		}
 	}
+	
+	public List<String> getStockCodesByIndex(String indexName){
+		try{
+			return em.createQuery("SELECT stock.code FROM Stock stock WHERE stock.index = :index", String.class).setParameter("index", indexName).getResultList();
+		}catch(Exception e){
+			throw new AppException(e);
+		}
+	}
 }
