@@ -38,9 +38,9 @@ public class ValuePaperScreenerAccess {
 		if (valuePaper.getType() == ValuePaperType.STOCK && ((Stock)valuePaper).getCurrency() != null) {
 			crit.add(Restrictions.eq("valuePaper.currency", ((Stock)valuePaper).getCurrency()));
 		}
-		if (valuePaper.getIsin() != null && !valuePaper.getIsin().isEmpty()) {
-			String isin = valuePaper.getIsin().replace('*', '%').replace('?', '_');
-			crit.add(Restrictions.ilike("valuePaper.isin", isin));
+		if (valuePaper.getCode() != null && !valuePaper.getCode().isEmpty()) {
+			String code = valuePaper.getCode().replace('*', '%').replace('?', '_');
+			crit.add(Restrictions.ilike("valuePaper.code", code));
 		}
 		if (valuePaper.getType() == ValuePaperType.STOCK && ((Stock)valuePaper).getCountry() != null && !((Stock)valuePaper).getCountry().isEmpty()) {
 			String co = ((Stock)valuePaper).getCountry().replace('*', '%').replace('?', '_');

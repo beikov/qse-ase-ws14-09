@@ -30,7 +30,7 @@ public class ValuePaperScreenerBean {
 		private ValuePaper valuePaper;
 		private ValuePaperType paperType;
 		private Boolean isTypeSpecificated=false;
-		private String valuePaperName, isin, country, currencyCode;
+		private String valuePaperName, code, country, currencyCode;
 		private List<ValuePaper> searchedValuePapers;
 		
 		
@@ -70,12 +70,12 @@ public class ValuePaperScreenerBean {
 			this.valuePaperName = valuePaperName;
 		}
 
-		public String getIsin() {
-			return isin;
+		public String getCode() {
+			return code;
 		}
 
-		public void setIsin(String isin) {
-			this.isin = isin;
+		public void setCode(String code) {
+			this.code = code;
 		}
 
 		public String getCountry() {
@@ -129,7 +129,7 @@ public class ValuePaperScreenerBean {
 			if (valuePaper.getType() == ValuePaperType.STOCK) {
 				((Stock)valuePaper).setCountry(country);
 			}
-			valuePaper.setIsin(isin);
+			valuePaper.setCode(code);
 			valuePaper.setName(valuePaperName);
 			
 			if (valuePaper.getType() == ValuePaperType.STOCK && !currencyCode.isEmpty() && currencyCode != null) {

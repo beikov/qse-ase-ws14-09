@@ -22,9 +22,9 @@
 					<f:selectItems value="#{valuePaperScreenerBean.valuePaperTypes}" />
 				</p:selectOneMenu>
 				
-				<p:outputLabel for="isin" value="ISIN: " style="padding: 10px;"/>
-				<p:inputText id="isin"
-					value="#{valuePaperScreenerBean.isin}" >
+				<p:outputLabel for="code" value="Code: " style="padding: 10px;"/>
+				<p:inputText id="code"
+					value="#{valuePaperScreenerBean.code}" >
 					 <f:validateRegex pattern="^([a-zA-Z]|\?|\*){2}([a-zA-Z0-9]|\?|\*)*" />
 				</p:inputText>
 		
@@ -47,7 +47,7 @@
 					</center>
 				<br/>
 				
-				<p:message for="isin" style="color:red" />
+				<p:message for="code" style="color:red" />
 				<p> </p>
 				<p:message for="currency" style="color:red" />
 
@@ -63,8 +63,8 @@
 				    <p:column headerText="Land" sortBy="#{valuePaper.country}">
 				        <h:outputText value="#{valuePaper.country}"  rendered="#{valuePaper.type == 'STOCK'}"/>
 				    </p:column>
-				    <p:column headerText="ISIN" sortBy="#{valuePaper.isin}">
-				        <h:outputText value="#{valuePaper.isin}" />
+				    <p:column headerText="Code" sortBy="#{valuePaper.code}">
+				        <h:outputText value="#{valuePaper.code}" />
 				    </p:column>
 				    <p:column headerText="Typ" sortBy="#{valuePaper.type}">
 				        <h:outputText value="#{valuePaper.type}" />
@@ -72,7 +72,7 @@
 				    <p:column >
 				    	<h:button value="Details" outcome="/valuepaper/valuepaperview">
 							<!--  includeViewParams="true" -->
-							<f:param name="valuePaperIsin" value="#{valuePaper.isin}" />
+							<f:param name="valuePaperCode" value="#{valuePaper.code}" />
 						</h:button> 
 				    </p:column>
 				</p:dataTable>

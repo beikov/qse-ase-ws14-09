@@ -12,8 +12,8 @@
 
 		<f:metadata>
 
-			<f:viewParam name="valuePaperIsin"
-				value="#{valuePaperViewBean.valuePaperIsin}" required="true" />
+			<f:viewParam name="valuePaperCode"
+				value="#{valuePaperViewBean.valuePaperCode}" required="true" />
 			<f:viewAction action="#{valuePaperViewBean.init}" />
 
 		</f:metadata>
@@ -32,8 +32,8 @@
 							<h:outputText value="Bezeichnung:" style="font-weight:bold" />
 							<h:outputText value="#{valuePaperViewBean.valuePaper.name}" />
 
-							<h:outputText value="ISIN:" style="font-weight:bold"/>
-							<h:outputText value="#{valuePaperViewBean.valuePaper.isin}" />
+							<h:outputText value="Code:" style="font-weight:bold"/>
+							<h:outputText value="#{valuePaperViewBean.valuePaper.code}" />
 
 							<h:outputText value="Typ:" style="font-weight:bold"/>
 							<h:outputText value="#{valuePaperViewBean.valuePaper.type}" />
@@ -88,7 +88,7 @@
 			</c:when>
 
 			<c:otherwise>
-				<h:outputText value="Wertpapier-ISIN existiert nicht" />
+				<h:outputText value="Wertpapier-Code existiert nicht" />
 			</c:otherwise>
 
 		</c:choose>

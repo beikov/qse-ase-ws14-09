@@ -41,7 +41,7 @@ public class ValuePaperViewBean implements Serializable{
 
 	private ValuePaper valuePaper = null;
 
-	private String valuePaperIsin;
+	private String valuePaperCode;
 
 	private LineChartModel valuePaperHistoricPriceLineChartModel = null;
 
@@ -57,7 +57,7 @@ public class ValuePaperViewBean implements Serializable{
 	private EntityManager em;
 
 	public void init() {
-		loadValuePaper(valuePaperIsin);
+		loadValuePaper(valuePaperCode);
 
 		if(this.valuePaper != null){
 			loadValuePaperAttributes();
@@ -67,12 +67,12 @@ public class ValuePaperViewBean implements Serializable{
 
 
 
-	public String getValuePaperIsin() {
-		return valuePaperIsin;
+	public String getValuePaperCode() {
+		return valuePaperCode;
 	}
 
-	public void setValuePaperIsin(String valuePaperIsin) {
-		this.valuePaperIsin = valuePaperIsin;
+	public void setValuePaperCode(String valuePaperCode) {
+		this.valuePaperCode = valuePaperCode;
 	}
 
 	public ValuePaper getValuePaper() {
@@ -103,17 +103,17 @@ public class ValuePaperViewBean implements Serializable{
 	public ValuePaperPriceEntry getLastPriceEntry() {
 
 		try{
-			return valuePaperPriceEntryService.getLastPriceEntry(valuePaper.getIsin());
+			return valuePaperPriceEntryService.getLastPriceEntry(valuePaper.getCode());
 		}
 		catch(EntityNotFoundException e){
 			return null;
 		}
 	}
 
-	private void loadValuePaper(String valuePaperIsin) {
+	private void loadValuePaper(String valuePaperCode) {
 
 		try{
-			this.valuePaper = valuePaperService.getValuePaperByIsin(valuePaperIsin);
+			this.valuePaper = valuePaperService.getValuePaperByCode(valuePaperCode);
 		}
 		catch(EntityNotFoundException e){
 			this.valuePaper = null;
@@ -128,10 +128,10 @@ public class ValuePaperViewBean implements Serializable{
 
 			Stock s = (Stock)valuePaper;
 
-			this.valuePaperAttributes.put("Währung:", s.getCurrency().getCurrencyCode());
+			this.valuePaperAttributes.put("Wï¿½hrung:", s.getCurrency().getCurrencyCode());
 			this.valuePaperAttributes.put("Index:", s.getIndex());
 			this.valuePaperAttributes.put("Historische Preise:", s.getHistoricPricesPageUrl());
-			this.valuePaperAttributes.put("Börse-Zertifikate:", s.getBoerseCertificatePageUrl());
+			this.valuePaperAttributes.put("Bï¿½rse-Zertifikate:", s.getBoerseCertificatePageUrl());
 			this.valuePaperAttributes.put("Finanzen-Zertifikate:", s.getFinanzenCertificatePageUrl());
 		}
 		
@@ -145,14 +145,14 @@ public class ValuePaperViewBean implements Serializable{
 			if(baseStock != null){
 				
 				this.valuePaperAttributes.put("Bezeichnung (Basis-Aktie):", baseStock.getName());
-				this.valuePaperAttributes.put("ISIN (Basis-Aktie):", baseStock.getIsin());
+				this.valuePaperAttributes.put("Code (Basis-Aktie):", baseStock.getCode());
 				this.valuePaperAttributes.put("Typ (Basis-Aktie):", baseStock.getType().toString());
-				this.valuePaperAttributes.put("Aktueller Kurs (Basis-Aktie):", valuePaperPriceEntryService.getLastPriceEntry(baseStock.getIsin()).getPrice().toString());
-				this.valuePaperAttributes.put("Währung (Basis-Aktie):", baseStock.getCurrency().getCurrencyCode());
+				this.valuePaperAttributes.put("Aktueller Kurs (Basis-Aktie):", valuePaperPriceEntryService.getLastPriceEntry(baseStock.getCode()).getPrice().toString());
+				this.valuePaperAttributes.put("Wï¿½hrung (Basis-Aktie):", baseStock.getCurrency().getCurrencyCode());
 				this.valuePaperAttributes.put("Index (Basis-Aktie):", baseStock.getIndex());
 				this.valuePaperAttributes.put("Details (Basis-Aktie):", baseStock.getDetailUrl());
 				this.valuePaperAttributes.put("Historische Preise (Basis-Aktie):", baseStock.getHistoricPricesPageUrl());
-				this.valuePaperAttributes.put("Börse-Zertifikate (Basis-Aktie):", baseStock.getBoerseCertificatePageUrl());
+				this.valuePaperAttributes.put("Bï¿½rse-Zertifikate (Basis-Aktie):", baseStock.getBoerseCertificatePageUrl());
 				this.valuePaperAttributes.put("Finanzen-Zertifikate (Basis-Aktie):", baseStock.getFinanzenCertificatePageUrl());	
 			}
 
@@ -172,7 +172,7 @@ public class ValuePaperViewBean implements Serializable{
 
 		try{
 
-			List<ValuePaperHistoryEntry> historyPriceList = valuePaperPriceEntryService.getValuePaperPriceHistoryEntries(valuePaper.getIsin());
+			List<ValuePaperHistoryEntry> historyPriceList = valuePaperPriceEntryService.getValuePaperPriceHistoryEntries(valuePaper.getCode());
 
 			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -182,7 +182,7 @@ public class ValuePaperViewBean implements Serializable{
 				series1.set(date, value);
 			}
 
-			ValuePaperPriceEntry currentPriceEntry = valuePaperPriceEntryService.getLastPriceEntry(valuePaper.getIsin());
+			ValuePaperPriceEntry currentPriceEntry = valuePaperPriceEntryService.getLastPriceEntry(valuePaper.getCode());
 
 			series1.set(format.format(currentPriceEntry.getCreated().getTime()), currentPriceEntry.getPrice());
 

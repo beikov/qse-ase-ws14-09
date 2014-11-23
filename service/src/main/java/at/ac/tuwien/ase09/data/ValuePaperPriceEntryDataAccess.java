@@ -45,13 +45,13 @@ public class ValuePaperPriceEntryDataAccess {
 		}
 	}
 	
-	public List<ValuePaperHistoryEntry> getValuePaperPriceHistoryEntries(String isin){
+	public List<ValuePaperHistoryEntry> getValuePaperPriceHistoryEntries(String code){
 		try {
 			return em
 					.createQuery(
-							"SELECT vphe FROM ValuePaperHistoryEntry vphe JOIN vphe.valuePaper vp WHERE vp.isin = :isin",
+							"SELECT vphe FROM ValuePaperHistoryEntry vphe JOIN vphe.valuePaper vp WHERE vp.code = :code",
 							ValuePaperHistoryEntry.class)
-					.setParameter("isin", isin).getResultList();
+					.setParameter("code", code).getResultList();
 		} catch (Exception e) {
 			throw new AppException(e);
 		}

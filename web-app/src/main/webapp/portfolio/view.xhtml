@@ -76,14 +76,14 @@
 				    <p:column headerText="Land" sortBy="#{paper.country}">
 				        <h:outputText value="#{paper.country}" />
 				    </p:column>
-				    <p:column headerText="ISIN" sortBy="#{paper.isin}">
-				        <h:outputText value="#{paper.isin}" />
+				    <p:column headerText="Code" sortBy="#{paper.code}">
+				        <h:outputText value="#{paper.code}" />
 				    </p:column>
 				    <p:column headerText="Typ" sortBy="#{paper.type}">
 				        <h:outputText value="#{paper.type}" />
 				    </p:column>
 				    <p:column>
-				    	<a href="/valuepaper/valuepaperview.xhtml?valuePaperIsin=#{paper.isin}" class="btn btn-default btn-md"><span class="glyphicon glyphicon-search" aria-hidden="true" /></a>
+				    	<a href="/valuepaper/valuepaperview.xhtml?valuePaperCode=#{paper.code}" class="btn btn-default btn-md"><span class="glyphicon glyphicon-search" aria-hidden="true" /></a>
 				    	<a href="/protected/portfolio/list.xhtml?valuePaperId=#{paper.id}" class="btn btn-default btn-md"><span class="glyphicon glyphicon glyphicon-usd" aria-hidden="true" /></a>
 			       </p:column>
 				</p:dataTable>
