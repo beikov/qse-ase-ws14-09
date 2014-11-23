@@ -18,72 +18,82 @@
 
 		</f:metadata>
 
-		<h3 style="margin-top: 0">Einzeltitelansicht</h3>
+		<!-- <h3 style="margin-top: 0">Einzeltitelansicht</h3> -->
 
 		<c:choose>
 			<c:when test="#{valuePaperViewBean.valuePaper != null}">
 
-				<p:tabView>
-					<p:tab title="Informationen">
+				<p:panel id="einzeltitelansicht" header="Einzeltitelansicht">
 
-						<h4 style="margin-top: 0">Allgemeine Informationen</h4>
+					<p:layout style="min-width:400px;min-height:600px;">
+						<p:layoutUnit position="center" style="border: 0">
 
-						<p:panelGrid columns="2" >
-							<h:outputText value="Bezeichnung:" style="font-weight:bold" />
-							<h:outputText value="#{valuePaperViewBean.valuePaper.name}" />
+							<h4 style="margin-top: 0">Allgemeine Informationen</h4>
 
-							<h:outputText value="ISIN:" style="font-weight:bold"/>
-							<h:outputText value="#{valuePaperViewBean.valuePaper.code}" />
 
-							<h:outputText value="Typ:" style="font-weight:bold"/>
-							<h:outputText value="#{valuePaperViewBean.valuePaper.type}" />
 
-							<h:outputText value="Aktueller Kurs:" style="font-weight:bold"/>
-							<c:choose>
-								<c:when test="#{valuePaperViewBean.lastPriceEntry != null}">
+								<p:panelGrid columns="2">
+									<h:outputText value="Bezeichnung:" style="font-weight:bold" />
+									<h:outputText value="#{valuePaperViewBean.valuePaper.name}" />
+
+									<h:outputText value="ISIN:" style="font-weight:bold" />
+									<h:outputText value="#{valuePaperViewBean.valuePaper.code}" />
+
+									<h:outputText value="Typ:" style="font-weight:bold" />
+									<h:outputText value="#{valuePaperViewBean.valuePaper.type}" />
+
+									<h:outputText value="Aktueller Kurs:" style="font-weight:bold" />
+									<c:choose>
+										<c:when test="#{valuePaperViewBean.lastPriceEntry != null}">
+											<h:outputText
+												value="#{valuePaperViewBean.lastPriceEntry.price}" />
+										</c:when>
+
+										<c:otherwise>
+											<h:outputText value="kein aktueller Kurs vorhanden" />
+										</c:otherwise>
+									</c:choose>
+
+									<h:outputText value="Details:" style="font-weight:bold" />
 									<h:outputText
-										value="#{valuePaperViewBean.lastPriceEntry.price}" />
+										value="#{valuePaperViewBean.valuePaper.detailUrl}" />
+
+								</p:panelGrid>
+
+								<h4 style="margin-top: 50">Zusätzliche Informationen</h4>
+
+								<p:panelGrid columns="2">
+									<c:forEach var="attribute"
+										items="#{valuePaperViewBean.valuePaperAttributes}">
+										<h:outputText value="#{attribute.key}"
+											style="font-weight:bold" />
+										<h:outputText value="#{attribute.value}" />
+									</c:forEach>
+								</p:panelGrid>
+
+
+						</p:layoutUnit>
+
+						<p:layoutUnit position="east" resizable="true" size="500"
+							minSize="50" maxSize="500" style="border: 0">
+
+							<c:choose>
+								<c:when
+									test="#{valuePaperViewBean.valuePaperHistoricPriceLineChartModel != null}">
+									<p:chart type="line"
+										model="#{valuePaperViewBean.valuePaperHistoricPriceLineChartModel}"
+										style="height:400px;" />
 								</c:when>
 
 								<c:otherwise>
-									<h:outputText value="kein aktueller Kurs vorhanden" />
+									<h:outputText value="keine Kursdaten vorhanden" />
 								</c:otherwise>
 							</c:choose>
 
-							<h:outputText value="Details:" style="font-weight:bold"/>
-							<h:outputText value="#{valuePaperViewBean.valuePaper.detailUrl}" />
+						</p:layoutUnit>
+					</p:layout>
 
-						</p:panelGrid>
-
-						<p:separator />
-
-						<h4 style="margin-top: 50">Zusätzliche Informationen</h4>
-
-						<p:panelGrid columns="2">
-							<c:forEach var="attribute"
-								items="#{valuePaperViewBean.valuePaperAttributes}">
-								<h:outputText value="#{attribute.key}" style="font-weight:bold"/>
-								<h:outputText value="#{attribute.value}" />
-							</c:forEach>
-						</p:panelGrid>
-					</p:tab>
-					<p:tab title="Kursverlauf">
-
-						<c:choose>
-							<c:when
-								test="#{valuePaperViewBean.valuePaperHistoricPriceLineChartModel != null}">
-								<p:chart type="line"
-									model="#{valuePaperViewBean.valuePaperHistoricPriceLineChartModel}"
-									style="height:400px;" />
-							</c:when>
-
-							<c:otherwise>
-								<h:outputText value="keine Kursdaten vorhanden" />
-							</c:otherwise>
-						</c:choose>
-
-					</p:tab>
-				</p:tabView>
+				</p:panel>
 
 			</c:when>
 
