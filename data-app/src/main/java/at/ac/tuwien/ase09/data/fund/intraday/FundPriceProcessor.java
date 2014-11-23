@@ -32,7 +32,7 @@ public class FundPriceProcessor implements ItemProcessor {
 		}catch(EntityNotFoundException e1){
 			// check if the value paper itself exists in our db
 			try{
-				valuePaperDataAccess.getValuePaperByIsin(price.getIsin(), Fund.class);
+				valuePaperDataAccess.getValuePaperByCode(price.getIsin(), Fund.class);
 			}catch(EntityNotFoundException e2) {
 				// if the value paper is unknown, skip this item
 				return null;

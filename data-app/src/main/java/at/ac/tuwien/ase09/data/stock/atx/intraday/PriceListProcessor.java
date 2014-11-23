@@ -1,4 +1,4 @@
-package at.ac.tuwien.ase09.data.stock.intraday;
+package at.ac.tuwien.ase09.data.stock.atx.intraday;
 
 import java.util.Iterator;
 import java.util.List;
@@ -50,7 +50,7 @@ public class PriceListProcessor implements ItemProcessor {
 		}catch(EntityNotFoundException e1){
 			// check if the value paper itself exists in our db
 			try{
-				valuePaperDataAccess.getValuePaperByIsin(price.getIsin(), Stock.class);
+				valuePaperDataAccess.getValuePaperByCode(price.getIsin(), Stock.class);
 			}catch(EntityNotFoundException e2) {
 				// if the value paper is unknown, skip this item
 				return false;

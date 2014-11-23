@@ -6,10 +6,10 @@ import java.util.logging.Logger;
 
 import javax.batch.api.chunk.AbstractItemWriter;
 import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.FlushModeType;
-import javax.persistence.PersistenceContext;
 
 import at.ac.tuwien.ase09.model.ValuePaperHistoryEntry;
 
@@ -17,7 +17,7 @@ import at.ac.tuwien.ase09.model.ValuePaperHistoryEntry;
 @Named
 public class HistoricPriceWriter extends AbstractItemWriter {
 	private static final Logger LOG = Logger.getLogger(AbstractEntityWriter.class.getName());
-	@PersistenceContext
+	@Inject
 	protected EntityManager em;
 	
 	@Override

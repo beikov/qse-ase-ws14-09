@@ -1,4 +1,4 @@
-package at.ac.tuwien.ase09.data.stock.detail;
+package at.ac.tuwien.ase09.data.stock.atx.detail;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -21,7 +21,6 @@ import org.jsoup.select.Elements;
 
 import at.ac.tuwien.ase09.data.JsoupUtils;
 import at.ac.tuwien.ase09.model.Stock;
-import at.ac.tuwien.ase09.model.constants.Country;
 
 @Dependent
 @Named("StockDetailReader")
@@ -83,8 +82,8 @@ public class StockDetailReader extends AbstractItemReader {
 		}
 		
 		Stock stock = new Stock();
-		stock.setIsin(isin);
-		stock.setCountry(Country.AUSTRIA.toString());
+		stock.setCode(isin);
+		stock.setCountry("AT");
 		stock.setName(name);
 		stock.setCurrency(currency);
 		stock.setBoerseCertificatePageUrl(boerseCertificatePageUrl);

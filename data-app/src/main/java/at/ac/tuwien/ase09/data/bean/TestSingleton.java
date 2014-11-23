@@ -7,15 +7,13 @@ import javax.batch.operations.JobOperator;
 import javax.batch.runtime.BatchRuntime;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
-import at.ac.tuwien.ase09.model.User;
 
 @Singleton
 @Startup
 public class TestSingleton {
-	@PersistenceContext
+	@Inject
 	private EntityManager em;
 	
 	@PostConstruct
@@ -23,7 +21,7 @@ public class TestSingleton {
 		JobOperator jobOperator = BatchRuntime.getJobOperator();
 		Properties props = new Properties();
 		props.put("successorJobIds", "detailBondExtractionATX");
-//		jobOperator.start("detailFundExtraction", null);
+//		jobOperator.start("detailStockExtractionNasdaq100", null);
 //		jobOperator.start("intradayFundExtraction", null);
 //		jobOperator.start("intradayBondExtractionATX", null);
 	}

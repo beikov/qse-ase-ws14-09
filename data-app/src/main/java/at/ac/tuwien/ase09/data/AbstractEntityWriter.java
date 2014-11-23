@@ -17,7 +17,7 @@ import at.ac.tuwien.ase09.model.Stock;
 
 public abstract class AbstractEntityWriter extends AbstractItemWriter {
 	private static final Logger LOG = Logger.getLogger(AbstractEntityWriter.class.getName());
-	@PersistenceContext
+	@Inject
 	protected EntityManager em;
 	
 	@Override
