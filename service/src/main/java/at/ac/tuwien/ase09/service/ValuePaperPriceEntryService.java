@@ -16,7 +16,7 @@ import at.ac.tuwien.ase09.model.ValuePaperPriceEntry;
 
 @Stateless
 public class ValuePaperPriceEntryService {
-	@PersistenceContext
+	@Inject
 	private EntityManager em;
 
 	@Inject
@@ -29,7 +29,7 @@ public class ValuePaperPriceEntryService {
 	public void savePriceEntry(String isin, BigDecimal price) {
 		ValuePaperPriceEntry priceEntry = new ValuePaperPriceEntry();
 		priceEntry.setPrice(price);
-		priceEntry.setValuePaper(valuePaperDataAccess.getValuePaperByIsin(isin, ValuePaper.class));
+		priceEntry.setValuePaper(valuePaperDataAccess.getValuePaperByCode(isin, ValuePaper.class));
 		savePriceEntry(priceEntry);
 	}
 	

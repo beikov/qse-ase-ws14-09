@@ -14,21 +14,24 @@ public abstract class ValuePaper extends BaseEntity<Long> {
 	private static final long serialVersionUID = 1L;
 
 	private String name;
-	private String isin;
+	/**
+	 * The code is either an ISIN or a symbol (for US stocks)
+	 */
+	private String code;
 	private String detailUrl;
-	
-
-	@Column(unique=true)
-	public String getIsin() {
-		return isin;
-	}
-
-	public void setIsin(String isin) {
-		this.isin = isin;
-	}
+	private String historicPricesPageUrl;
 	
 	@Transient
 	public abstract ValuePaperType getType();
+	
+	@Column(nullable=false, unique=true)
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
 
 	public String getName() {
 		return name;
@@ -40,7 +43,7 @@ public abstract class ValuePaper extends BaseEntity<Long> {
 
 	@Override
 	public String toString() {
-		return String.format("[type=%s, code=%s, name=%s]", getType(), isin, name);
+		return String.format("[type=%s, code=%s, name=%s]", getType(), code, name);
 	}
 
 	@Column(columnDefinition="TEXT")
@@ -50,6 +53,15 @@ public abstract class ValuePaper extends BaseEntity<Long> {
 
 	public void setDetailUrl(String detailUrl) {
 		this.detailUrl = detailUrl;
+	}
+
+	@Column(columnDefinition="TEXT")
+	public String getHistoricPricesPageUrl() {
+		return historicPricesPageUrl;
+	}
+
+	public void setHistoricPricesPageUrl(String historicPricesPageUrl) {
+		this.historicPricesPageUrl = historicPricesPageUrl;
 	}
 	
 }

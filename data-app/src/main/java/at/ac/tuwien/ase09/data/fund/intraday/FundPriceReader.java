@@ -55,7 +55,7 @@ public class FundPriceReader extends AbstractItemReader{
 		String priceStr = tableRows.get("Ausgabepreis").replace(',', '.');
 
 		itemNumber++;
-		return new IntradayPrice(fund.getIsin(), new BigDecimal(priceStr));
+		return new IntradayPrice(fund.getCode(), new BigDecimal(priceStr));
 	}
 
 }

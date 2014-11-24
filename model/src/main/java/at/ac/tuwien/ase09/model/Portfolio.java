@@ -36,7 +36,7 @@ public class Portfolio extends BaseEntity<Long> {
 	private PortfolioSetting setting = new PortfolioSetting();
 	private PortfolioVisibility visibility = new PortfolioVisibility();
 
-	private Set<ValuePaper> valuePapers = new HashSet<>();
+	private Set<PortfolioValuePaper> valuePapers = new HashSet<>();
 	private Set<TransactionEntry> transactionEntries = new HashSet<>();
 	private Set<Order> orders = new HashSet<>();
 	private Set<User> followers = new HashSet<>();
@@ -120,13 +120,12 @@ public class Portfolio extends BaseEntity<Long> {
 		this.visibility = visibility;
 	}
 
-	@ManyToMany
-	@JoinTable(name="portfolio_valuepapers")
-	public Set<ValuePaper> getValuePapers() {
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "portfolio")
+	public Set<PortfolioValuePaper> getValuePapers() {
 		return valuePapers;
 	}
-
-	public void setValuePapers(Set<ValuePaper> valuePapers) {
+	
+	public void setValuePapers(Set<PortfolioValuePaper> valuePapers) {
 		this.valuePapers = valuePapers;
 	}
 

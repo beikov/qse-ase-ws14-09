@@ -54,7 +54,7 @@ public class BondPriceReader extends AbstractItemReader{
 		String priceStr = bondDetailPage.select("th.pricebox").text().replace(',', '.');
 
 		itemNumber++;
-		return new IntradayPrice(bond.getIsin(), new BigDecimal(priceStr));
+		return new IntradayPrice(bond.getCode(), new BigDecimal(priceStr));
 	}
 
 }

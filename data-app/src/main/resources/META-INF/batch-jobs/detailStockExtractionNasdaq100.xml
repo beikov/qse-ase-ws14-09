@@ -1,29 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- This job extracts all bonds from ATX funds -->
-<job id="detailFundExtraction" xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+<!-- This job extracts all bonds from ATX stocks -->
+<job id="detailStockExtractionNasdaq100" xmlns="http://xmlns.jcp.org/xml/ns/javaee"
 	version="1.0">
 	<properties>
-	    <property name="profitwebUrl" value="https://www.profitweb.at/public/main/start.jsp" />
-	    <property name="profitwebHistoryUrl" value="https://www.profitweb.at/public/main/hist.jsp" />
+	    <property name="nasdaqListUrl" value="http://www.cnbc.com/id/28141521#." />
+		<property name="indexName" value="NASDAQ100" />		    
 	</properties>
-	<step id="fundDetailLinkExtraction" next="fundDetailExtraction">
-		<batchlet ref="fundDetailLinkReaderBatchlet">
+	<step id="symbolExtraction" next="stockDetailExtraction">
+		<batchlet ref="nasdaqSymbolReaderBatchlet">
 			<properties>
-				<property name="profitwebUrl" value="#{jobProperties['profitwebUrl']}" />
+				<property name="nasdaqListUrl" value="#{jobProperties['nasdaqListUrl']}" />
 			</properties>
 		</batchlet>
 		<listeners>
 			<listener ref="StepBoundaryLogger" />
 		</listeners>
 	</step>
-	<step id="fundDetailExtraction" item-count="5" next="fundHistoricPriceExtraction">
+	<step id="stockDetailExtraction" next="stockHistoricPriceExtraction">
 		<chunk>
-			<reader ref="fundDetailReader">
-				<properties>
-				    <property name="profitwebHistoryUrl" value="#{jobProperties['profitwebHistoryUrl']}" />
-				</properties>
-			</reader>
-			<writer ref="fundDetailWriter" />
+			<reader ref="yahooStockDetailReader">
+			    <properties>
+			        <property name="indexName" value="#{jobProperties['indexName']}" />
+			    </properties>
+		    </reader>
+			<writer ref="StockDetailWriter" />
 
 			<retryable-exception-classes>
 				<include class="java.net.SocketTimeoutException" />
@@ -39,9 +39,13 @@
 			<listener ref="DefaultRetryListener" />
 		</listeners>
 	</step>
-	<step id="fundHistoricPriceExtraction">
+	<step id="stockHistoricPriceExtraction">
 		<chunk item-count="5">
-			<reader ref="historicFundPriceReader" />
+			<reader ref="yahooHistoricStockPriceReader">
+			    <properties>
+					<property name="indexName" value="#{jobProperties['indexName']}" />
+				</properties>
+			</reader>
 			<processor ref="historicPriceProcessor" />
 			<writer ref="historicPriceWriter" />
 

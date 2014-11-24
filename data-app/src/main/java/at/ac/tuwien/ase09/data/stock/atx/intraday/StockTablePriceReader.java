@@ -1,4 +1,4 @@
-package at.ac.tuwien.ase09.data.stock.intraday;
+package at.ac.tuwien.ase09.data.stock.atx.intraday;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
