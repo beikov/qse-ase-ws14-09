@@ -1,7 +1,7 @@
-package at.ac.tuwien.ase09.bean;
+package at.ac.tuwien.ase09.filter;
 
 
-public enum Attributes {
+public enum AttributeType {
 	
 	
 	NAME("name","Name",false),
@@ -43,7 +43,7 @@ public enum Attributes {
 	 private final String parmName,label;
 	 private final Boolean numeric;
 
-	   Attributes( String parmName,String label,boolean numeric ) { 
+	   AttributeType( String parmName,String label,boolean numeric ) { 
 		   this.parmName = parmName; 
 		   this.label=label;
 		   this.numeric=numeric;
