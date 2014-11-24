@@ -66,9 +66,9 @@ public class YahooStockDetailReader extends AbstractItemReader {
 		if(symbolNumber >= stockSymbols.size()){
 			return null;
 		}
-		if(symbolNumber == 1){
-			return null;
-		}
+//		if(symbolNumber == 1){
+//			return null;
+//		}
 		String stockSymbol = stockSymbols.get(symbolNumber);
 		Document d = JsoupUtils.getPage(YQL_KEYSTATS_QUERY_TEMPLATE.replaceAll("#\\{symbolPlaceholder\\}", stockSymbol));
 		String cnbcNasdaqDetails = JsoupUtils.getPageAndIgnoreContentType(CNBC_STOCK_DETAIL_QUERY.replaceAll("#\\{symbolsPlaceholder\\}", stockSymbol), Method.GET, 3000);

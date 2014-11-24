@@ -18,103 +18,156 @@
 
 		</f:metadata>
 
-		<h3 style="margin-top: 0">Einzeltitelansicht</h3>
+		<h:form id="einzeltitelansicht">
 
-		<c:choose>
-			<c:when test="#{valuePaperViewBean.valuePaper != null}">
+			<h3 style="margin-top: 0">Einzeltitelansicht</h3>
 
-				<p:layout style="min-width:400px;min-height:600px;">
-					<p:layoutUnit position="center"
-						style="border: 0; padding-right: 10px">
+			<c:choose>
+				<c:when test="#{valuePaperViewBean.valuePaper != null}">
 
-						<!--<h4 style="margin-top: 0">Allgemeine Informationen</h4> -->
+					<p:layout>
+						<p:layoutUnit position="center" style="border: 0">
 
-						<p:panel id="allgemein" header="Allgemeine Informationen"
-							style="margin-bottom: 5px">
+							<p:panel id="allgemein" header="Allgemeine Informationen"
+								style="margin-bottom: 5px">
 
-							<p:panelGrid columns="2">
-								<h:outputText value="Bezeichnung:" style="font-weight:bold" />
-								<h:outputText value="#{valuePaperViewBean.valuePaper.name}" />
+								<p:panelGrid columns="2">
 
-								<h:outputText value="ISIN:" style="font-weight:bold" />
-								<h:outputText value="#{valuePaperViewBean.valuePaper.code}" />
+									<c:forEach var="attribute"
+										items="#{valuePaperViewBean.mainValuePaperAttributes}">
+										<h:outputText value="#{attribute.key}"
+											style="font-weight:bold" />
+										<h:outputText value="#{attribute.value}" />
+									</c:forEach>
 
-								<h:outputText value="Typ:" style="font-weight:bold" />
-								<h:outputText value="#{valuePaperViewBean.valuePaper.type}" />
+									<c:if test="#{valuePaperViewBean.valuePaper.type == 'BOND'}">
+										<c:if
+											test="#{valuePaperViewBean.valuePaper.baseStock != null}">
+											<h:outputText value="Basis-Aktie" style="font-weight:bold" />
+											<h:button value="Zur Basis-Aktie" outcome="valuepaperview">
+												<f:param name="valuePaperIsin"
+													value="#{valuePaperViewBean.valuePaper.baseStock.code}" />
+											</h:button>
+										</c:if>
+									</c:if>
 
-								<h:outputText value="Aktueller Kurs:" style="font-weight:bold" />
+								</p:panelGrid>
+
+							</p:panel>
+
+							<p:panel id="zusaetzlich" header="Zusätzliche Informationen"
+								rendered="#{valuePaperViewBean.additionalValuePaperAttributes.size() > 0}">
+
+								<p:panelGrid columns="2">
+									<c:forEach var="attribute"
+										items="#{valuePaperViewBean.additionalValuePaperAttributes}">
+										<h:outputText value="#{attribute.key}"
+											style="font-weight:bold" />
+
+										<c:choose>
+											<c:when test="#{attribute.value.startsWith('http')}">
+												<!-- <p:button value="Link" target="#{attribute.value}"/> -->
+												<h:outputLink value="#{attribute.value}"
+													style="text-decoration:underline;color:blue">Link</h:outputLink>
+											</c:when>
+											<c:otherwise>
+												<h:outputText value="#{attribute.value}" />
+											</c:otherwise>
+										</c:choose>
+
+									</c:forEach>
+								</p:panelGrid>
+
+							</p:panel>
+
+						</p:layoutUnit>
+
+						<p:layoutUnit position="east" resizable="true" size="500"
+							minSize="50" maxSize="500" style="border: 0">
+
+							<p:panel id="kurschart" header="Kurschart"
+								style="margin-bottom: 5px">
+
 								<c:choose>
-									<c:when test="#{valuePaperViewBean.lastPriceEntry != null}">
-										<h:outputText
-											value="#{valuePaperViewBean.lastPriceEntry.price}" />
+									<c:when
+										test="#{valuePaperViewBean.valuePaperHistoricPriceLineChartModel != null}">
+										<p:chart type="line"
+											model="#{valuePaperViewBean.valuePaperHistoricPriceLineChartModel}"
+											style="height:400px;" />
 									</c:when>
 
 									<c:otherwise>
-										<h:outputText value="kein aktueller Kurs vorhanden" />
+										<h:outputText value="keine Kursdaten vorhanden" />
 									</c:otherwise>
 								</c:choose>
 
-								<h:outputText value="Details:" style="font-weight:bold" />
-								<h:outputText value="#{valuePaperViewBean.valuePaper.detailUrl}" />
+							</p:panel>
 
-							</p:panelGrid>
 
-						</p:panel>
+							<p:dataList value="#{valuePaperViewBean.newsItemsList}"
+								var="news" type="unordered" itemType="none" paginator="true"
+								rows="5">
+								<f:facet name="header">
+            						News
+        						</f:facet>
+								<p:commandLink update=":einzeltitelansicht:newsDetail"
+									oncomplete="PF('newsDialog').show()" title="News anzeigen">
+									<f:setPropertyActionListener value="#{news}"
+										target="#{valuePaperViewBean.selectedNewsItem}" />
+									<h:outputText value="#{news.created.time}">
+										<f:convertDateTime pattern="dd.MM.yyyy" />
+									</h:outputText>
+									<h:outputText value=", #{news.title}" />
+								</p:commandLink>
+								<h:outputText value="." />
+							</p:dataList>
 
-						<!-- <h4 style="margin-top: 50">Zusätzliche Informationen</h4> -->
+							<p:dialog header="News Info" widgetVar="newsDialog" modal="false"
+								showEffect="blind" hideEffect="blind" resizable="false"
+								width="700px">
+								<p:outputPanel id="newsDetail" style="text-align:left;">
 
-						<p:panel id="zusaetzlich" header="Zusätzliche Informationen">
+									<p:panelGrid columns="2">
 
-							<p:panelGrid columns="2">
-								<c:forEach var="attribute"
-									items="#{valuePaperViewBean.valuePaperAttributes}">
-									<h:outputText value="#{attribute.key}" style="font-weight:bold" />
-									<h:outputText value="#{attribute.value}" />
-								</c:forEach>
-							</p:panelGrid>
 
-						</p:panel>
+										<h:outputText value="Datum:" />
+										<h:outputText
+											value="#{valuePaperViewBean.selectedNewsItem.created.time}"
+											style="display:inline-block">
+											<f:convertDateTime pattern="dd.MM.yyyy" />
+										</h:outputText>
 
-					</p:layoutUnit>
+										<h:outputText value="Titel" />
+										<h:outputText
+											value="#{valuePaperViewBean.selectedNewsItem.title}" />
 
-					<p:layoutUnit position="east" resizable="true" size="500"
-						minSize="50" maxSize="500" style="border: 0">
+										<h:outputText value="Text:" />
+										<h:outputText
+											value="#{valuePaperViewBean.selectedNewsItem.text}" />
 
-						<p:panel id="kurschart" header="Kurschart" style="margin-bottom: 5px">
+										<h:outputText value="Quelle:" />
+										<h:outputText
+											value="#{valuePaperViewBean.selectedNewsItem.source}" />
+									</p:panelGrid>
 
-							<c:choose>
-								<c:when
-									test="#{valuePaperViewBean.valuePaperHistoricPriceLineChartModel != null}">
-									<p:chart type="line"
-										model="#{valuePaperViewBean.valuePaperHistoricPriceLineChartModel}"
-										style="height:400px;" />
-								</c:when>
+								</p:outputPanel>
+							</p:dialog>
 
-								<c:otherwise>
-									<h:outputText value="keine Kursdaten vorhanden" />
-								</c:otherwise>
-							</c:choose>
-
-						</p:panel>
-
-						<p:panel id="news" header="News" style="margin-bottom: 5px">
-							News
-						</p:panel>
-
-						<p:panel id="analystOpinions" header="Anaylystenmeinungen">
+							<p:panel id="analystOpinions" header="Anaylystenmeinungen">
 							Meinungen
 						</p:panel>
 
-					</p:layoutUnit>
-				</p:layout>
+						</p:layoutUnit>
+					</p:layout>
 
-			</c:when>
+				</c:when>
 
-			<c:otherwise>
-				<h:outputText value="Wertpapier-ISIN existiert nicht" />
-			</c:otherwise>
+				<c:otherwise>
+					<h:outputText value="Wertpapier-ISIN existiert nicht" />
+				</c:otherwise>
 
-		</c:choose>
+			</c:choose>
+		</h:form>
 
 	</ui:define>
 

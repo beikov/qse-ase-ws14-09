@@ -21,14 +21,16 @@ public class ValuePaperDataAccess {
 
 	public <T extends ValuePaper> T getValuePaperByCode(String code, Class<T> clazz){
 		try{
-			ValuePaper p = em.createQuery("SELECT v FROM " + clazz.getSimpleName() + " v WHERE v.code = :code", clazz).setParameter("code", code).getSingleResult();
-		
-			if(p.getType() == ValuePaperType.BOND){
-				if(((StockBond)p).getBaseStock() != null)
-				em.createQuery("SELECT b.baseStock FROM StockBond b WHERE b.code = :code", clazz).setParameter("code", code).getSingleResult();
-			}
+//			ValuePaper p = em.createQuery("SELECT v FROM " + clazz.getSimpleName() + " v WHERE v.code = :code", clazz).setParameter("code", code).getSingleResult();
+//		
+//			if(p.getType() == ValuePaperType.BOND){
+//				if(((StockBond)p).getBaseStock() != null)
+//				em.createQuery("SELECT b.baseStock FROM StockBond b WHERE b.code = :code", clazz).setParameter("code", code).getSingleResult();
+//			}
+//			
+//			return (T) p;
 			
-			return (T) p;
+			return em.createQuery("SELECT v FROM " + clazz.getSimpleName() + " v WHERE v.code = :code", clazz).setParameter("code", code).getSingleResult();
 			
 		}catch(NoResultException e){
 			throw new EntityNotFoundException(e);
