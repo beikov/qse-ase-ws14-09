@@ -39,6 +39,14 @@ public class ValuePaperScreenerBean {
 			
 		}
 		
+		public ValuePaper getValuePaper() {
+			return valuePaper;
+		}
+
+		public void setValuePaper(ValuePaper valuePaper) {
+			this.valuePaper = valuePaper;
+		}
+
 		public List<ValuePaper> getSearchedValuePapers() {
 			return searchedValuePapers;
 		}
@@ -129,12 +137,12 @@ public class ValuePaperScreenerBean {
 			if (valuePaper.getType() == ValuePaperType.STOCK) {
 				((Stock)valuePaper).setCountry(country);
 			}
-			valuePaper.setIsin(isin);
+			valuePaper.setCode(isin);
 			valuePaper.setName(valuePaperName);
 			
 			if (valuePaper.getType() == ValuePaperType.STOCK && !currencyCode.isEmpty() && currencyCode != null) {
 				try{
-					((Stock)valuePaper).setCurrency(Currency.getInstance(currencyCode));
+					((Stock)valuePaper).setCurrency(Currency.getInstance(currencyCode.toUpperCase()));
 				}
 				catch(IllegalArgumentException e)
 				 {
