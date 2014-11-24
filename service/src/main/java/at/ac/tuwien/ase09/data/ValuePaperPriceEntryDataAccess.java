@@ -9,6 +9,7 @@ import javax.persistence.EntityManager;
 
 import at.ac.tuwien.ase09.exception.AppException;
 import at.ac.tuwien.ase09.exception.EntityNotFoundException;
+import at.ac.tuwien.ase09.model.ValuePaperHistoryEntry;
 import at.ac.tuwien.ase09.model.ValuePaperPriceEntry;
 
 @Stateless
@@ -38,6 +39,18 @@ public class ValuePaperPriceEntryDataAccess {
 					.createQuery(
 							"SELECT pe.date FROM ValuePaperHistoryEntry pe JOIN pe.valuePaper vp WHERE vp.code = :code",
 							Calendar.class)
+					.setParameter("code", code).getResultList();
+		} catch (Exception e) {
+			throw new AppException(e);
+		}
+	}
+	
+	public List<ValuePaperHistoryEntry> getValuePaperPriceHistoryEntries(String code){
+		try {
+			return em
+					.createQuery(
+							"SELECT vphe FROM ValuePaperHistoryEntry vphe JOIN vphe.valuePaper vp WHERE vp.code = :code",
+							ValuePaperHistoryEntry.class)
 					.setParameter("code", code).getResultList();
 		} catch (Exception e) {
 			throw new AppException(e);

@@ -47,4 +47,5 @@ public class PortfolioValuePaper extends BaseEntity<Long> {
 	}
 	
 	
+
 }

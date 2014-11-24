@@ -124,7 +124,7 @@ public class Portfolio extends BaseEntity<Long> {
 	public Set<PortfolioValuePaper> getValuePapers() {
 		return valuePapers;
 	}
-	
+
 	public void setValuePapers(Set<PortfolioValuePaper> valuePapers) {
 		this.valuePapers = valuePapers;
 	}

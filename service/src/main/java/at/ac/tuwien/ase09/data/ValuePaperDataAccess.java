@@ -12,6 +12,7 @@ import at.ac.tuwien.ase09.exception.EntityNotFoundException;
 import at.ac.tuwien.ase09.model.Stock;
 import at.ac.tuwien.ase09.model.StockBond;
 import at.ac.tuwien.ase09.model.ValuePaper;
+import at.ac.tuwien.ase09.model.ValuePaperType;
 
 @Stateless
 public class ValuePaperDataAccess {

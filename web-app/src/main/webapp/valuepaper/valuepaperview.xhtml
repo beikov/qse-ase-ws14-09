@@ -1,0 +1,98 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="body">
+
+		<f:metadata>
+
+			<f:viewParam name="valuePaperCode"
+				value="#{valuePaperViewBean.valuePaperCode}" required="true" />
+			<f:viewAction action="#{valuePaperViewBean.init}" />
+
+		</f:metadata>
+
+		<h3 style="margin-top: 0">Einzeltitelansicht</h3>
+
+		<c:choose>
+			<c:when test="#{valuePaperViewBean.valuePaper != null}">
+
+				<p:tabView>
+					<p:tab title="Informationen">
+
+						<h4 style="margin-top: 0">Allgemeine Informationen</h4>
+
+						<p:panelGrid columns="2" >
+							<h:outputText value="Bezeichnung:" style="font-weight:bold" />
+							<h:outputText value="#{valuePaperViewBean.valuePaper.name}" />
+
+							<h:outputText value="Code:" style="font-weight:bold"/>
+							<h:outputText value="#{valuePaperViewBean.valuePaper.code}" />
+
+							<h:outputText value="Typ:" style="font-weight:bold"/>
+							<h:outputText value="#{valuePaperViewBean.valuePaper.type}" />
+
+							<h:outputText value="Aktueller Kurs:" style="font-weight:bold"/>
+							<c:choose>
+								<c:when test="#{valuePaperViewBean.lastPriceEntry != null}">
+									<h:outputText
+										value="#{valuePaperViewBean.lastPriceEntry.price}" />
+								</c:when>
+
+								<c:otherwise>
+									<h:outputText value="kein aktueller Kurs vorhanden" />
+								</c:otherwise>
+							</c:choose>
+
+							<h:outputText value="Details:" style="font-weight:bold"/>
+							<h:outputText value="#{valuePaperViewBean.valuePaper.detailUrl}" />
+
+						</p:panelGrid>
+
+						<p:separator />
+
+						<h4 style="margin-top: 50">Zusätzliche Informationen</h4>
+
+						<p:panelGrid columns="2">
+							<c:forEach var="attribute"
+								items="#{valuePaperViewBean.valuePaperAttributes}">
+								<h:outputText value="#{attribute.key}" style="font-weight:bold"/>
+								<h:outputText value="#{attribute.value}" />
+							</c:forEach>
+						</p:panelGrid>
+					</p:tab>
+					<p:tab title="Kursverlauf">
+
+						<c:choose>
+							<c:when
+								test="#{valuePaperViewBean.valuePaperHistoricPriceLineChartModel != null}">
+								<p:chart type="line"
+									model="#{valuePaperViewBean.valuePaperHistoricPriceLineChartModel}"
+									style="height:400px;" />
+							</c:when>
+
+							<c:otherwise>
+								<h:outputText value="keine Kursdaten vorhanden" />
+							</c:otherwise>
+						</c:choose>
+
+					</p:tab>
+				</p:tabView>
+
+			</c:when>
+
+			<c:otherwise>
+				<h:outputText value="Wertpapier-Code existiert nicht" />
+			</c:otherwise>
+
+		</c:choose>
+
+	</ui:define>
+
+</ui:composition>
