@@ -1,10 +1,11 @@
-<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<?xml version='1.0' encoding='UTF-8' ?>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:ase="http://java.sun.com/jsf/composite/portfoliosimcomponents"
 	template="/WEB-INF/templates/template.xhtml">
 
 	<!-- content -->
@@ -14,6 +15,9 @@
 			<f:viewParam name="portfolioId" value="#{portfolioViewBean.portfolioId}" required="true" />
 		    <f:viewAction action="#{portfolioViewBean.init}" />
 		</f:metadata>
+		
+		<h:form id="portfolioViewForm">
+		<p:growl id="msg" />
 
 		<p:panel id="stats" header="Übersicht" style="margin-bottom:20px">
 			<p:panelGrid columns="2">
@@ -44,7 +48,7 @@
 					<h:outputText value="#{portfolioViewBean.portfolio.setting.capitalReturnTax}" />
 				</p:panelGrid>
 				
-				<p:dataTable var="follower" value="#{portfolioViewBean.followerList}" style="width:300px;" >
+				<p:dataTable var="follower" value="#{portfolioViewBean.getFollowerList()}" style="width:300px;" >
 					<f:facet name="header">
 				        Followers
 				    </f:facet>
@@ -60,14 +64,20 @@
 	    </p:panel>
 	    
 		<p:tabView>
-			<p:tab title="Einzeltitel">
+			<p:tab>
+				<f:facet name="title">
+	               	<h:outputText value="Einzeltitel"/>
+	               	<p:selectBooleanCheckbox value="#{portfolioViewBean.portfolio.visibility.valuePaperListVisible}">
+	            		<p:ajax update=":portfolioViewForm:msg" listener="#{portfolioViewBean.changeVisibility()}" />
+	        		</p:selectBooleanCheckbox>
+	            </f:facet>
 	            <p:dataTable var="association" value="#{portfolioViewBean.valuePaperList}">
-	            	<c:set var="paper" value="#{association.valuePaper}"/>
+	            	<c:set var="paper" value="#{association.valuePaper}" />
 	            	
 				    <p:column headerText="Name" sortBy="#{paper.name}">
 				        <h:outputText value="#{paper.name}"></h:outputText>
 				    </p:column>
-				    <p:column headerText="Stück">
+				    <p:column headerText="Stück" sortBy="#{association.volume}">
 				        <h:outputText value="#{association.volume}"></h:outputText>
 				    </p:column>
 				    <p:column headerText="Währung" sortBy="#{paper.currency.currencyCode}">
@@ -96,10 +106,7 @@
 	        </p:tab>
 	        <p:tab title="Orders">
 	            <p:dataTable var="order" value="#{portfolioViewBean.orderList}">				  
-				  	<p:column headerText="Datum" sortBy="#{order.created.time}">
-				        <h:outputText value="#{order.created.time}" />
-				    </p:column>
-				    <p:column headerText="Wertpapier" sortBy="#{order.valuePaper.name}">
+				  	<p:column headerText="Wertpapier" sortBy="#{order.valuePaper.name}">
 				        <h:outputText value="#{order.valuePaper.name}" />
 				    </p:column>
 				    <p:column headerText="Aktion" sortBy="#{order.orderAction}">
@@ -107,9 +114,6 @@
 				    </p:column>
 				    <p:column headerText="Anzahl" sortBy="#{order.volume}">
 				        <h:outputText value="#{order.volume}" />
-				    </p:column>
-				    <p:column headerText="Gültig von" sortBy="#{order.validFrom.time}">
-				        <h:outputText value="#{order.validFrom.time}" />
 				    </p:column>
 				    <p:column headerText="Gültig bis" sortBy="#{order.validTo.time}">
 				        <h:outputText value="#{order.validTo.time}" />
@@ -159,6 +163,7 @@
 				</p:dataTable>
 	        </p:tab>
     	</p:tabView>
+		</h:form>
     			
 		<p:chart type="line" model="#{portfolioViewBean.portfolioChart}" style="height:400px;"/>
 	</ui:define><!-- content -->

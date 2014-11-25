@@ -65,6 +65,10 @@ public class PortfolioService {
 	public void savePortfolio(Portfolio portfolio){
 		em.persist(portfolio);
 	}
+	
+	public void updatePortfolio(Portfolio portfolio){
+		em.merge(portfolio);
+	}
 
 	public boolean existsPortfolioWithNameForUser(String portfolioName, User user) {
 		return portfolioDataAccess.getPortfolioByNameForUser(portfolioName, user) != null;
