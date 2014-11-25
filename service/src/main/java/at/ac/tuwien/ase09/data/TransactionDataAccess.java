@@ -23,7 +23,7 @@ public class TransactionDataAccess {
 	@PersistenceContext
 	private EntityManager em;
 
-	public List<OrderTransactionEntry> getBuyTransactions(Portfolio portfolio, ValuePaper valuePaper) {
+	/*public List<OrderTransactionEntry> getBuyTransactions(Portfolio portfolio, ValuePaper valuePaper) {
 		try {
 			 return em.createQuery("SELECT ot FROM TransactionEntry t, OrderTransactionEntry ot "
 			 		+ "LEFT JOIN FETCH ot.order o "
@@ -34,8 +34,8 @@ public class TransactionDataAccess {
 	}
 	
 	public List<OrderTransactionEntry> getBuyTransactionsUntil(Portfolio portfolio, ValuePaper valuePaper, Calendar date) {
-		try {
-			 return em.createQuery("SELECT ot FROM TransactionEntry t, OrderTransactionEntry ot "
+		try { 
+			return em.createQuery("SELECT ot FROM TransactionEntry t, OrderTransactionEntry ot "
 			 		+ "LEFT JOIN FETCH ot.order o "
 			 		+ "WHERE ot.id = t.id AND o.orderAction = 0 AND o.portfolio = :portfolio AND o.valuePaper = :valuePaper AND t.created <= :date", OrderTransactionEntry.class).setParameter("portfolio", portfolio).setParameter("valuePaper", valuePaper).setParameter("date", date).getResultList();
 		} catch(Exception e) {
@@ -53,5 +53,5 @@ public class TransactionDataAccess {
 		} catch(Exception e) {
 			throw new AppException(e);
 		}
-	}
+	}*/
 }

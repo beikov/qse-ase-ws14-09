@@ -3,6 +3,7 @@ package at.ac.tuwien.ase09.bean;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -34,10 +35,13 @@ import at.ac.tuwien.ase09.model.ValuePaper;
 import at.ac.tuwien.ase09.model.ValuePaperHistoryEntry;
 import at.ac.tuwien.ase09.model.ValuePaperType;
 import at.ac.tuwien.ase09.model.order.Order;
+import at.ac.tuwien.ase09.model.transaction.FeeTransactionEntry;
 import at.ac.tuwien.ase09.model.transaction.OrderFeeTransactionEntry;
 import at.ac.tuwien.ase09.model.transaction.OrderTransactionEntry;
 import at.ac.tuwien.ase09.model.transaction.PayoutTransactionEntry;
+import at.ac.tuwien.ase09.model.transaction.TaxTransactionEntry;
 import at.ac.tuwien.ase09.model.transaction.TransactionEntry;
+import at.ac.tuwien.ase09.model.transaction.TransactionType;
 import at.ac.tuwien.ase09.service.PortfolioService;
 import at.ac.tuwien.ase09.service.ValuePaperPriceEntryService;
 
@@ -154,12 +158,6 @@ public class PortfolioViewBean implements Serializable {
 		valuePaperTypePie.setTitle("Wertpapiere nach Typen");
 		valuePaperTypePie.setLegendPosition("w");
 		valuePaperTypePie.setShowDataLabels(true);
-		/*valuePaperTypePie.set("Fonds", 240);
-		valuePaperTypePie.set("Anleihen", 525);
-		valuePaperTypePie.set("Aktien", 702);*/
-         
-		
-		
 	}
 
 	private void createValuePaperCountryPie() {
@@ -171,8 +169,6 @@ public class PortfolioViewBean implements Serializable {
 		}
 		valuePaperCountryPie.setTitle("Wertpapiere nach Länder");
 		valuePaperCountryPie.setLegendPosition("w");
-		
-		
     }
 	
 	private void createPortfolioChart() {
@@ -191,82 +187,70 @@ public class PortfolioViewBean implements Serializable {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         series.setLabel("Series");
         
-        
-        // get valuepaper list
-        /*Set<PortfolioValuePaper> valuePaperSet = portfolio.getValuePapers();
-        List<ValuePaperHistoryEntry> result = new LinkedList<>();
-        for (PortfolioValuePaper portfolio_valuepaper : valuePaperSet) {
-        	ValuePaper paper = portfolio_valuepaper.getValuePaper();
-        	// get history price entries by valuepaper code
-        	List<ValuePaperHistoryEntry> priceEntries = priceDataAccess.getValuePaperPriceHistoryEntries(paper.getCode());
-        	result.addAll(priceEntries);
-        }*/
         String creationDate = format.format(portfolio.getCreated().getTime());
         BigDecimal startCapital = portfolio.getSetting().getStartCapital().getValue();
         //BigDecimal pointValue = startCapital;
         series.set(creationDate, startCapital);
         
-        // GET PORTFOLIO VALUEPAPER HISTORY PRICE ENTRIES
-        List<ValuePaperHistoryEntry> historyEntries = priceDataAccess.getHistoricValuePaperPricesByPortfolioId(portfolio.getId()); 
-        Map<Calendar, BigDecimal> pointResults = new HashMap<>();
+        // GET PORTFOLIO VALUEPAPER HISTORY PRICE ENTRIES 
+        Map<String, BigDecimal> pointResult = new HashMap<>();
         
-        for (ValuePaperHistoryEntry historyEntry : historyEntries) {
-        	Calendar date = historyEntry.getDate();
-        	BigDecimal closingPrice = historyEntry.getClosingPrice();
-        	BigDecimal pointValue = startCapital;
-        	System.out.println("---------------------------------------------------");
-        	System.out.println("zeitpunkt: " + date.getTime());
-        	System.out.println("old pointValue: " + pointValue);
-        	System.out.println("closingPrice: " + closingPrice);
-        	
-        	List<OrderTransactionEntry> buyTransactions = transactionDataAccess.getBuyTransactionsUntil(portfolio, historyEntry.getValuePaper(), date);
-        	BigDecimal totalBuyPrice = new BigDecimal(0);
-        	BigDecimal totalValue = new BigDecimal(0);
-        	System.out.println("buyTransaction: " + buyTransactions);
-        	for (OrderTransactionEntry ot : buyTransactions) {
-        		totalBuyPrice = totalBuyPrice.add(ot.getValue().getValue());
-        		BigDecimal volume = BigDecimal.valueOf(ot.getOrder().getVolume());
-        		totalValue = totalValue.add(volume.multiply(closingPrice));
+        for (TransactionEntry transaction : portfolio.getTransactionEntries()) {
+        	if (transaction.getType() == TransactionType.ORDER) {
+        		continue;
         	}
-        	System.out.println("totalBuyPrice: " + totalBuyPrice);
-        	System.out.println("totalValue: " + totalValue);
         	
-        	pointValue = pointValue.subtract(totalBuyPrice).add(totalValue);
-        	System.out.println("new pointValue: " + pointValue);
-        	
-        	pointResults.put(date, pointValue);
-        	/*if (pointResults.containsKey(date)) {
-        		BigDecimal oldValue = pointResults.get(date);
-        		pointResults.put(date, new BigDecimal(oldValue.longValue()+closingPrice.longValue()));
-        	} else {
-        		pointResults.put(date, closingPrice);
-        	}*/
-        }
-        for (Calendar date: pointResults.keySet()) {
-        	BigDecimal value = pointResults.get(date);
-        	series.set(format.format(date.getTime()), value);
-        }
-        
-        // GET PORTFOLIO TRANSACTIONS
-        
-        //series.set("2014-01-03", BigDecimal.valueOf(30+portfolio.getSetting().getStartCapital().getValue().longValue()));
-        
-        /*Set<TransactionEntry> transactionSet = portfolio.getTransactionEntries();
-        for (TransactionEntry transaction : transactionSet) {
         	String date = format.format(transaction.getCreated().getTime());
         	BigDecimal value = transaction.getValue().getValue();
-        	series.set(date, value);
-        }*/
+        	
+        	if (transaction.getType() == TransactionType.PAYOUT) {
+        		value = value.negate();
+        	}
+        	
+        	if (pointResult.containsKey(date)) {
+    			BigDecimal old = pointResult.get(date);
+    			pointResult.put(date, old.subtract(value));
+    		} else {
+    			pointResult.put(date, value.negate());
+    		}
+        }
         
-        /*series1.set("2014-01-01", 51);
-        series1.set("2014-01-06", 22);
-        series1.set("2014-01-12", 65);
-        series1.set("2014-01-18", 74);
-        series1.set("2014-01-24", 24);
-        series1.set("2014-01-30", 51);*/
+        List<ValuePaperHistoryEntry> historyEntries = priceDataAccess.getHistoricValuePaperPricesByPortfolioId(portfolio.getId());
+        for (ValuePaperHistoryEntry historyEntry : historyEntries) {
+        	Calendar calendar = historyEntry.getDate();
+        	calendar.set(Calendar.HOUR_OF_DAY, 23);
+            calendar.set(Calendar.MINUTE, 59);
+            calendar.set(Calendar.SECOND, 59);
+            calendar.set(Calendar.MILLISECOND, 999);
+        	BigDecimal totalBuyPrice = new BigDecimal(0);
+        	BigDecimal totalValue = new BigDecimal(0);
+        	
+        	for (TransactionEntry transaction : portfolio.getTransactionEntries()) {
+        		if (transaction instanceof OrderTransactionEntry && transaction.getCreated().before(calendar)) {        				
+        			OrderTransactionEntry ot = (OrderTransactionEntry)transaction;
+        			totalBuyPrice = totalBuyPrice.add(ot.getValue().getValue());
+            		BigDecimal volume = BigDecimal.valueOf(ot.getOrder().getVolume());
+            		totalValue = totalValue.add(volume.multiply(historyEntry.getClosingPrice()));
+        		}
+        	}
+        	
+        	String date = format.format(calendar.getTime());
+        	BigDecimal pointValue = startCapital.subtract(totalBuyPrice).add(totalValue);
+        	if (pointResult.containsKey(date)) {
+        		BigDecimal oldValue = pointResult.get(date);
+        		pointResult.put(format.format(calendar.getTime()), oldValue.add(pointValue));
+        	} else {
+        		pointResult.put(date, pointValue);
+        	}
+        }
+        
+        
+        for (String date: pointResult.keySet()) {
+        	BigDecimal value = pointResult.get(date);
+        	series.set(date, value);
+        }
         
         portfolioChart.addSeries(series);
-        
         
 	}
 
