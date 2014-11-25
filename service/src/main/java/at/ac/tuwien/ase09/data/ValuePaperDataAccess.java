@@ -9,6 +9,7 @@ import javax.persistence.NoResultException;
 
 import at.ac.tuwien.ase09.exception.AppException;
 import at.ac.tuwien.ase09.exception.EntityNotFoundException;
+import at.ac.tuwien.ase09.model.DividendHistoryEntry;
 import at.ac.tuwien.ase09.model.Stock;
 import at.ac.tuwien.ase09.model.StockBond;
 import at.ac.tuwien.ase09.model.ValuePaper;
@@ -57,6 +58,20 @@ public class ValuePaperDataAccess {
 			return em.createQuery("SELECT stock.code FROM Stock stock WHERE stock.index = :index", String.class).setParameter("index", indexName).getResultList();
 		}catch(Exception e){
 			throw new AppException(e);
+		}
+	}
+	
+	public DividendHistoryEntry getLatestDividendHistoryEntry(String code){
+		List<DividendHistoryEntry> entries = null;
+		try{
+			entries = em.createQuery("SELECT dividendEntry FROM DividendHistoryEntry dividendEntry JOIN dividendEntry.stock s WHERE s.code = :code ORDER BY dividendEntry.dividendDate DESC", DividendHistoryEntry.class).setParameter("code", code).setMaxResults(1).getResultList();
+		} catch(Exception e){
+			throw new AppException(e);
+		}
+		if(entries.isEmpty()){
+			throw new EntityNotFoundException();
+		}else{
+			return entries.get(0);
 		}
 	}
 }

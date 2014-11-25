@@ -70,23 +70,25 @@ public class HistoricBondPriceReader extends AbstractItemReader {
 		tableRows.remove(0);	// remove table header
 		List<ValuePaperHistoryEntry> historicPriceEntries = new ArrayList<>();
 		for(Element row : tableRows){
-			String dateStr = row.child(0).text();
-			String openingPriceStr = row.child(1).text().replace(',', '.');
-			String closingPriceStr = row.child(2).text().replace(',', '.');
-			String dayHighStr = row.child(3).text().replace(',', '.');
-			String dayLowStr = row.child(4).text().replace(',', '.');
-			
-			ValuePaperHistoryEntry historicPriceEntry = new ValuePaperHistoryEntry();
-			Calendar priceDate = Calendar.getInstance();
-			priceDate.setTime(df.parse(dateStr));
-			historicPriceEntry.setDate(priceDate);
-			historicPriceEntry.setOpeningPrice(new BigDecimal(openingPriceStr));
-			historicPriceEntry.setClosingPrice(new BigDecimal(closingPriceStr));
-			historicPriceEntry.setDayHighPrice(new BigDecimal(dayHighStr));
-			historicPriceEntry.setDayLowPrice(new BigDecimal(dayLowStr));
-			historicPriceEntry.setValuePaper(bond);
-			
-			historicPriceEntries.add(historicPriceEntry);
+			if(row.children().size() >= 5){
+				String dateStr = row.child(0).text();
+				String openingPriceStr = row.child(1).text().replace(',', '.');
+				String closingPriceStr = row.child(2).text().replace(',', '.');
+				String dayHighStr = row.child(3).text().replace(',', '.');
+				String dayLowStr = row.child(4).text().replace(',', '.');
+				
+				ValuePaperHistoryEntry historicPriceEntry = new ValuePaperHistoryEntry();
+				Calendar priceDate = Calendar.getInstance();
+				priceDate.setTime(df.parse(dateStr));
+				historicPriceEntry.setDate(priceDate);
+				historicPriceEntry.setOpeningPrice(new BigDecimal(openingPriceStr));
+				historicPriceEntry.setClosingPrice(new BigDecimal(closingPriceStr));
+				historicPriceEntry.setDayHighPrice(new BigDecimal(dayHighStr));
+				historicPriceEntry.setDayLowPrice(new BigDecimal(dayLowStr));
+				historicPriceEntry.setValuePaper(bond);
+				
+				historicPriceEntries.add(historicPriceEntry);
+			}
 		}
 		linkNumber++;
 		return historicPriceEntries;
