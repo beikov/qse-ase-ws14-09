@@ -26,7 +26,6 @@ import org.primefaces.model.chart.LineChartSeries;
 import org.primefaces.model.chart.PieChartModel;
 
 import at.ac.tuwien.ase09.data.PortfolioDataAccess;
-import at.ac.tuwien.ase09.data.TransactionDataAccess;
 import at.ac.tuwien.ase09.data.ValuePaperPriceEntryDataAccess;
 import at.ac.tuwien.ase09.model.Portfolio;
 import at.ac.tuwien.ase09.model.PortfolioValuePaper;
@@ -59,9 +58,6 @@ public class PortfolioViewBean implements Serializable {
 	
 	@Inject
 	private ValuePaperPriceEntryDataAccess priceDataAccess;
-	
-	@Inject
-	private TransactionDataAccess transactionDataAccess;
 	
 	private Long portfolioId;
 	
@@ -173,7 +169,7 @@ public class PortfolioViewBean implements Serializable {
 	
 	private void createPortfolioChart() {
 		portfolioChart = new LineChartModel();
-		portfolioChart.setTitle("Zoom");
+		portfolioChart.setTitle("Portfoliochart");
         portfolioChart.setZoom(true);
         portfolioChart.getAxis(AxisType.Y).setLabel("Wert");
         DateAxis axis = new DateAxis("Datum");
