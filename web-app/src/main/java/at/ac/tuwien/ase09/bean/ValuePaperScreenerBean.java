@@ -1,16 +1,16 @@
 package at.ac.tuwien.ase09.bean;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.annotation.ManagedBean;
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import at.ac.tuwien.ase09.filter.AttributeFilter;
 import at.ac.tuwien.ase09.filter.AttributeType;
@@ -20,10 +20,10 @@ import at.ac.tuwien.ase09.model.ValuePaperType;
 import at.ac.tuwien.ase09.service.ValuePaperScreenerService;
 
 @ManagedBean
-@Named
-@RequestScoped
-public class ValuePaperScreenerBean {
+@ViewScoped
+public class ValuePaperScreenerBean implements Serializable {
 
+	private static final long serialVersionUID = 1L;
 		
 		@Inject
 		private ValuePaperScreenerService screenerService;
@@ -31,12 +31,11 @@ public class ValuePaperScreenerBean {
 
 		private ValuePaperType paperType;
 
-		private List<AttributeFilter> filters;
+		private List<AttributeFilter> filters=new ArrayList<AttributeFilter>();
 		private List<ValuePaper> searchedValuePapers;
 		
 		@PostConstruct
 		public void init() {
-			filters=new ArrayList<AttributeFilter>();
 		}
 		
 		public List<AttributeFilter> getFilters() {
@@ -95,7 +94,12 @@ public class ValuePaperScreenerBean {
 		}
 		public void addFilter()
 		{
+			System.out.println("Hallo");
 			filters.add(new AttributeFilter());
+			for(AttributeFilter f: filters)
+			{
+				System.out.println("Hallo1");
+			}
 		}
 		public void search()
 		{

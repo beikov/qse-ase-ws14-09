@@ -11,7 +11,7 @@
 	<ui:define name="body">
 	
 	<h:form id="searchValuePapers">
-	 <p:tabView>
+	 <p:tabView id="searchTab">
         <p:tab title="Einfache Aktiensuche">
 	 
 			<h:panelGrid columns="2" cellpadding="10">		
@@ -19,7 +19,7 @@
 				<p:selectOneMenu id="type" value="#{valuePaperScreenerBean.valuePaperType}" style="width:200px">
 					<f:selectItem itemLabel="Beliebig" itemValue="#{null}" />
 					<f:selectItems value="#{valuePaperScreenerBean.valuePaperTypes}" />
-					<p:ajax process="@this" update=":filterTable:attributeSelect" />
+					<p:ajax process="@this" update="filterTable" />
 				</p:selectOneMenu>
 			</h:panelGrid>
 			
@@ -34,7 +34,7 @@
 						 <f:selectItem itemLabel="Wähle Filterattribut" itemValue="#{null}" noSelectionOption="true" />
 						<f:selectItems value="#{valuePaperScreenerBean.attributeTypes}" var="attribute"
 						itemValue="#{attribute}" itemLabel="#{attribute.label}"/>
-						<p:ajax process="@this" update="operatorCol numericCol textCol currencyCol enableCol" />
+						<p:ajax process="@this" update="filterTable" />
 					</p:selectOneMenu>
 				</p:column>
 				<p:column id="operatorCol" rendered="#{filter.numeric and filter.attribute != null}">
@@ -60,29 +60,13 @@
 				   <p:selectBooleanCheckbox value="#{filter.enabled}" />
 				</p:column>			
 			</h:dataTable>
-			<p:commandButton value="Hinzufügen"
-						action="#{valuePaperScreenerBean.addFilter()}" update="filterTable"
-						ajax="true" />
+			<p:commandButton value="Hinzufügen">
+						<f:ajax listener="#{valuePaperScreenerBean.addFilter()}" execute="@form" render="filterTable" /> 
+						</p:commandButton>
 		</p:tab>
 		 <p:tab title="Komplexe Aktiensuche">
 		 </p:tab>
 	</p:tabView>	
-		<!-- 
-				<p:outputLabel for="isin" value="ISIN: " style="padding: 10px;"/>
-				<p:inputText id="isin"
-					value="#{valuePaperScreenerBean.isin}" >
-				 <f:validateRegex pattern="^([a-zA-Z]|\?|\*){2}([a-zA-Z0-9]|\?|\*)*" />
-				</p:inputText>
-		
-				<p:outputLabel for="country" value="Land: " style="padding: 10px;"/>
-				<p:inputText id="country" value="#{valuePaperScreenerBean.country}" />
-
-				<p:outputLabel for="currency" value="Währungscode: " style="padding: 10px;"/>
-				<p:inputText id="currency"
-					value="#{valuePaperScreenerBean.currencyCode}" >
-					 <f:validateRegex pattern="^[a-zA-Z]{3}$" />
-				</p:inputText>			
-			-->
 		
 				<center>
 					<p:commandButton value="Reset" type="reset" />
@@ -92,13 +76,13 @@
 					</center>
 				<br/>
 				
-				<p:message for="attributeSelect" style="color:red" />
+				<p:message for=":searchValuePapers:searchTab:filterTable:attributeSelect" style="color:red" />
 				<p> </p>
-				<p:message for="nummericField" style="color:red" />
+				<p:message for=":searchValuePapers:searchTab:filterTable:nummericField" style="color:red" />
 				<p> </p>
-				<p:message for="textField" style="color:red" />
+				<p:message for=":searchValuePapers:searchTab:filterTable:textField" style="color:red" />
 				<p> </p>
-				<p:message for="currencyField" style="color:red" />
+				<p:message for=":searchValuePapers:searchTab:filterTable:currencyField" style="color:red" />
 
 		<p:separator />
 		
