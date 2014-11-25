@@ -29,7 +29,7 @@
 						<p:layoutUnit position="center" style="border: 0">
 
 							<p:panel id="allgemein" header="Allgemeine Informationen"
-								style="margin-bottom: 5px">
+								style="margin-bottom: 10px">
 
 								<p:panelGrid columns="2">
 
@@ -86,7 +86,7 @@
 							minSize="50" maxSize="500" style="border: 0">
 
 							<p:panel id="kurschart" header="Kurschart"
-								style="margin-bottom: 5px">
+								style="margin-bottom: 10px">
 
 								<c:choose>
 									<c:when
@@ -112,7 +112,8 @@
         						</f:facet>
 								<p:commandLink update=":einzeltitelansicht:newsDetail"
 									oncomplete="PF('newsDialog').show()" title="News anzeigen">
-									<f:param name="valuePaperIsin" value="#{valuePaperViewBean.valuePaper.code}"/>
+									<f:param name="valuePaperIsin"
+										value="#{valuePaperViewBean.valuePaper.code}" />
 									<f:setPropertyActionListener value="#{news}"
 										target="#{valuePaperViewBean.selectedNewsItem}" />
 									<h:outputText value="#{news.created.time}">
@@ -126,7 +127,7 @@
 							<p:dialog header="News Info" widgetVar="newsDialog" modal="false"
 								showEffect="blind" hideEffect="blind" resizable="false"
 								width="700px">
-								<p:outputPanel id="newsDetail" style="text-align:left;">
+								<p:outputPanel id="newsDetail" style="text-align:left">
 
 									<p:panelGrid columns="2">
 
@@ -154,9 +155,16 @@
 								</p:outputPanel>
 							</p:dialog>
 
-							<p:panel id="analystOpinions" header="Anaylystenmeinungen">
-							Meinungen
-						</p:panel>
+							<div id="analystOpinions" style="margin-top: 10px">
+
+								<p:dataList type="unordered" itemType="none" paginator="true"
+									rows="5">
+									<f:facet name="header">
+            						Analystenmeinungen
+        						</f:facet>
+								</p:dataList>
+
+							</div>
 
 						</p:layoutUnit>
 					</p:layout>
