@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +24,7 @@ import org.primefaces.model.chart.LineChartModel;
 import org.primefaces.model.chart.LineChartSeries;
 
 import at.ac.tuwien.ase09.exception.EntityNotFoundException;
+import at.ac.tuwien.ase09.model.DividendHistoryEntry;
 import at.ac.tuwien.ase09.model.Fund;
 import at.ac.tuwien.ase09.model.NewsItem;
 import at.ac.tuwien.ase09.model.Stock;
@@ -31,6 +33,7 @@ import at.ac.tuwien.ase09.model.ValuePaper;
 import at.ac.tuwien.ase09.model.ValuePaperPriceEntry;
 import at.ac.tuwien.ase09.model.ValuePaperHistoryEntry;
 import at.ac.tuwien.ase09.model.ValuePaperType;
+import at.ac.tuwien.ase09.service.DividendHistoryEntryService;
 import at.ac.tuwien.ase09.service.NewsItemService;
 import at.ac.tuwien.ase09.service.ValuePaperPriceEntryService;
 import at.ac.tuwien.ase09.service.ValuePaperService;
@@ -48,7 +51,9 @@ public class ValuePaperViewBean implements Serializable{
 	private String valuePaperIsin;
 
 	private LineChartModel valuePaperHistoricPriceLineChartModel = null;
+
 	private List<NewsItem> newsItemsList = null;
+	private List<DividendHistoryEntry> stockDividendList = null;
 
 	private Map<String, String> mainValuePaperAttributes = null;
 	private Map<String, String> additionalValuePaperAttributes = null;
@@ -62,6 +67,9 @@ public class ValuePaperViewBean implements Serializable{
 	@Inject
 	private NewsItemService newsItemService;
 
+	@Inject
+	private DividendHistoryEntryService dividendHistoryEntryService;
+
 	@PersistenceContext
 	private EntityManager em;
 
@@ -71,10 +79,10 @@ public class ValuePaperViewBean implements Serializable{
 		if(this.valuePaper != null){
 			loadValuePaperAttributes();
 			loadNewsItems();
+			loadStockDividendHistoryEntries();
 			createLineChartModels();
 		}
 	}
-
 
 	public String getValuePaperIsin() {
 		return valuePaperIsin;
@@ -135,6 +143,14 @@ public class ValuePaperViewBean implements Serializable{
 		this.newsItemsList = newsItemsList;
 	}
 
+	public List<DividendHistoryEntry> getStockDividendList() {
+		return stockDividendList;
+	}
+
+	public void setStockDividendList(List<DividendHistoryEntry> stockDividendList) {
+		this.stockDividendList = stockDividendList;
+	}
+
 
 
 
@@ -164,7 +180,7 @@ public class ValuePaperViewBean implements Serializable{
 	}
 
 	private void loadNewsItems() {
-		this.newsItemsList = newsItemService.getNewsItemsByValuePaperCode(valuePaper.getCode());
+		newsItemsList = newsItemService.getNewsItemsByValuePaperCode(valuePaper.getCode());
 
 		Collections.sort(newsItemsList, new Comparator<NewsItem>() {
 
@@ -175,9 +191,30 @@ public class ValuePaperViewBean implements Serializable{
 				if(arg0.getCreated().getTime().getTime() > arg1.getCreated().getTime().getTime())
 					return -1;
 				return 0;
-				//return (int) (arg0.getCreated().getTime().getTime() - arg1.getCreated().getTime().getTime());
 			}
 		}); 
+	}
+
+	private void loadStockDividendHistoryEntries() {
+		try{
+			stockDividendList = dividendHistoryEntryService.getDividendHistoryEntryByValuePaperCode(valuePaper.getCode());
+
+			Collections.sort(stockDividendList, new Comparator<DividendHistoryEntry>() {
+
+				@Override
+				public int compare(DividendHistoryEntry arg0, DividendHistoryEntry arg1) {
+					if(arg0.getDividendDate().getTime().getTime() < arg1.getDividendDate().getTime().getTime())
+						return 1;
+					if(arg0.getDividendDate().getTime().getTime() > arg1.getDividendDate().getTime().getTime())
+						return -1;
+					return 0;
+				}
+			});
+		}
+		catch(EntityNotFoundException e){
+			stockDividendList = null;
+		}
+
 	}
 
 	private void loadValuePaperAttributes() {
@@ -512,6 +549,10 @@ public class ValuePaperViewBean implements Serializable{
 	}
 
 	private void createLineChartModels(){
+		createValuePaperHistoricPriceLineChart();
+	}
+
+	private void createValuePaperHistoricPriceLineChart(){
 
 		valuePaperHistoricPriceLineChartModel = new LineChartModel();
 		LineChartSeries series1 = new LineChartSeries();
@@ -553,6 +594,7 @@ public class ValuePaperViewBean implements Serializable{
 		catch(EntityNotFoundException e){
 			valuePaperHistoricPriceLineChartModel = null;
 		}
+
 	}
 
 }

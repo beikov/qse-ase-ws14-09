@@ -103,10 +103,41 @@
 
 							</p:panel>
 
+							<div style="max-height: 250px">
+								<p:dataTable var="dividend"
+									value="#{valuePaperViewBean.stockDividendList}"
+									rendered="#{valuePaperViewBean.valuePaper.type == 'STOCK'}"
+									emptyMessage="keine Dividendendaten vorhanden"
+									scrollable="true" scrollHeight="100%"
+									style="margin-bottom:10px">
+
+									<f:facet name="header">
+            							Dividenden
+        							</f:facet>
+									<p:column headerText="Datum">
+										<h:outputText value="#{dividend.dividendDate.time}">
+											<f:convertDateTime pattern="dd.MM.yyyy" />
+										</h:outputText>
+									</p:column>
+
+									<p:column headerText="Dividende">
+										<h:outputText
+											value="#{dividend.dividend} #{valuePaperViewBean.valuePaper.currency}" />
+									</p:column>
+
+									<p:column headerText="Rendite">
+										<c:if test="#{dividend.dividendYield != null}">
+											<h:outputText value="#{dividend.dividendYield}%" />
+										</c:if>
+									</p:column>
+								</p:dataTable>
+
+
+							</div>
 
 							<p:dataList value="#{valuePaperViewBean.newsItemsList}"
 								var="news" type="unordered" itemType="none" paginator="true"
-								rows="5">
+								rows="5" emptyMessage="keine Newseinträge vorhanden">
 								<f:facet name="header">
             						News
         						</f:facet>
@@ -158,7 +189,7 @@
 							<div id="analystOpinions" style="margin-top: 10px">
 
 								<p:dataList type="unordered" itemType="none" paginator="true"
-									rows="5">
+									rows="5" emptyMessage="keine Analystenmeinungen vorhanden">
 									<f:facet name="header">
             						Analystenmeinungen
         						</f:facet>
