@@ -11,21 +11,67 @@
 	<ui:define name="body">
 	
 	<h:form id="searchValuePapers">
-	 <p:panel header="Aktiensuche" style="margin-bottom:10px;">
-			<h:panelGrid columns="4" cellpadding="5">
-				<p:outputLabel for="name" value="Aktienname: " style="padding: 10px;"/>
-				<p:inputText id="name" value="#{valuePaperScreenerBean.valuePaperName}" />
-				
-				<p:outputLabel for="type" value="Aktientyp: " style="padding: 10px;"/>
-				<p:selectOneMenu id="type" value="#{valuePaperScreenerBean.valuePaperType}" style="width:190px">
+	 <p:tabView>
+        <p:tab title="Einfache Aktiensuche">
+	 
+			<h:panelGrid columns="2" cellpadding="10">		
+				<p:outputLabel for="type" value="Wähle Aktientyp: " style="padding: 10px;"/>
+				<p:selectOneMenu id="type" value="#{valuePaperScreenerBean.valuePaperType}" style="width:200px">
 					<f:selectItem itemLabel="Beliebig" itemValue="#{null}" />
 					<f:selectItems value="#{valuePaperScreenerBean.valuePaperTypes}" />
+					<p:ajax process="@this" update=":filterTable:attributeSelect" />
 				</p:selectOneMenu>
-				
+			</h:panelGrid>
+			
+			<p:separator />
+			
+			<h:dataTable id="filterTable" var="filter" value="#{valuePaperScreenerBean.filters}"  cellpadding="10">
+				<p:column>
+				        <p:commandButton type="button" action="#{valuePaperScreenerBean.delete(filter)}" update="filterTable" icon="ui-icon-trash" ajax="true" />
+				</p:column>
+				<p:column>
+				    <p:selectOneMenu id="attributeSelect" value="#{filter.attribute}" style="width:200px" required="true">				
+						 <f:selectItem itemLabel="Wähle Filterattribut" itemValue="#{null}" noSelectionOption="true" />
+						<f:selectItems value="#{valuePaperScreenerBean.attributeTypes}" var="attribute"
+						itemValue="#{attribute}" itemLabel="#{attribute.label}"/>
+						<p:ajax process="@this" update="operatorCol numericCol textCol currencyCol enableCol" />
+					</p:selectOneMenu>
+				</p:column>
+				<p:column id="operatorCol" rendered="#{filter.numeric and filter.attribute != null}">
+				    <p:selectOneMenu id="operator" value="#{filter.operator}" style="width:200px">				
+						<f:selectItems value="#{valuePaperScreenerBean.operatorTypes}" var="operator"
+						itemValue="#{operator}" itemLabel="#{operator.label}"/>
+					</p:selectOneMenu>
+				</p:column>
+				<p:column id="numericCol" rendered="#{filter.numeric and filter.attribute != null}">
+				    <p:inputText id="nummericField" value="#{filter.numericValue}" required="true">
+				    	 <f:validateRegex pattern="[0-9]" />
+				    </p:inputText>
+				</p:column>
+				<p:column id="textCol" rendered="#{!filter.numeric and filter.attribute != null}">
+				    <p:inputText id="textField" value="#{filter.textValue}" required="true"/>
+				</p:column>
+				<p:column id="currencyCol" rendered="#{!filter.numeric and filter.attribute == 'CURRENCY' and filter.attribute != null}">
+				    <p:inputText id="currencyField" value="#{filter.currencyValue}" required="true">
+				    	 <f:validateRegex pattern="^[a-zA-Z]{3}$" />
+				    </p:inputText>
+				</p:column>
+				<p:column id="enableCol" rendered="#{filter.attribute != null}">
+				   <p:selectBooleanCheckbox value="#{filter.enabled}" />
+				</p:column>			
+			</h:dataTable>
+			<p:commandButton value="Hinzufügen"
+						action="#{valuePaperScreenerBean.addFilter()}" update="filterTable"
+						ajax="true" />
+		</p:tab>
+		 <p:tab title="Komplexe Aktiensuche">
+		 </p:tab>
+	</p:tabView>	
+		<!-- 
 				<p:outputLabel for="isin" value="ISIN: " style="padding: 10px;"/>
 				<p:inputText id="isin"
 					value="#{valuePaperScreenerBean.isin}" >
-					<!--  <f:validateRegex pattern="^([a-zA-Z]|\?|\*){2}([a-zA-Z0-9]|\?|\*)*" />-->
+				 <f:validateRegex pattern="^([a-zA-Z]|\?|\*){2}([a-zA-Z0-9]|\?|\*)*" />
 				</p:inputText>
 		
 				<p:outputLabel for="country" value="Land: " style="padding: 10px;"/>
@@ -36,8 +82,7 @@
 					value="#{valuePaperScreenerBean.currencyCode}" >
 					 <f:validateRegex pattern="^[a-zA-Z]{3}$" />
 				</p:inputText>			
-			</h:panelGrid>
-		</p:panel>
+			-->
 		
 				<center>
 					<p:commandButton value="Reset" type="reset" />
@@ -47,9 +92,13 @@
 					</center>
 				<br/>
 				
-				<p:message for="isin" style="color:red" />
+				<p:message for="attributeSelect" style="color:red" />
 				<p> </p>
-				<p:message for="currency" style="color:red" />
+				<p:message for="nummericField" style="color:red" />
+				<p> </p>
+				<p:message for="textField" style="color:red" />
+				<p> </p>
+				<p:message for="currencyField" style="color:red" />
 
 		<p:separator />
 		
@@ -72,7 +121,7 @@
 				    <p:column >
 				    	<h:button value="Details" outcome="/valuepaper/valuepaperview">
 							<!--  includeViewParams="true" -->
-							<f:param name="valuePaperIsin" value="#{valuePaper.isin}" />
+							<f:param name="valuePaperIsin" value="#{valuePaper.code}" />
 						</h:button> 
 				    </p:column>
 				</p:dataTable>

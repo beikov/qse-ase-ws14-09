@@ -1,6 +1,7 @@
 package at.ac.tuwien.ase09.filter;
 
 import java.math.BigDecimal;
+import java.util.Currency;
 
 import at.ac.tuwien.ase09.model.ValuePaperType;
 
@@ -9,12 +10,19 @@ public class AttributeFilter {
 	private BigDecimal numericValue;
 	private String textValue;
 	private ValuePaperType typeValue;
+	private String currencyCodeValue;
 	private AttributeType attribute;
 	private OperatorType operator;
 	private Boolean numeric,enabled;
 	
 	
-	public Boolean getEnabled() {
+	public String getCurrencyValue() {
+		return currencyCodeValue;
+	}
+	public void setCurrencyValue(String currencyCodeValue) {
+		this.currencyCodeValue = currencyCodeValue;
+	}
+	public Boolean isEnabled() {
 		return enabled;
 	}
 	public void setEnabled(Boolean enabled) {

@@ -1,6 +1,7 @@
 package at.ac.tuwien.ase09.bean;
 
-import java.util.Currency;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.ManagedBean;
@@ -11,9 +12,9 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import at.ac.tuwien.ase09.model.StockBond;
-import at.ac.tuwien.ase09.model.Fund;
-import at.ac.tuwien.ase09.model.Stock;
+import at.ac.tuwien.ase09.filter.AttributeFilter;
+import at.ac.tuwien.ase09.filter.AttributeType;
+import at.ac.tuwien.ase09.filter.OperatorType;
 import at.ac.tuwien.ase09.model.ValuePaper;
 import at.ac.tuwien.ase09.model.ValuePaperType;
 import at.ac.tuwien.ase09.service.ValuePaperScreenerService;
@@ -27,24 +28,23 @@ public class ValuePaperScreenerBean {
 		@Inject
 		private ValuePaperScreenerService screenerService;
 		
-		private ValuePaper valuePaper;
+
 		private ValuePaperType paperType;
-		private Boolean isTypeSpecificated=false;
-		private String valuePaperName, isin, country, currencyCode;
+
+		private List<AttributeFilter> filters;
 		private List<ValuePaper> searchedValuePapers;
-		
 		
 		@PostConstruct
 		public void init() {
-			
+			filters=new ArrayList<AttributeFilter>();
 		}
 		
-		public ValuePaper getValuePaper() {
-			return valuePaper;
+		public List<AttributeFilter> getFilters() {
+			return filters;
 		}
 
-		public void setValuePaper(ValuePaper valuePaper) {
-			this.valuePaper = valuePaper;
+		public void setFilters(List<AttributeFilter> filters) {
+			this.filters = filters;
 		}
 
 		public List<ValuePaper> getSearchedValuePapers() {
@@ -59,6 +59,25 @@ public class ValuePaperScreenerBean {
 		{
 			return ValuePaperType.values();
 		}
+		public OperatorType[] getOperatorTypes()
+		{
+			return OperatorType.values();
+		}
+		public List<AttributeType> getAttributeTypes()
+		{
+			
+			if(paperType==null||paperType.equals(ValuePaperType.STOCK))
+			{
+				return Arrays.asList(AttributeType.values());
+			}
+			else
+			{
+				List<AttributeType> attributes=new ArrayList<AttributeType>();
+				attributes.add(AttributeType.NAME);
+				attributes.add(AttributeType.CODE);
+				return attributes;
+			}
+		}
 		
 		public void setValuePaperType(ValuePaperType paperType)
 		{
@@ -70,92 +89,33 @@ public class ValuePaperScreenerBean {
 			return paperType;
 		}
 
-		public String getValuePaperName() {
-			return valuePaperName;
+		public void delete(AttributeFilter filter)
+		{
+			filters.remove(filter);
 		}
-
-		public void setValuePaperName(String valuePaperName) {
-			this.valuePaperName = valuePaperName;
+		public void addFilter()
+		{
+			filters.add(new AttributeFilter());
 		}
-
-		public String getIsin() {
-			return isin;
-		}
-
-		public void setIsin(String isin) {
-			this.isin = isin;
-		}
-
-		public String getCountry() {
-			return country;
-		}
-
-		public void setCountry(String country) {
-			this.country = country;
-		}
-
-		public String getCurrencyCode() {
-			return currencyCode;
-		}
-
-		public void setCurrencyCode(String currencyCode) {
-			this.currencyCode=currencyCode;
-		}
-		
 		public void search()
 		{
-			if(paperType!=null)
-			{
-				System.out.println(""+paperType.toString());
-				isTypeSpecificated=true;
-				
-				if(paperType.equals(ValuePaperType.BOND))
-				{
-					valuePaper=new StockBond();
-				}
-				else if(paperType.equals(ValuePaperType.STOCK))
-				{
-					valuePaper=new Stock();
-				}
-				else
-				{
-					valuePaper=new Fund();
-				}
-				/**
-				try {
-					valuePaper=(ValuePaper) Class.forName(paperType.toString().charAt(0)+paperType.toString().substring(1).toLowerCase()).newInstance();
-				} catch (InstantiationException | IllegalAccessException
-						| ClassNotFoundException e) {
-					e.printStackTrace();
-				}*/
-			}
-			else
-			{
-				isTypeSpecificated=false;
-				valuePaper=new Stock();
-			}
-			if (valuePaper.getType() == ValuePaperType.STOCK) {
-				((Stock)valuePaper).setCountry(country);
-			}
-			valuePaper.setCode(isin);
-			valuePaper.setName(valuePaperName);
 			
-			if (valuePaper.getType() == ValuePaperType.STOCK && !currencyCode.isEmpty() && currencyCode != null) {
+			
 				try{
-					((Stock)valuePaper).setCurrency(Currency.getInstance(currencyCode.toUpperCase()));
+					searchedValuePapers=screenerService.search(filters, paperType);
 				}
 				catch(IllegalArgumentException e)
 				 {
 					System.out.println("currencyCode does not exists");
 					FacesMessage facesMessage = new FacesMessage(
-							"Error: Currency-Code does not exist");
+							"Fehler: Währungs-Code existiert nicht");
 					FacesContext.getCurrentInstance().addMessage(
 							"searchValuePapers:currency", facesMessage);
 
 				}
-			}
 			
-			searchedValuePapers=screenerService.search(valuePaper, isTypeSpecificated);
+			
+			
 			
 			for(ValuePaper p: searchedValuePapers)
 			{

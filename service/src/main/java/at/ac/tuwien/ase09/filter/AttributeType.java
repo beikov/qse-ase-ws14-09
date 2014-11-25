@@ -5,9 +5,9 @@ public enum AttributeType {
 	
 	
 	NAME("name","Name",false),
-	CODE( "code","Code",false),
+	CODE( "code","Code/Isin",false),
 	
-	CURRENCY( "currency","Währung",false),
+	CURRENCY( "currency","Währungscode",false),
 	MARKETCAP("marketCap","Börsenwert",true),
 	ENTERPRISEVALUE("enterpriseValue","Unternehmenswert",true),
 	PRICESALES("priceSales","Kurs-Umsatz-Verhältnis",true),
