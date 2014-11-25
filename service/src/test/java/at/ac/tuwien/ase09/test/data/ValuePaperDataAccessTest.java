@@ -47,6 +47,7 @@ public class ValuePaperDataAccessTest extends AbstractContainerTest<ValuePaperDa
 		//Given
 		Fund f = new Fund();
 		f.setCode("AT123456");
+		em.clear();
 		dataManager.persist(f);
 		em.clear();
 		

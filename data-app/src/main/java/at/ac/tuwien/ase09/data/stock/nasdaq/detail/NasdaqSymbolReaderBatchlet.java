@@ -35,18 +35,11 @@ public class NasdaqSymbolReaderBatchlet extends AbstractBatchlet {
 	@Override
 	public String process() throws Exception {
 		Document boerse = JsoupUtils.getPage(nasdaqListUrl);
-
 		Elements symbolTableRows = boerse
 				.select("table.data.quoteTable tbody tr");
 		List<String> symbols = symbols = symbolTableRows.stream().map(elem -> elem.getElementsByAttributeValue("data-field", "symbol").text()).collect(Collectors.toList());
-
-		//		String symbolsStr = symbols.stream().collect(StringBuilder::new, (StringBuilder result, String elem) -> result.append('|').append(elem),
-//                                          StringBuilder::append).toString();
-		
 		jobContext.setTransientUserData(symbols);
-		
 		LOG.info("Extracted " + symbols.size() + " stock symbol models");
-		
 		return StepExitStatus.COMPLETED.toString();
 	}
 
