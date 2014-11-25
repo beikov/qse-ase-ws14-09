@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,7 +58,7 @@ public class ValuePaperViewBean implements Serializable{
 
 	@Inject
 	private ValuePaperService valuePaperService;
-	
+
 	@Inject
 	private NewsItemService newsItemService;
 
@@ -121,10 +123,10 @@ public class ValuePaperViewBean implements Serializable{
 		return selectedNewsItem;
 	}
 
-	public void setSelectedNewsItem(NewsItem selectedNewsItem) {				
+	public void setSelectedNewsItem(NewsItem selectedNewsItem) {		
 		this.selectedNewsItem = selectedNewsItem;
 	}
-	
+
 	public List<NewsItem> getNewsItemsList() {
 		return newsItemsList;
 	}
@@ -132,10 +134,10 @@ public class ValuePaperViewBean implements Serializable{
 	public void setNewsItemsList(List<NewsItem> newsItemsList) {
 		this.newsItemsList = newsItemsList;
 	}
-	
-	
-	
-	
+
+
+
+
 	public ValuePaperPriceEntry getLastPriceEntry() {
 
 		try{
@@ -145,7 +147,7 @@ public class ValuePaperViewBean implements Serializable{
 			return null;
 		}
 	}
-	
+
 	public List<NewsItem> getNewsItems(){		
 		return newsItemService.getNewsItemsByValuePaperCode(valuePaper.getCode());
 	}
@@ -160,9 +162,22 @@ public class ValuePaperViewBean implements Serializable{
 		}
 
 	}
-	
+
 	private void loadNewsItems() {
-		this.newsItemsList = newsItemService.getNewsItemsByValuePaperCode(valuePaper.getCode());	
+		this.newsItemsList = newsItemService.getNewsItemsByValuePaperCode(valuePaper.getCode());
+
+		Collections.sort(newsItemsList, new Comparator<NewsItem>() {
+
+			@Override
+			public int compare(NewsItem arg0, NewsItem arg1) {
+				if(arg0.getCreated().getTime().getTime() < arg1.getCreated().getTime().getTime())
+					return 1;
+				if(arg0.getCreated().getTime().getTime() > arg1.getCreated().getTime().getTime())
+					return -1;
+				return 0;
+				//return (int) (arg0.getCreated().getTime().getTime() - arg1.getCreated().getTime().getTime());
+			}
+		}); 
 	}
 
 	private void loadValuePaperAttributes() {

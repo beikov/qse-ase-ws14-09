@@ -23,7 +23,8 @@
 			        <property name="indexName" value="#{jobProperties['indexName']}" />
 			    </properties>
 		    </reader>
-			<writer ref="StockDetailWriter" />
+		    <processor ref="stockDetailProcessor" />
+			<writer ref="stockDetailWriter" />
 
 			<retryable-exception-classes>
 				<include class="java.net.SocketTimeoutException" />

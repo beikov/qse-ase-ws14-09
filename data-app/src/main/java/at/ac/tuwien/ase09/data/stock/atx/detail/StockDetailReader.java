@@ -20,6 +20,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import at.ac.tuwien.ase09.data.JsoupUtils;
+import at.ac.tuwien.ase09.data.model.StockDetailModel;
 import at.ac.tuwien.ase09.model.Stock;
 
 @Dependent
@@ -92,7 +93,7 @@ public class StockDetailReader extends AbstractItemReader {
 		stock.setIndex(indexName);
 		
 		linkNumber++;
-		return stock;
+		return new StockDetailModel(stock);
 	}
 	
 	@Override

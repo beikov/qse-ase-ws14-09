@@ -112,6 +112,7 @@
         						</f:facet>
 								<p:commandLink update=":einzeltitelansicht:newsDetail"
 									oncomplete="PF('newsDialog').show()" title="News anzeigen">
+									<f:param name="valuePaperIsin" value="#{valuePaperViewBean.valuePaper.code}"/>
 									<f:setPropertyActionListener value="#{news}"
 										target="#{valuePaperViewBean.selectedNewsItem}" />
 									<h:outputText value="#{news.created.time}">

@@ -3,10 +3,13 @@ package at.ac.tuwien.ase09.model;
 import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Currency;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
@@ -21,6 +24,7 @@ public class Stock extends ValuePaper {
 	private String boerseCertificatePageUrl;
 	private String finanzenCertificatePageUrl;
 	private String index;
+	private Set<DividendHistoryEntry> dividendHistoryEntries = new HashSet<DividendHistoryEntry>();
 	
 	// YAHOO Keystats
 	private BigDecimal marketCap;
@@ -108,6 +112,16 @@ public class Stock extends ValuePaper {
 
 	public void setIndex(String index) {
 		this.index = index;
+	}
+
+	@OneToMany(mappedBy="stock")
+	public Set<DividendHistoryEntry> getDividendHistoryEntries() {
+		return dividendHistoryEntries;
+	}
+
+	public void setDividendHistoryEntries(
+			Set<DividendHistoryEntry> dividendHistoryEntries) {
+		this.dividendHistoryEntries = dividendHistoryEntries;
 	}
 
 	public Currency getCurrency() {

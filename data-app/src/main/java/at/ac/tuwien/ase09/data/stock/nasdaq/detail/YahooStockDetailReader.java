@@ -8,10 +8,13 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Currency;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import javax.batch.api.BatchProperty;
@@ -27,6 +30,8 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import at.ac.tuwien.ase09.data.JsoupUtils;
+import at.ac.tuwien.ase09.data.model.StockDetailModel;
+import at.ac.tuwien.ase09.model.DividendHistoryEntry;
 import at.ac.tuwien.ase09.model.Stock;
 
 import com.google.gson.JsonObject;
@@ -35,10 +40,13 @@ import com.google.gson.JsonParser;
 @Dependent
 @Named
 public class YahooStockDetailReader extends AbstractItemReader {
-	private static final String YQL_KEYSTATS_QUERY_TEMPLATE = "https://query.yahooapis.com/v1/public/yql?q=SELECT%20*%20FROM%20yahoo.finance.keystats%20WHERE%20symbol%3D'#{symbolPlaceholder}'&diagnostics=true&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys";
+	private static Logger LOG = Logger.getLogger(YahooStockDetailReader.class.getName());
+	private static final String YQL_KEYSTATS_QUERY_TEMPLATE = "https://query.yahooapis.com/v1/public/yql?q=SELECT%20*%20FROM%20yahoo.finance.keystats%20WHERE%20symbol%3D'#{symbol}'&diagnostics=true&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys";
 	private static final DateFormat YQL_KEYSTATS_DATE_FORMAT = new SimpleDateFormat("MMM dd, yyyy", Locale.US);
 	private static final DateFormat YQL_KEYSTATS_REP_DATE_FORMAT = new SimpleDateFormat("MMM dd", Locale.US);
-	private static final String CNBC_STOCK_DETAIL_QUERY = "http://quote.cnbc.com/quote-html-webservice/quote.htm?partnerId=2&requestMethod=quick&exthrs=1&noform=1&fund=1&output=jsonp&symbols=#{symbolsPlaceholder}";
+	private static final String CNBC_STOCK_DETAIL_QUERY = "http://quote.cnbc.com/quote-html-webservice/quote.htm?partnerId=2&requestMethod=quick&exthrs=1&noform=1&fund=1&output=jsonp&symbols=#{symbols}";
+	private static final String YQL_DIVIDEND_HISTORY_QUERY_TEMPLATE = "https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.dividendhistory%20where%20symbol%20%3D%20%22#{symbol}%22%20and%20startDate%20%3D%20%22#{startDate}%22%20and%20endDate%20%3D%20%22#{endDate}%22&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys";
+	private static final DateFormat YQL_DIVIDEND_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 	
 	@Inject
 	private StepContext stepContext;
@@ -50,10 +58,16 @@ public class YahooStockDetailReader extends AbstractItemReader {
 	private Integer symbolNumber;
 	private List<String> stockSymbols;
 	private final JsonParser jsonParser = new JsonParser();
+	
+	private Calendar startDate;
+	private Calendar endDate;
 
 	@Override
 	public void open(Serializable checkpoint) throws Exception {
 		stockSymbols = (List<String>) stepContext.getPersistentUserData();
+		startDate = Calendar.getInstance();
+		startDate.roll(Calendar.YEAR, -5);
+		endDate = Calendar.getInstance();
 		if (checkpoint != null) {
 			symbolNumber = (Integer) checkpoint;
 		} else {
@@ -66,18 +80,27 @@ public class YahooStockDetailReader extends AbstractItemReader {
 		if(symbolNumber >= stockSymbols.size()){
 			return null;
 		}
-//		if(symbolNumber == 1){
-//			return null;
-//		}
 		String stockSymbol = stockSymbols.get(symbolNumber);
-		Document d = JsoupUtils.getPage(YQL_KEYSTATS_QUERY_TEMPLATE.replaceAll("#\\{symbolPlaceholder\\}", stockSymbol));
-		String cnbcNasdaqDetails = JsoupUtils.getPageAndIgnoreContentType(CNBC_STOCK_DETAIL_QUERY.replaceAll("#\\{symbolsPlaceholder\\}", stockSymbol), Method.GET, 3000);
+		Document d = JsoupUtils.getPage(YQL_KEYSTATS_QUERY_TEMPLATE.replaceAll("#\\{symbol\\}", stockSymbol));
+		String cnbcNasdaqDetails = JsoupUtils.getPageAndIgnoreContentType(CNBC_STOCK_DETAIL_QUERY.replaceAll("#\\{symbols\\}", stockSymbol), Method.GET, 3000);
 		cnbcNasdaqDetails = cnbcNasdaqDetails.substring(cnbcNasdaqDetails.indexOf('(') + 1, cnbcNasdaqDetails.lastIndexOf(')'));
 	    JsonObject detailsObject = jsonParser.parse(cnbcNasdaqDetails).getAsJsonObject();
 	    JsonObject quickQuote = detailsObject.getAsJsonObject("QuickQuoteResult").getAsJsonObject("QuickQuote");
 
 		Elements keyStats = d.select("results stats").first().children();
 		Map<String, Element> keyStatsMap = keyStats.stream().filter(elem -> !elem.text().isEmpty() && !"N/A".equals(elem.text())).collect(Collectors.toMap(elem -> getKeyForStatsElement(elem), Function.<Element>identity()));
+		
+		// To make this more readable:
+//		Map<String, BiFunction<Stock, String, Void>> operations = new HashMap<String, BiFunction<Stock,String,Void>>();
+//		operations.put("marketcap_intraday", (stock, text) -> { stock.setMarketCap(new BigDecimal(text.replaceAll(",", ""))); return null; });
+//		
+//		Stock stock = new Stock();
+//		operations.forEach((key, function) -> {
+//			Element elem;
+//			if ((elem = keyStatsMap.get(key)) != null) {
+//				function.apply(stock, elem.text());
+//			}
+//		});
 		
 		Element elem;
 		Stock stock = new Stock();
@@ -144,9 +167,29 @@ public class YahooStockDetailReader extends AbstractItemReader {
 		if((elem = keyStatsMap.get("payoutyatio_relative")) != null){ stock.setPayoutRatio(new BigDecimal(trimPercent(elem.text().replaceAll(",", "")))); }
 		if((elem = keyStatsMap.get("DividendDate")) != null){ stock.setDividendDate(getYahooDate(elem.text())); }
 		if((elem = keyStatsMap.get("ex_dividenddate")) != null){ stock.setEx_DividendDate(getYahooDate(elem.text())); }
+
+		StockDetailModel stockDetailModel = new StockDetailModel(stock);
+		// Maybe do this in a separate step
+		String startDateStr = YQL_DIVIDEND_DATE_FORMAT.format(startDate.getTime());
+		String endDateStr = YQL_DIVIDEND_DATE_FORMAT.format(endDate.getTime());
+		Document dividendHistory = JsoupUtils.getPage(YQL_DIVIDEND_HISTORY_QUERY_TEMPLATE.replaceAll("#\\{symbol\\}", stockSymbol).replaceAll("#\\{startDate\\}", startDateStr).replaceAll("#\\{endDate\\}", endDateStr));
+		Elements quotes = dividendHistory.select("quote");
+		for(Element quote : quotes){
+			String dateStr = quote.getElementsByTag("Date").first().text();
+			String dividendStr = quote.getElementsByTag("Dividends").first().text();
+			Calendar dividendDate = Calendar.getInstance();
+			dividendDate.setTime(YQL_DIVIDEND_DATE_FORMAT.parse(dateStr));
+			DividendHistoryEntry dividendHistoryEntry = new DividendHistoryEntry();
+			dividendHistoryEntry.setStock(stock);
+			dividendHistoryEntry.setDividend(new BigDecimal(dividendStr));
+			dividendHistoryEntry.setDividendDate(dividendDate);
+			stockDetailModel.getDividendHistoryEntries().add(dividendHistoryEntry);
+		}
+		
+		LOG.info("Extracted " + stockDetailModel.getDividendHistoryEntries().size() + " dividend entries for " + stock.getCode());
 		
 		symbolNumber++;
-		return stock;
+		return stockDetailModel;
 	}
 
 	@Override
