@@ -20,10 +20,11 @@ public class Stock extends ValuePaper {
 	private static final long serialVersionUID = 1L;
 
 	private Currency currency;
+	private String tickerSymbol;
 	private String country;
-	private String boerseCertificatePageUrl;
 	private String finanzenCertificatePageUrl;
 	private String finanzenDividendHistoryPageUrl;
+	private String finanzenNewsPageUrl;
 	private String index;
 	private Set<DividendHistoryEntry> dividendHistoryEntries = new HashSet<DividendHistoryEntry>();
 	
@@ -91,20 +92,20 @@ public class Stock extends ValuePaper {
 		return ValuePaperType.STOCK;
 	}
 
-	public String getBoerseCertificatePageUrl() {
-		return boerseCertificatePageUrl;
-	}
-
-	public void setBoerseCertificatePageUrl(String boerseCertificatePageUrl) {
-		this.boerseCertificatePageUrl = boerseCertificatePageUrl;
-	}
-
 	public String getFinanzenCertificatePageUrl() {
 		return finanzenCertificatePageUrl;
 	}
 
 	public void setFinanzenCertificatePageUrl(String finanzenCertificatePageUrl) {
 		this.finanzenCertificatePageUrl = finanzenCertificatePageUrl;
+	}
+	
+	public String getFinanzenNewsPageUrl() {
+		return finanzenNewsPageUrl;
+	}
+
+	public void setFinanzenNewsPageUrl(String finanzenNewsPageUrl) {
+		this.finanzenNewsPageUrl = finanzenNewsPageUrl;
 	}
 
 	public String getIndex() {
@@ -131,6 +132,14 @@ public class Stock extends ValuePaper {
 
 	public void setCurrency(Currency currency) {
 		this.currency = currency;
+	}
+	
+	public String getTickerSymbol() {
+		return tickerSymbol;
+	}
+
+	public void setTickerSymbol(String tickerSymbol) {
+		this.tickerSymbol = tickerSymbol;
 	}
 
 	public String getCountry() {

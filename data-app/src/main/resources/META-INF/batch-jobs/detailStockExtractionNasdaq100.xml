@@ -4,12 +4,16 @@
 	version="1.0">
 	<properties>
 	    <property name="nasdaqListUrl" value="http://www.cnbc.com/id/28141521#." />
-		<property name="indexName" value="NASDAQ100" />		    
+	    <property name="finanzenNetUrl" value="http://www.finanzen.at" />
+		<property name="indexName" value="NASDAQ100" />
 	</properties>
 	<step id="symbolExtraction" next="stockDetailExtraction">
 		<batchlet ref="nasdaqSymbolReaderBatchlet">
 			<properties>
 				<property name="nasdaqListUrl" value="#{jobProperties['nasdaqListUrl']}" />
+				<property name="finanzenNetUrl" value="#{jobProperties['finanzenNetUrl']}" />
+				<property name="finanzenNetIndexPath" value="/index/liste/NASDAQ_100" />
+				
 			</properties>
 		</batchlet>
 		<listeners>
@@ -19,10 +23,11 @@
 	<step id="stockDetailExtraction" next="stockHistoricPriceExtraction">
 		<chunk>
 			<reader ref="yahooStockDetailReader">
-			    <properties>
-			        <property name="indexName" value="#{jobProperties['indexName']}" />
-			    </properties>
-		    </reader>
+				<properties>
+				    <property name="finanzenNetUrl" value="#{jobProperties['finanzenNetUrl']}" />
+				    <property name="indexName" value="#{jobProperties['indexName']}" />
+				</properties>
+			</reader>
 		    <processor ref="stockDetailProcessor" />
 			<writer ref="stockDetailWriter" />
 

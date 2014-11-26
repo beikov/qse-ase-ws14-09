@@ -45,8 +45,6 @@ public class YahooHistoricStockPriceReader extends AbstractItemReader {
 	private Integer linkNumber;
 	private List<Stock> stocks;
 	
-    private static final ScriptEngine engine = new ScriptEngineManager().getEngineByName("JavaScript");
-	
     private Calendar from;
     private Calendar to;
 	public void open(java.io.Serializable checkpoint) throws Exception {
@@ -69,7 +67,7 @@ public class YahooHistoricStockPriceReader extends AbstractItemReader {
 		
 		Stock stock = stocks.get(linkNumber);
 		LOG.info("Extracting historic prices for " + stock.getName());
-		Document historicPrices = JsoupUtils.getPage(YQL_HISTORIC_STOCK_PRICE_QUERY_TEMPLATE.replaceAll("#\\{symbolPlaceholder\\}", stock.getCode()));
+		Document historicPrices = JsoupUtils.getPage(YQL_HISTORIC_STOCK_PRICE_QUERY_TEMPLATE.replaceAll("#\\{symbolPlaceholder\\}", stock.getTickerSymbol()));
 		
 		Elements tableRows = historicPrices.select("results quote");
 		List<ValuePaperHistoryEntry> historicPriceEntries = new ArrayList<>();
