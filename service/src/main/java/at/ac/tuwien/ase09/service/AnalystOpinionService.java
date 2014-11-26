@@ -19,7 +19,7 @@ public class AnalystOpinionService {
 	@Inject
 	private AnalystOpinionDataAccess analystOpinionDataAccess;
 	
-	public List<AnalystOpinion> getNewsItemsByValuePaperCode(String code){
+	public List<AnalystOpinion> getAnalystOpinionsByValuePaperCode(String code){
 		return analystOpinionDataAccess.getAnalystOpinionsByValuePaperCode(code);
 	}
 	

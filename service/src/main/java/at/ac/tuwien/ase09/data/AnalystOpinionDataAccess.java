@@ -7,6 +7,7 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
 import at.ac.tuwien.ase09.exception.AppException;
+import at.ac.tuwien.ase09.exception.EntityNotFoundException;
 import at.ac.tuwien.ase09.model.AnalystOpinion;
 
 @Stateless
@@ -15,15 +16,19 @@ public class AnalystOpinionDataAccess {
 	private EntityManager em;
 
 	public List<AnalystOpinion> getAnalystOpinionsByValuePaperCode(String code){
+
+		List<AnalystOpinion> analysOpinionList;
 		
-		//TBD
-		/*
 		try{
-			return em.createQuery("SELECT a FROM AnalystOpinion n WHERE n.valuePaper.code = :code", AnalystOpinion.class).setParameter("code", code).getResultList();
+			analysOpinionList = em.createQuery("SELECT ao FROM AnalystOpinion ao WHERE ao.stock.code = :code", AnalystOpinion.class).setParameter("code", code).getResultList();
 		}catch(Exception e){
 			throw new AppException(e);
-		}*/
+		}
+
+		if(analysOpinionList.isEmpty()){
+			throw new EntityNotFoundException();
+		}
 		
-		return null;
+		return analysOpinionList;
 	}
 }

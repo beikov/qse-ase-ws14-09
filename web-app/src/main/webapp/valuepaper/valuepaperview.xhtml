@@ -12,8 +12,8 @@
 
 		<f:metadata>
 
-			<f:viewParam name="valuePaperIsin"
-				value="#{valuePaperViewBean.valuePaperIsin}" required="true" />
+			<f:viewParam name="valuePaperCode"
+				value="#{valuePaperViewBean.valuePaperCode}" required="true" />
 			<f:viewAction action="#{valuePaperViewBean.init}" />
 
 		</f:metadata>
@@ -131,9 +131,8 @@
 										</c:if>
 									</p:column>
 								</p:dataTable>
-
-
 							</div>
+
 
 							<p:dataList value="#{valuePaperViewBean.newsItemsList}"
 								var="news" type="unordered" itemType="none" paginator="true"
@@ -143,7 +142,7 @@
         						</f:facet>
 								<p:commandLink update=":einzeltitelansicht:newsDetail"
 									oncomplete="PF('newsDialog').show()" title="News anzeigen">
-									<f:param name="valuePaperIsin"
+									<f:param name="valuePaperCode"
 										value="#{valuePaperViewBean.valuePaper.code}" />
 									<f:setPropertyActionListener value="#{news}"
 										target="#{valuePaperViewBean.selectedNewsItem}" />
@@ -152,7 +151,7 @@
 									</h:outputText>
 									<h:outputText value=", #{news.title}" />
 								</p:commandLink>
-								<h:outputText value="." />
+								<br/>
 							</p:dataList>
 
 							<p:dialog header="News Info" widgetVar="newsDialog" modal="false"
@@ -186,16 +185,70 @@
 								</p:outputPanel>
 							</p:dialog>
 
+
+
 							<div id="analystOpinions" style="margin-top: 10px">
-
-								<p:dataList type="unordered" itemType="none" paginator="true"
-									rows="5" emptyMessage="keine Analystenmeinungen vorhanden">
+								<p:dataList
+									value="#{valuePaperViewBean.stockAnalystOpinionList}"
+									var="analystOpinion" type="unordered" itemType="none"
+									paginator="true" rows="5"
+									emptyMessage="keine Analystenmeinungen vorhanden">
 									<f:facet name="header">
-            						Analystenmeinungen
-        						</f:facet>
+            							Analystenmeinungen
+        							</f:facet>
+									<p:commandLink
+										update=":einzeltitelansicht:analystOpinionDetail"
+										oncomplete="PF('analystOpinionDialog').show()"
+										title="Analystenmeinung anzeigen">
+										<f:param name="valuePaperCode"
+											value="#{valuePaperViewBean.valuePaper.code}" />
+										<f:setPropertyActionListener value="#{analystOpinion}"
+											target="#{valuePaperViewBean.selectedAnalystOpinion}" />
+										<h:outputText value="#{analystOpinion.created.time}">
+											<f:convertDateTime pattern="dd.MM.yyyy" />
+										</h:outputText>
+										<h:outputText value=", #{analystOpinion.recommendation}" />
+									</p:commandLink>
+									<br/>
 								</p:dataList>
-
 							</div>
+
+							<p:dialog header="Analystenmeinung"
+								widgetVar="analystOpinionDialog" modal="false"
+								showEffect="blind" hideEffect="blind" resizable="false"
+								width="700px">
+								<p:outputPanel id="analystOpinionDetail" style="text-align:left">
+
+									<p:panelGrid columns="2">
+
+
+										<h:outputText value="Datum:" />
+										<h:outputText
+											value="#{valuePaperViewBean.selectedAnalystOpinion.created.time}">
+											<f:convertDateTime pattern="dd.MM.yyyy" />
+										</h:outputText>
+
+										<h:outputText value="Empfehlung:" />
+										<h:outputText
+											value="#{valuePaperViewBean.selectedAnalystOpinion.recommendation}" />
+
+										<h:outputText value="Zielpreis:" />
+										<h:outputText
+											value="#{valuePaperViewBean.selectedAnalystOpinion.targetPrice}" />
+
+										<h:outputText value="Text:" />
+										<h:outputText
+											value="#{valuePaperViewBean.selectedAnalystOpinion.text}" />
+
+										<h:outputText value="Quelle:" />
+										<h:outputText
+											value="#{valuePaperViewBean.selectedAnalystOpinion.source}" />
+									</p:panelGrid>
+
+								</p:outputPanel>
+							</p:dialog>
+
+
 
 						</p:layoutUnit>
 					</p:layout>

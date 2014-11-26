@@ -24,6 +24,7 @@ import org.primefaces.model.chart.LineChartModel;
 import org.primefaces.model.chart.LineChartSeries;
 
 import at.ac.tuwien.ase09.exception.EntityNotFoundException;
+import at.ac.tuwien.ase09.model.AnalystOpinion;
 import at.ac.tuwien.ase09.model.DividendHistoryEntry;
 import at.ac.tuwien.ase09.model.Fund;
 import at.ac.tuwien.ase09.model.NewsItem;
@@ -33,6 +34,7 @@ import at.ac.tuwien.ase09.model.ValuePaper;
 import at.ac.tuwien.ase09.model.ValuePaperPriceEntry;
 import at.ac.tuwien.ase09.model.ValuePaperHistoryEntry;
 import at.ac.tuwien.ase09.model.ValuePaperType;
+import at.ac.tuwien.ase09.service.AnalystOpinionService;
 import at.ac.tuwien.ase09.service.DividendHistoryEntryService;
 import at.ac.tuwien.ase09.service.NewsItemService;
 import at.ac.tuwien.ase09.service.ValuePaperPriceEntryService;
@@ -47,13 +49,15 @@ public class ValuePaperViewBean implements Serializable{
 
 	private ValuePaper valuePaper = null;
 	private NewsItem selectedNewsItem = null;
+	private AnalystOpinion selectedAnalystOpinion = null;
 
-	private String valuePaperIsin;
+	private String valuePaperCode;
 
 	private LineChartModel valuePaperHistoricPriceLineChartModel = null;
 
 	private List<NewsItem> newsItemsList = null;
 	private List<DividendHistoryEntry> stockDividendList = null;
+	private List<AnalystOpinion> stockAnalystOpinionList = null;
 
 	private Map<String, String> mainValuePaperAttributes = null;
 	private Map<String, String> additionalValuePaperAttributes = null;
@@ -69,27 +73,31 @@ public class ValuePaperViewBean implements Serializable{
 
 	@Inject
 	private DividendHistoryEntryService dividendHistoryEntryService;
+	
+	@Inject
+	private AnalystOpinionService analystOpinionService;
 
 	@PersistenceContext
 	private EntityManager em;
 
 	public void init() {
-		loadValuePaper(valuePaperIsin);
+		loadValuePaper(valuePaperCode);
 
 		if(this.valuePaper != null){
 			loadValuePaperAttributes();
 			loadNewsItems();
 			loadStockDividendHistoryEntries();
+			loadStockAnalystOpinions();
 			createLineChartModels();
 		}
 	}
 
-	public String getValuePaperIsin() {
-		return valuePaperIsin;
+	public String getValuePaperCode() {
+		return valuePaperCode;
 	}
 
-	public void setValuePaperIsin(String valuePaperIsin) {
-		this.valuePaperIsin = valuePaperIsin;
+	public void setValuePaperCode(String valuePaperCode) {
+		this.valuePaperCode = valuePaperCode;
 	}
 
 	public ValuePaper getValuePaper() {
@@ -151,7 +159,24 @@ public class ValuePaperViewBean implements Serializable{
 		this.stockDividendList = stockDividendList;
 	}
 
+	public List<AnalystOpinion> getStockAnalystOpinionList() {
+		return stockAnalystOpinionList;
+	}
 
+	public void setStockAnalystOpinionList(
+			List<AnalystOpinion> stockAnalystOpinionList) {
+		this.stockAnalystOpinionList = stockAnalystOpinionList;
+	}
+	
+	public AnalystOpinion getSelectedAnalystOpinion() {
+		return selectedAnalystOpinion;
+	}
+
+	public void setSelectedAnalystOpinion(AnalystOpinion selectedAnalystOpinion) {
+		this.selectedAnalystOpinion = selectedAnalystOpinion;
+	}
+	
+	
 
 
 	public ValuePaperPriceEntry getLastPriceEntry() {
@@ -215,6 +240,28 @@ public class ValuePaperViewBean implements Serializable{
 			stockDividendList = null;
 		}
 
+	}
+	
+	private void loadStockAnalystOpinions() {
+		try{
+			stockAnalystOpinionList = analystOpinionService.getAnalystOpinionsByValuePaperCode(valuePaper.getCode());
+
+			Collections.sort(stockAnalystOpinionList, new Comparator<AnalystOpinion>() {
+
+				@Override
+				public int compare(AnalystOpinion o1, AnalystOpinion o2) {
+					if(o1.getCreated().getTime().getTime() < o2.getCreated().getTime().getTime())
+						return 1;
+					if(o1.getCreated().getTime().getTime() > o2.getCreated().getTime().getTime())
+						return -1;
+					return 0;
+				}
+
+			});
+		}
+		catch(EntityNotFoundException e){
+			stockAnalystOpinionList = null;
+		}
 	}
 
 	private void loadValuePaperAttributes() {
