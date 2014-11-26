@@ -4,6 +4,8 @@ import java.util.Calendar;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -16,6 +18,7 @@ public class AnalystOpinion extends BaseEntity<Long> {
 	private Calendar created;
 	private AnalystRecommendation recommendation;
 	private Money targetPrice;
+	private Stock stock;
 	
 	public String getText() {
 		return text;
@@ -57,6 +60,15 @@ public class AnalystOpinion extends BaseEntity<Long> {
 	
 	public void setTargetPrice(Money targetPrice) {
 		this.targetPrice = targetPrice;
+	}
+
+	@ManyToOne(optional=false, fetch=FetchType.LAZY)
+	public Stock getStock() {
+		return stock;
+	}
+
+	public void setStock(Stock stock) {
+		this.stock = stock;
 	}
 	
 }
