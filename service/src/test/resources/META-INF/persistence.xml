@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <persistence version="2.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
     <persistence-unit name="PortfolioTestPU" transaction-type="JTA">
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
@@ -15,21 +14,3 @@
 		</properties>
     </persistence-unit>
 </persistence>
-=======
-<persistence version="2.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
-    <persistence-unit name="PortfolioTestPU" transaction-type="JTA">
-        <provider>org.hibernate.ejb.HibernatePersistence</provider>
-		<jta-data-source>ExampleDS</jta-data-source>
-		
-		<mapping-file>META-INF/entityClasses.xml</mapping-file>
-    	<properties>
-			<property name="hibernate.hbm2ddl.auto" value="create-drop" />
-			<property name="hibernate.show_sql" value="true"/>
-			<property name="hibernate.format_sql" value="false"/>
-			<property name="hibernate.ejb.naming_strategy" value="at.ac.tuwien.ase09.naming.CustomNamingStrategy"/>
-			<property name="hibernate.transaction.jta.platform"
-				value="org.apache.openejb.hibernate.OpenEJBJtaPlatform" />
-		</properties>
-    </persistence-unit>
-</persistence>
->>>>>>> ed21a48c3fde2d4396471b486674a8dbd0695a08

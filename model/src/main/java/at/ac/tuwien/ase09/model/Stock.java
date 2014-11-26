@@ -23,6 +23,7 @@ public class Stock extends ValuePaper {
 	private String country;
 	private String boerseCertificatePageUrl;
 	private String finanzenCertificatePageUrl;
+	private String finanzenDividendHistoryPageUrl;
 	private String index;
 	private Set<DividendHistoryEntry> dividendHistoryEntries = new HashSet<DividendHistoryEntry>();
 	
@@ -643,5 +644,13 @@ public class Stock extends ValuePaper {
 	public void setEx_DividendDate(Calendar ex_DividendDate) {
 		this.ex_DividendDate = ex_DividendDate;
 	}
-	
+
+	public String getFinanzenDividendHistoryPageUrl() {
+		return finanzenDividendHistoryPageUrl;
+	}
+
+	public void setFinanzenDividendHistoryPageUrl(
+			String finanzenDividendHistoryPageUrl) {
+		this.finanzenDividendHistoryPageUrl = finanzenDividendHistoryPageUrl;
+	}
 }
