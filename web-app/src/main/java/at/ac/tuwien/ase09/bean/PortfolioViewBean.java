@@ -27,6 +27,7 @@ import org.primefaces.model.chart.PieChartModel;
 
 import at.ac.tuwien.ase09.data.PortfolioDataAccess;
 import at.ac.tuwien.ase09.data.ValuePaperPriceEntryDataAccess;
+import at.ac.tuwien.ase09.model.Money;
 import at.ac.tuwien.ase09.model.Portfolio;
 import at.ac.tuwien.ase09.model.PortfolioValuePaper;
 import at.ac.tuwien.ase09.model.User;
@@ -34,6 +35,7 @@ import at.ac.tuwien.ase09.model.ValuePaper;
 import at.ac.tuwien.ase09.model.ValuePaperHistoryEntry;
 import at.ac.tuwien.ase09.model.ValuePaperType;
 import at.ac.tuwien.ase09.model.order.Order;
+import at.ac.tuwien.ase09.model.order.OrderStatus;
 import at.ac.tuwien.ase09.model.transaction.FeeTransactionEntry;
 import at.ac.tuwien.ase09.model.transaction.OrderFeeTransactionEntry;
 import at.ac.tuwien.ase09.model.transaction.OrderTransactionEntry;
@@ -62,6 +64,8 @@ public class PortfolioViewBean implements Serializable {
 	private Long portfolioId;
 	
 	private Portfolio portfolio;
+	
+	private List<Order> filteredOrders;
 	
 	
 	private PieChartModel valuePaperTypePie;
@@ -131,6 +135,43 @@ public class PortfolioViewBean implements Serializable {
 	
 	public void changeVisibility() {
 		portfolioService.updatePortfolio(portfolio);
+	}
+	
+	public Money getLatesValuePaperPrice(String code) {
+		Money money = portfolio.getCurrentCapital();
+		money.setValue(priceDataAccess.getLastPriceEntry(code).getPrice());
+		return money;
+	}
+	
+	public Money getTotalPayed(String code) {
+		Money money = portfolio.getCurrentCapital();
+		money.setValue(new BigDecimal(0));
+		for (TransactionEntry t : portfolio.getTransactionEntries()) {
+			if (t.getType() == TransactionType.ORDER && ((OrderTransactionEntry)t).getOrder().getValuePaper().getCode().equals(code)) {
+				//OrderTransactionEntry ot = (OrderTransactionEntry)t;
+				//BigDecimal volume = BigDecimal.valueOf(ot.getOrder().getVolume());
+				//payed = payed.add(t.getValue().getValue().divide(volume));
+				//payed = payed.add(t.getValue().getValue());
+				BigDecimal oldVal = money.getValue();
+				BigDecimal newVal = oldVal.add(t.getValue().getValue());
+				money.setValue(newVal);
+			}
+		}
+		return money;
+	}
+	
+	
+	public Object[] getOrderStates() {
+		return OrderStatus.values();
+	}
+	
+	public void setFilteredOrders(List<Order> filteredOrders) {
+		this.filteredOrders = filteredOrders;
+	}
+	
+	
+	public List<Order> getFilteredOrders() {
+		return filteredOrders;
 	}
 	
 	
@@ -222,11 +263,12 @@ public class PortfolioViewBean implements Serializable {
         	BigDecimal totalValue = new BigDecimal(0);
         	
         	for (TransactionEntry transaction : portfolio.getTransactionEntries()) {
-        		if (transaction instanceof OrderTransactionEntry && transaction.getCreated().before(calendar)) {        				
+        		if (transaction.getType() == TransactionType.ORDER && transaction.getCreated().before(calendar)) {        				
         			OrderTransactionEntry ot = (OrderTransactionEntry)transaction;
         			totalBuyPrice = totalBuyPrice.add(ot.getValue().getValue());
             		BigDecimal volume = BigDecimal.valueOf(ot.getOrder().getVolume());
             		totalValue = totalValue.add(volume.multiply(historyEntry.getClosingPrice()));
+            		//totalValue = totalValue.add(historyEntry.getClosingPrice());
         		}
         	}
         	

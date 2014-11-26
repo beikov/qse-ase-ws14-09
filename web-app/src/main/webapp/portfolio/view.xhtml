@@ -19,153 +19,166 @@
 		
 		<h:form id="portfolioViewForm">
 		<p:growl id="msg" />
+		
+		<p:layout>
+			<p:layoutUnit position="north" maxSize="350" style="border: 0">
+				<p:layout>
+					<p:layoutUnit position="center" style="border: 0">
+						<p:panel id="stats" header="Übersicht" style="margin-bottom:20px">
+							<p:panelGrid columns="2">
+								<h:outputText value="Portfolio:" />
+								<h:outputText value="#{portfolioViewBean.portfolio.name}" />
+								
+								<h:outputText value="Besitzer:" />
+								<h:outputText value="#{portfolioViewBean.portfolio.owner.username}" />
+								
+								<h:outputText value="Erstellt:" />
+								<h:outputText value="#{dateUtil.formatDate( portfolioViewBean.portfolio.created.time )}" />
+								
+								<h:outputText value="Aktuelles Kapital:" />
+								<h:outputText value="#{portfolioViewBean.portfolio.currentCapital}" />
+								
+								<h:outputText value="Startkapital:" />
+								<h:outputText value="#{portfolioViewBean.portfolio.setting.startCapital}" />
+								
+								<h:outputText value="Ordergebühr:" />
+								<h:outputText value="#{portfolioViewBean.portfolio.setting.orderFee}" />
+								
+								<h:outputText value="Portfoliogebühr:" />
+								<h:outputText value="#{portfolioViewBean.portfolio.setting.portfolioFee}" />
+								
+								<h:outputText value="Kapitalertragssteuer:" />
+								<h:outputText value="#{portfolioViewBean.portfolio.setting.capitalReturnTax}" />
+							</p:panelGrid>
+						</p:panel>
+					</p:layoutUnit>
+					
+					<p:layoutUnit position="east" minSize="250" style="border: 0">	
+						<p:panel id="follower" header="Follower" style="margin-bottom:20px">
+							<c:choose>
+								<c:when test="#{ portfolioViewBean.followerList.size() lt 9 }">
+									<p:dataList value="#{portfolioViewBean.getFollowerList()}" var="follower" type="unordered" itemType="none" emptyMessage="Keine Follower">
+						        		<h:outputText value="#{follower.username}" />
+						    		</p:dataList>
+								</c:when>
+								<c:otherwise>
+									<p:dataList value="#{portfolioViewBean.getFollowerList()}" var="follower" type="unordered" itemType="none" paginator="true" rows="8" styleClass="paginated">
+						        		<h:outputText value="#{follower.username}" />
+						    		</p:dataList>
+								</c:otherwise>
+							</c:choose>
+						</p:panel>
+					</p:layoutUnit>
+				</p:layout>
+			</p:layoutUnit>
+			<p:layoutUnit position="center" style="border: 0">
+				<p:tabView style="margin-bottom: 10px;">
+					<p:tab>
+						<f:facet name="title">
+			               	<h:outputText value="Einzeltitel"/>
+			               	<!-- <p:selectBooleanCheckbox value="#{portfolioViewBean.portfolio.visibility.valuePaperListVisible}">
+			            		<p:ajax update=":portfolioViewForm:msg" listener="#{portfolioViewBean.changeVisibility()}" />
+			        		</p:selectBooleanCheckbox> -->
+			            </f:facet>
+			            <p:dataTable var="association" value="#{portfolioViewBean.valuePaperList}">
+			            	<c:set var="paper" value="#{association.valuePaper}" />
+			            	
+						    <p:column headerText="Name" sortBy="#{paper.name}">
+						        <h:outputText value="#{paper.name}"></h:outputText>
+						    </p:column>
+						    <p:column headerText="Typ" sortBy="#{paper.type}">
+						        <h:outputText value="#{paper.type}" />
+						    </p:column>
+						    <p:column headerText="Stück" sortBy="#{association.volume}">
+						        <h:outputText value="#{association.volume}"></h:outputText>
+						    </p:column>
+						    <p:column headerText="Bezahlt">
+						        <h:outputText value="#{portfolioViewBean.getTotalPayed(paper.code) }"></h:outputText>
+						    </p:column>
+						    <p:column headerText="Letzter Kurswert">
+						        <h:outputText value="#{portfolioViewBean.getLatesValuePaperPrice(paper.code)}" />
+						    </p:column>
+						    <p:column>
+						    	<a href="/valuepaper/valuepaperview.xhtml?valuePaperCode=#{paper.code}" class="btn btn-default btn-md"><span class="glyphicon glyphicon-search" aria-hidden="true" /></a>
+						    	<a href="/protected/portfolio/list.xhtml?valuePaperId=#{paper.id}" class="btn btn-default btn-md"><span class="glyphicon glyphicon glyphicon-usd" aria-hidden="true" /></a>
+					       </p:column>
+						</p:dataTable>
+			        </p:tab>
+			        <p:tab title="Charts">
+			            <c:if test="#{not empty portfolioViewBean.portfolio.valuePapers}">
+							<p:chart type="pie" model="#{portfolioViewBean.valuePaperTypePie}" style="width:400px;height:300px;display:inline-block;" />
+							<p:chart type="pie" model="#{portfolioViewBean.valuePaperCountryPie}" style="width:400px;height:300px;display:inline-block;" />
+						</c:if>
+			        </p:tab>
+			        <p:tab title="Orders">
+			            <p:dataTable var="order" value="#{portfolioViewBean.orderList}">				  
+						  	<p:column headerText="Wertpapier" sortBy="#{order.valuePaper.name}">
+						        <h:outputText value="#{order.valuePaper.name}" />
+						    </p:column>
+						    <p:column headerText="Typ" sortBy="#{order.type}">
+						        <h:outputText value="#{order.type}" />
+						    </p:column>
+						    <p:column headerText="Aktion" sortBy="#{order.orderAction}">
+						        <h:outputText value="#{order.orderAction}" />
+						    </p:column>
+						    <p:column headerText="Anzahl" sortBy="#{order.volume}">
+						        <h:outputText value="#{order.volume}" />
+						    </p:column>
+						    <p:column headerText="Gültig bis" sortBy="#{order.validTo.time}">
+						        <h:outputText value="#{order.validTo.time}" />
+						    </p:column>
+						    <p:column headerText="Status" sortBy="#{paper.status}">
+						        <h:outputText value="#{order.status}" />
+						    </p:column>
+						    <p:column headerText="Beschreibung">
+						        
+						    </p:column>
+						    <!-- <p:column headerText="Limit">
+						        <h:outputText value="#{order.limit.value}" rendered="#{order.type == 'LIMIT'}"/>
+						    </p:column>
+						    <p:column headerText="LimitStop">
+						        <h:outputText value="#{order.stopLimit.value}" rendered="#{order.type == 'LIMIT'}"/>
+						    </p:column> -->
+						</p:dataTable>
+			        </p:tab>
+			        <p:tab title="Transaktionen">
+			            <p:dataTable var="trade" value="#{portfolioViewBean.transactionList}">
+						    
+						    <p:column headerText="Datum" sortBy="#{trade.created.time}">
+						        <h:outputText value="#{dateUtil.formatDateWithTime(trade.created.time)}" />
+						    </p:column>
+						    <p:column headerText="Wertpapier">
+						    	<h:outputText value="#{trade.order.valuePaper.name}" rendered="#{trade.type == 'ORDER' or trade.type == 'ORDER_FEE'}"/>
+						    	<h:outputText value="#{trade.valuePaper.name}" rendered="#{trade.type == 'PAYOUT'}"/>
+						    </p:column>
+						    <p:column headerText="Order-Aktion">
+					        	<h:outputText value="#{trade.order.orderAction}" rendered="#{trade.type == 'ORDER' or trade.type == 'ORDER_FEE'}"/>
+						    </p:column>
+						    <p:column headerText="Anzahl">
+						    	<h:outputText value="#{trade.order.volume}" rendered="#{trade.type == 'ORDER' or trade.type == 'ORDER_FEE'}"/>
+						    </p:column>
+						    <p:column headerText="Wert" sortBy="#{trade.value.value.doubleValue()}">
+						        <h:outputText value="#{trade.value}" />
+						    </p:column>
+						    <p:column headerText="Transaktionstyp" sortBy="#{trade.type}">
+						        <h:outputText value="#{trade.type}" />
+						    </p:column>
+						    <p:column headerText="Beschreibung">
+						    	<h:outputText value="#{trade.description}" rendered="#{trade.type == 'FEE'}"/>
+						    </p:column>
+						</p:dataTable>
+			        </p:tab>
+		    	</p:tabView>
+		    	<p:chart type="line" model="#{portfolioViewBean.portfolioChart}" style="height:400px;"/>
+			</p:layoutUnit>
+		</p:layout>
 
-		<p:panelGrid columns="2">
-			<p:panel id="stats" header="Übersicht" style="margin-bottom:20px">
-				<p:panelGrid columns="2">
-					<h:outputText value="Portfolio:" />
-					<h:outputText value="#{portfolioViewBean.portfolio.name}" />
-					
-					<h:outputText value="Besitzer:" />
-					<h:outputText value="#{portfolioViewBean.portfolio.owner.username}" />
-					
-					<h:outputText value="Erstellt:" />
-					<h:outputText value="#{dateUtil.formatDate( portfolioViewBean.portfolio.created.time )}" />
-					
-					<h:outputText value="Aktuelles Kapital:" />
-					<h:outputText value="#{portfolioViewBean.portfolio.currentCapital}" />
-					
-					<h:outputText value="Startkapital:" />
-					<h:outputText value="#{portfolioViewBean.portfolio.setting.startCapital}" />
-					
-					<h:outputText value="Ordergebühr:" />
-					<h:outputText value="#{portfolioViewBean.portfolio.setting.orderFee}" />
-					
-					<h:outputText value="Portfoliogebühr:" />
-					<h:outputText value="#{portfolioViewBean.portfolio.setting.portfolioFee}" />
-					
-					<h:outputText value="Kapitalertragssteuer:" />
-					<h:outputText value="#{portfolioViewBean.portfolio.setting.capitalReturnTax}" />
-				</p:panelGrid>
-			</p:panel>
-			<c:choose>
-				<c:when test="#{empty portfolioViewBean.getFollowerList()}">
-					<h:outputText value="Keine Follower" />
-				</c:when>
-				<c:otherwise>
-					<p:panel id="follower" header="Follower" style="margin-bottom:20px">
-						<p:dataList value="#{portfolioViewBean.getFollowerList()}" var="follower" type="unordered" itemType="none" paginator="true" rows="8" styleClass="paginated">
-					        <h:outputText value="#{follower.username}" />
-					    </p:dataList>
-					</p:panel>
-				</c:otherwise>
-			</c:choose>
-		</p:panelGrid>
 				
 	    
-		<p:tabView>
-			<p:tab>
-				<f:facet name="title">
-	               	<h:outputText value="Einzeltitel"/>
-	               	<p:selectBooleanCheckbox value="#{portfolioViewBean.portfolio.visibility.valuePaperListVisible}">
-	            		<p:ajax update=":portfolioViewForm:msg" listener="#{portfolioViewBean.changeVisibility()}" />
-	        		</p:selectBooleanCheckbox>
-	            </f:facet>
-	            <p:dataTable var="association" value="#{portfolioViewBean.valuePaperList}">
-	            	<c:set var="paper" value="#{association.valuePaper}" />
-	            	
-				    <p:column headerText="Name" sortBy="#{paper.name}">
-				        <h:outputText value="#{paper.name}"></h:outputText>
-				    </p:column>
-				    <p:column headerText="Stück" sortBy="#{association.volume}">
-				        <h:outputText value="#{association.volume}"></h:outputText>
-				    </p:column>
-				    <p:column headerText="Währung" sortBy="#{paper.currency.currencyCode}">
-				        <h:outputText value="#{paper.currency.currencyCode} (#{paper.currency.symbol})" />
-				    </p:column>
-				    <p:column headerText="Land" sortBy="#{paper.country}">
-				        <h:outputText value="#{paper.country}" />
-				    </p:column>
-				    <p:column headerText="Code" sortBy="#{paper.code}">
-				        <h:outputText value="#{paper.code}" />
-				    </p:column>
-				    <p:column headerText="Typ" sortBy="#{paper.type}">
-				        <h:outputText value="#{paper.type}" />
-				    </p:column>
-				    <p:column>
-				    	<a href="/valuepaper/valuepaperview.xhtml?valuePaperCode=#{paper.code}" class="btn btn-default btn-md"><span class="glyphicon glyphicon-search" aria-hidden="true" /></a>
-				    	<a href="/protected/portfolio/list.xhtml?valuePaperId=#{paper.id}" class="btn btn-default btn-md"><span class="glyphicon glyphicon glyphicon-usd" aria-hidden="true" /></a>
-			       </p:column>
-				</p:dataTable>
-	        </p:tab>
-	        <p:tab title="Charts">
-	            <c:if test="#{not empty portfolioViewBean.portfolio.valuePapers}">
-					<p:chart type="pie" model="#{portfolioViewBean.valuePaperTypePie}" style="width:400px;height:300px;display:inline-block;" />
-					<p:chart type="pie" model="#{portfolioViewBean.valuePaperCountryPie}" style="width:400px;height:300px;display:inline-block;" />
-				</c:if>
-	        </p:tab>
-	        <p:tab title="Orders">
-	            <p:dataTable var="order" value="#{portfolioViewBean.orderList}">				  
-				  	<p:column headerText="Wertpapier" sortBy="#{order.valuePaper.name}">
-				        <h:outputText value="#{order.valuePaper.name}" />
-				    </p:column>
-				    <p:column headerText="Aktion" sortBy="#{order.orderAction}">
-				        <h:outputText value="#{order.orderAction}" />
-				    </p:column>
-				    <p:column headerText="Anzahl" sortBy="#{order.volume}">
-				        <h:outputText value="#{order.volume}" />
-				    </p:column>
-				    <p:column headerText="Gültig bis" sortBy="#{order.validTo.time}">
-				        <h:outputText value="#{order.validTo.time}" />
-				    </p:column>
-				    <p:column headerText="Status" sortBy="#{paper.status}">
-				        <h:outputText value="#{order.status}" />
-				    </p:column>
-				    <p:column headerText="Typ" sortBy="#{order.type}">
-				        <h:outputText value="#{order.type}" />
-				    </p:column>
-				    <p:column headerText="Limit">
-				        <h:outputText value="#{order.limit.value}" rendered="#{order.type == 'LIMIT'}"/>
-				    </p:column>
-				    <p:column headerText="LimitStop">
-				        <h:outputText value="#{order.stopLimit.value}" rendered="#{order.type == 'LIMIT'}"/>
-				    </p:column>
-				</p:dataTable>
-	        </p:tab>
-	        <p:tab title="Transaktionen">
-	            <p:dataTable var="trade" value="#{portfolioViewBean.transactionList}">
-				    
-				    <p:column headerText="Datum" sortBy="#{trade.created.time}">
-				        <h:outputText value="#{trade.created.time}" />
-				    </p:column>
-				    <p:column headerText="Währung" sortBy="#{trade.value.currency.currencyCode}">
-				        <h:outputText value="#{trade.value.currency.currencyCode} (#{trade.value.currency.symbol})" />
-				    </p:column>
-				    <p:column headerText="Wert" sortBy="#{trade.value.value}">
-				        <h:outputText value="#{trade.value.value}" />
-				    </p:column>
-				    <p:column headerText="Transaktionstyp" sortBy="#{trade.type}">
-				        <h:outputText value="#{trade.type}" />
-				    </p:column>
-				    <p:column headerText="Wertpapier">
-				    	<h:outputText value="#{trade.order.valuePaper.name}" rendered="#{trade.type == 'ORDER' or trade.type == 'ORDER_FEE'}"/>
-				    	<h:outputText value="#{trade.valuePaper.name}" rendered="#{trade.type == 'PAYOUT'}"/>
-				    </p:column>
-				    <p:column headerText="Order-Aktion">
-			        	<h:outputText value="#{trade.order.orderAction}" rendered="#{trade.type == 'ORDER' or trade.type == 'ORDER_FEE'}"/>
-				    </p:column>
-				    <p:column headerText="Anzahl">
-				    	<h:outputText value="#{trade.order.volume}" rendered="#{trade.type == 'ORDER' or trade.type == 'ORDER_FEE'}"/>
-				    </p:column>
-				    <p:column headerText="Beschreibung">
-				    	<h:outputText value="#{trade.description}" rendered="#{trade.type == 'FEE'}"/>
-				    </p:column>
-				</p:dataTable>
-	        </p:tab>
-    	</p:tabView>
+		
 		</h:form>
     			
-		<p:chart type="line" model="#{portfolioViewBean.portfolioChart}" style="height:400px;"/>
+		
 	</ui:define><!-- content -->
 
 </ui:composition>
