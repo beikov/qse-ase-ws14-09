@@ -73,7 +73,7 @@ public class ValuePaperViewBean implements Serializable{
 
 	@Inject
 	private DividendHistoryEntryService dividendHistoryEntryService;
-	
+
 	@Inject
 	private AnalystOpinionService analystOpinionService;
 
@@ -167,7 +167,7 @@ public class ValuePaperViewBean implements Serializable{
 			List<AnalystOpinion> stockAnalystOpinionList) {
 		this.stockAnalystOpinionList = stockAnalystOpinionList;
 	}
-	
+
 	public AnalystOpinion getSelectedAnalystOpinion() {
 		return selectedAnalystOpinion;
 	}
@@ -175,8 +175,8 @@ public class ValuePaperViewBean implements Serializable{
 	public void setSelectedAnalystOpinion(AnalystOpinion selectedAnalystOpinion) {
 		this.selectedAnalystOpinion = selectedAnalystOpinion;
 	}
-	
-	
+
+
 
 
 	public ValuePaperPriceEntry getLastPriceEntry() {
@@ -241,7 +241,7 @@ public class ValuePaperViewBean implements Serializable{
 		}
 
 	}
-	
+
 	private void loadStockAnalystOpinions() {
 		try{
 			stockAnalystOpinionList = analystOpinionService.getAnalystOpinionsByValuePaperCode(valuePaper.getCode());
@@ -621,6 +621,10 @@ public class ValuePaperViewBean implements Serializable{
 			ValuePaperPriceEntry currentPriceEntry = valuePaperPriceEntryService.getLastPriceEntry(valuePaper.getCode());
 
 			series1.set(format.format(currentPriceEntry.getCreated().getTime()), currentPriceEntry.getPrice());
+
+			if(series1.getData().size() == 1){
+				series1.setShowMarker(true);
+			}
 
 			valuePaperHistoricPriceLineChartModel.addSeries(series1);
 			valuePaperHistoricPriceLineChartModel.setTitle("Kursverlauf");

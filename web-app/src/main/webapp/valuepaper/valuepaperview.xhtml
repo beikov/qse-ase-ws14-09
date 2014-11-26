@@ -29,7 +29,7 @@
 						<p:layoutUnit position="center" style="border: 0">
 
 							<p:panel id="allgemein" header="Allgemeine Informationen"
-								style="margin-bottom: 10px">
+								style="margin-bottom: 20px">
 
 								<p:panelGrid columns="2">
 
@@ -45,7 +45,7 @@
 											test="#{valuePaperViewBean.valuePaper.baseStock != null}">
 											<h:outputText value="Basis-Aktie" style="font-weight:bold" />
 											<h:button value="Zur Basis-Aktie" outcome="valuepaperview">
-												<f:param name="valuePaperIsin"
+												<f:param name="valuePaperCode"
 													value="#{valuePaperViewBean.valuePaper.baseStock.code}" />
 											</h:button>
 										</c:if>
@@ -86,7 +86,7 @@
 							minSize="50" maxSize="500" style="border: 0">
 
 							<p:panel id="kurschart" header="Kurschart"
-								style="margin-bottom: 10px">
+								style="margin-bottom: 20px">
 
 								<c:choose>
 									<c:when
@@ -109,7 +109,7 @@
 									rendered="#{valuePaperViewBean.valuePaper.type == 'STOCK'}"
 									emptyMessage="keine Dividendendaten vorhanden"
 									scrollable="true" scrollHeight="100%"
-									style="margin-bottom:10px">
+									style="margin-bottom:20px">
 
 									<f:facet name="header">
             							Dividenden
@@ -189,12 +189,13 @@
 
 
 
-							<div id="analystOpinions" style="margin-top: 10px">
+							<div id="analystOpinions" style="margin-top: 20px">
 								<p:dataList
 									value="#{valuePaperViewBean.stockAnalystOpinionList}"
 									var="analystOpinion" type="unordered" itemType="none"
 									paginator="true" rows="5"
-									emptyMessage="keine Analystenmeinungen vorhanden">
+									emptyMessage="keine Analystenmeinungen vorhanden"
+									rendered="#{valuePaperViewBean.valuePaper.type == 'STOCK'}">
 									<f:facet name="header">
             							Analystenmeinungen
         							</f:facet>
@@ -258,7 +259,7 @@
 				</c:when>
 
 				<c:otherwise>
-					<h:outputText value="Wertpapier-ISIN existiert nicht" />
+					<h:outputText value="Wertpapier-Code existiert nicht" />
 				</c:otherwise>
 
 			</c:choose>
