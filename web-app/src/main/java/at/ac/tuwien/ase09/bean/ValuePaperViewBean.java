@@ -604,6 +604,7 @@ public class ValuePaperViewBean implements Serializable{
 		valuePaperHistoricPriceLineChartModel = new LineChartModel();
 		LineChartSeries series1 = new LineChartSeries();
 		series1.setLabel(valuePaper.getName());
+		series1.setShowMarker(false);
 
 		try{
 

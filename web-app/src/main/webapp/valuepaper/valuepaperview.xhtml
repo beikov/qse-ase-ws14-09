@@ -136,7 +136,8 @@
 
 							<p:dataList value="#{valuePaperViewBean.newsItemsList}"
 								var="news" type="unordered" itemType="none" paginator="true"
-								rows="5" emptyMessage="keine Newseinträge vorhanden">
+								rows="5" emptyMessage="keine Newseinträge vorhanden"
+								style="height:100%">
 								<f:facet name="header">
             						News
         						</f:facet>
@@ -149,9 +150,10 @@
 									<h:outputText value="#{news.created.time}">
 										<f:convertDateTime pattern="dd.MM.yyyy" />
 									</h:outputText>
-									<h:outputText value=", #{news.title}" />
+									<h:outputText
+										value=", #{news.title.length() gt 34 ? news.title.subSequence(0,34).toString().concat('...') : news.title}" />
 								</p:commandLink>
-								<br/>
+								<br />
 							</p:dataList>
 
 							<p:dialog header="News Info" widgetVar="newsDialog" modal="false"
@@ -207,9 +209,9 @@
 										<h:outputText value="#{analystOpinion.created.time}">
 											<f:convertDateTime pattern="dd.MM.yyyy" />
 										</h:outputText>
-										<h:outputText value=", #{analystOpinion.recommendation}" />
+										<h:outputText value=": #{analystOpinion.recommendation}" />
 									</p:commandLink>
-									<br/>
+									<br />
 								</p:dataList>
 							</div>
 
@@ -232,9 +234,9 @@
 										<h:outputText
 											value="#{valuePaperViewBean.selectedAnalystOpinion.recommendation}" />
 
-										<h:outputText value="Zielpreis:" />
+										<h:outputText value="Kursziel:" />
 										<h:outputText
-											value="#{valuePaperViewBean.selectedAnalystOpinion.targetPrice}" />
+											value="#{valuePaperViewBean.selectedAnalystOpinion.targetPrice.value} #{valuePaperViewBean.selectedAnalystOpinion.targetPrice.currency}" />
 
 										<h:outputText value="Text:" />
 										<h:outputText
