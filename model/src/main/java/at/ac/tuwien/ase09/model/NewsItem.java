@@ -2,6 +2,7 @@ package at.ac.tuwien.ase09.model;
 
 import java.util.Calendar;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
@@ -16,8 +17,9 @@ public class NewsItem extends BaseEntity<Long> {
 	private String text;
 	private String source;
 	private Calendar created;
-	private ValuePaper valuePaper;
+	private Stock stock;
 	
+	@Column(nullable=false, columnDefinition="TEXT")
 	public String getTitle() {
 		return title;
 	}
@@ -26,6 +28,7 @@ public class NewsItem extends BaseEntity<Long> {
 		this.title = title;
 	}
 	
+	@Column(columnDefinition="TEXT")
 	public String getText() {
 		return text;
 	}
@@ -50,14 +53,14 @@ public class NewsItem extends BaseEntity<Long> {
 	public void setCreated(Calendar created) {
 		this.created = created;
 	}
-	
+
 	@ManyToOne(optional=false, fetch=FetchType.LAZY)
-	public ValuePaper getValuePaper() {
-		return valuePaper;
+	public Stock getStock() {
+		return stock;
 	}
-	
-	public void setValuePaper(ValuePaper valuePaper) {
-		this.valuePaper = valuePaper;
+
+	public void setStock(Stock stock) {
+		this.stock = stock;
 	}
 	
 }

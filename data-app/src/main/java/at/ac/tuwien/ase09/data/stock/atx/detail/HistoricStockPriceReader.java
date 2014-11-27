@@ -53,7 +53,7 @@ public class HistoricStockPriceReader extends AbstractItemReader {
 			linkNumber = 0;
 			stocks = valuePaperDataAccess.getStocksByIndex(indexName);
 			from = Calendar.getInstance();
-			from.roll(Calendar.MONTH, -1);
+			from.roll(Calendar.YEAR, -1);
 			to = Calendar.getInstance();
 		}
 	};

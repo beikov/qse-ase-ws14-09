@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This job extracts all bonds from ATX stocks -->
+<job id="newsExtraction" xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	version="1.0">
+	<step id="newsExtractionStep">
+		<chunk item-count="5">
+			<reader ref="newsReader">
+				<properties>
+					<property name="finanzenNetUrl" value="http://www.finanzen.at" />
+				</properties>
+			</reader>
+			<processor ref="newsProcessor" />
+			<writer ref="newsWriter" />
+
+			<retryable-exception-classes>
+				<include class="java.net.SocketTimeoutException" />
+			</retryable-exception-classes>
+			<skippable-exception-classes>
+				<include class="java.net.SocketTimeoutException" />
+			</skippable-exception-classes>
+		</chunk>
+		<listeners>
+			<listener ref="StepBoundaryLogger" />
+			<listener ref="TransitioningStepListener" />
+			<listener ref="DefaultSkipListener" />
+			<listener ref="DefaultRetryListener" />
+		</listeners>
+	</step>
+	<listeners>
+		<listener ref="JobBoundaryLogger" />
+		<listener ref="SuccessorJobStarter">
+			<properties>
+				<property name="successorJobIds" value="#{jobParameters['successorJobIds']}" />
+			</properties>
+		</listener>
+	</listeners>
+</job>

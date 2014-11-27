@@ -1,5 +1,6 @@
 package at.ac.tuwien.ase09.data;
 
+import java.util.Calendar;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -9,7 +10,9 @@ import javax.persistence.NoResultException;
 
 import at.ac.tuwien.ase09.exception.AppException;
 import at.ac.tuwien.ase09.exception.EntityNotFoundException;
+import at.ac.tuwien.ase09.model.AnalystOpinion;
 import at.ac.tuwien.ase09.model.DividendHistoryEntry;
+import at.ac.tuwien.ase09.model.NewsItem;
 import at.ac.tuwien.ase09.model.Stock;
 import at.ac.tuwien.ase09.model.StockBond;
 import at.ac.tuwien.ase09.model.ValuePaper;
@@ -66,6 +69,41 @@ public class ValuePaperDataAccess {
 		List<DividendHistoryEntry> entries = null;
 		try{
 			entries = em.createQuery("SELECT dividendEntry FROM DividendHistoryEntry dividendEntry JOIN dividendEntry.stock s WHERE s.code = :code ORDER BY dividendEntry.dividendDate DESC", DividendHistoryEntry.class).setParameter("code", code).setMaxResults(1).getResultList();
+		} catch(Exception e){
+			throw new AppException(e);
+		}
+		if(entries.isEmpty()){
+			throw new EntityNotFoundException();
+		}else{
+			return entries.get(0);
+		}
+	}
+	
+	public NewsItem getNewsItemForStockWithTitle(String code, String title){
+		List<NewsItem> entries = null;
+		try{
+			entries = em.createQuery("SELECT newsItem FROM NewsItem newsItem JOIN newsItem.stock s WHERE s.code = :code AND newsItem.title = :title ORDER BY newsItem.created DESC", NewsItem.class)
+					.setParameter("code", code)
+					.setParameter("title", title)
+					.setMaxResults(1).getResultList();
+		} catch(Exception e){
+			throw new AppException(e);
+		}
+		if(entries.isEmpty()){
+			throw new EntityNotFoundException();
+		}else{
+			return entries.get(0);
+		}
+	}
+	
+	public AnalystOpinion getAnalystOpinionForStock(String code, Calendar date, String source){
+		List<AnalystOpinion> entries = null;
+		try{
+			entries = em.createQuery("SELECT analysis FROM AnalystOpinion analysis JOIN analysis.stock s WHERE s.code = :code AND analysis.created = :created AND analysis.source = :source", AnalystOpinion.class)
+					.setParameter("code", code)
+					.setParameter("created", date)
+					.setParameter("source", source)
+					.setMaxResults(1).getResultList();
 		} catch(Exception e){
 			throw new AppException(e);
 		}
