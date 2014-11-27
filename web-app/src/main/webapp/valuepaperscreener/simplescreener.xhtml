@@ -94,10 +94,10 @@
 				    <p:column headerText="Name" sortBy="#{valuePaper.name}">
 				        <h:outputText value="#{valuePaper.name}" />
 				    </p:column>
-				    <p:column headerText="Währung" sortBy="#{valuePaper.currency.currencyCode}">
+				    <p:column headerText="Währung" >
 				        <h:outputText value="#{valuePaper.currency.currencyCode} (#{valuePaper.currency.symbol})" rendered="#{valuePaper.type == 'STOCK'}"/>
 				    </p:column>
-				    <p:column headerText="Land" sortBy="#{valuePaper.country}">
+				    <p:column headerText="Land" >
 				        <h:outputText value="#{valuePaper.country}"  rendered="#{valuePaper.type == 'STOCK'}"/>
 				    </p:column>
 				    <p:column headerText="ISIN" sortBy="#{valuePaper.code}">
