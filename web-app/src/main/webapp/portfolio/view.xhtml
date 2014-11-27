@@ -48,7 +48,7 @@
 								<h:outputText value="#{portfolioViewBean.portfolio.setting.portfolioFee}" />
 								
 								<h:outputText value="Kapitalertragssteuer:" />
-								<h:outputText value="#{portfolioViewBean.portfolio.setting.capitalReturnTax}" />
+								<h:outputText value="#{portfolioViewBean.portfolio.setting.capitalReturnTax} %" />
 							</p:panelGrid>
 						</p:panel>
 					</p:layoutUnit>
@@ -80,29 +80,10 @@
 			            		<p:ajax update=":portfolioViewForm:msg" listener="#{portfolioViewBean.changeVisibility()}" />
 			        		</p:selectBooleanCheckbox> -->
 			            </f:facet>
-			            <p:dataTable var="association" value="#{portfolioViewBean.valuePaperList}">
-			            	<c:set var="paper" value="#{association.valuePaper}" />
-			            	
-						    <p:column headerText="Name" sortBy="#{paper.name}">
-						        <h:outputText value="#{paper.name}"></h:outputText>
-						    </p:column>
-						    <p:column headerText="Typ" sortBy="#{paper.type}">
-						        <h:outputText value="#{paper.type}" />
-						    </p:column>
-						    <p:column headerText="Stück" sortBy="#{association.volume}">
-						        <h:outputText value="#{association.volume}"></h:outputText>
-						    </p:column>
-						    <p:column headerText="Bezahlt">
-						        <h:outputText value="#{portfolioViewBean.getTotalPayed(paper.code) }"></h:outputText>
-						    </p:column>
-						    <p:column headerText="Letzter Kurswert">
-						        <h:outputText value="#{portfolioViewBean.getLatesValuePaperPrice(paper.code)}" />
-						    </p:column>
-						    <p:column>
-						    	<a href="/valuepaper/valuepaperview.xhtml?valuePaperCode=#{paper.code}" class="btn btn-default btn-md"><span class="glyphicon glyphicon-search" aria-hidden="true" /></a>
-						    	<a href="/protected/portfolio/list.xhtml?valuePaperId=#{paper.id}" class="btn btn-default btn-md"><span class="glyphicon glyphicon glyphicon-usd" aria-hidden="true" /></a>
-					       </p:column>
-						</p:dataTable>
+			            
+			            <ui:include src="_valuePaperTable.xhtml" />
+			            
+			            
 			        </p:tab>
 			        <p:tab title="Charts">
 			            <c:if test="#{not empty portfolioViewBean.portfolio.valuePapers}">
@@ -111,62 +92,10 @@
 						</c:if>
 			        </p:tab>
 			        <p:tab title="Orders">
-			            <p:dataTable var="order" value="#{portfolioViewBean.orderList}">				  
-						  	<p:column headerText="Wertpapier" sortBy="#{order.valuePaper.name}">
-						        <h:outputText value="#{order.valuePaper.name}" />
-						    </p:column>
-						    <p:column headerText="Typ" sortBy="#{order.type}">
-						        <h:outputText value="#{order.type}" />
-						    </p:column>
-						    <p:column headerText="Aktion" sortBy="#{order.orderAction}">
-						        <h:outputText value="#{order.orderAction}" />
-						    </p:column>
-						    <p:column headerText="Anzahl" sortBy="#{order.volume}">
-						        <h:outputText value="#{order.volume}" />
-						    </p:column>
-						    <p:column headerText="Gültig bis" sortBy="#{order.validTo.time}">
-						        <h:outputText value="#{order.validTo.time}" />
-						    </p:column>
-						    <p:column headerText="Status" sortBy="#{paper.status}">
-						        <h:outputText value="#{order.status}" />
-						    </p:column>
-						    <p:column headerText="Beschreibung">
-						        
-						    </p:column>
-						    <!-- <p:column headerText="Limit">
-						        <h:outputText value="#{order.limit.value}" rendered="#{order.type == 'LIMIT'}"/>
-						    </p:column>
-						    <p:column headerText="LimitStop">
-						        <h:outputText value="#{order.stopLimit.value}" rendered="#{order.type == 'LIMIT'}"/>
-						    </p:column> -->
-						</p:dataTable>
+			        	<ui:include src="_orderTable.xhtml" />
 			        </p:tab>
 			        <p:tab title="Transaktionen">
-			            <p:dataTable var="trade" value="#{portfolioViewBean.transactionList}">
-						    
-						    <p:column headerText="Datum" sortBy="#{trade.created.time}">
-						        <h:outputText value="#{dateUtil.formatDateWithTime(trade.created.time)}" />
-						    </p:column>
-						    <p:column headerText="Wertpapier">
-						    	<h:outputText value="#{trade.order.valuePaper.name}" rendered="#{trade.type == 'ORDER' or trade.type == 'ORDER_FEE'}"/>
-						    	<h:outputText value="#{trade.valuePaper.name}" rendered="#{trade.type == 'PAYOUT'}"/>
-						    </p:column>
-						    <p:column headerText="Order-Aktion">
-					        	<h:outputText value="#{trade.order.orderAction}" rendered="#{trade.type == 'ORDER' or trade.type == 'ORDER_FEE'}"/>
-						    </p:column>
-						    <p:column headerText="Anzahl">
-						    	<h:outputText value="#{trade.order.volume}" rendered="#{trade.type == 'ORDER' or trade.type == 'ORDER_FEE'}"/>
-						    </p:column>
-						    <p:column headerText="Wert" sortBy="#{trade.value.value.doubleValue()}">
-						        <h:outputText value="#{trade.value}" />
-						    </p:column>
-						    <p:column headerText="Transaktionstyp" sortBy="#{trade.type}">
-						        <h:outputText value="#{trade.type}" />
-						    </p:column>
-						    <p:column headerText="Beschreibung">
-						    	<h:outputText value="#{trade.description}" rendered="#{trade.type == 'FEE'}"/>
-						    </p:column>
-						</p:dataTable>
+			            <ui:include src="_transactionTable.xhtml" />
 			        </p:tab>
 		    	</p:tabView>
 		    	<p:chart type="line" model="#{portfolioViewBean.portfolioChart}" style="height:400px;"/>
