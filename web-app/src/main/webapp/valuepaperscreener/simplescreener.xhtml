@@ -18,7 +18,8 @@
 				<p:outputLabel for="type" value="Wähle Aktientyp: " style="padding: 10px;"/>
 				<p:selectOneMenu id="type" value="#{valuePaperScreenerBean.valuePaperType}" style="width:200px">
 					<f:selectItem itemLabel="Beliebig" itemValue="#{null}" />
-					<f:selectItems value="#{valuePaperScreenerBean.valuePaperTypes}" />
+					<f:selectItems value="#{valuePaperScreenerBean.valuePaperTypes}" var="paperTypes"
+						itemValue="#{paperTypes}" itemLabel="#{paperTypes.label}"/>
 					<p:ajax process="@this" update="@form" />
 				</p:selectOneMenu>
 			</h:panelGrid>
@@ -69,12 +70,12 @@
 		 </p:tab>
 	</p:tabView>	
 		
-				<center>
-					<p:commandButton value="Reset" type="reset" />
+				<h:panelGroup layout="block" style="text-align: center;">
+					<p:commandButton value="Reset" type="reset" style="margin: 5px;"/>
 					<p:commandButton value="Suche"
 						action="#{valuePaperScreenerBean.search()}" update="@form"
 						ajax="true" />
-					</center>
+				</h:panelGroup>	
 				<br/>
 				<!-- 
 				<p:message for=":searchValuePapers:searchTab:repeatTag:attributeSelect" style="color:red" />
