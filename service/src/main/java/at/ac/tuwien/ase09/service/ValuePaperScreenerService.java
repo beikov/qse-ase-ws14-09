@@ -19,7 +19,7 @@ public class ValuePaperScreenerService {
 	public List<ValuePaper> search(ValuePaper valuePaper,Boolean isTypeSpecificated) {
 		return valuePaperScreenerAccess.findByValuePaper(valuePaper,isTypeSpecificated);
 	}
-	public List<ValuePaper> search(List<AttributeFilter> filters,ValuePaperType type)
+	public List<ValuePaper> search(List<AttributeFilter> filters,ValuePaperType type) 
 	{
 		return valuePaperScreenerAccess.findByFilter(filters, type);
 	}

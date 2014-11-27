@@ -19,50 +19,51 @@
 				<p:selectOneMenu id="type" value="#{valuePaperScreenerBean.valuePaperType}" style="width:200px">
 					<f:selectItem itemLabel="Beliebig" itemValue="#{null}" />
 					<f:selectItems value="#{valuePaperScreenerBean.valuePaperTypes}" />
-					<p:ajax process="@this" update="filterTable" />
+					<p:ajax process="@this" update="@form" />
 				</p:selectOneMenu>
 			</h:panelGrid>
 			
 			<p:separator />
 			
-			<h:dataTable id="filterTable" var="filter" value="#{valuePaperScreenerBean.filters}"  cellpadding="10">
-				<p:column>
-				        <p:commandButton type="button" action="#{valuePaperScreenerBean.delete(filter)}" update="filterTable" icon="ui-icon-trash" ajax="true" />
-				</p:column>
-				<p:column>
-				    <p:selectOneMenu id="attributeSelect" value="#{filter.attribute}" style="width:200px" required="true">				
+			<ui:repeat id="repeatTag" var="filter" value="#{valuePaperScreenerBean.filters}" >
+			
+				<h:panelGrid columns="7" cellpadding="10">
+					<p:commandButton icon="ui-icon-closethick"  >
+				        	<f:ajax listener="#{valuePaperScreenerBean.delete(filter)}" immediate="true" render="@form" />
+					</p:commandButton>
+				
+					<p:selectOneMenu id="attributeSelect" value="#{filter.attribute}" style="width:250px;margin: 5px;" required="true">				
 						 <f:selectItem itemLabel="Wähle Filterattribut" itemValue="#{null}" noSelectionOption="true" />
 						<f:selectItems value="#{valuePaperScreenerBean.attributeTypes}" var="attribute"
 						itemValue="#{attribute}" itemLabel="#{attribute.label}"/>
-						<p:ajax process="@this" update="filterTable" />
+							<f:ajax  immediate="true" render="@form" />
 					</p:selectOneMenu>
-				</p:column>
-				<p:column id="operatorCol" rendered="#{filter.numeric and filter.attribute != null}">
-				    <p:selectOneMenu id="operator" value="#{filter.operator}" style="width:200px">				
+					
+					<p:selectOneMenu id="operator" value="#{filter.operator}" style="width:50px;margin:5px;" rendered="#{filter.numeric and filter.attribute != null}">				
 						<f:selectItems value="#{valuePaperScreenerBean.operatorTypes}" var="operator"
 						itemValue="#{operator}" itemLabel="#{operator.label}"/>
 					</p:selectOneMenu>
-				</p:column>
-				<p:column id="numericCol" rendered="#{filter.numeric and filter.attribute != null}">
-				    <p:inputText id="nummericField" value="#{filter.numericValue}" required="true">
-				    	 <f:validateRegex pattern="[0-9]" />
+					
+					<p:inputText id="nummericField" value="#{filter.numericValue}" style="margin:5px;" required="true" rendered="#{filter.numeric  and filter.attribute != null}" >
+				    	 <f:convertNumber type="number" />
 				    </p:inputText>
-				</p:column>
-				<p:column id="textCol" rendered="#{!filter.numeric and filter.attribute != null}">
-				    <p:inputText id="textField" value="#{filter.textValue}" required="true"/>
-				</p:column>
-				<p:column id="currencyCol" rendered="#{!filter.numeric and filter.attribute == 'CURRENCY' and filter.attribute != null}">
-				    <p:inputText id="currencyField" value="#{filter.currencyValue}" required="true">
+				    
+				    <p:inputText id="textField" value="#{filter.textValue}" style="width:247px;margin: 5px;" required="true" rendered="#{!filter.numeric and filter.attribute != 'CURRENCY' and filter.attribute != null}" />
+				    
+				    <p:inputText id="currencyField" value="#{filter.currencyValue}" style="width:245px;margin: 5px;" required="true" rendered="#{!filter.numeric and filter.attribute == 'CURRENCY' and filter.attribute != null}" >
 				    	 <f:validateRegex pattern="^[a-zA-Z]{3}$" />
 				    </p:inputText>
-				</p:column>
-				<p:column id="enableCol" rendered="#{filter.attribute != null}">
-				   <p:selectBooleanCheckbox value="#{filter.enabled}" />
-				</p:column>			
-			</h:dataTable>
-			<p:commandButton value="Hinzufügen">
-						<f:ajax listener="#{valuePaperScreenerBean.addFilter()}" execute="@form" render="filterTable" /> 
-						</p:commandButton>
+				 
+				   	<p:selectBooleanCheckbox value="#{filter.enabled}" style="margin:5px;" rendered="#{filter.attribute != null}" />
+				</h:panelGrid>
+				
+			</ui:repeat>
+
+			<p:commandButton icon="ui-icon-plusthick" style="margin-top: 10px;">
+					<f:ajax listener="#{valuePaperScreenerBean.addFilter()}" execute="@form" render="@form" /> 
+			</p:commandButton>
+			  
+				
 		</p:tab>
 		 <p:tab title="Komplexe Aktiensuche">
 		 </p:tab>
@@ -71,22 +72,24 @@
 				<center>
 					<p:commandButton value="Reset" type="reset" />
 					<p:commandButton value="Suche"
-						action="#{valuePaperScreenerBean.search()}" update="searchValuePapers"
+						action="#{valuePaperScreenerBean.search()}" update="@form"
 						ajax="true" />
 					</center>
 				<br/>
-				
-				<p:message for=":searchValuePapers:searchTab:filterTable:attributeSelect" style="color:red" />
+				<!-- 
+				<p:message for=":searchValuePapers:searchTab:repeatTag:attributeSelect" style="color:red" />
 				<p> </p>
-				<p:message for=":searchValuePapers:searchTab:filterTable:nummericField" style="color:red" />
+				<p:message for=":searchValuePapers:searchTab:repeatTag:nummericField" style="color:red" />			
 				<p> </p>
-				<p:message for=":searchValuePapers:searchTab:filterTable:textField" style="color:red" />
+				<p:message for=":searchValuePapers:searchTab:repeatTag:textField" style="color:red" />
 				<p> </p>
-				<p:message for=":searchValuePapers:searchTab:filterTable:currencyField" style="color:red" />
-
+				<p:message for=":searchValuePapers:searchTab:repeatTag:currencyField" style="color:red" />	
+				 -->
 		<p:separator />
 		
-		<p:dataTable var="valuePaper" value="#{valuePaperScreenerBean.searchedValuePapers}">
+		<p:dataTable var="valuePaper" value="#{valuePaperScreenerBean.searchedValuePapers}" rows="30"
+                         paginator="true"
+                         paginatorTemplate=" {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
 				    <p:column headerText="Name" sortBy="#{valuePaper.name}">
 				        <h:outputText value="#{valuePaper.name}" />
 				    </p:column>

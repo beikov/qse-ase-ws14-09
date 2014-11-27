@@ -15,14 +15,17 @@ public class AttributeFilter {
 	private OperatorType operator;
 	private Boolean numeric,enabled;
 	
-	
+	public AttributeFilter()
+	{
+		enabled=true;
+	}
 	public String getCurrencyValue() {
 		return currencyCodeValue;
 	}
 	public void setCurrencyValue(String currencyCodeValue) {
 		this.currencyCodeValue = currencyCodeValue;
 	}
-	public Boolean isEnabled() {
+	public Boolean getEnabled() {
 		return enabled;
 	}
 	public void setEnabled(Boolean enabled) {
@@ -58,8 +61,8 @@ public class AttributeFilter {
 	public void setOperator(OperatorType operator) {
 		this.operator = operator;
 	}
-	public Boolean isNumeric() {
-		return attribute.isNumeric();
+	public Boolean getNumeric() {
+		return attribute!=null ? attribute.isNumeric():false;
 	}
 	public void setNumeric(Boolean numeric) {
 		this.numeric = numeric;

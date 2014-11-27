@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+import javax.ejb.EJBException;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -93,38 +94,26 @@ public class ValuePaperScreenerBean implements Serializable {
 			filters.remove(filter);
 		}
 		public void addFilter()
-		{
-			System.out.println("Hallo");
-			filters.add(new AttributeFilter());
-			for(AttributeFilter f: filters)
-			{
-				System.out.println("Hallo1");
-			}
+		{		
+			filters.add(new AttributeFilter());		
 		}
 		public void search()
 		{
-			
-			
+		
 				try{
 					searchedValuePapers=screenerService.search(filters, paperType);
 				}
-				catch(IllegalArgumentException e)
+				catch(EJBException  e)
 				 {
 					System.out.println("currencyCode does not exists");
 					FacesMessage facesMessage = new FacesMessage(
 							"Fehler: Währungs-Code existiert nicht");
 					FacesContext.getCurrentInstance().addMessage(
-							"searchValuePapers:currency", facesMessage);
+							":searchValuePapers", facesMessage);
 
 				}
 			
-			
-			
-			
-			for(ValuePaper p: searchedValuePapers)
-			{
-				System.out.println(p.toString());
-			}
+		
 		}
 		
 		
