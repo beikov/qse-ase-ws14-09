@@ -148,10 +148,6 @@ public class PortfolioViewBean implements Serializable {
 		money.setValue(new BigDecimal(0));
 		for (TransactionEntry t : portfolio.getTransactionEntries()) {
 			if (t.getType() == TransactionType.ORDER && ((OrderTransactionEntry)t).getOrder().getValuePaper().getCode().equals(code)) {
-				//OrderTransactionEntry ot = (OrderTransactionEntry)t;
-				//BigDecimal volume = BigDecimal.valueOf(ot.getOrder().getVolume());
-				//payed = payed.add(t.getValue().getValue().divide(volume));
-				//payed = payed.add(t.getValue().getValue());
 				BigDecimal oldVal = money.getValue();
 				BigDecimal newVal = oldVal.add(t.getValue().getValue());
 				money.setValue(newVal);
@@ -212,7 +208,7 @@ public class PortfolioViewBean implements Serializable {
 		portfolioChart = new LineChartModel();
 		portfolioChart.setTitle("Portfoliochart");
         portfolioChart.setZoom(true);
-        portfolioChart.getAxis(AxisType.Y).setLabel("Wert");
+        portfolioChart.getAxis(AxisType.Y).setLabel("Wert in " + portfolio.getCurrentCapital().getCurrency().getCurrencyCode());
         DateAxis axis = new DateAxis("Datum");
         axis.setTickAngle(-50);
         axis.setTickFormat("%b %#d, %y");

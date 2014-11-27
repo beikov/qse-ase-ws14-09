@@ -4,8 +4,12 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:p="http://primefaces.org/ui">
 	
-	<p:dataTable var="association" value="#{portfolioViewBean.valuePaperList}">
-          	<c:set var="paper" value="#{association.valuePaper}" />
+	<p:dataTable var="association" value="#{portfolioViewBean.valuePaperList}" rows="5"
+                         paginator="true"
+                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         rowsPerPageTemplate="5,10,15">
+                         
+		<c:set var="paper" value="#{association.valuePaper}" />
           	
 	    <p:column headerText="Name" sortBy="#{paper.name}">
 	        <h:outputText value="#{paper.name}"></h:outputText>
