@@ -1,0 +1,33 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+	
+	<p:dataTable var="trade" value="#{portfolioViewBean.transactionList}">
+						    
+	    <p:column headerText="Datum" sortBy="#{trade.created.time}">
+	        <h:outputText value="#{dateUtil.formatDateWithTime(trade.created.time)}" />
+	    </p:column>
+	    <p:column headerText="Wertpapier">
+	    	<h:outputText value="#{trade.order.valuePaper.name}" rendered="#{trade.type == 'ORDER' or trade.type == 'ORDER_FEE'}"/>
+	    	<h:outputText value="#{trade.valuePaper.name}" rendered="#{trade.type == 'PAYOUT'}"/>
+	    </p:column>
+	    <p:column headerText="Order-Aktion">
+        	<h:outputText value="#{trade.order.orderAction}" rendered="#{trade.type == 'ORDER' or trade.type == 'ORDER_FEE'}"/>
+	    </p:column>
+	    <p:column headerText="Anzahl">
+	    	<h:outputText value="#{trade.order.volume}" rendered="#{trade.type == 'ORDER' or trade.type == 'ORDER_FEE'}"/>
+	    </p:column>
+	    <p:column headerText="Wert" sortBy="#{trade.value.value.doubleValue()}">
+	        <h:outputText value="#{trade.value}" />
+	    </p:column>
+	    <p:column headerText="Transaktionstyp" sortBy="#{trade.type}">
+	        <h:outputText value="#{trade.type}" />
+	    </p:column>
+	    <p:column headerText="Beschreibung">
+	    	<h:outputText value="#{trade.description}" rendered="#{trade.type == 'FEE'}"/>
+	    </p:column>
+	</p:dataTable>
+
+</ui:composition>
