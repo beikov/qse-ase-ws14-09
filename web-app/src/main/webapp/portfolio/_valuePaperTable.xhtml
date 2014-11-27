@@ -1,6 +1,7 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:p="http://primefaces.org/ui">
 	
@@ -11,7 +12,7 @@
                          
 		<c:set var="paper" value="#{association.valuePaper}" />
           	
-	    <p:column headerText="Name" sortBy="#{paper.name}">
+	    <p:column headerText="Name" sortBy="#{paper.name}" width="250">
 	        <h:outputText value="#{paper.name}"></h:outputText>
 	    </p:column>
 	    <p:column headerText="Typ" sortBy="#{paper.type}">
@@ -27,8 +28,17 @@
 	        <h:outputText value="#{portfolioViewBean.getLatesValuePaperPrice(paper.code)}" />
 	    </p:column>
 	    <p:column>
-	    	<a href="/valuepaper/valuepaperview.xhtml?valuePaperCode=#{paper.code}" class="btn btn-default btn-md"><span class="glyphicon glyphicon-search" aria-hidden="true" /></a>
-	    	<a href="/protected/portfolio/list.xhtml?valuePaperId=#{paper.id}" class="btn btn-default btn-md"><span class="glyphicon glyphicon glyphicon-usd" aria-hidden="true" /></a>
+	    	<p:button value="Details" icon="ui-icon-search" outcome="/valuepaper/valuepaperview">
+	    		<f:param name="valuePaperCode" value="#{paper.code}" />
+	    	</p:button>
+	    	<p:button value="Kaufen" icon="ui-icon-cart" outcome="/valuepaper/valuepaperview">
+	    		<f:param name="valuePaperCode" value="#{paper.code}" />
+	    	</p:button>
+	    	<p:button value="Verkaufen" icon="ui-icon-cart" outcome="/valuepaper/valuepaperview">
+	    		<f:param name="valuePaperCode" value="#{paper.code}" />
+	    	</p:button>
+	    	<!-- <a href="/valuepaper/valuepaperview.xhtml?valuePaperCode=#{paper.code}" class="btn btn-default btn-md"><span class="glyphicon glyphicon-search" aria-hidden="true" /></a>
+	    	<a href="/protected/portfolio/list.xhtml?valuePaperId=#{paper.id}" class="btn btn-default btn-md"><span class="glyphicon glyphicon glyphicon-usd" aria-hidden="true" /></a> -->
        </p:column>
 	</p:dataTable>
 
