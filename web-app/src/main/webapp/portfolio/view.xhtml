@@ -17,12 +17,22 @@
 		    <f:viewAction action="#{portfolioViewBean.init}" />
 		</f:metadata>
 		
+		
+		
+		
 		<h:form id="portfolioViewForm">
-			<p:growl id="msg" />
+		
+			<p:growl id="growl" life="3000"/>
+		
+			<p:dialog header="Sichtbarkeitseinstellungen" widgetVar="visibilityDialog" modal="true" >
+			    <ui:include src="_visibilitySettings.xhtml" />
+			</p:dialog>
 		
 			<div class="row" style="margin-bottom: 15px;">
 				<div class="col-md-8">
 					<p:panel id="stats" header="Übersicht">
+						<p:commandButton value="Modal" type="button" onclick="PF('visibilityDialog').show();" />
+						
 						<ui:include src="_stats.xhtml" />
 					</p:panel>
 				</div>

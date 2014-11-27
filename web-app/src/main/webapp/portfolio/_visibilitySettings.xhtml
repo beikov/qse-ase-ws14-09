@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+	
+	<div class="row">
+		<div class="col-md-10">
+			<h:outputText value="Historie öffentlich: " />
+		</div>
+    	<p:selectBooleanCheckbox value="#{portfolioViewBean.portfolio.visibility.historyVisible}" />
+	</div>
+	
+    <div class="row">
+	    <div class="col-md-10">
+	    	<h:outputText value="public öffentlich: " />
+	    </div>
+    <p:selectBooleanCheckbox value="#{portfolioViewBean.portfolio.visibility.publicVisible}" />
+    </div>
+    
+    <div class="row">
+    	<div class="col-md-10">
+    		<h:outputText value="statics öffentlich: " />
+    	</div>
+    	<p:selectBooleanCheckbox value="#{portfolioViewBean.portfolio.visibility.statisticsVisible}" />
+    </div>
+    
+    <div class="row">
+    	<div class="col-md-10">
+    		<h:outputText value="Wertpapierliste öffentlich: " />
+    	</div>
+    	<p:selectBooleanCheckbox value="#{portfolioViewBean.portfolio.visibility.valuePaperListVisible}" />
+    </div>
+    
+    <div class="row">
+    	<p:commandButton value="Speichern" actionListener="#{portfolioViewBean.changeVisibility()}" update=":portfolioViewForm:growl" icon="ui-icon-disk" oncomplete="PF('visibilityDialog').hide();" />
+    </div>
+	
+</ui:composition>

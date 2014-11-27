@@ -14,6 +14,8 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.enterprise.context.RequestScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -135,6 +137,8 @@ public class PortfolioViewBean implements Serializable {
 	
 	public void changeVisibility() {
 		portfolioService.updatePortfolio(portfolio);
+		FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Sichtbarkeitseinstellungen gespeichert",  null);
+        FacesContext.getCurrentInstance().addMessage(null, message);
 	}
 	
 	public Money getLatesValuePaperPrice(String code) {
