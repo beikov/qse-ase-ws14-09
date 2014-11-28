@@ -53,7 +53,7 @@ public class ValuePaperViewBean implements Serializable{
 	@Inject
 	private ValuePaperService valuePaperService;
 	
-	@PersistenceContext
+	@Inject
 	private EntityManager em;
 
 	public void init() {

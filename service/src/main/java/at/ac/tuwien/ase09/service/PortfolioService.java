@@ -20,7 +20,7 @@ import at.ac.tuwien.ase09.model.ValuePaperType;
 @Stateless
 public class PortfolioService {
 
-	@PersistenceContext
+	@Inject
 	private EntityManager em;
 	
 	@Inject
