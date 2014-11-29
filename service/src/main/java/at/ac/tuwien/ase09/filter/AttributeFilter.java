@@ -3,27 +3,31 @@ package at.ac.tuwien.ase09.filter;
 import java.math.BigDecimal;
 import java.util.Currency;
 
+import javax.inject.Inject;
+
 import at.ac.tuwien.ase09.model.ValuePaperType;
+import at.ac.tuwien.ase09.service.ValuePaperScreenerService;
 
 public class AttributeFilter {
 
 	private BigDecimal numericValue;
 	private String textValue;
 	private ValuePaperType typeValue;
-	private String currencyCodeValue;
+	private String currencyValue;
 	private AttributeType attribute;
 	private OperatorType operator;
 	private Boolean numeric,enabled;
+	
 	
 	public AttributeFilter()
 	{
 		enabled=true;
 	}
 	public String getCurrencyValue() {
-		return currencyCodeValue;
+		return currencyValue;
 	}
-	public void setCurrencyValue(String currencyCodeValue) {
-		this.currencyCodeValue = currencyCodeValue;
+	public void setCurrencyValue(String currencyValue) {
+		this.currencyValue = currencyValue;
 	}
 	public Boolean getEnabled() {
 		return enabled;

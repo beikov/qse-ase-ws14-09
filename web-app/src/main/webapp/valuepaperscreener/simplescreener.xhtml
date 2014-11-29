@@ -50,11 +50,17 @@
 				    </p:inputText>
 				    
 				    <p:inputText id="textField" value="#{filter.textValue}" style="width:247px;margin: 5px;" required="true" rendered="#{!filter.numeric and filter.attribute != 'CURRENCY' and filter.attribute != null}" />
-				    
+				 <!--    
 				    <p:inputText id="currencyField" value="#{filter.currencyValue}" style="width:245px;margin: 5px;" required="true" rendered="#{!filter.numeric and filter.attribute == 'CURRENCY' and filter.attribute != null}" >
 				    	 <f:validateRegex pattern="^[a-zA-Z]{3}$" />
 				    </p:inputText>
-				 
+				 --> 
+				 	<p:selectOneMenu id="currencySelect" value="#{filter.currencyValue}" style="width:100px;margin:5px;" rendered="#{!filter.numeric and filter.attribute == 'CURRENCY' and filter.attribute != null}">				
+						<f:selectItems value="#{valuePaperScreenerBean.usedCurrencies}" var="currencyValue"
+						itemValue="#{currencyValue.currencyCode}" itemLabel="#{currencyValue.currencyCode}"/>
+						
+					</p:selectOneMenu>
+					
 				   	<p:selectBooleanCheckbox value="#{filter.enabled}" style="margin:5px;" rendered="#{filter.attribute != null}" />
 				</h:panelGrid>
 				

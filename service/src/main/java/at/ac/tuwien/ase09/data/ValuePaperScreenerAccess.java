@@ -53,22 +53,22 @@ public class ValuePaperScreenerAccess {
 					crit.add(Restrictions.ilike("valuePaper."+ filter.getAttribute().getParmName(), textValue));
 				} 
 				else if (filter.getCurrencyValue() != null) 
-				{
-					try{
-					Currency currency = Currency.getInstance(filter.getCurrencyValue().toUpperCase());
-					crit.add(Restrictions.eq("valuePaper."+ filter.getAttribute().getParmName(), currency));
-					}
-					catch(IllegalArgumentException e)
-					{
-						 throw new EJBException(e);
-					}
-					
+				{			
+					crit.add(Restrictions.eq("valuePaper."+ filter.getAttribute().getParmName(), Currency.getInstance(filter.getCurrencyValue())));
 				}
 			}
 			
 		}
 		
 		return crit.list();
+	}
+	@SuppressWarnings("unchecked")
+	public List<Currency> getUsedCurrencyCodes()
+	{
+		//List<Currency> curList=new ArrayList<Currency>();
+		return em.createQuery("SELECT s.currency FROM Stock s Group by s.currency").getResultList();
+		
+		
 	}
 	@SuppressWarnings("unchecked")
 	public List<ValuePaper> findByValuePaper(ValuePaper valuePaper, Boolean isTypeSecificated) {

@@ -3,6 +3,7 @@ package at.ac.tuwien.ase09.bean;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Currency;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -34,6 +35,7 @@ public class ValuePaperScreenerBean implements Serializable {
 
 		private List<AttributeFilter> filters=new ArrayList<AttributeFilter>();
 		private List<ValuePaper> searchedValuePapers;
+	
 		
 		@PostConstruct
 		public void init() {
@@ -87,7 +89,12 @@ public class ValuePaperScreenerBean implements Serializable {
 		public ValuePaperType getValuePaperType()
 		{
 			return paperType;
+		}	
+		public List<Currency> getUsedCurrencies() {
+			return screenerService.getUsedCurrencyCodes();
 		}
+
+		
 
 		public void delete(AttributeFilter filter)
 		{
@@ -99,21 +106,8 @@ public class ValuePaperScreenerBean implements Serializable {
 		}
 		public void search()
 		{
-		
-				try{
-					searchedValuePapers=screenerService.search(filters, paperType);
-				}
-				catch(EJBException  e)
-				 {
-					System.out.println("currencyCode does not exists");
-					FacesMessage facesMessage = new FacesMessage(
-							"Fehler: Währungs-Code existiert nicht");
-					FacesContext.getCurrentInstance().addMessage(
-							":searchValuePapers", facesMessage);
+			searchedValuePapers=screenerService.search(filters, paperType);
 
-				}
-			
-		
 		}
 		
 		
