@@ -57,6 +57,24 @@
 					value="#{portfolioCreationViewBean.startCapital}" required="true">
 				</p:inputText>
 				<h:message for="startCapital" style="color:red" />
+		
+				<h:outputText value="Ordergebühr(€): " />
+				<p:inputText id="orderFee"
+					value="#{portfolioCreationViewBean.orderFee}" required="true"/>
+				<h:message for="orderFee" style="color:red" />
+				
+				
+				<h:outputText value="PortfolioGebühr(€): " />
+				<p:inputText id="portfolioFee"
+					value="#{portfolioCreationViewBean.portfolioFee}" required="true"/>
+				<h:message for="portfolioFee" style="color:red" />
+				
+				
+				<h:outputText value="Kapitalertragssteuer(%): " />
+				<p:inputText id="capitalReturnTax"
+					value="#{portfolioCreationViewBean.capitalReturnTax}" required="true"/>
+				<h:message for="capitalReturnTax" style="color:red" />
+				
 
 
 				<p:commandButton value="Reset" type="reset" />

@@ -27,6 +27,9 @@ public class PortfolioCreationViewBean {
 	
 	private Portfolio portfolio;
 	private BigDecimal startCapital;
+	private BigDecimal orderFee;
+	private BigDecimal portfolioFee;
+	private BigDecimal capitalReturnTax;
 	
 	@Inject
 	WebUserContext userContext;
@@ -53,19 +56,42 @@ public class PortfolioCreationViewBean {
 	public void create(){
 		
 		if( portfolioService.existsPortfolioWithNameForUser(portfolio.getName(), userContext.getUser()) ){
-			FacesMessage facesMessage = new FacesMessage("Error: User already has portfolio with the given name");
+			FacesMessage facesMessage = new FacesMessage("Fehler: Für diesen Benutzer existiert bereits ein Portfolio mit dem selben Namen.");
 		      FacesContext.getCurrentInstance().addMessage("createForm:name", facesMessage);
 		      return;
 		}
 		if( startCapital.compareTo(new BigDecimal(0)) == -1 ){
-			FacesMessage facesMessage = new FacesMessage("Error: Startcapital has to be either zero for infinite capital or a number greater than zero");
+			FacesMessage facesMessage = new FacesMessage("Fehler: Startkapital muss größer gleich 0 (0 für unendliches Kapital) sein!");
 		      FacesContext.getCurrentInstance().addMessage("createForm:startCapital", facesMessage);
 		      return;
 		}
 		
+		if( orderFee.compareTo(new BigDecimal(0)) == -1){
+			FacesMessage facesMessage = new FacesMessage("Fehler: Ordergebühr muss größer gleich 0  sein!");
+		      FacesContext.getCurrentInstance().addMessage("createForm:orderFee", facesMessage);
+		      return;
+		}
+		
+		if( portfolioFee.compareTo(new BigDecimal(0)) == -1){
+			FacesMessage facesMessage = new FacesMessage("Fehler: Portfoliogebühr muss größer gleich 0  sein!");
+		      FacesContext.getCurrentInstance().addMessage("createForm:portfolioFee", facesMessage);
+		      return;
+		}
+		
+		if( capitalReturnTax.compareTo(new BigDecimal(0)) == -1 || capitalReturnTax.compareTo(new BigDecimal(99)) == 1){
+			FacesMessage facesMessage = new FacesMessage("Fehler: Kapitalertragssteuer muss zwischen 0 und 99 % liegen!");
+		      FacesContext.getCurrentInstance().addMessage("createForm:capitalReturnTax", facesMessage);
+		      return;
+		}
+		
+		
 		portfolio.setCreated(GregorianCalendar.getInstance());
 		portfolio.setCurrentCapital(new Money(startCapital, Currency.getInstance("EUR")));
 		portfolio.getSetting().setStartCapital(new Money(startCapital, Currency.getInstance("EUR")));
+		portfolio.getSetting().setOrderFee(new Money(orderFee, Currency.getInstance("EUR")));
+		portfolio.getSetting().setPortfolioFee(new Money(portfolioFee, Currency.getInstance("EUR")));
+		portfolio.getSetting().setCapitalReturnTax(capitalReturnTax);
+		
 		portfolio.setOwner(userContext.getUser());
 		
 		portfolioService.savePortfolio(portfolio);
@@ -94,6 +120,39 @@ public class PortfolioCreationViewBean {
 		this.userContext = userContext;
 	}
 
+	public BigDecimal getOrderFee() {
+		return orderFee;
+	}
+
+	public void setOrderFee(BigDecimal orderFee) {
+		this.orderFee = orderFee;
+	}
+
+	public BigDecimal getCapitalReturnTax() {
+		return capitalReturnTax;
+	}
+
+	public void setCapitalReturnTax(BigDecimal capitalReturnTax) {
+		this.capitalReturnTax = capitalReturnTax;
+	}
+
+	public PortfolioService getPortfolioService() {
+		return portfolioService;
+	}
+
+	public void setPortfolioService(PortfolioService portfolioService) {
+		this.portfolioService = portfolioService;
+	}
+
+	public BigDecimal getPortfolioFee() {
+		return portfolioFee;
+	}
+
+	public void setPortfolioFee(BigDecimal portfolioFee) {
+		this.portfolioFee = portfolioFee;
+	}
+
+	
 	
 	
 	
