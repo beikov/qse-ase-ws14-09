@@ -89,18 +89,6 @@ public class ValuePaperDataAccess {
 		}
 	}
 	
-	public List<NewsItem> getNewsItemsForValuePaper(ValuePaper valuePaper) {
-		if (valuePaper.getType() != ValuePaperType.STOCK) {
-			return new ArrayList<NewsItem>();
-		}
-		Stock stock = (Stock)valuePaper;
-		try {
-			return em.createQuery("FROM NewsItem news WHERE news.stock = :stock", NewsItem.class).setParameter("stock", stock).getResultList();
-		} catch(Exception e) {
-			throw new AppException(e);
-		}
-	}
-	
 	public NewsItem getNewsItemForStockWithTitle(String code, String title){
 		List<NewsItem> entries = null;
 		try{

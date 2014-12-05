@@ -1,6 +1,7 @@
 package at.ac.tuwien.ase09.service;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -15,9 +16,13 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import at.ac.tuwien.ase09.data.AnalystOpinionDataAccess;
+import at.ac.tuwien.ase09.data.NewsItemDataAccess;
 import at.ac.tuwien.ase09.data.PortfolioDataAccess;
+import at.ac.tuwien.ase09.data.TransactionEntryDataAccess;
 import at.ac.tuwien.ase09.data.ValuePaperDataAccess;
 import at.ac.tuwien.ase09.data.ValuePaperPriceEntryDataAccess;
+import at.ac.tuwien.ase09.model.AnalystOpinion;
 import at.ac.tuwien.ase09.model.Money;
 import at.ac.tuwien.ase09.model.NewsItem;
 import at.ac.tuwien.ase09.model.Portfolio;
@@ -41,10 +46,16 @@ public class PortfolioService {
 	private PortfolioDataAccess portfolioDataAccess;
 	
 	@Inject
-	private ValuePaperDataAccess valuePaperDataAccess;
+	private ValuePaperPriceEntryDataAccess priceDataAccess;
 	
 	@Inject
-	private ValuePaperPriceEntryDataAccess priceDataAccess;
+	private NewsItemDataAccess newsItemDataAccess;
+	
+	@Inject
+	private AnalystOpinionDataAccess analystOpinionDataAccess;
+	
+	@Inject
+	private TransactionEntryDataAccess transactionDataAccess;
 	
 	public Map<ValuePaperType, Integer> getValuePaperTypeCountMap(Portfolio portfolio) {
 		Map<ValuePaperType, Integer> valuePaperTypeCounterMap = new HashMap<ValuePaperType, Integer>();
@@ -94,7 +105,18 @@ public class PortfolioService {
 		return portfolioDataAccess.getPortfolioByNameForUser(portfolioName, user) != null;
 	}
 
-	public Money getTotalPayedPortfolioValuePaper(Portfolio portfolio, String code) {
+	public BigDecimal getTotalPayedForValuePaper(String code) {
+		
+		List<OrderTransactionEntry> orderTransactions = transactionDataAccess.getOrderTransactionsForValuePaper(code);
+		
+		BigDecimal payed = new BigDecimal(0);
+		for (OrderTransactionEntry ot : orderTransactions) {
+			payed = payed.add(ot.getValue().getValue());
+		}
+		return payed;
+	}
+	
+	/*public Money getTotalPayedPortfolioValuePaper(Portfolio portfolio, String code) {
 		Money money = portfolio.getCurrentCapital();
 		money.setValue(new BigDecimal(0));
 		for (TransactionEntry t : portfolio.getTransactionEntries()) {
@@ -105,7 +127,7 @@ public class PortfolioService {
 			}
 		}
 		return money;
-	}
+	}*/
 
 	public Map<String, BigDecimal> getPortfolioChartEntries(Portfolio portfolio) {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
@@ -172,9 +194,27 @@ public class PortfolioService {
 		List<NewsItem> news = new ArrayList<>();
 		for (PortfolioValuePaper pvp : valuePapers) {
 			ValuePaper valuePaper = pvp.getValuePaper();
-			List<NewsItem> tmpNews = valuePaperDataAccess.getNewsItemsForValuePaper(valuePaper);
+			List<NewsItem> tmpNews = newsItemDataAccess.getNewsItemsByValuePaperCode(valuePaper.getCode());
 			news.addAll(tmpNews);
 		}
 		return news;
+	}
+	
+	public List<AnalystOpinion> getAnalystOpinionsForValuePapers(Set<PortfolioValuePaper> valuePapers) {
+		List<AnalystOpinion> opinions = new ArrayList<>();
+		for (PortfolioValuePaper pvp : valuePapers) {
+			ValuePaper valuePaper = pvp.getValuePaper();
+			List<AnalystOpinion> tmpOpinions = analystOpinionDataAccess.getAnalystOpinionsByValuePaperCode(valuePaper.getCode());
+			opinions.addAll(tmpOpinions);
+		}
+		return opinions;
+	}
+
+	public double getChange(PortfolioValuePaper pvp) {
+		double payed = getTotalPayedForValuePaper(pvp.getValuePaper().getCode()).doubleValue();
+		int volume = pvp.getVolume();
+		double latestPrice = priceDataAccess.getLastPriceEntry(pvp.getValuePaper().getCode()).getPrice().doubleValue();
+		
+		return (latestPrice*volume - payed) * 100 / payed;
 	}
 }

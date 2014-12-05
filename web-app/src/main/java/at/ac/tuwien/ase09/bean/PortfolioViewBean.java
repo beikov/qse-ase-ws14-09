@@ -2,6 +2,7 @@ package at.ac.tuwien.ase09.bean;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -29,6 +30,7 @@ import org.primefaces.model.chart.PieChartModel;
 
 import at.ac.tuwien.ase09.data.PortfolioDataAccess;
 import at.ac.tuwien.ase09.data.ValuePaperPriceEntryDataAccess;
+import at.ac.tuwien.ase09.model.AnalystOpinion;
 import at.ac.tuwien.ase09.model.Money;
 import at.ac.tuwien.ase09.model.NewsItem;
 import at.ac.tuwien.ase09.model.Portfolio;
@@ -110,6 +112,10 @@ public class PortfolioViewBean implements Serializable {
 		return portfolioService.getNewsForValuePapers(portfolio.getValuePapers());
 	}
 	
+	public List<AnalystOpinion> getAnalystOpinionsForValuePapers() {
+		return portfolioService.getAnalystOpinionsForValuePapers(portfolio.getValuePapers());
+	}
+	
 	/*public String getTransactionValuePaperName(TransactionEntry t) {
 		if (t instanceof OrderTransactionEntry) {
 			OrderTransactionEntry ot = (OrderTransactionEntry)t;
@@ -153,7 +159,9 @@ public class PortfolioViewBean implements Serializable {
 	}
 	
 	public Money getTotalPayed(String code) {
-		return portfolioService.getTotalPayedPortfolioValuePaper(portfolio, code);
+		Money money = portfolio.getCurrentCapital();
+		money.setValue(portfolioService.getTotalPayedForValuePaper(code));
+		return money;
 	}
 	
 	
@@ -168,6 +176,18 @@ public class PortfolioViewBean implements Serializable {
 	
 	public List<Order> getFilteredOrders() {
 		return filteredOrders;
+	}
+	
+	public double getChange(String code) {
+		PortfolioValuePaper pvp = null;
+		for (PortfolioValuePaper portfolioValuePaper : portfolio.getValuePapers()) {
+			if (portfolioValuePaper.getValuePaper().getCode().equals(code)) {
+				pvp = portfolioValuePaper;
+				break;
+			}
+		}
+		return portfolioService.getChange(pvp);
+		//return 0;
 	}
 	
 	

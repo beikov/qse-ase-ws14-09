@@ -4,21 +4,18 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:p="http://primefaces.org/ui">
 	
-	<p:dataTable var="news" value="#{portfolioViewBean.getNewsForValuePapers()}" rows="10"
-                         paginator="true"
-                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                         rowsPerPageTemplate="5,10,15">
-                         
-        <p:column headerText="Datum" sortBy="#{news.created.timeInMillis}">
-	        <h:outputText value="#{news.created}" />
-	    </p:column>				  
-	  	<p:column headerText="Titel">
-	        <h:outputText value="#{news.title}" />
-	    </p:column>
-	    <p:column headerText="Text">
-	        <h:outputText value="#{news.text}" />
-	    </p:column>
-	    
-	</p:dataTable>
+	<p:dataList value="#{portfolioViewBean.newsForValuePapers}" 
+				var="news" type="unordered" itemType="none" 
+				paginator="true" rows="5" styleClass="paginated">
+				
+				<div class="row">
+					<h:outputText value="#{news.created}" />
+					<h:outputText value="#{news.title}" />
+					<h:outputText value="#{news.stock}" />
+					<h:outputText value="#{news.text}" />
+					<h:outputText value="#{news.source}" />
+				</div>
+				
+	</p:dataList>
 	
 </ui:composition>
