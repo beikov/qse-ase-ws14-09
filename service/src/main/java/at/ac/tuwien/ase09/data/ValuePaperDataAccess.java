@@ -1,5 +1,6 @@
 package at.ac.tuwien.ase09.data;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -76,6 +77,18 @@ public class ValuePaperDataAccess {
 			throw new EntityNotFoundException();
 		}else{
 			return entries.get(0);
+		}
+	}
+	
+	public List<NewsItem> getNewsItemsForValuePaper(ValuePaper valuePaper) {
+		if (valuePaper.getType() != ValuePaperType.STOCK) {
+			return new ArrayList<NewsItem>();
+		}
+		Stock stock = (Stock)valuePaper;
+		try {
+			return em.createQuery("FROM NewsItem news WHERE news.stock = :stock", NewsItem.class).setParameter("stock", stock).getResultList();
+		} catch(Exception e) {
+			throw new AppException(e);
 		}
 	}
 	
