@@ -17,7 +17,7 @@ public class NewsItemDataAccess {
 
 	public List<NewsItem> getNewsItemsByValuePaperCode(String code){
 		try{
-			return em.createQuery("SELECT n FROM NewsItem n WHERE n.valuePaper.code = :code", NewsItem.class).setParameter("code", code).getResultList();
+			return em.createQuery("SELECT n FROM NewsItem n WHERE n.stock.index = :code", NewsItem.class).setParameter("code", code).getResultList();
 		}catch(Exception e){
 			throw new AppException(e);
 		}

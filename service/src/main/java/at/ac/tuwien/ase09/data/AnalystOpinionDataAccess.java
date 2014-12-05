@@ -24,10 +24,6 @@ public class AnalystOpinionDataAccess {
 		}catch(Exception e){
 			throw new AppException(e);
 		}
-
-		if(analysOpinionList.isEmpty()){
-			throw new EntityNotFoundException();
-		}
 		
 		return analysOpinionList;
 	}
