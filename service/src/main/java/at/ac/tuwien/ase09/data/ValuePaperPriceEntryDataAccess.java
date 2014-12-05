@@ -50,8 +50,7 @@ public class ValuePaperPriceEntryDataAccess {
 	public List<ValuePaperHistoryEntry> getValuePaperPriceHistoryEntries(String code){
 		try {
 			return em
-					.createQuery(
-							"SELECT vphe FROM ValuePaperHistoryEntry vphe JOIN vphe.valuePaper vp WHERE vp.code = :code",
+					.createQuery("SELECT vphe FROM ValuePaperHistoryEntry vphe JOIN vphe.valuePaper vp WHERE vp.code = :code",
 							ValuePaperHistoryEntry.class)
 					.setParameter("code", code).getResultList();
 		} catch (Exception e) {

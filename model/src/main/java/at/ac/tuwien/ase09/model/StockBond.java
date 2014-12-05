@@ -19,7 +19,7 @@ public class StockBond extends ValuePaper {
 		return ValuePaperType.BOND;
 	}
 
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.EAGER)
 	public Stock getBaseStock() {
 		return baseStock;
 	}
