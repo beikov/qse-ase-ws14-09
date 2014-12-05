@@ -3,10 +3,13 @@ package at.ac.tuwien.ase09.model;
 import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Currency;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
@@ -17,10 +20,13 @@ public class Stock extends ValuePaper {
 	private static final long serialVersionUID = 1L;
 
 	private Currency currency;
+	private String tickerSymbol;
 	private String country;
-	private String boerseCertificatePageUrl;
 	private String finanzenCertificatePageUrl;
+	private String finanzenDividendHistoryPageUrl;
+	private String finanzenNewsPageUrl;
 	private String index;
+	private Set<DividendHistoryEntry> dividendHistoryEntries = new HashSet<DividendHistoryEntry>();
 	
 	// YAHOO Keystats
 	private BigDecimal marketCap;
@@ -86,20 +92,20 @@ public class Stock extends ValuePaper {
 		return ValuePaperType.STOCK;
 	}
 
-	public String getBoerseCertificatePageUrl() {
-		return boerseCertificatePageUrl;
-	}
-
-	public void setBoerseCertificatePageUrl(String boerseCertificatePageUrl) {
-		this.boerseCertificatePageUrl = boerseCertificatePageUrl;
-	}
-
 	public String getFinanzenCertificatePageUrl() {
 		return finanzenCertificatePageUrl;
 	}
 
 	public void setFinanzenCertificatePageUrl(String finanzenCertificatePageUrl) {
 		this.finanzenCertificatePageUrl = finanzenCertificatePageUrl;
+	}
+	
+	public String getFinanzenNewsPageUrl() {
+		return finanzenNewsPageUrl;
+	}
+
+	public void setFinanzenNewsPageUrl(String finanzenNewsPageUrl) {
+		this.finanzenNewsPageUrl = finanzenNewsPageUrl;
 	}
 
 	public String getIndex() {
@@ -110,12 +116,30 @@ public class Stock extends ValuePaper {
 		this.index = index;
 	}
 
+	@OneToMany(mappedBy="stock")
+	public Set<DividendHistoryEntry> getDividendHistoryEntries() {
+		return dividendHistoryEntries;
+	}
+
+	public void setDividendHistoryEntries(
+			Set<DividendHistoryEntry> dividendHistoryEntries) {
+		this.dividendHistoryEntries = dividendHistoryEntries;
+	}
+
 	public Currency getCurrency() {
 		return currency;
 	}
 
 	public void setCurrency(Currency currency) {
 		this.currency = currency;
+	}
+	
+	public String getTickerSymbol() {
+		return tickerSymbol;
+	}
+
+	public void setTickerSymbol(String tickerSymbol) {
+		this.tickerSymbol = tickerSymbol;
 	}
 
 	public String getCountry() {
@@ -629,5 +653,13 @@ public class Stock extends ValuePaper {
 	public void setEx_DividendDate(Calendar ex_DividendDate) {
 		this.ex_DividendDate = ex_DividendDate;
 	}
-	
+
+	public String getFinanzenDividendHistoryPageUrl() {
+		return finanzenDividendHistoryPageUrl;
+	}
+
+	public void setFinanzenDividendHistoryPageUrl(
+			String finanzenDividendHistoryPageUrl) {
+		this.finanzenDividendHistoryPageUrl = finanzenDividendHistoryPageUrl;
+	}
 }

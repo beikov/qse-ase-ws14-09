@@ -60,15 +60,18 @@ public class FundDetailReader extends AbstractItemReader {
 		Document detailPage = JsoupUtils.getPage(fundDetailLink.getDetailUrl(), Method.POST, 3000);
 		
 		Elements tableRowElems = detailPage.select("tr");
-		Map<String, String> tableRows =tableRowElems.stream()
+		Map<String, String> tableRows = tableRowElems.stream()
 			.filter(elem -> elem.children().stream().filter(child -> "colorth".equals(child.className()) || "colortd".equals(child.className())).count() == 2)
 			.collect(Collectors.toMap(elem -> elem.getElementsByClass("labelB").get(0).text(), elem -> elem.getElementsByClass("label").get(0).text()));
-		Fund fund = new Fund();
-		fund.setCode(tableRows.get("ISIN"));
-		fund.setName(tableRows.get("Bezeichnung"));
-		fund.setDetailUrl(fundDetailLink.getDetailUrl());
-		fund.setHistoricPricesPageUrl(historyBaseUrl + "?" + detailLinkParameterTemplate.replaceAll("#\\{keyPlaceholder\\}", fundDetailLink.getKey()));
-		
+		String isin = tableRows.get("ISIN");
+		Fund fund = null;
+		if(isin != null){
+			fund = new Fund();
+			fund.setCode(isin);
+			fund.setName(tableRows.get("Bezeichnung"));
+			fund.setDetailUrl(fundDetailLink.getDetailUrl());
+			fund.setHistoricPricesPageUrl(historyBaseUrl + "?" + detailLinkParameterTemplate.replaceAll("#\\{keyPlaceholder\\}", fundDetailLink.getKey()));
+		}
 		linkNumber++;
 		return fund;
 	}

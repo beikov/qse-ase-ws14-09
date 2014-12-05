@@ -3,6 +3,7 @@ package at.ac.tuwien.ase09.data;
 import java.util.List;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
@@ -15,7 +16,7 @@ import at.ac.tuwien.ase09.model.User;
 @Stateless
 public class PortfolioDataAccess {
 
-	@PersistenceContext
+	@Inject
 	private EntityManager em;
 	
 	public List<Portfolio> getPortfolios() {

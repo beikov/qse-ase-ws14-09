@@ -10,7 +10,7 @@
 	<packaging>pom</packaging>
 
 	<name>Portfolioverwaltung Parent</name>
-	
+
 	<properties>
 		<deltaspike.version>1.0.3</deltaspike.version>
 		<openejb.version>4.6.0.2</openejb.version>
@@ -30,25 +30,25 @@
 		<module>web-skinny</module>
 		<module>web-final</module>
 	</modules>
-	
+
 	<dependencyManagement>
 		<dependencies>
-		   <!-- Platform dependencies  -->
-	       <dependency>
-	           <groupId>javax</groupId>
-	           <artifactId>javaee-api</artifactId>
-	           <version>7.0</version>
-	           <scope>provided</scope>
-	       </dependency>
+			<!-- Platform dependencies -->
+			<dependency>
+				<groupId>javax</groupId>
+				<artifactId>javaee-api</artifactId>
+				<version>7.0</version>
+				<scope>provided</scope>
+			</dependency>
 			<dependency>
 				<groupId>org.apache.openejb</groupId>
 				<artifactId>javaee-api</artifactId>
 				<version>6.0-2</version>
 				<scope>provided</scope>
 			</dependency>
-			
+
 			<!-- Deltaspike dependencies -->
-			
+
 			<dependency>
 				<groupId>org.apache.deltaspike.core</groupId>
 				<artifactId>deltaspike-core-api</artifactId>
@@ -60,9 +60,9 @@
 				<version>${deltaspike.version}</version>
 				<scope>runtime</scope>
 			</dependency>
-			
+
 			<!-- Blazebit dependencies -->
-			
+
 			<dependency>
 				<groupId>com.blazebit</groupId>
 				<artifactId>blaze-ee-utils</artifactId>
@@ -70,13 +70,13 @@
 				<exclusions>
 					<exclusion>
 						<groupId>org.antlr</groupId>
-    					<artifactId>antlr4-maven-plugin</artifactId>
+						<artifactId>antlr4-maven-plugin</artifactId>
 					</exclusion>
 				</exclusions>
 			</dependency>
-			
+
 			<!-- Keycloak dependencies -->
-			
+
 			<dependency>
 				<groupId>org.keycloak</groupId>
 				<artifactId>keycloak-server</artifactId>
@@ -88,14 +88,14 @@
 				<artifactId>keycloak-wildfly-adapter</artifactId>
 				<version>${keycloak.version}</version>
 			</dependency>
-			
+
 			<!-- Web dependencies -->
 			<dependency>
 				<groupId>org.primefaces</groupId>
 				<artifactId>primefaces</artifactId>
 				<version>5.1</version>
 			</dependency>
-			
+
 			<!-- Project dependencies -->
 			<dependency>
 				<groupId>${project.groupId}</groupId>
@@ -143,7 +143,7 @@
 				<version>${project.version}</version>
 				<type>ear</type>
 			</dependency>
-			
+
 			<!-- Test dependencies -->
 			<dependency>
 				<groupId>junit</groupId>
@@ -158,7 +158,7 @@
 				<version>1.4.182</version>
 				<scope>test</scope>
 			</dependency>
-	
+
 			<dependency>
 				<groupId>org.apache.openejb</groupId>
 				<artifactId>openejb-core</artifactId>
@@ -171,9 +171,17 @@
 				<version>${hibernate.version}</version>
 				<scope>test</scope>
 			</dependency>
-			
+
+			<dependency>
+				<groupId>com.googlecode.catch-exception</groupId>
+				<artifactId>catch-exception</artifactId>
+				<version>1.2.0</version>
+				<scope>test</scope>
+			</dependency>
+
+
 			<!-- Deltaspike Test -->
-			
+
 			<dependency>
 				<groupId>org.apache.deltaspike.cdictrl</groupId>
 				<artifactId>deltaspike-cdictrl-api</artifactId>
@@ -188,7 +196,7 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-	
+
 	<build>
 		<pluginManagement>
 

@@ -3,7 +3,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
-	
+
 	<parent>
 		<groupId>at.ac.tuwien.ase09</groupId>
 		<artifactId>app</artifactId>
@@ -17,7 +17,7 @@
 	<name>Portfolioverwaltung Service</name>
 
 	<dependencies>
-	
+
 		<dependency>
 			<groupId>org.apache.openejb</groupId>
 			<artifactId>javaee-api</artifactId>
@@ -26,7 +26,7 @@
 			<groupId>${project.groupId}</groupId>
 			<artifactId>model</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.apache.deltaspike.core</groupId>
 			<artifactId>deltaspike-core-api</artifactId>
@@ -35,7 +35,7 @@
 			<groupId>org.apache.deltaspike.core</groupId>
 			<artifactId>deltaspike-core-impl</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.blazebit</groupId>
 			<artifactId>blaze-ee-utils</artifactId>
@@ -69,7 +69,12 @@
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-entitymanager</artifactId>
 		</dependency>
-		
+
+		<dependency>
+			<groupId>com.googlecode.catch-exception</groupId>
+			<artifactId>catch-exception</artifactId>
+		</dependency>
+
 	</dependencies>
 
 	<build>

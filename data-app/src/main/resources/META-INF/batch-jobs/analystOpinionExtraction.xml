@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This job extracts all bonds from ATX stocks -->
+<job id="analystOpinionExtraction" xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	version="1.0">
+	<step id="analystOpinionExtractionStep">
+		<chunk item-count="5">
+			<reader ref="analystOpinionReader">
+				<properties>
+					<property name="finanzenNetUrl" value="http://www.finanzen.at" />
+				</properties>
+			</reader>
+			<processor ref="analystOpinionProcessor" />
+			<writer ref="analystOpinionWriter" />
+
+			<retryable-exception-classes>
+				<include class="java.net.SocketTimeoutException" />
+			</retryable-exception-classes>
+			<skippable-exception-classes>
+				<include class="java.net.SocketTimeoutException" />
+			</skippable-exception-classes>
+		</chunk>
+		<listeners>
+			<listener ref="StepBoundaryLogger" />
+			<listener ref="TransitioningStepListener" />
+			<listener ref="DefaultSkipListener" />
+			<listener ref="DefaultRetryListener" />
+		</listeners>
+	</step>
+	<listeners>
+		<listener ref="JobBoundaryLogger" />
+		<listener ref="SuccessorJobStarter">
+			<properties>
+				<property name="successorJobIds" value="#{jobParameters['successorJobIds']}" />
+			</properties>
+		</listener>
+	</listeners>
+</job>
