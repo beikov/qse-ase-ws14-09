@@ -23,12 +23,14 @@
 	        <h:outputText value="#{association.volume}"></h:outputText>
 	    </p:column>
 	    <p:column headerText="Bezahlt">
-	        <h:outputText value="#{portfolioViewBean.getTotalPayed(paper.code) }"></h:outputText>
+	    	<c:set var="payed" value="#{portfolioViewBean.getTotalPayed(paper.code)}" />
+	    	<c:set var="payedLong" value="#{portfolioViewBean.getTotalPayed(paper.code).value.longValue()}" />
+	        <h:outputText value="#{payed} (~ #{payedLong/association.volume})" />
 	    </p:column>
 	    <p:column headerText="Letzter Kurswert">
 	        <h:outputText value="#{portfolioViewBean.getLatesValuePaperPrice(paper.code)}" />
 	    </p:column>
-	    <p:column headerText="">
+	    <p:column headerText="Performance">
 	        <ase:valuePaperPerformance code="#{paper.code}" />
 	    </p:column>
 	    

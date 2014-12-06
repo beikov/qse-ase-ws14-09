@@ -9,11 +9,12 @@
 				paginator="true" rows="5" styleClass="paginated">
 				
 				<div class="row">
-					<h:outputText value="#{news.created}" />
-					<h:outputText value="#{news.title}" />
-					<h:outputText value="#{news.stock}" />
-					<h:outputText value="#{news.text}" />
-					<h:outputText value="#{news.source}" />
+					<div>
+					<h:outputText value="#{news.stock.name}: " /><h:outputText value="#{news.title}" />
+					</div>
+					<h:outputText value="#{dateUtil.formatDateWithTime(news.created.time)}" /> 
+					<!-- <h:outputText value="#{news.text}" />
+					<h:outputText value="#{news.source}" /> -->
 				</div>
 				
 	</p:dataList>

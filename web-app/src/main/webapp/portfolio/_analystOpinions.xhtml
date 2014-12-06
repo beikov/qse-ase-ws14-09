@@ -9,10 +9,12 @@
 				paginator="true" rows="5" styleClass="paginated">
 				
 				<div class="row">
-					<h:outputText value="#{opinion.created}" />
-					<h:outputText value="#{opinion.recommendation}" />
-					<h:outputText value="#{opinion.stock}" />
-					<h:outputText value="#{opinion.text}" />
+					<div>
+					<h:outputText value="#{opinion.stock.name}: " />
+					<h:outputText value="#{dateUtil.formatDateWithTime(opinion.created.time)}" />
+					</div>
+					<h:outputText value="#{opinion.recommendation} " />
+					<h:outputText value="#{opinion.text} " />
 					<h:outputText value="#{opinion.source}" />
 				</div>
 				
