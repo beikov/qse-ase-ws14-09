@@ -5,6 +5,7 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:pa="http://java.sun.com/jsf/composite/portfolioVisibility"
 	template="/WEB-INF/templates/template.xhtml">
 
 	<!-- content -->
@@ -19,38 +20,13 @@
 					value="#{portfolioCreationViewBean.portfolio.name}" required="true" >
 					<f:validateRegex pattern="[a-zA-Z]+[a-zA-z0-9]*"></f:validateRegex>	
 				</p:inputText>
-				
 				<h:message for="name" style="color:red" />
 
-				<h:outputText value="Sichtbarkeit " />
-				<h:outputText value="" />
-				<h:outputText value="" />
+			</h:panelGrid>	
 
+			<pa:portfolioVisibility visibilitySettings="#{portfolioCreationViewBean.portfolio.visibility}" />
 
-				<h:outputText value="Alles: " />
-				<p:selectBooleanCheckbox
-					value="#{portfolioCreationViewBean.portfolio.visibility.publicVisible}" />
-				<h:outputText value="" />
-
-
-				<h:outputText value="Statistiken: " />
-				<p:selectBooleanCheckbox
-					value="#{portfolioCreationViewBean.portfolio.visibility.statisticsVisible}" />
-				<h:outputText value="" />
-
-
-				<h:outputText value="Geschichte: " />
-				<p:selectBooleanCheckbox
-					value="#{portfolioCreationViewBean.portfolio.visibility.historyVisible}" />
-				<h:outputText value="" />
-
-
-				<h:outputText value="Wertpapiere: " />
-				<p:selectBooleanCheckbox
-					value="#{portfolioCreationViewBean.portfolio.visibility.valuePaperListVisible}" />
-				<h:outputText value="" />
-
-
+				<h:panelGrid columns="3" cellpadding="5">
 
 				<h:outputText value="Startkapital(€): " />
 				<p:inputText id="startCapital"
@@ -75,8 +51,6 @@
 					value="#{portfolioCreationViewBean.capitalReturnTax}" required="true"/>
 				<h:message for="capitalReturnTax" style="color:red" />
 				
-
-
 				<p:commandButton value="Reset" type="reset" />
 				<p:commandButton value="Erstellen"
 					action="#{portfolioCreationViewBean.create()}" update="createForm"
