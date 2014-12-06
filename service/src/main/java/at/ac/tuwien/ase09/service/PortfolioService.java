@@ -211,7 +211,18 @@ public class PortfolioService {
 	}
 
 	public double getChange(PortfolioValuePaper pvp) {
-		double payed = getTotalPayedForValuePaper(pvp.getValuePaper().getCode()).doubleValue();
+		
+		double payed = 0.0;
+		
+		for (TransactionEntry t : pvp.getPortfolio().getTransactionEntries()) {
+			if (t.getType() == TransactionType.ORDER) {	
+				if (((OrderTransactionEntry)t).getOrder().getValuePaper().getCode().equals(pvp.getValuePaper().getCode())) {					
+					payed += t.getValue().getValue().doubleValue();
+				}
+			}
+		}
+		//payed = getTotalPayedForValuePaper(pvp.getValuePaper().getCode()).doubleValue();
+		
 		int volume = pvp.getVolume();
 		double latestPrice = priceDataAccess.getLastPriceEntry(pvp.getValuePaper().getCode()).getPrice().doubleValue();
 		
