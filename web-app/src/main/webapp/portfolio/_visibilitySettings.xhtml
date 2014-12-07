@@ -36,7 +36,7 @@
     </div>
     
     <div class="row">
-    	<p:commandButton value="Speichern" actionListener="#{portfolioViewBean.changeVisibility()}" update=":portfolioViewForm:growl" icon="ui-icon-disk" oncomplete="PF('visibilityDialog').hide();" />
+    	<p:commandButton value="Speichern" actionListener="#{portfolioViewBean.changeVisibility()}" process=":portfolioViewForm:visibilityDialog"  update=":portfolioViewForm:growl" icon="ui-icon-disk" oncomplete="PF('visibilityDialog').hide();"></p:commandButton>
     </div>
 	
 </ui:composition>

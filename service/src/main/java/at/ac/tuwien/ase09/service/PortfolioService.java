@@ -97,8 +97,8 @@ public class PortfolioService {
 		em.persist(portfolio);
 	}
 	
-	public void updatePortfolio(Portfolio portfolio){
-		em.merge(portfolio);
+	public Portfolio updatePortfolio(Portfolio portfolio){
+		return em.merge(portfolio);
 	}
 
 	public boolean existsPortfolioWithNameForUser(String portfolioName, User user) {

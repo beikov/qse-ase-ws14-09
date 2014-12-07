@@ -13,7 +13,7 @@
 	<ui:define name="body">
 	
 		<f:metadata>
-			<f:viewParam name="portfolioId" value="#{portfolioViewBean.portfolioId}" required="true" />
+			<f:viewParam name="portfolioId" value="#{portfolioViewBean.portfolioId}" required="#{!facesContext.postback}" />
 		    <f:viewAction action="#{portfolioViewBean.init}" />
 		</f:metadata>
 		
@@ -21,10 +21,10 @@
 		
 		
 		<h:form id="portfolioViewForm">
-		
+			<h:messages errorStyle="color:red" />
 			<p:growl id="growl" life="3000"/>
 		
-			<p:dialog header="Sichtbarkeitseinstellungen" widgetVar="visibilityDialog" modal="true" >
+			<p:dialog id="visibilityDialog" header="Sichtbarkeitseinstellungen" widgetVar="visibilityDialog" modal="true" >
 			    <ui:include src="_visibilitySettings.xhtml" />
 			</p:dialog>
 		
