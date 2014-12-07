@@ -6,16 +6,18 @@
 	
 	<p:dataList value="#{portfolioViewBean.newsForValuePapers}" 
 				var="news" type="unordered" itemType="none" 
-				paginator="true" rows="5" styleClass="paginated">
+				paginator="true" rows="5" styleClass="paginated news-items">
 				
-				<div class="row">
-					<div>
-					<h:outputText value="#{news.stock.name}: " /><h:outputText value="#{news.title}" />
-					</div>
-					<h:outputText value="#{dateUtil.formatDateWithTime(news.created.time)}" /> 
-					<!-- <h:outputText value="#{news.text}" />
-					<h:outputText value="#{news.source}" /> -->
-				</div>
+				<article>
+					<h3><h:outputText styleClass="news-title" value="#{news.title}" /></h3>
+					<p>
+						<h:outputText styleClass="news-text" value="#{news.text}" />
+					</p>
+					<footer>
+						<h:outputText styleClass="valuePaperName" value="#{news.stock.name} " />
+						<small><h:outputText styleClass="date" value="#{dateUtil.formatDateWithTime(news.created.time)}" /> <a href="#{news.source}" target="_blank">Quelle<span class="ui-icon ui-icon-extlink" style="display: inline-block;"/></a></small> 
+					</footer>
+				</article>
 				
 	</p:dataList>
 	

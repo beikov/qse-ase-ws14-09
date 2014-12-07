@@ -8,15 +8,18 @@
 				var="opinion" type="unordered" itemType="none" 
 				paginator="true" rows="5" styleClass="paginated">
 				
-				<div class="row">
-					<div>
-					<h:outputText value="#{opinion.stock.name}: " />
-					<h:outputText value="#{dateUtil.formatDateWithTime(opinion.created.time)}" />
-					</div>
-					<h:outputText value="#{opinion.recommendation} " />
-					<h:outputText value="#{opinion.text} " />
-					<h:outputText value="#{opinion.source}" />
-				</div>
+				<article>
+					<h3><h:outputText value="#{opinion.recommendation}" /> - <h:outputText value="#{opinion.stock.name}" /></h3>
+					<p>
+						<h:outputText value="#{opinion.text} " />
+					</p>
+					<footer>
+						<h:outputText styleClass="valuePaperName" value="#{news.stock.name} " />
+						<small><h:outputText value="#{dateUtil.formatDateWithTime(opinion.created.time)}" /> <a href="#{opinion.source}" target="_blank">Quelle<span class="ui-icon ui-icon-extlink" style="display: inline-block;"/></a></small><br />
+					</footer>
+					<!-- <h:outputText value="#{news.text}" />
+					<h:outputText value="#{news.source}" /> -->
+				</article>
 				
 	</p:dataList>
 </ui:composition>
