@@ -2,6 +2,7 @@ package at.ac.tuwien.ase09.model;
 
 import java.util.Calendar;
 
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -20,6 +21,7 @@ public class AnalystOpinion extends BaseEntity<Long> {
 	private Money targetPrice;
 	private Stock stock;
 	
+	@Column(columnDefinition="TEXT")
 	public String getText() {
 		return text;
 	}

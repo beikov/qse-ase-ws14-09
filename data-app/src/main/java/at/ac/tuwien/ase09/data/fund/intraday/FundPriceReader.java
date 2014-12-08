@@ -52,7 +52,7 @@ public class FundPriceReader extends AbstractItemReader{
 		Map<String, String> tableRows =tableRowElems.stream()
 			.filter(elem -> elem.children().stream().filter(child -> "colorth".equals(child.className())).count() == 1)
 			.collect(Collectors.toMap(elem -> elem.getElementsByClass("labelB").get(0).text(), elem -> elem.getElementsByClass("label").get(0).text()));
-		String priceStr = tableRows.get("Ausgabepreis").replace(',', '.');
+		String priceStr = tableRows.get("Ausgabepreis").replaceAll("\\.", "").replace(',', '.');
 
 		itemNumber++;
 		return new IntradayPrice(fund.getCode(), new BigDecimal(priceStr));

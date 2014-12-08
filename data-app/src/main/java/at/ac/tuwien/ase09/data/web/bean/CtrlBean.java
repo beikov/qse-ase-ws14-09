@@ -38,4 +38,12 @@ public class CtrlBean {
 	public void startIntradayFundPriceExtraction(){
 		BatchRuntime.getJobOperator().start("intradayFundExtraction", null);
 	}
+
+	public void startNewsExtraction(){
+		BatchRuntime.getJobOperator().start("analystOpinionExtraction", null);
+	}
+	
+	public void startAnalystOpinionExtraction(){
+		BatchRuntime.getJobOperator().start("newsExtraction", null);
+	}
 }

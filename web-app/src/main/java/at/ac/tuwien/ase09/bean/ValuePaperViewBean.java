@@ -569,9 +569,9 @@ public class ValuePaperViewBean implements Serializable{
 				this.additionalValuePaperAttributes.put("Ex Dividend Date:", format.format(s.getEx_DividendDate().getTime()));
 			}
 
-			if(s.getBoerseCertificatePageUrl() != null){
-				this.additionalValuePaperAttributes.put("Börse-Zertifikate:", s.getBoerseCertificatePageUrl());
-			}
+//			if(s.getBoerseCertificatePageUrl() != null){
+//				this.additionalValuePaperAttributes.put("Börse-Zertifikate:", s.getBoerseCertificatePageUrl());
+//			}
 
 			if(s.getFinanzenCertificatePageUrl() != null){
 				this.additionalValuePaperAttributes.put("Finanzen-Zertifikate:", s.getFinanzenCertificatePageUrl());

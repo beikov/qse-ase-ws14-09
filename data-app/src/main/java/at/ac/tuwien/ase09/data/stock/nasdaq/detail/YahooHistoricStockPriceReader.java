@@ -32,7 +32,7 @@ import at.ac.tuwien.ase09.model.ValuePaperHistoryEntry;
 @Named
 public class YahooHistoricStockPriceReader extends AbstractItemReader {
 	private static final Logger LOG = Logger.getLogger(YahooHistoricStockPriceReader.class.getName());
-	private static final String YQL_HISTORIC_STOCK_PRICE_QUERY_TEMPLATE = "https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.historicaldata%20where%20symbol%20%3D%20%22#{symbolPlaceholder}%22%20and%20startDate%20%3D%20%222009-09-11%22%20and%20endDate%20%3D%20%222010-03-10%22&diagnostics=true&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys";
+	private static final String YQL_HISTORIC_STOCK_PRICE_QUERY_TEMPLATE = "https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.historicaldata%20where%20symbol%20%3D%20%22#{symbolPlaceholder}%22%20and%20startDate%20%3D%20%22#{startDate}%22%20and%20endDate%20%3D%20%22#{endDate}%22&diagnostics=true&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys";
 	private static final DateFormat YQL_HISTORIC_PRICE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
 	
 	@Inject
@@ -45,8 +45,6 @@ public class YahooHistoricStockPriceReader extends AbstractItemReader {
 	private Integer linkNumber;
 	private List<Stock> stocks;
 	
-    private static final ScriptEngine engine = new ScriptEngineManager().getEngineByName("JavaScript");
-	
     private Calendar from;
     private Calendar to;
 	public void open(java.io.Serializable checkpoint) throws Exception {
@@ -56,7 +54,7 @@ public class YahooHistoricStockPriceReader extends AbstractItemReader {
 			linkNumber = 0;
 			stocks = valuePaperDataAccess.getStocksByIndex(indexName);
 			from = Calendar.getInstance();
-			from.roll(Calendar.MONTH, -1);
+			from.roll(Calendar.YEAR, -1);
 			to = Calendar.getInstance();
 		}
 	};
@@ -69,7 +67,10 @@ public class YahooHistoricStockPriceReader extends AbstractItemReader {
 		
 		Stock stock = stocks.get(linkNumber);
 		LOG.info("Extracting historic prices for " + stock.getName());
-		Document historicPrices = JsoupUtils.getPage(YQL_HISTORIC_STOCK_PRICE_QUERY_TEMPLATE.replaceAll("#\\{symbolPlaceholder\\}", stock.getCode()));
+		Document historicPrices = JsoupUtils.getPage(YQL_HISTORIC_STOCK_PRICE_QUERY_TEMPLATE
+				.replaceAll("#\\{symbolPlaceholder\\}", stock.getTickerSymbol())
+				.replaceAll("#\\{startDate\\}", YQL_HISTORIC_PRICE_DATE_FORMAT.format(from.getTime()))
+				.replaceAll("#\\{endDate\\}", YQL_HISTORIC_PRICE_DATE_FORMAT.format(to.getTime())));
 		
 		Elements tableRows = historicPrices.select("results quote");
 		List<ValuePaperHistoryEntry> historicPriceEntries = new ArrayList<>();
