@@ -4,10 +4,36 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
 	template="/WEB-INF/templates/template.xhtml">
 	
+	<ui:define name="head">
+		<h:outputStylesheet library="webjars" name="codemirror/lib/codemirror.css"/>
+		<h:outputScript library="webjars" name="codemirror/lib/codemirror.js"/>
+		<h:outputScript library="peg" name="peg.js"/>
+		<h:outputScript library="portfolio" name="editor/pwatch-parser.js"/>
+		<h:outputScript library="portfolio" name="editor/pwatch.js"/>
+		<script>
+			//<![CDATA[
+			
+			CodeMirror.fromTextArea(document.getElementById("#{p:component('watch-editor')}"), {
+				lineNumbers: false,
+				mode: "pwatch"
+			});
+			
+			//]]>
+		</script>
+	</ui:define>
+	
 	<ui:define name="body">
-		Willkommen zum Börsenspiel! Hallo #{user.username}
+		<p:tabView>
+			<p:tab title="Einfach">
+			</p:tab>
+			
+			<p:tab title="Erweitert">
+				<h:inputTextarea id="watch-editor" value="#{watchBean.watchExpression}" />
+			</p:tab>
+		</p:tabView>
 	</ui:define>
 	
 </ui:composition>
