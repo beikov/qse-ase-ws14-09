@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<job id="intradayStockExtractionNasdaq100" xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	version="1.0">
+	<step id="yahooPriceExtraction">
+		<chunk>
+			<reader ref="yahooPriceReader" >
+			    <properties>
+			    	<property name="indexName" value="NASDAQ100" />
+			    </properties>
+			</reader>
+			<processor ref="priceProcessor" />
+			<writer ref="priceWriter" />
+			
+			<retryable-exception-classes>
+				<include class="java.net.SocketTimeoutException" />
+			</retryable-exception-classes>
+			<skippable-exception-classes>
+				<include class="java.net.SocketTimeoutException" />
+			</skippable-exception-classes>
+		</chunk>	    
+	</step>
+	<listeners>
+	    <listener ref="JobBoundaryLogger" />
+	    <listener ref="SuccessorJobStarter">
+	        <properties>
+	        	<property name="successorJobIds" value="#{jobParameters['successorJobIds']}" />
+	        </properties>
+	    </listener>
+	</listeners>
+</job>

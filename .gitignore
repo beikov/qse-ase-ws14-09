@@ -13,3 +13,7 @@ web-app/.settings/
 web-app/.classpath
 web-app/.factorypath
 web-app/target/
+.gradle/
+.idea/
+*.iml
+PortfolioApp/local.properties

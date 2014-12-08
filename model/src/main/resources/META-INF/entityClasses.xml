@@ -17,6 +17,8 @@
 	<entity class="at.ac.tuwien.ase09.model.ValuePaperHistoryEntry" />
 	<entity class="at.ac.tuwien.ase09.model.ValuePaperPriceEntry" />
 	<entity class="at.ac.tuwien.ase09.model.Watch" />
+	<entity class="at.ac.tuwien.ase09.model.PortfolioValuePaper" />
+	<entity class="at.ac.tuwien.ase09.model.DividendHistoryEntry" />
 	<entity class="at.ac.tuwien.ase09.model.notification.Notification" />
 	<entity class="at.ac.tuwien.ase09.model.notification.FollowerAddedNotification" />
 	<entity class="at.ac.tuwien.ase09.model.notification.FollowerTransactionAddedNotification" />

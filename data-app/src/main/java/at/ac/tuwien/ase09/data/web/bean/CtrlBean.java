@@ -19,6 +19,10 @@ public class CtrlBean {
 		BatchRuntime.getJobOperator().start("detailStockExtractionNasdaq100", null);
 	}
 	
+	public void startNasdaq100IntradayStockPriceExtraction(){
+		BatchRuntime.getJobOperator().start("intradayStockExtractionNasdaq100", null);
+	}
+	
 	public void startATXBondDetailExtraction(){
 		BatchRuntime.getJobOperator().start("detailBondExtractionATX", null);
 	}
@@ -33,5 +37,13 @@ public class CtrlBean {
 	
 	public void startIntradayFundPriceExtraction(){
 		BatchRuntime.getJobOperator().start("intradayFundExtraction", null);
+	}
+
+	public void startNewsExtraction(){
+		BatchRuntime.getJobOperator().start("analystOpinionExtraction", null);
+	}
+	
+	public void startAnalystOpinionExtraction(){
+		BatchRuntime.getJobOperator().start("newsExtraction", null);
 	}
 }

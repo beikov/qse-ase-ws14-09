@@ -6,77 +6,68 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Currency;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import javax.batch.api.BatchProperty;
-import javax.batch.api.chunk.AbstractItemReader;
-import javax.batch.runtime.context.StepContext;
 import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import at.ac.tuwien.ase09.data.AbstractStockDetailReader;
 import at.ac.tuwien.ase09.data.JsoupUtils;
-import at.ac.tuwien.ase09.data.model.SymbolModel;
+import at.ac.tuwien.ase09.data.model.StockDetailModel;
+import at.ac.tuwien.ase09.model.DividendHistoryEntry;
 import at.ac.tuwien.ase09.model.Stock;
 
 @Dependent
 @Named
-public class YahooStockDetailReader extends AbstractItemReader {
-	private static final String yqlKeyStatsQueryTemplate = "https://query.yahooapis.com/v1/public/yql?q=SELECT%20*%20FROM%20yahoo.finance.keystats%20WHERE%20symbol%3D'#{symbolPlaceholder}'&diagnostics=true&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys";
-	private static final DateFormat yahooDateFormat = new SimpleDateFormat("MMM dd, yyyy", Locale.US);
-	private static final DateFormat yahooRepeatingDateFormat = new SimpleDateFormat("MMM dd", Locale.US);
-	private static final Currency currency = Currency.getInstance("USD");
+public class YahooStockDetailReader extends AbstractStockDetailReader {
+	private static Logger LOG = Logger.getLogger(YahooStockDetailReader.class.getName());
+	private static final String YQL_KEYSTATS_QUERY_TEMPLATE = "https://query.yahooapis.com/v1/public/yql?q=SELECT%20*%20FROM%20yahoo.finance.keystats%20WHERE%20symbol%3D'#{symbol}'&diagnostics=true&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys";
+	private static final DateFormat YQL_KEYSTATS_DATE_FORMAT = new SimpleDateFormat("MMM dd, yyyy", Locale.US);
+	private static final DateFormat YQL_KEYSTATS_REP_DATE_FORMAT = new SimpleDateFormat("MMM dd", Locale.US);
+	private static final String YQL_DIVIDEND_HISTORY_QUERY_TEMPLATE = "https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.dividendhistory%20where%20symbol%20%3D%20%22#{symbol}%22%20and%20startDate%20%3D%20%22#{startDate}%22%20and%20endDate%20%3D%20%22#{endDate}%22&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys";
+	private static final DateFormat YQL_DIVIDEND_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 	
-	@Inject
-	private StepContext stepContext;
-
-	@Inject
-	@BatchProperty(name="indexName")
-	private String indexName;
-	
-	private Integer symbolNumber;
-	private List<SymbolModel> stockSymbolModels;
+	private Calendar startDate;
+	private Calendar endDate;
 
 	@Override
 	public void open(Serializable checkpoint) throws Exception {
-		stockSymbolModels = (List<SymbolModel>) stepContext.getPersistentUserData();
-		if (checkpoint != null) {
-			symbolNumber = (Integer) checkpoint;
-		} else {
-			symbolNumber = 0;
-		}
+		super.open(checkpoint);
+		startDate = Calendar.getInstance();
+		startDate.roll(Calendar.YEAR, -5);
+		endDate = Calendar.getInstance();
 	}
 
 	@Override
-	public Object readItem() throws Exception {
-		if(symbolNumber >= stockSymbolModels.size()){
-			return null;
-		}
-		SymbolModel stockSymbolModel = stockSymbolModels.get(symbolNumber);
-		Document d = JsoupUtils.getPage(yqlKeyStatsQueryTemplate.replaceAll("#\\{symbolPlaceholder\\}", stockSymbolModel.getSymbol()));
-
+	protected void readStats(StockDetailModel stockDetailModel) throws Exception {
+		// TODO Auto-generated method stub
+		Stock stock = stockDetailModel.getStock();
+		Document d = JsoupUtils.getPage(YQL_KEYSTATS_QUERY_TEMPLATE.replaceAll("#\\{symbol\\}", stock.getTickerSymbol()));
 		Elements keyStats = d.select("results stats").first().children();
 		Map<String, Element> keyStatsMap = keyStats.stream().filter(elem -> !elem.text().isEmpty() && !"N/A".equals(elem.text())).collect(Collectors.toMap(elem -> getKeyForStatsElement(elem), Function.<Element>identity()));
 		
-		Element elem;
-		Stock stock = new Stock();
+		// To make this more readable:
+//		Map<String, BiFunction<Stock, String, Void>> operations = new HashMap<String, BiFunction<Stock,String,Void>>();
+//		operations.put("marketcap_intraday", (stock, text) -> { stock.setMarketCap(new BigDecimal(text.replaceAll(",", ""))); return null; });
+//		
+//		Stock stock = new Stock();
+//		operations.forEach((key, function) -> {
+//			Element elem;
+//			if ((elem = keyStatsMap.get(key)) != null) {
+//				function.apply(stock, elem.text());
+//			}
+//		});
 		
-		stock.setCode(stockSymbolModel.getSymbol());
-		stock.setName(stockSymbolModel.getName());
-		stock.setIndex(indexName);
-		stock.setCountry(Locale.US.getCountry());
-		stock.setCurrency(currency);
-		try{
+		Element elem;
 		if((elem = keyStatsMap.get("marketcap_intraday")) != null){ stock.setMarketCap(new BigDecimal(elem.text().replaceAll(",", ""))); }
 		if((elem = keyStatsMap.get("enterprisevalue")) != null){ stock.setEnterpriseValue(new BigDecimal(elem.text().replaceAll(",", ""))); }
 		if((elem = keyStatsMap.get("trailingpe_ttm_intraday")) != null){ stock.setTrailingPE(new BigDecimal(elem.text().replaceAll(",", ""))); }
@@ -133,16 +124,30 @@ public class YahooStockDetailReader extends AbstractItemReader {
 		if((elem = keyStatsMap.get("payoutyatio_relative")) != null){ stock.setPayoutRatio(new BigDecimal(trimPercent(elem.text().replaceAll(",", "")))); }
 		if((elem = keyStatsMap.get("DividendDate")) != null){ stock.setDividendDate(getYahooDate(elem.text())); }
 		if((elem = keyStatsMap.get("ex_dividenddate")) != null){ stock.setEx_DividendDate(getYahooDate(elem.text())); }
-		}catch(NumberFormatException e){
-			e.printStackTrace();
-		}
-		symbolNumber++;
-		return stock;
 	}
-
+	
 	@Override
-	public Serializable checkpointInfo() throws Exception {
-		return symbolNumber;
+	protected void readDividendHistoryEntries(StockDetailModel stockDetailModel)
+			throws Exception {
+		Stock stock = stockDetailModel.getStock();
+		String startDateStr = YQL_DIVIDEND_DATE_FORMAT.format(startDate.getTime());
+		String endDateStr = YQL_DIVIDEND_DATE_FORMAT.format(endDate.getTime());
+		Document dividendHistory = JsoupUtils.getPage(YQL_DIVIDEND_HISTORY_QUERY_TEMPLATE.replaceAll("#\\{symbol\\}", stock.getTickerSymbol()).replaceAll("#\\{startDate\\}", startDateStr).replaceAll("#\\{endDate\\}", endDateStr));
+		Elements quotes = dividendHistory.select("quote");
+		for(Element quote : quotes){
+			String dateStr = quote.getElementsByTag("Date").first().text();
+			String dividendStr = quote.getElementsByTag("Dividends").first().text();
+			Calendar dividendDate = Calendar.getInstance();
+			dividendDate.setTime(YQL_DIVIDEND_DATE_FORMAT.parse(dateStr));
+			DividendHistoryEntry dividendHistoryEntry = new DividendHistoryEntry();
+			dividendHistoryEntry.setStock(stock);
+			dividendHistoryEntry.setDividend(new BigDecimal(dividendStr));
+			dividendHistoryEntry.setDividendDate(dividendDate);
+			stockDetailModel.getDividendHistoryEntries().add(dividendHistoryEntry);
+		}
+		
+		LOG.info("Extracted " + stockDetailModel.getDividendHistoryEntries().size() + " dividend entries for " + stock.getTickerSymbol());
+		
 	}
 
 	private String getKeyForStatsElement(Element elem) {
@@ -168,7 +173,7 @@ public class YahooStockDetailReader extends AbstractItemReader {
 
 	private static boolean isYahooDate(String dateStr) {
 		try {
-			yahooDateFormat.parse(dateStr);
+			YQL_KEYSTATS_DATE_FORMAT.parse(dateStr);
 		} catch (ParseException e) {
 			return false;
 		}
@@ -177,7 +182,7 @@ public class YahooStockDetailReader extends AbstractItemReader {
 
 	private static Calendar getYahooDate(String dateStr) {
 		try {
-			Date date = yahooDateFormat.parse(dateStr);
+			Date date = YQL_KEYSTATS_DATE_FORMAT.parse(dateStr);
 			Calendar cal = Calendar.getInstance();
 			cal.setTime(date);
 			return cal;
@@ -188,7 +193,7 @@ public class YahooStockDetailReader extends AbstractItemReader {
 
 	private static Calendar getYahooRepeatingDate(String dateStr) {
 		try {
-			Date date = yahooRepeatingDateFormat.parse(dateStr);
+			Date date = YQL_KEYSTATS_REP_DATE_FORMAT.parse(dateStr);
 			Calendar cal = Calendar.getInstance();
 			cal.setTime(date);
 			return cal;
