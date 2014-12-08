@@ -11,7 +11,7 @@ import at.ac.tuwien.ase09.model.ValuePaper;
 @Stateless
 public class ValuePaperService {
 	
-	@PersistenceContext
+	@Inject
 	private EntityManager em;
 
 	@Inject

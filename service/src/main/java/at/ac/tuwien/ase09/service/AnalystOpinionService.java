@@ -5,7 +5,6 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 
 import at.ac.tuwien.ase09.data.AnalystOpinionDataAccess;
 import at.ac.tuwien.ase09.model.AnalystOpinion;
@@ -13,7 +12,7 @@ import at.ac.tuwien.ase09.model.AnalystOpinion;
 @Stateless
 public class AnalystOpinionService {
 	
-	@PersistenceContext
+	@Inject
 	private EntityManager em;
 
 	@Inject

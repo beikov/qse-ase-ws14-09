@@ -5,7 +5,6 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 
 import at.ac.tuwien.ase09.data.NewsItemDataAccess;
 import at.ac.tuwien.ase09.model.NewsItem;
@@ -13,7 +12,7 @@ import at.ac.tuwien.ase09.model.NewsItem;
 @Stateless
 public class NewsItemService {
 	
-	@PersistenceContext
+	@Inject
 	private EntityManager em;
 
 	@Inject
