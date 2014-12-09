@@ -17,18 +17,10 @@ public class DividendHistoryEntryDataAccess {
 
 	public List<DividendHistoryEntry> getDividendHistoryEntryByValuePaperCode(String code){
 
-		List<DividendHistoryEntry> dividendList;
-
 		try{
-			dividendList = em.createQuery("SELECT dhe FROM DividendHistoryEntry dhe WHERE dhe.stock.code = :code", DividendHistoryEntry.class).setParameter("code", code).getResultList();
+			return em.createQuery("SELECT dhe FROM DividendHistoryEntry dhe WHERE dhe.stock.code = :code", DividendHistoryEntry.class).setParameter("code", code).getResultList();
 		}catch(Exception e){
 			throw new AppException(e);
 		}
-
-		if(dividendList.isEmpty()){
-			throw new EntityNotFoundException();
-		}
-
-		return dividendList;
 	}
 }

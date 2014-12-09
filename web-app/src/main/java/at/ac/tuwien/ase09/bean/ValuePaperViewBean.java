@@ -221,25 +221,19 @@ public class ValuePaperViewBean implements Serializable{
 	}
 
 	private void loadStockDividendHistoryEntries() {
-		try{
-			stockDividendList = dividendHistoryEntryService.getDividendHistoryEntryByValuePaperCode(valuePaper.getCode());
+		stockDividendList = dividendHistoryEntryService.getDividendHistoryEntryByValuePaperCode(valuePaper.getCode());
 
-			Collections.sort(stockDividendList, new Comparator<DividendHistoryEntry>() {
+		Collections.sort(stockDividendList, new Comparator<DividendHistoryEntry>() {
 
-				@Override
-				public int compare(DividendHistoryEntry arg0, DividendHistoryEntry arg1) {
-					if(arg0.getDividendDate().getTime().getTime() < arg1.getDividendDate().getTime().getTime())
-						return 1;
-					if(arg0.getDividendDate().getTime().getTime() > arg1.getDividendDate().getTime().getTime())
-						return -1;
-					return 0;
-				}
-			});
-		}
-		catch(EntityNotFoundException e){
-			stockDividendList = null;
-		}
-
+			@Override
+			public int compare(DividendHistoryEntry arg0, DividendHistoryEntry arg1) {
+				if(arg0.getDividendDate().getTime().getTime() < arg1.getDividendDate().getTime().getTime())
+					return 1;
+				if(arg0.getDividendDate().getTime().getTime() > arg1.getDividendDate().getTime().getTime())
+					return -1;
+				return 0;
+			}
+		});
 	}
 
 	private void loadStockAnalystOpinions() {
