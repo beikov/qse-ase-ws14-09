@@ -243,25 +243,20 @@ public class ValuePaperViewBean implements Serializable{
 	}
 
 	private void loadStockAnalystOpinions() {
-		try{
-			stockAnalystOpinionList = analystOpinionService.getAnalystOpinionsByValuePaperCode(valuePaper.getCode());
+		stockAnalystOpinionList = analystOpinionService.getAnalystOpinionsByValuePaperCode(valuePaper.getCode());
 
-			Collections.sort(stockAnalystOpinionList, new Comparator<AnalystOpinion>() {
+		Collections.sort(stockAnalystOpinionList, new Comparator<AnalystOpinion>() {
 
-				@Override
-				public int compare(AnalystOpinion o1, AnalystOpinion o2) {
-					if(o1.getCreated().getTime().getTime() < o2.getCreated().getTime().getTime())
-						return 1;
-					if(o1.getCreated().getTime().getTime() > o2.getCreated().getTime().getTime())
-						return -1;
-					return 0;
-				}
+			@Override
+			public int compare(AnalystOpinion o1, AnalystOpinion o2) {
+				if(o1.getCreated().getTime().getTime() < o2.getCreated().getTime().getTime())
+					return 1;
+				if(o1.getCreated().getTime().getTime() > o2.getCreated().getTime().getTime())
+					return -1;
+				return 0;
+			}
 
-			});
-		}
-		catch(EntityNotFoundException e){
-			stockAnalystOpinionList = null;
-		}
+		});
 	}
 
 	private void loadValuePaperAttributes() {
