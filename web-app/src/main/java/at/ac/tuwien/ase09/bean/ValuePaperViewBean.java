@@ -292,53 +292,20 @@ public class ValuePaperViewBean implements Serializable{
 			}
 		}
 
-		if(getLastPriceEntry() != null){
-			switch(valuePaper.getType()){
-			case STOCK:
-				if(((Stock)valuePaper).getCurrency() != null){
-					this.mainValuePaperAttributes.put("Aktueller Kurs:", getLastPriceEntry().getPrice().toString() + " " + ((Stock)valuePaper).getCurrency().getCurrencyCode());
-				}
-				else{
-					this.mainValuePaperAttributes.put("Aktueller Kurs:", getLastPriceEntry().getPrice().toString());
-				}
-				break;
-			case FUND:
-				this.mainValuePaperAttributes.put("Aktueller Kurs:", getLastPriceEntry().getPrice().toString());
-				break;
-			case BOND:			
-				this.mainValuePaperAttributes.put("Aktueller Kurs:", getLastPriceEntry().getPrice().toString()+"%");
-
-				//				if(((StockBond)valuePaper).getBaseStock() != null){
-				//					if(((Stock)((StockBond)valuePaper).getBaseStock()).getCurrency() != null){
-				//						this.mainValuePaperAttributes.put("Aktueller Kurs:", getLastPriceEntry().getPrice().toString() + " " + ((Stock)((StockBond)valuePaper).getBaseStock()).getCurrency().getCurrencyCode());
-				//					}
-				//					else{
-				//						this.mainValuePaperAttributes.put("Aktueller Kurs:", getLastPriceEntry().getPrice().toString());
-				//					}
-				//				}
-				//				else{
-				//					this.mainValuePaperAttributes.put("Aktueller Kurs:", getLastPriceEntry().getPrice().toString());
-				//				}
-			}
-		}
-		else{
-			this.mainValuePaperAttributes.put("Aktueller Kurs:", "kein aktueller Kurs vorhanden");
-		}
-
 		if(valuePaper.getType() == ValuePaperType.STOCK){
 
 			Stock s = (Stock)valuePaper;
 
-			if(s.getCurrency() != null){
-				this.additionalValuePaperAttributes.put("Währung:", s.getCurrency().getCurrencyCode());
-			}
-
 			if(s.getIndex() != null){
-				this.additionalValuePaperAttributes.put("Index:", s.getIndex());
+				this.mainValuePaperAttributes.put("Index:", s.getIndex());
 			}
 
 			if(s.getCountry() != null){
-				this.additionalValuePaperAttributes.put("Land:", s.getCountry());
+				this.mainValuePaperAttributes.put("Land:", s.getCountry());
+			}
+
+			if(s.getCurrency() != null){
+				this.mainValuePaperAttributes.put("Währung:", s.getCurrency().getCurrencyCode());
 			}
 
 			if(s.getDetailUrl() != null){
@@ -569,9 +536,9 @@ public class ValuePaperViewBean implements Serializable{
 				this.additionalValuePaperAttributes.put("Ex Dividend Date:", format.format(s.getEx_DividendDate().getTime()));
 			}
 
-//			if(s.getBoerseCertificatePageUrl() != null){
-//				this.additionalValuePaperAttributes.put("Börse-Zertifikate:", s.getBoerseCertificatePageUrl());
-//			}
+			//			if(s.getBoerseCertificatePageUrl() != null){
+			//				this.additionalValuePaperAttributes.put("Börse-Zertifikate:", s.getBoerseCertificatePageUrl());
+			//			}
 
 			if(s.getFinanzenCertificatePageUrl() != null){
 				this.additionalValuePaperAttributes.put("Finanzen-Zertifikate:", s.getFinanzenCertificatePageUrl());
@@ -593,6 +560,28 @@ public class ValuePaperViewBean implements Serializable{
 		if(valuePaper.getHistoricPricesPageUrl() != null){
 			this.additionalValuePaperAttributes.put("Historische Preise:", valuePaper.getHistoricPricesPageUrl());
 		}
+
+		if(getLastPriceEntry() != null){
+			switch(valuePaper.getType()){
+			case STOCK:
+				if(((Stock)valuePaper).getCurrency() != null){
+					this.mainValuePaperAttributes.put("Aktueller Kurs:", getLastPriceEntry().getPrice().toString() + " " + ((Stock)valuePaper).getCurrency().getCurrencyCode());
+				}
+				else{
+					this.mainValuePaperAttributes.put("Aktueller Kurs:", getLastPriceEntry().getPrice().toString());
+				}
+				break;
+			case FUND:
+				this.mainValuePaperAttributes.put("Aktueller Kurs:", getLastPriceEntry().getPrice().toString());
+				break;
+			case BOND:			
+				this.mainValuePaperAttributes.put("Aktueller Kurs:", getLastPriceEntry().getPrice().toString()+"%");
+			}
+		}
+		else{
+			this.mainValuePaperAttributes.put("Aktueller Kurs:", "kein aktueller Kurs vorhanden");
+		}
+
 	}
 
 	private void createLineChartModels(){
