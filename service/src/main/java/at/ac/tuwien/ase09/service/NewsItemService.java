@@ -13,7 +13,7 @@ import at.ac.tuwien.ase09.model.NewsItem;
 @Stateless
 public class NewsItemService {
 	
-	@PersistenceContext
+	@Inject
 	private EntityManager em;
 
 	@Inject

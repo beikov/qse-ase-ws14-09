@@ -2,10 +2,13 @@ package at.ac.tuwien.ase09.service;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -131,64 +134,115 @@ public class PortfolioService {
 
 	public Map<String, BigDecimal> getPortfolioChartEntries(Portfolio portfolio) {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-		String creationDate = format.format(portfolio.getCreated().getTime());
-        BigDecimal startCapital = portfolio.getSetting().getStartCapital().getValue();
+		BigDecimal startCapital = portfolio.getSetting().getStartCapital().getValue();
+		Map<String, BigDecimal> changeMap = new HashMap<>();
+		Map<String, BigDecimal> changeCarryMap = new HashMap<>(); 
+		BigDecimal changeCarry = new BigDecimal(0);
 		Map<String, BigDecimal> pointResult = new HashMap<>();
 		
-		pointResult.put(creationDate, startCapital);
-		
 		for (TransactionEntry transaction : portfolio.getTransactionEntries()) {
+			BigDecimal change;
+			BigDecimal payedForTransaction = transaction.getValue().getValue();
+			
         	if (transaction.getType() == TransactionType.ORDER) {
         		continue;
+        	} else {
+	        	String transactionDate = format.format(transaction.getCreated().getTime());
+	        	
+	        	if (transaction.getType() == TransactionType.PAYOUT) {
+	        		payedForTransaction = payedForTransaction.negate();
+	        	}
+	        	if (changeCarryMap.containsKey(transactionDate)) {
+	    			BigDecimal old = changeCarryMap.get(transactionDate);
+	    			change = old.subtract(payedForTransaction);
+	    			
+	    		} else {
+	    			change = payedForTransaction.negate();
+	    		}
+	        	changeCarry = changeCarry.add(change);
+	        	//changeMap.put(transactionDate, change);
+	        	changeCarryMap.put(transactionDate, changeCarry);
+	        	pointResult.put(transactionDate, startCapital.add(changeCarry));
         	}
-        	
-        	String date = format.format(transaction.getCreated().getTime());
-        	BigDecimal value = transaction.getValue().getValue();
-        	
-        	if (transaction.getType() == TransactionType.PAYOUT) {
-        		value = value.negate();
-        	}
-        	
-        	if (pointResult.containsKey(date)) {
-    			BigDecimal old = pointResult.get(date);
-    			pointResult.put(date, old.subtract(value));
-    		} else {
-    			pointResult.put(date, value.negate());
-    		}
         }
 		
-		List<ValuePaperHistoryEntry> historyEntries = priceDataAccess.getHistoricValuePaperPricesByPortfolioId(portfolio.getId());
-        for (ValuePaperHistoryEntry historyEntry : historyEntries) {
-        	Calendar calendar = historyEntry.getDate();
-        	calendar.set(Calendar.HOUR_OF_DAY, 23);
-            calendar.set(Calendar.MINUTE, 59);
-            calendar.set(Calendar.SECOND, 59);
-            calendar.set(Calendar.MILLISECOND, 999);
-        	BigDecimal totalBuyPrice = new BigDecimal(0);
-        	BigDecimal totalValue = new BigDecimal(0);
-        	
-        	for (TransactionEntry transaction : portfolio.getTransactionEntries()) {
-        		if (transaction.getType() == TransactionType.ORDER && transaction.getCreated().before(calendar)) {        				
-        			OrderTransactionEntry ot = (OrderTransactionEntry)transaction;
-        			totalBuyPrice = totalBuyPrice.add(ot.getValue().getValue());
-            		BigDecimal volume = BigDecimal.valueOf(ot.getOrder().getVolume());
-            		totalValue = totalValue.add(volume.multiply(historyEntry.getClosingPrice()));
-            		//totalValue = totalValue.add(historyEntry.getClosingPrice());
-        		}
-        	}
-        	
-        	String date = format.format(calendar.getTime());
-        	BigDecimal pointValue = startCapital.subtract(totalBuyPrice).add(totalValue);
-        	if (pointResult.containsKey(date)) {
-        		BigDecimal oldValue = pointResult.get(date);
-        		pointResult.put(format.format(calendar.getTime()), oldValue.add(pointValue));
-        	} else {
-        		pointResult.put(date, pointValue);
-        	}
-        }
+		System.out.println("changeCarryMap-------------------------- " + changeCarryMap);
+		System.out.println("pointResult-------------------------- " + pointResult);
+		
+		for (TransactionEntry transaction : portfolio.getTransactionEntries()) {
+			if (transaction.getType() != TransactionType.ORDER) {
+        		continue;
+			}
+			
+			BigDecimal change;
+			BigDecimal payedForTransaction = transaction.getValue().getValue();
+			
+			OrderTransactionEntry ot = (OrderTransactionEntry)transaction;
+			BigDecimal volume = new BigDecimal(ot.getOrder().getVolume());
+			List<ValuePaperHistoryEntry> historyEntries = priceDataAccess.getValuePaperHistoryEntriesForPortfolioAfterDate(portfolio, transaction.getCreated());
+			
+			for (ValuePaperHistoryEntry he : historyEntries) {
+				BigDecimal closingPrice = he.getClosingPrice();
+				String historyDate = format.format(he.getDate().getTime());
+				
+				if (changeMap.containsKey(historyDate)) {
+	    			BigDecimal old = changeMap.get(historyDate);
+	    			change = old.add(closingPrice.multiply(volume).subtract(payedForTransaction)); 
+	    		} else {
+	    			change = closingPrice.multiply(volume).subtract(payedForTransaction);
+	    		}
+				changeMap.put(historyDate, change);
+			}
+		}
+		
+		System.out.println("changeMap-------------------------- " + changeMap);
+		
+		
+		
+		pointResult.put(format.format(portfolio.getCreated().getTime()), startCapital);
+		
+		for (String date : changeMap.keySet()) {
+			BigDecimal change = changeMap.get(date);
+			//BigDecimal lastValue = startCapital.add(change);
+			
+			if (pointResult.containsKey(date)) {
+				BigDecimal old = pointResult.get(date);
+				pointResult.put(date, old.add(change));
+			} else {
+				Date transactionDate = null;
+				try {
+					transactionDate = format.parse(date);
+				} catch (ParseException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				Date latestCarryBeforeCurrentTransaction = null;
+				for (String carryDate : changeCarryMap.keySet()) {
+					Date currCarry = null;
+					try {
+						currCarry = format.parse(carryDate);
+					} catch (ParseException e) {
+						e.printStackTrace();
+						return new HashMap<String, BigDecimal>();
+					}
+					if (currCarry.before(transactionDate) && latestCarryBeforeCurrentTransaction == null) {
+						latestCarryBeforeCurrentTransaction = currCarry;
+					} else if (currCarry.before(transactionDate) && currCarry.after(latestCarryBeforeCurrentTransaction) ) {
+						latestCarryBeforeCurrentTransaction = currCarry;
+					}
+				}
+				if (latestCarryBeforeCurrentTransaction != null) {
+					change = changeCarryMap.get(format.format(latestCarryBeforeCurrentTransaction)).add(change);
+				}
+				pointResult.put(date, startCapital.add(change));
+			}	
+			
+			
+		}
         
         return pointResult;
 	}
+	
 
 	public List<NewsItem> getNewsForValuePapers(Set<PortfolioValuePaper> valuePapers) {
 		List<NewsItem> news = new ArrayList<>();
@@ -213,18 +267,17 @@ public class PortfolioService {
 	public double getChange(PortfolioValuePaper pvp) {
 		
 		double payed = 0.0;
+		int volume = pvp.getVolume();
+		double latestPrice = priceDataAccess.getLastPriceEntry(pvp.getValuePaper().getCode()).getPrice().doubleValue();
 		
 		for (TransactionEntry t : pvp.getPortfolio().getTransactionEntries()) {
-			if (t.getType() == TransactionType.ORDER) {	
+			if (t.getType() == TransactionType.ORDER) {
 				if (((OrderTransactionEntry)t).getOrder().getValuePaper().getCode().equals(pvp.getValuePaper().getCode())) {					
 					payed += t.getValue().getValue().doubleValue();
 				}
 			}
 		}
 		//payed = getTotalPayedForValuePaper(pvp.getValuePaper().getCode()).doubleValue();
-		
-		int volume = pvp.getVolume();
-		double latestPrice = priceDataAccess.getLastPriceEntry(pvp.getValuePaper().getCode()).getPrice().doubleValue();
 		
 		return (latestPrice*volume - payed) * 100 / payed;
 	}

@@ -13,7 +13,7 @@ import at.ac.tuwien.ase09.model.DividendHistoryEntry;
 @Stateless
 public class DividendHistoryEntryService {
 	
-	@PersistenceContext
+	@Inject
 	private EntityManager em;
 
 	@Inject
