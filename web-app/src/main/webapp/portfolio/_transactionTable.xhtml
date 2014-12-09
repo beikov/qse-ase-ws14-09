@@ -12,6 +12,9 @@
 	    <p:column headerText="Datum" sortBy="#{trade.created.time}">
 	        <h:outputText value="#{dateUtil.formatDateWithTime(trade.created.time)}" />
 	    </p:column>
+	    <p:column headerText="Transaktionstyp" sortBy="#{trade.type}">
+	        <h:outputText value="#{trade.type}" />
+	    </p:column>
 	    <p:column headerText="Wertpapier">
 	    	<h:outputText value="#{trade.order.valuePaper.name}" rendered="#{trade.type == 'ORDER' or trade.type == 'ORDER_FEE'}"/>
 	    	<h:outputText value="#{trade.valuePaper.name}" rendered="#{trade.type == 'PAYOUT'}"/>
@@ -19,17 +22,14 @@
 	    <p:column headerText="Order-Aktion">
         	<h:outputText value="#{trade.order.orderAction}" rendered="#{trade.type == 'ORDER' or trade.type == 'ORDER_FEE'}"/>
 	    </p:column>
-	    <p:column headerText="Anzahl">
-	    	<h:outputText value="#{trade.order.volume}" rendered="#{trade.type == 'ORDER' or trade.type == 'ORDER_FEE'}"/>
-	    </p:column>
 	    <p:column headerText="Wert" sortBy="#{trade.value.value.doubleValue()}">
 	        <h:outputText value="#{trade.value}" />
 	    </p:column>
-	    <p:column headerText="Transaktionstyp" sortBy="#{trade.type}">
-	        <h:outputText value="#{trade.type}" />
-	    </p:column>
 	    <p:column headerText="Beschreibung">
-	    	<h:outputText value="#{trade.description}" rendered="#{trade.type == 'FEE'}"/>
+	    	<small>
+	    		<h:outputText value="#{trade.description} " rendered="#{trade.type == 'FEE'}"/>
+	    		<h:outputText value="Anzahl: #{trade.order.volume}" rendered="#{trade.type == 'ORDER'}"/>
+	    	</small>
 	    </p:column>
 	</p:dataTable>
 
