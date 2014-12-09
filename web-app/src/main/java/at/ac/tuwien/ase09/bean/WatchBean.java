@@ -7,7 +7,7 @@ import javax.inject.Named;
 @RequestScoped
 public class WatchBean {
 
-	private String watchExpression = "(MARKETCAP < 9829 AND ENTERPRISE_VALUE > SQRT(REVENUE*3) + 100) OR TOTAL_CASH < 0";
+	private String watchExpression = "(MARKETCAP < 9829 AND ENTERPRISEVALUE > SQRT(REVENUE*3) + 100) OR TOTALCASH < 0";
 
 	public String getWatchExpression() {
 		return watchExpression;

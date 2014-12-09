@@ -8,21 +8,12 @@
 	template="/WEB-INF/templates/template.xhtml">
 	
 	<ui:define name="head">
-		<h:outputStylesheet library="webjars" name="codemirror/lib/codemirror.css"/>
-		<h:outputScript library="webjars" name="codemirror/lib/codemirror.js"/>
-		<h:outputScript library="peg" name="peg.js"/>
-		<h:outputScript library="portfolio" name="editor/pwatch-parser.js"/>
+		<h:outputStylesheet library="webjars" name="codemirror/4.8/lib/codemirror.css"/>
+		<h:outputStylesheet library="webjars" name="codemirror/4.8/addon/hint/show-hint.css"/>
+		<h:outputScript library="webjars" name="codemirror/4.8/lib/codemirror.js"/>
+		<h:outputScript library="webjars" name="codemirror/4.8/addon/mode/simple.js"/>
+		<h:outputScript library="webjars" name="codemirror/4.8/addon/hint/show-hint.js"/>
 		<h:outputScript library="portfolio" name="editor/pwatch.js"/>
-		<script>
-			//<![CDATA[
-			
-			CodeMirror.fromTextArea(document.getElementById("#{p:component('watch-editor')}"), {
-				lineNumbers: false,
-				mode: "pwatch"
-			});
-			
-			//]]>
-		</script>
 	</ui:define>
 	
 	<ui:define name="body">
@@ -34,6 +25,19 @@
 				<h:inputTextarea id="watch-editor" value="#{watchBean.watchExpression}" />
 			</p:tab>
 		</p:tabView>
+		
+		
+		<script>
+			//<![CDATA[
+			
+			CodeMirror.fromTextArea(document.getElementById("#{p:component('watch-editor')}"), {
+				lineNumbers: false,
+		        extraKeys: {"Ctrl-Space": "autocomplete"},
+				mode: "pwatch"
+			});
+			
+			//]]>
+		</script>
 	</ui:define>
 	
 </ui:composition>
