@@ -166,6 +166,11 @@ public class PortfolioViewBean implements Serializable {
 		return money;
 	}
 	
+	public Money getProfit(PortfolioValuePaper pvp) {
+		Money money = portfolio.getCurrentCapital();
+		money.setValue(new BigDecimal(portfolioService.getProfit(pvp)));
+		return money;
+	}
 	
 	public Object[] getOrderStates() {
 		return OrderStatus.values();
