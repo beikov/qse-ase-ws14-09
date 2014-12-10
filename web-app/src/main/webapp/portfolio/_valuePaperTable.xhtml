@@ -35,17 +35,17 @@
 	    </p:column>
 	    
 	    <p:column width="140">
-	    	<p:button id="btn-details" icon="ui-icon-search" outcome="/valuepaper/valuepaperview">
+	    	<p:button id="btn-details" icon="ui-icon-search" outcome="/protected/valuepaper/valuepaperview">
 	    		<f:param name="valuePaperCode" value="#{paper.code}" />
 	    	</p:button>
 	    	<p:tooltip for="btn-details" value="Details" />
 	    	
-	    	<p:button id="btn-buy" icon="ui-icon-cart" outcome="/valuepaper/valuepaperview">
+	    	<p:button id="btn-buy" icon="ui-icon-cart" outcome="/protected/valuepaper/valuepaperview">
 	    		<f:param name="valuePaperCode" value="#{paper.code}" />
 	    	</p:button>
 	    	<p:tooltip for="btn-buy" value="Kaufen" />
 	    	
-	    	<p:button id="btn-sell" icon="ui-icon-cart" outcome="/valuepaper/valuepaperview">
+	    	<p:button id="btn-sell" icon="ui-icon-cart" outcome="/protected/valuepaper/valuepaperview">
 	    		<f:param name="valuePaperCode" value="#{paper.code}" />
 	    	</p:button>
 	    	<p:tooltip for="btn-sell" value="Verkaufen" />
