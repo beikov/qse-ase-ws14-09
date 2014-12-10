@@ -7,19 +7,16 @@ import java.util.Currency;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
-import javax.ejb.EJBException;
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 
+import at.ac.tuwien.ase09.data.ValuePaperScreenerAccess;
 import at.ac.tuwien.ase09.filter.AttributeFilter;
 import at.ac.tuwien.ase09.filter.AttributeType;
 import at.ac.tuwien.ase09.filter.OperatorType;
 import at.ac.tuwien.ase09.model.ValuePaper;
 import at.ac.tuwien.ase09.model.ValuePaperType;
-import at.ac.tuwien.ase09.service.ValuePaperScreenerService;
 
 @ManagedBean
 @ViewScoped
@@ -28,7 +25,7 @@ public class ValuePaperScreenerBean implements Serializable {
 	private static final long serialVersionUID = 1L;
 		
 		@Inject
-		private ValuePaperScreenerService screenerService;
+		private ValuePaperScreenerAccess screenerDataAccess;
 		
 
 		private ValuePaperType paperType;
@@ -91,7 +88,7 @@ public class ValuePaperScreenerBean implements Serializable {
 			return paperType;
 		}	
 		public List<Currency> getUsedCurrencies() {
-			return screenerService.getUsedCurrencyCodes();
+			return screenerDataAccess.getUsedCurrencyCodes();
 		}
 
 		
@@ -106,7 +103,7 @@ public class ValuePaperScreenerBean implements Serializable {
 		}
 		public void search()
 		{
-			searchedValuePapers=screenerService.search(filters, paperType);
+			searchedValuePapers=screenerDataAccess.findByFilter(filters, paperType);
 
 		}
 		

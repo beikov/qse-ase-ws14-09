@@ -1,4 +1,4 @@
-package at.ac.tuwien.ase09.service;
+package at.ac.tuwien.ase09.test.service;
 
 import static org.junit.Assert.assertEquals;
 
@@ -51,7 +51,7 @@ public class PortfolioServiceTest extends AbstractContainerTest<PortfolioService
 	private Calendar portfolioCreated = Calendar.getInstance();
 	
 	@Inject
-	private PortfolioService portfolioService;
+	private PortfolioDataAccess portfolioService;
 	
 	@Inject
 	private PortfolioDataAccess portfolioDataAccess;

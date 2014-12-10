@@ -14,6 +14,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import at.ac.tuwien.ase09.context.WebUserContext;
+import at.ac.tuwien.ase09.data.PortfolioDataAccess;
 import at.ac.tuwien.ase09.model.Money;
 import at.ac.tuwien.ase09.model.Portfolio;
 import at.ac.tuwien.ase09.model.PortfolioSetting;
@@ -33,6 +34,9 @@ public class PortfolioCreationViewBean {
 	
 	@Inject
 	WebUserContext userContext;
+	
+	@Inject
+	private PortfolioDataAccess portfolioDataAccess;
 	
 	@Inject
 	private PortfolioService portfolioService;
@@ -55,7 +59,7 @@ public class PortfolioCreationViewBean {
 
 	public void create(){
 		
-		if( portfolioService.existsPortfolioWithNameForUser(portfolio.getName(), userContext.getUser()) ){
+		if( portfolioDataAccess.existsPortfolioWithNameForUser(portfolio.getName(), userContext.getUser()) ){
 			FacesMessage facesMessage = new FacesMessage("Fehler: Für diesen Benutzer existiert bereits ein Portfolio mit dem selben Namen.");
 		      FacesContext.getCurrentInstance().addMessage("createForm:name", facesMessage);
 		      return;
@@ -136,12 +140,12 @@ public class PortfolioCreationViewBean {
 		this.capitalReturnTax = capitalReturnTax;
 	}
 
-	public PortfolioService getPortfolioService() {
-		return portfolioService;
+	public PortfolioDataAccess getPortfolioService() {
+		return portfolioDataAccess;
 	}
 
-	public void setPortfolioService(PortfolioService portfolioService) {
-		this.portfolioService = portfolioService;
+	public void setPortfolioService(PortfolioDataAccess portfolioService) {
+		this.portfolioDataAccess = portfolioService;
 	}
 
 	public BigDecimal getPortfolioFee() {

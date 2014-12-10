@@ -6,7 +6,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,13 +15,17 @@ import javax.faces.bean.ManagedBean;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 
 import org.primefaces.model.chart.AxisType;
 import org.primefaces.model.chart.DateAxis;
 import org.primefaces.model.chart.LineChartModel;
 import org.primefaces.model.chart.LineChartSeries;
 
+import at.ac.tuwien.ase09.data.AnalystOpinionDataAccess;
+import at.ac.tuwien.ase09.data.DividendHistoryEntryDataAccess;
+import at.ac.tuwien.ase09.data.NewsItemDataAccess;
+import at.ac.tuwien.ase09.data.ValuePaperDataAccess;
+import at.ac.tuwien.ase09.data.ValuePaperPriceEntryDataAccess;
 import at.ac.tuwien.ase09.exception.EntityNotFoundException;
 import at.ac.tuwien.ase09.model.AnalystOpinion;
 import at.ac.tuwien.ase09.model.DividendHistoryEntry;
@@ -31,14 +34,10 @@ import at.ac.tuwien.ase09.model.NewsItem;
 import at.ac.tuwien.ase09.model.Stock;
 import at.ac.tuwien.ase09.model.StockBond;
 import at.ac.tuwien.ase09.model.ValuePaper;
-import at.ac.tuwien.ase09.model.ValuePaperPriceEntry;
 import at.ac.tuwien.ase09.model.ValuePaperHistoryEntry;
+import at.ac.tuwien.ase09.model.ValuePaperPriceEntry;
 import at.ac.tuwien.ase09.model.ValuePaperType;
-import at.ac.tuwien.ase09.service.AnalystOpinionService;
-import at.ac.tuwien.ase09.service.DividendHistoryEntryService;
-import at.ac.tuwien.ase09.service.NewsItemService;
 import at.ac.tuwien.ase09.service.ValuePaperPriceEntryService;
-import at.ac.tuwien.ase09.service.ValuePaperService;
 
 @ManagedBean
 @Named
@@ -64,18 +63,21 @@ public class ValuePaperViewBean implements Serializable{
 
 	@Inject
 	private ValuePaperPriceEntryService valuePaperPriceEntryService;
+	
+	@Inject
+	private ValuePaperPriceEntryDataAccess valuePaperPriceEntryDataAccess;
 
 	@Inject
-	private ValuePaperService valuePaperService;
+	private ValuePaperDataAccess valuePaperDataAccess;
 
 	@Inject
-	private NewsItemService newsItemService;
+	private NewsItemDataAccess newsItemDataAccess;
 
 	@Inject
-	private DividendHistoryEntryService dividendHistoryEntryService;
+	private DividendHistoryEntryDataAccess dividendHistoryEntryDataAccess;
 
 	@Inject
-	private AnalystOpinionService analystOpinionService;
+	private AnalystOpinionDataAccess analystOpinionDataAccess;
 
 	@Inject
 	private EntityManager em;
@@ -182,7 +184,7 @@ public class ValuePaperViewBean implements Serializable{
 	public ValuePaperPriceEntry getLastPriceEntry() {
 
 		try{
-			return valuePaperPriceEntryService.getLastPriceEntry(valuePaper.getCode());
+			return valuePaperPriceEntryDataAccess.getLastPriceEntry(valuePaper.getCode());
 		}
 		catch(EntityNotFoundException e){
 			return null;
@@ -190,13 +192,13 @@ public class ValuePaperViewBean implements Serializable{
 	}
 
 	public List<NewsItem> getNewsItems(){		
-		return newsItemService.getNewsItemsByValuePaperCode(valuePaper.getCode());
+		return newsItemDataAccess.getNewsItemsByValuePaperCode(valuePaper.getCode());
 	}
 
 	private void loadValuePaper(String valuePaperIsin) {
 
 		try{
-			this.valuePaper = valuePaperService.getValuePaperByCode(valuePaperIsin);
+			this.valuePaper = valuePaperDataAccess.getValuePaperByCode(valuePaperIsin, ValuePaper.class);
 		}
 		catch(EntityNotFoundException e){
 			this.valuePaper = null;
@@ -205,7 +207,7 @@ public class ValuePaperViewBean implements Serializable{
 	}
 
 	private void loadNewsItems() {
-		newsItemsList = newsItemService.getNewsItemsByValuePaperCode(valuePaper.getCode());
+		newsItemsList = newsItemDataAccess.getNewsItemsByValuePaperCode(valuePaper.getCode());
 
 		Collections.sort(newsItemsList, new Comparator<NewsItem>() {
 
@@ -221,7 +223,7 @@ public class ValuePaperViewBean implements Serializable{
 	}
 
 	private void loadStockDividendHistoryEntries() {
-		stockDividendList = dividendHistoryEntryService.getDividendHistoryEntryByValuePaperCode(valuePaper.getCode());
+		stockDividendList = dividendHistoryEntryDataAccess.getDividendHistoryEntryByValuePaperCode(valuePaper.getCode());
 
 		Collections.sort(stockDividendList, new Comparator<DividendHistoryEntry>() {
 
@@ -237,7 +239,7 @@ public class ValuePaperViewBean implements Serializable{
 	}
 
 	private void loadStockAnalystOpinions() {
-		stockAnalystOpinionList = analystOpinionService.getAnalystOpinionsByValuePaperCode(valuePaper.getCode());
+		stockAnalystOpinionList = analystOpinionDataAccess.getAnalystOpinionsByValuePaperCode(valuePaper.getCode());
 
 		Collections.sort(stockAnalystOpinionList, new Comparator<AnalystOpinion>() {
 
@@ -626,7 +628,7 @@ public class ValuePaperViewBean implements Serializable{
 
 		try{
 
-			List<ValuePaperHistoryEntry> historyPriceList = valuePaperPriceEntryService.getValuePaperPriceHistoryEntries(valuePaper.getCode());
+			List<ValuePaperHistoryEntry> historyPriceList = valuePaperPriceEntryDataAccess.getValuePaperPriceHistoryEntries(valuePaper.getCode());
 
 			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -636,7 +638,7 @@ public class ValuePaperViewBean implements Serializable{
 				series1.set(date, value);
 			}
 
-			ValuePaperPriceEntry currentPriceEntry = valuePaperPriceEntryService.getLastPriceEntry(valuePaper.getCode());
+			ValuePaperPriceEntry currentPriceEntry = valuePaperPriceEntryDataAccess.getLastPriceEntry(valuePaper.getCode());
 
 			series1.set(format.format(currentPriceEntry.getCreated().getTime()), currentPriceEntry.getPrice());
 
