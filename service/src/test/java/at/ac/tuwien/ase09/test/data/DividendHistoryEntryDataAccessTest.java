@@ -24,6 +24,7 @@ import at.ac.tuwien.ase09.model.Stock;
 import at.ac.tuwien.ase09.test.DatabaseAware;
 import at.ac.tuwien.ase09.test.AbstractContainerTest;
 
+@DatabaseAware
 public class DividendHistoryEntryDataAccessTest extends AbstractContainerTest<DividendHistoryEntryDataAccessTest>{
 	private static final long serialVersionUID = 1L;
 
