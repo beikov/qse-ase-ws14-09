@@ -20,8 +20,8 @@ public abstract class ValuePaper extends BaseEntity<Long> {
 	 * The code is either an ISIN or a symbol (for US stocks)
 	 */
 	private String code;
-	private String detailUrl;
-	private String historicPricesPageUrl;
+	private String detailUrl;	// for extraction
+	private String historicPricesPageUrl; // for extraction
 	
 	
 	@Transient

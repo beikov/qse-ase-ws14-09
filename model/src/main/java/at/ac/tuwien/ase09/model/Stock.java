@@ -22,9 +22,9 @@ public class Stock extends ValuePaper {
 	private Currency currency;
 	private String tickerSymbol;
 	private String country;
-	private String finanzenCertificatePageUrl;
-	private String finanzenDividendHistoryPageUrl;
-	private String finanzenNewsPageUrl;
+	private String finanzenCertificatePageUrl; // for extraction
+	private String finanzenDividendHistoryPageUrl; // for extraction
+	private String finanzenNewsPageUrl; // for extraction
 	private String index;
 	private Set<DividendHistoryEntry> dividendHistoryEntries = new HashSet<DividendHistoryEntry>();
 	
