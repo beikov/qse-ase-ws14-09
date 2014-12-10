@@ -1,0 +1,24 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+	
+	<p:dataList value="#{portfolioViewBean.newsForValuePapers}" 
+				var="news" type="unordered" itemType="none" 
+				paginator="true" rows="5" styleClass="paginated news-items">
+				
+				<article>
+					<h3><h:outputText styleClass="news-title" value="#{news.title}" /></h3>
+					<p>
+						<h:outputText styleClass="news-text" value="#{news.text}" />
+					</p>
+					<footer>
+						<h:outputText styleClass="valuePaperName" value="#{news.stock.name} " />
+						<small><h:outputText styleClass="date" value="#{dateUtil.formatDateWithTime(news.created.time)}" /> <a href="#{news.source}" target="_blank">Quelle<span class="ui-icon ui-icon-extlink" style="display: inline-block;"/></a></small> 
+					</footer>
+				</article>
+				
+	</p:dataList>
+	
+</ui:composition>

@@ -1,0 +1,25 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+	
+	<p:dataList value="#{portfolioViewBean.analystOpinionsForValuePapers}" 
+				var="opinion" type="unordered" itemType="none" 
+				paginator="true" rows="5" styleClass="paginated">
+				
+				<article>
+					<h3><h:outputText value="#{opinion.recommendation}" /> - <h:outputText value="#{opinion.stock.name}" /></h3>
+					<p>
+						<h:outputText value="#{opinion.text} " />
+					</p>
+					<footer>
+						<h:outputText styleClass="valuePaperName" value="#{news.stock.name} " />
+						<small><h:outputText value="#{dateUtil.formatDateWithTime(opinion.created.time)}" /> <a href="#{opinion.source}" target="_blank">Quelle<span class="ui-icon ui-icon-extlink" style="display: inline-block;"/></a></small><br />
+					</footer>
+					<!-- <h:outputText value="#{news.text}" />
+					<h:outputText value="#{news.source}" /> -->
+				</article>
+				
+	</p:dataList>
+</ui:composition>

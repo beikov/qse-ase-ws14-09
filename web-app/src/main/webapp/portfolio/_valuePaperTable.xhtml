@@ -1,0 +1,58 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ase="http://java.sun.com/jsf/composite/portfoliosimcomponents">
+	
+	<p:dataTable var="association" value="#{portfolioViewBean.valuePaperList}" rows="5"
+                         paginator="true"
+                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         rowsPerPageTemplate="5,10,15">
+                         
+		<c:set var="paper" value="#{association.valuePaper}" />
+          	
+	    <p:column headerText="Name" sortBy="#{paper.name}" width="250">
+	        <h:outputText value="#{paper.name}"></h:outputText>
+	    </p:column>
+	    <p:column headerText="Typ" sortBy="#{paper.type}">
+	        <h:outputText value="#{paper.type}" />
+	    </p:column>
+	    <p:column headerText="Stück" sortBy="#{association.volume}" width="90">
+	        <h:outputText value="#{association.volume}"></h:outputText>
+	    </p:column>
+	    <p:column headerText="Bezahlt">
+	    	<c:set var="payed" value="#{portfolioViewBean.getTotalPayed(paper.code)}" />
+	    	<c:set var="payedLong" value="#{portfolioViewBean.getTotalPayed(paper.code).value.longValue()}" />
+	        <h:outputText value="#{payed} (~ #{payedLong/association.volume})" />
+	    </p:column>
+	    <p:column headerText="Gewinn/Verlust">
+	        <h:outputText value="#{portfolioViewBean.getProfit(association)}" />
+	    </p:column>
+	    <p:column headerText="Performance">
+	        <ase:valuePaperPerformance code="#{paper.code}" />
+	    </p:column>
+	    
+	    <p:column width="140">
+	    	<p:button id="btn-details" icon="ui-icon-search" outcome="/valuepaper/valuepaperview">
+	    		<f:param name="valuePaperCode" value="#{paper.code}" />
+	    	</p:button>
+	    	<p:tooltip for="btn-details" value="Details" />
+	    	
+	    	<p:button id="btn-buy" icon="ui-icon-cart" outcome="/valuepaper/valuepaperview">
+	    		<f:param name="valuePaperCode" value="#{paper.code}" />
+	    	</p:button>
+	    	<p:tooltip for="btn-buy" value="Kaufen" />
+	    	
+	    	<p:button id="btn-sell" icon="ui-icon-cart" outcome="/valuepaper/valuepaperview">
+	    		<f:param name="valuePaperCode" value="#{paper.code}" />
+	    	</p:button>
+	    	<p:tooltip for="btn-sell" value="Verkaufen" />
+	    	
+	    	<!-- <a href="/valuepaper/valuepaperview.xhtml?valuePaperCode=#{paper.code}" class="btn btn-default btn-md"><span class="glyphicon glyphicon-search" aria-hidden="true" /></a>
+	    	<a href="/protected/portfolio/list.xhtml?valuePaperId=#{paper.id}" class="btn btn-default btn-md"><span class="glyphicon glyphicon glyphicon-usd" aria-hidden="true" /></a> -->
+       </p:column>
+	</p:dataTable>
+
+</ui:composition>

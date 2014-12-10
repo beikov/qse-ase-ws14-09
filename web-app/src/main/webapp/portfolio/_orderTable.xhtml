@@ -1,0 +1,42 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+	
+	<p:dataTable var="order" value="#{portfolioViewBean.orderList}" rows="10"
+                         paginator="true"
+                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         rowsPerPageTemplate="5,10,15">
+		<p:column headerText="Datum">
+	        <h:outputText value="#{dateUtil.formatDateWithTime(order.created.time)}" />
+	    </p:column>				  
+	  	<p:column headerText="Wertpapier" sortBy="#{order.valuePaper.name}">
+	        <h:outputText value="#{order.valuePaper.name}" />
+	    </p:column>
+	    <p:column headerText="Typ" sortBy="#{order.type}">
+	        <h:outputText value="#{order.type}" />
+	    </p:column>
+	    <p:column headerText="Aktion" sortBy="#{order.orderAction}">
+	        <h:outputText value="#{order.orderAction}" />
+	    </p:column>
+	    <p:column headerText="Anzahl" sortBy="#{order.volume}">
+	        <h:outputText value="#{order.volume}" />
+	    </p:column>
+	    <p:column headerText="Status" sortBy="#{paper.status}">
+	        <h:outputText value="#{order.status}" />
+	    </p:column>
+	    <p:column headerText="Beschreibung">
+	    	<small>
+	        	<h:outputText value="Gültig bis: #{dateUtil.formatDateWithTime(order.validTo.time)}" rendered="#{order.type == 'LIMIT'}" />
+	    	</small>
+	    </p:column>
+	    <!-- <p:column headerText="Limit">
+	        <h:outputText value="#{order.limit.value}" rendered="#{order.type == 'LIMIT'}"/>
+	    </p:column>
+	    <p:column headerText="LimitStop">
+	        <h:outputText value="#{order.stopLimit.value}" rendered="#{order.type == 'LIMIT'}"/>
+	    </p:column> -->
+	</p:dataTable>
+
+</ui:composition>

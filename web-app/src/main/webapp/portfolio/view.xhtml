@@ -1,0 +1,97 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:ase="http://java.sun.com/jsf/composite/portfoliosimcomponents"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<!-- content -->
+	<ui:define name="body">
+	
+		<f:metadata>
+			<f:viewParam name="portfolioId" value="#{portfolioViewBean.portfolioId}" required="#{!facesContext.postback}" />
+		    <f:viewAction action="#{portfolioViewBean.init}" />
+		</f:metadata>
+		
+		
+		
+		
+		<h:form id="portfolioViewForm">
+			<h:messages errorStyle="color:red" />
+			<p:growl id="growl" life="3000"/>
+		
+			<p:dialog id="visibilityDialog" header="Sichtbarkeitseinstellungen" widgetVar="visibilityDialog" modal="true" >
+			    <ui:include src="_visibilitySettings.xhtml" />
+			</p:dialog>
+		
+			<div class="row" style="margin-bottom: 15px;">
+				<div class="col-md-8">
+					<p:panel id="stats" header="Übersicht">
+						<p:commandButton value="Modal" type="button" onclick="PF('visibilityDialog').show();" />
+						
+						<ui:include src="_stats.xhtml" />
+					</p:panel>
+				</div>
+  				<div class="col-md-4">
+  					<p:panel id="follower" header="Follower">
+						<ui:include src="_followerList.xhtml" />
+					</p:panel>
+  				</div>
+			</div>
+			
+			<div class="row" style="margin-bottom: 15px;">
+				<div class="col-md-12">
+					<p:tabView>
+						<p:tab>
+							<f:facet name="title">
+				               	<h:outputText value="Einzeltitel"/>
+				               	<!-- <p:selectBooleanCheckbox value="#{portfolioViewBean.portfolio.visibility.valuePaperListVisible}">
+				            		<p:ajax update=":portfolioViewForm:msg" listener="#{portfolioViewBean.changeVisibility()}" />
+				        		</p:selectBooleanCheckbox> -->
+				            </f:facet>
+				            <ui:include src="_valuePaperTable.xhtml" />
+				        </p:tab>
+				        <p:tab title="Charts">
+				            <c:if test="#{not empty portfolioViewBean.portfolio.valuePapers}">
+				        		<div class="row">
+				        			<div class="col-md-6">
+				        				<p:chart type="pie" model="#{portfolioViewBean.valuePaperTypePie}" />
+				        			</div>
+				        			<div class="col-md-6">
+				        				<p:chart type="pie" model="#{portfolioViewBean.valuePaperCountryPie}" />
+				        			</div>
+				        		</div>
+							</c:if>
+				        </p:tab>
+				        <p:tab title="Orders">
+				        	<ui:include src="_orderTable.xhtml" />
+				        </p:tab>
+				        <p:tab title="Transaktionen">
+				            <ui:include src="_transactionTable.xhtml" />
+				        </p:tab>
+				        
+				        <p:tab title="News">
+				            <ui:include src="_news.xhtml" />
+				        </p:tab>
+				        
+				        <p:tab title="Meinungen">
+				            <ui:include src="_analystOpinions.xhtml" />
+				        </p:tab>
+			    	</p:tabView>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="col-md-12">
+					<p:chart type="line" model="#{portfolioViewBean.portfolioChart}" style="height:400px;"/>
+				</div>
+			</div>
+			
+		</h:form>
+		
+	</ui:define><!-- content -->
+</ui:composition>

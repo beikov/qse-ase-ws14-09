@@ -2,13 +2,17 @@ package at.ac.tuwien.ase09.data;
 
 import java.util.Calendar;
 import java.util.List;
+import java.util.Set;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 
 import at.ac.tuwien.ase09.exception.AppException;
 import at.ac.tuwien.ase09.exception.EntityNotFoundException;
+import at.ac.tuwien.ase09.model.Portfolio;
+import at.ac.tuwien.ase09.model.ValuePaperHistoryEntry;
 import at.ac.tuwien.ase09.model.ValuePaperPriceEntry;
 
 @Stateless
@@ -40,6 +44,45 @@ public class ValuePaperPriceEntryDataAccess {
 							Calendar.class)
 					.setParameter("code", code).getResultList();
 		} catch (Exception e) {
+			throw new AppException(e);
+		}
+	}
+	
+	public List<ValuePaperHistoryEntry> getValuePaperPriceHistoryEntries(String code){
+		try {
+			return em
+					.createQuery("SELECT vphe FROM ValuePaperHistoryEntry vphe JOIN vphe.valuePaper vp WHERE vp.code = :code",
+							ValuePaperHistoryEntry.class)
+					.setParameter("code", code).getResultList();
+		} catch (Exception e) {
+			throw new AppException(e);
+		}
+	}
+
+	public List<ValuePaperHistoryEntry> getValuePaperHistoryEntriesForPortfolioAfterDate(Portfolio portfolio, Calendar date) {
+		try {
+			String query = "SELECT he "
+					+ "FROM PortfolioValuePaper pvp, ValuePaperHistoryEntry he "
+					+ "WHERE pvp.valuePaper = he.valuePaper AND "
+					+ "pvp.portfolio = :portfolio AND he.date >= :date "
+					+ "ORDER BY he.date";
+			List<ValuePaperHistoryEntry> result = em.createQuery(query, ValuePaperHistoryEntry.class)
+					.setParameter("portfolio", portfolio).setParameter("date", date).getResultList(); 
+			return result;
+		} catch(Exception e) {
+			throw new AppException(e);
+		}
+	}
+	
+	public List<ValuePaperHistoryEntry> getHistoricValuePaperPricesByPortfolioId(Long id) {
+		try {
+			String query = "SELECT pe "
+					+ "FROM Portfolio p, PortfolioValuePaper vp, ValuePaperHistoryEntry pe "
+					+ "WHERE pe.valuePaper = vp.valuePaper AND "
+					+ "p.id = :id AND pe.date >= p.created "
+					+ "ORDER BY pe.date";
+			return em.createQuery(query, ValuePaperHistoryEntry.class).setParameter("id", id).getResultList();
+		} catch(Exception e) {
 			throw new AppException(e);
 		}
 	}
