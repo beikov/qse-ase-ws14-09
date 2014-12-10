@@ -45,6 +45,4 @@ public class PortfolioValuePaper extends BaseEntity<Long> {
 	public void setValuePaper(ValuePaper valuePaper) {
 		this.valuePaper = valuePaper;
 	}
-	
-
 }

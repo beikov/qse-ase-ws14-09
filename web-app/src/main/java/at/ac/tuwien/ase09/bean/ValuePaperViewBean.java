@@ -77,7 +77,7 @@ public class ValuePaperViewBean implements Serializable{
 	@Inject
 	private AnalystOpinionService analystOpinionService;
 
-	@PersistenceContext
+	@Inject
 	private EntityManager em;
 
 	public void init() {
