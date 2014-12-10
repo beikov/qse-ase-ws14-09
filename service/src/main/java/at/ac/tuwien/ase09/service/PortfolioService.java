@@ -166,9 +166,6 @@ public class PortfolioService {
         	}
         }
 		
-		System.out.println("changeCarryMap-------------------------- " + changeCarryMap);
-		System.out.println("pointResult-------------------------- " + pointResult);
-		
 		for (TransactionEntry transaction : portfolio.getTransactionEntries()) {
 			if (transaction.getType() != TransactionType.ORDER) {
         		continue;
@@ -194,10 +191,6 @@ public class PortfolioService {
 				changeMap.put(historyDate, change);
 			}
 		}
-		
-		System.out.println("changeMap-------------------------- " + changeMap);
-		
-		
 		
 		pointResult.put(format.format(portfolio.getCreated().getTime()), startCapital);
 		
