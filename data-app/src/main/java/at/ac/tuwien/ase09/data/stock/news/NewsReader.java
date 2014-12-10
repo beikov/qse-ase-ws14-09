@@ -26,8 +26,15 @@ import at.ac.tuwien.ase09.model.Stock;
 @Dependent
 @Named
 public class NewsReader extends AbstractItemReader  {
-	private static final DateFormat FINANZEN_NEWS_DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy");
+	private static final DateFormat FINANZEN_NEWS_DATE_FORMAT = new SimpleDateFormat("dd.MM.yy");
 	private static final DateFormat FINANZEN_CURRENT_NEWS_DATE_FORMAT = new SimpleDateFormat("HH:mm");
+	
+	static {
+		Calendar twoDigitYearStart = Calendar.getInstance();
+		twoDigitYearStart.set(2000, 1, 1); // 1.1.2000
+		((SimpleDateFormat) FINANZEN_NEWS_DATE_FORMAT).set2DigitYearStart(twoDigitYearStart.getTime());
+	}
+	
 	@Inject
 	private ValuePaperDataAccess valuePaperDataAccess;
 	
@@ -85,7 +92,7 @@ public class NewsReader extends AbstractItemReader  {
 				Element textElement = newsDetailPage.select("div.news_text").first();
 				String newsText = null;
 				if(textElement != null){
-					newsText= textElement.text();
+					newsText= textElement.text().trim();
 				}
 				
 				newsItem.setCreated(newsDate);
@@ -108,7 +115,9 @@ public class NewsReader extends AbstractItemReader  {
 		}catch(ParseException e){
 			// ignore
 		}
+		Calendar currentDate = Calendar.getInstance();
 		calendar.setTime(FINANZEN_CURRENT_NEWS_DATE_FORMAT.parse(s));
+		calendar.set(currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DAY_OF_MONTH));
 		return calendar;
 	}
 	
