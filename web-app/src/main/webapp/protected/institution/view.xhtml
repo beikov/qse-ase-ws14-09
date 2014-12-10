@@ -9,6 +9,10 @@
 
 	<!-- content -->
 	<ui:define name="body">
+	
+		<f:metadata>
+            <f:viewAction action="#{institutionBean.init}" />
+        </f:metadata>
 		
 		<h:form enctype="multipart/form-data">
 		    <p:growl id="messages" showDetail="true" />
@@ -37,7 +41,7 @@
     			</c:when>
     			
     			<c:otherwise>
-    				<p:graphicImage value="#{institutionBean.institution.logo}"/> 
+    				<p:graphicImage value="#{institutionBean.image}"/> 
     				<div class="row">
     					<h:outputText value="#{institutionBean.institution.name}" />
     				</div>
