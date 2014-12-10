@@ -539,18 +539,18 @@ public class ValuePaperViewBean implements Serializable{
 			StockBond sb = (StockBond)valuePaper;
 			Stock baseStock = sb.getBaseStock();
 
-			if(sb.getEmitter() != null){
-				this.mainValuePaperAttributes.put("Emittent", sb.getEmitter());
-			}
-
 			if(sb.getCoupon() != null){
-				this.mainValuePaperAttributes.put("Nominalzins", sb.getCoupon().toString());
+				this.mainValuePaperAttributes.put("Nominalzins", sb.getCoupon().toString() + "%");
 			}
 
 			if(sb.getEndDate() != null){
 				this.mainValuePaperAttributes.put("Ende der Laufzeit:", format.format(sb.getEndDate().getTime()));
 			}
 
+			if(sb.getEmitter() != null){
+				this.additionalValuePaperAttributes.put("Emittent", sb.getEmitter());
+			}
+			
 			if(sb.getEmissionDate() != null){
 				this.additionalValuePaperAttributes.put("Emissionsdatum:", format.format(sb.getEmissionDate().getTime()));
 			}
@@ -568,10 +568,6 @@ public class ValuePaperViewBean implements Serializable{
 				this.mainValuePaperAttributes.put("Depot-Bank", f.getDepotBank());
 			}
 
-			if(f.getCurrency() != null){
-				this.mainValuePaperAttributes.put("Währung:", f.getCurrency().getCurrencyCode());
-			}
-
 			if(f.getYieldType() != null){
 				switch (f.getYieldType()) {
 				case CUMULATIVE:
@@ -580,6 +576,10 @@ public class ValuePaperViewBean implements Serializable{
 				case DISTRIBUTING:
 					this.mainValuePaperAttributes.put("Ausschüttungsart:", "thesaurierend");
 				}
+			}
+			
+			if(f.getCurrency() != null){
+				this.mainValuePaperAttributes.put("Währung:", f.getCurrency().getCurrencyCode());
 			}
 			
 			if(f.getCategory() != null){
@@ -591,7 +591,7 @@ public class ValuePaperViewBean implements Serializable{
 			}
 			
 			if(f.getBusinessYearStartDay() != null && f.getBusinessYearStartMonth() != null){
-				this.additionalValuePaperAttributes.put("Start des Geschäftsjahres:", f.getBusinessYearStartDay().toString() + "." + f.getBusinessYearStartMonth().toString());
+				this.additionalValuePaperAttributes.put("Start des Geschäftsjahres:", f.getBusinessYearStartDay().toString() + "." + f.getBusinessYearStartMonth().toString() + ".");
 			}
 
 		}
@@ -611,7 +611,12 @@ public class ValuePaperViewBean implements Serializable{
 				}
 				break;
 			case FUND:
-				this.mainValuePaperAttributes.put("Aktueller Kurs:", getLastPriceEntry().getPrice().toString());
+				if(((Fund)valuePaper).getCurrency() != null){
+					this.mainValuePaperAttributes.put("Aktueller Kurs:", getLastPriceEntry().getPrice().toString() + " " + ((Fund)valuePaper).getCurrency().getCurrencyCode());
+				}
+				else{
+					this.mainValuePaperAttributes.put("Aktueller Kurs:", getLastPriceEntry().getPrice().toString());
+				}
 				break;
 			case BOND:			
 				this.mainValuePaperAttributes.put("Aktueller Kurs:", getLastPriceEntry().getPrice().toString()+"%");
@@ -663,7 +668,7 @@ public class ValuePaperViewBean implements Serializable{
 			axis.setTickAngle(-50);
 			//axis.setTickInterval("0");
 
-			currentPriceEntry.getCreated().add(Calendar.DATE, 1);
+			currentPriceEntry.getCreated().add(Calendar.DATE, 5);
 
 			axis.setMax(format.format(currentPriceEntry.getCreated().getTime()));
 			axis.setTickFormat("%b %#d, %y");
