@@ -1,13 +1,11 @@
 package at.ac.tuwien.ase09.test.data;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-import javax.ejb.EJBException;
 import javax.inject.Inject;
 import javax.persistence.PersistenceException;
-import javax.validation.ConstraintViolationException;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -27,7 +25,7 @@ public class PortfolioServiceTest extends AbstractContainerTest<ValuePaperDataAc
 
 	@Inject
 	private PortfolioService portfolioService;
-
+	
 	@Inject
 	private PortfolioDataAccess portfolioDataAccess;
 	
@@ -69,7 +67,7 @@ public class PortfolioServiceTest extends AbstractContainerTest<ValuePaperDataAc
 
 	@Test
 	public void test_existsPortfolioWithNameForUser_forNonExistingPortfolio_returnsFalse(){
-		assertFalse(portfolioService.existsPortfolioWithNameForUser("not_exists", owner));
+		assertFalse(portfolioDataAccess.existsPortfolioWithNameForUser("not_exists", owner));
 	}
 
 	@Test
@@ -78,7 +76,7 @@ public class PortfolioServiceTest extends AbstractContainerTest<ValuePaperDataAc
 		portfolio.setOwner(owner);
 		portfolioService.savePortfolio(portfolio);
 		
-		assertTrue(portfolioService.existsPortfolioWithNameForUser("pf1", owner));
+		assertTrue(portfolioDataAccess.existsPortfolioWithNameForUser("pf1", owner));
 	}
 
 

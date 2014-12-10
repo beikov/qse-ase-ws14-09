@@ -2,56 +2,35 @@ package at.ac.tuwien.ase09.bean;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.deltaspike.core.api.scope.ViewAccessScoped;
 import org.primefaces.model.chart.AxisType;
 import org.primefaces.model.chart.DateAxis;
 import org.primefaces.model.chart.LineChartModel;
 import org.primefaces.model.chart.LineChartSeries;
-import org.primefaces.model.chart.MeterGaugeChartModel;
 import org.primefaces.model.chart.PieChartModel;
 
 import at.ac.tuwien.ase09.data.PortfolioDataAccess;
 import at.ac.tuwien.ase09.data.ValuePaperPriceEntryDataAccess;
 import at.ac.tuwien.ase09.model.AnalystOpinion;
-import at.ac.tuwien.ase09.model.AnalystRecommendation;
 import at.ac.tuwien.ase09.model.Money;
 import at.ac.tuwien.ase09.model.NewsItem;
 import at.ac.tuwien.ase09.model.Portfolio;
 import at.ac.tuwien.ase09.model.PortfolioValuePaper;
 import at.ac.tuwien.ase09.model.User;
-import at.ac.tuwien.ase09.model.ValuePaper;
-import at.ac.tuwien.ase09.model.ValuePaperHistoryEntry;
 import at.ac.tuwien.ase09.model.ValuePaperType;
 import at.ac.tuwien.ase09.model.order.Order;
 import at.ac.tuwien.ase09.model.order.OrderStatus;
-import at.ac.tuwien.ase09.model.transaction.FeeTransactionEntry;
-import at.ac.tuwien.ase09.model.transaction.OrderFeeTransactionEntry;
-import at.ac.tuwien.ase09.model.transaction.OrderTransactionEntry;
-import at.ac.tuwien.ase09.model.transaction.PayoutTransactionEntry;
-import at.ac.tuwien.ase09.model.transaction.TaxTransactionEntry;
 import at.ac.tuwien.ase09.model.transaction.TransactionEntry;
-import at.ac.tuwien.ase09.model.transaction.TransactionType;
 import at.ac.tuwien.ase09.service.PortfolioService;
-import at.ac.tuwien.ase09.service.ValuePaperPriceEntryService;
 
 @Named
 @ViewScoped
@@ -111,11 +90,11 @@ public class PortfolioViewBean implements Serializable {
 	}
 	
 	public List<NewsItem> getNewsForValuePapers() {
-		return portfolioService.getNewsForValuePapers(portfolio.getValuePapers());
+		return portfolioDataAccess.getNewsForValuePapers(portfolio.getValuePapers());
 	}
 	
 	public List<AnalystOpinion> getAnalystOpinionsForValuePapers() {
-		return portfolioService.getAnalystOpinionsForValuePapers(portfolio.getValuePapers());
+		return portfolioDataAccess.getAnalystOpinionsForValuePapers(portfolio.getValuePapers());
 	}
 	
 	/*public String getTransactionValuePaperName(TransactionEntry t) {
@@ -162,13 +141,13 @@ public class PortfolioViewBean implements Serializable {
 	
 	public Money getTotalPayed(String code) {
 		Money money = portfolio.getCurrentCapital();
-		money.setValue(portfolioService.getTotalPayedForValuePaper(code));
+		money.setValue(portfolioDataAccess.getTotalPayedForValuePaper(code));
 		return money;
 	}
 	
 	public Money getProfit(PortfolioValuePaper pvp) {
 		Money money = portfolio.getCurrentCapital();
-		money.setValue(new BigDecimal(portfolioService.getProfit(pvp)));
+		money.setValue(new BigDecimal(portfolioDataAccess.getProfit(pvp)));
 		return money;
 	}
 	
@@ -193,7 +172,7 @@ public class PortfolioViewBean implements Serializable {
 				break;
 			}
 		}
-		return portfolioService.getChange(pvp);
+		return portfolioDataAccess.getChange(pvp);
 		//return 0;
 	}
 	
@@ -209,7 +188,7 @@ public class PortfolioViewBean implements Serializable {
 	}
 	
 	private void createValuePaperTypePie() {
-		Map<ValuePaperType, Integer> valuePaperTypeCounterMap = portfolioService.getValuePaperTypeCountMap(portfolio);
+		Map<ValuePaperType, Integer> valuePaperTypeCounterMap = portfolioDataAccess.getValuePaperTypeCountMap(portfolio);
 		
 		if (valuePaperTypeCounterMap.keySet().size() <= 0) {
 			return;
@@ -225,7 +204,7 @@ public class PortfolioViewBean implements Serializable {
 	}
 
 	private void createValuePaperCountryPie() {
-		Map<String, Integer> valuePaperCountryCountMap = portfolioService.getValuePaperCountryCountMap(portfolio);
+		Map<String, Integer> valuePaperCountryCountMap = portfolioDataAccess.getValuePaperCountryCountMap(portfolio);
 		
 		if (valuePaperCountryCountMap.keySet().size() <= 0) {
 			return;
@@ -254,7 +233,7 @@ public class PortfolioViewBean implements Serializable {
         LineChartSeries series = new LineChartSeries();
         series.setLabel("Series");
         
-        Map<String, BigDecimal> pointResult = portfolioService.getPortfolioChartEntries(portfolio);        
+        Map<String, BigDecimal> pointResult = portfolioDataAccess.getPortfolioChartEntries(portfolio);        
         
         for (String date: pointResult.keySet()) {
         	BigDecimal value = pointResult.get(date);

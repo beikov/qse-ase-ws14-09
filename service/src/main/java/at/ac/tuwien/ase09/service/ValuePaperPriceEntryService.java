@@ -23,9 +23,6 @@ public class ValuePaperPriceEntryService {
 
 	@Inject
 	private ValuePaperDataAccess valuePaperDataAccess;
-	
-	@Inject
-	private ValuePaperPriceEntryDataAccess valuePaperPriceEntryDataAccess;
 
 	public void savePriceEntry(ValuePaperPriceEntry pe) {
 		em.persist(pe);
@@ -38,11 +35,4 @@ public class ValuePaperPriceEntryService {
 		savePriceEntry(priceEntry);
 	}
 	
-	public ValuePaperPriceEntry getLastPriceEntry(String isin){
-		return valuePaperPriceEntryDataAccess.getLastPriceEntry(isin);
-	}
-	
-	public List<ValuePaperHistoryEntry> getValuePaperPriceHistoryEntries(String isin){
-		return valuePaperPriceEntryDataAccess.getValuePaperPriceHistoryEntries(isin);
-	}
 }

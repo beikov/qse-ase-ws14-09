@@ -1,12 +1,8 @@
 package at.ac.tuwien.ase09.filter;
 
 import java.math.BigDecimal;
-import java.util.Currency;
-
-import javax.inject.Inject;
 
 import at.ac.tuwien.ase09.model.ValuePaperType;
-import at.ac.tuwien.ase09.service.ValuePaperScreenerService;
 
 public class AttributeFilter {
 

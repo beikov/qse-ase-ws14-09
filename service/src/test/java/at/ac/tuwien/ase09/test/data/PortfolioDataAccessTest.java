@@ -1,6 +1,6 @@
 package at.ac.tuwien.ase09.test.data;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import javax.inject.Inject;
 
