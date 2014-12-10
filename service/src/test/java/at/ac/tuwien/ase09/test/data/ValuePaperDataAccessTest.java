@@ -222,36 +222,6 @@ public class ValuePaperDataAccessTest extends AbstractContainerTest<ValuePaperDa
 	}
 	
 	@Test
-	public void testGetStockCodesByIndex_nonExistent(){
-		assertTrue(valuePaperDataAccess.getStockCodesByIndex("ATX").isEmpty());
-	}
-	
-	@Test
-	public void testGetStockCodesByIndex(){
-		// Given
-		Stock stock1 = new Stock();
-		stock1.setIndex("ATX");
-		stock1.setCode("1");
-		Stock stock2 = new Stock();
-		stock2.setIndex("ATX");
-		stock2.setCode("2");
-		Stock stock3 = new Stock();
-		stock3.setIndex("Nasdaq100");
-		stock3.setCode("3");
-		dataManager.persist(stock1);
-		dataManager.persist(stock2);
-		dataManager.persist(stock3);
-		em.clear();
-		
-		// When
-		List<String> actualCodes = valuePaperDataAccess.getStockCodesByIndex("ATX");
-		
-		// Then
-		List<String> expectedCodes = Arrays.asList(new String[]{ "1", "2" });
-		Assert.assertUnorderedEquals(expectedCodes, actualCodes);
-	}
-	
-	@Test
 	public void testGetLatestDividendHistoryEntry_nonExistent(){
 		Assert.verifyException(valuePaperDataAccess, EntityNotFoundException.class).getLatestDividendHistoryEntry("A");
 	}

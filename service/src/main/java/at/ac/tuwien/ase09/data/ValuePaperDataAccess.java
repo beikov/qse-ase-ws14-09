@@ -67,14 +67,6 @@ public class ValuePaperDataAccess {
 		}
 	}
 	
-	public List<String> getStockCodesByIndex(String indexName){
-		try{
-			return em.createQuery("SELECT stock.code FROM Stock stock WHERE stock.index = :index", String.class).setParameter("index", indexName).getResultList();
-		}catch(Exception e){
-			throw new AppException(e);
-		}
-	}
-	
 	public DividendHistoryEntry getLatestDividendHistoryEntry(String code){
 		List<DividendHistoryEntry> entries = null;
 		try{

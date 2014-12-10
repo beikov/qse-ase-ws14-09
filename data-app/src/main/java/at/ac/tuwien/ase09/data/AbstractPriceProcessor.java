@@ -17,6 +17,9 @@ public abstract class AbstractPriceProcessor implements ItemProcessor {
 	private ValuePaperDataAccess valuePaperDataAccess;
 	
 	protected boolean isPriceSavingRequired(IntradayPrice price){
+		if(price.getIsin() == null){
+			return false;
+		}
 		try{
 			ValuePaperPriceEntry existingPriceEntry = priceEntryDataAccess.getLastPriceEntry(price.getIsin());
 			if(price.getPrice().compareTo(existingPriceEntry.getPrice()) == 0){
