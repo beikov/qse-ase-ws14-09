@@ -1,21 +1,16 @@
 package at.ac.tuwien.ase09.data;
 
-import java.util.ArrayList;
 import java.util.Currency;
 import java.util.List;
 
-import javax.ejb.EJBException;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.ejb.EntityManagerImpl;
 
 import at.ac.tuwien.ase09.filter.AttributeFilter;
 import at.ac.tuwien.ase09.model.Stock;
@@ -26,19 +21,28 @@ import at.ac.tuwien.ase09.model.ValuePaperType;
 @Stateless
 public class ValuePaperScreenerAccess {
 
-	@PersistenceContext
+	@Inject
 	private EntityManager em;
 	
 	@SuppressWarnings("unchecked")
 	public List<ValuePaper> findByFilter(List<AttributeFilter> filters, ValuePaperType type)
 	{
-		Criteria crit = ((Session)em.getDelegate()).createCriteria(ValuePaper.class, "valuePaper");
+		Criteria crit = null;
+				
+				try{
+					crit=((Session)em.getDelegate()).createCriteria(ValuePaper.class, "valuePaper");
+				}
+				catch(ClassCastException e)
+				{
+					crit=((Session)((EntityManagerImpl)em.getDelegate()).getSession()).createCriteria(ValuePaper.class, "valuePaper");
+				}
 		
 		if(type!=null)
 		{
 			crit.add(Restrictions.eq("class", type.toString()));
 		}
-		
+		if(filters!=null)
+		{
 		for(AttributeFilter filter:filters)
 		{
 			if (filter.getEnabled()&&filter.getAttribute()!=null) 
@@ -58,6 +62,7 @@ public class ValuePaperScreenerAccess {
 				}
 			}
 			
+		}
 		}
 		
 		return crit.list();

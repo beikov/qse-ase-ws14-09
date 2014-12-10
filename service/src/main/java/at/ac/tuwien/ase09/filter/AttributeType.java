@@ -7,6 +7,7 @@ public enum AttributeType {
 	NAME("name","Name",false),
 	CODE( "code","Code/Isin",false),
 	
+	COUNTRY("country","Land",false),
 	CURRENCY( "currency","Währungscode",false),
 	MARKETCAP("marketCap","Börsenwert",true),
 	ENTERPRISEVALUE("enterpriseValue","Unternehmenswert",true),
@@ -22,7 +23,7 @@ public enum AttributeType {
 	EBITDA("ebitda","EBITDA(operativer Gewinn)",true),
 	TOTALCASH("totalCash","Totaler Cash-Flow",true),
 	TOTALCASHSHARE("totalCashPerShare","Totaler Cash-Flow/Aktie",true),
-	TOTALCASHPERSHARE("totalDebt","Gesamtverschuldung",true),
+	TOTALDEBT("totalDebt","Gesamtverschuldung",true),
 	TOTALDEBTEQUITY("totalDebtEquity","Eigenkapitalüberdeckung",true),
 	OPERATINGCASHFLOW("operatingCashFlow","Operativer Cash-Flow",true),
 	BETA("beta","Betafaktor",true),
