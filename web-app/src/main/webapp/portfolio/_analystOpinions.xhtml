@@ -5,22 +5,28 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:p="http://primefaces.org/ui">
 	
-	<p:dataList value="#{portfolioViewBean.analystOpinionsForValuePapers}" 
-				var="opinion" type="unordered" itemType="none" 
-				paginator="true" rows="5" styleClass="paginated">
-				
-				<p:commandLink
-					update=":portfolioViewForm:analystOpinionDetail"
-					oncomplete="PF('analystOpinionDialog').show()"
-					title="Analystenmeinung anzeigen">
-					<f:param name="valuePaperCode" value="#{opinion.stock.code}" />
-					<f:setPropertyActionListener value="#{opinion}" target="#{valuePaperViewBean.selectedAnalystOpinion}" />
-					<h:outputText value="#{opinion.created.time}">
-						<f:convertDateTime pattern="dd.MM.yyyy" timeZone="CET"/>
-					</h:outputText>
-					<h:outputText value=", #{opinion.stock.name}" />
-					<h:outputText value=": #{opinion.recommendation}" />
-				</p:commandLink>
-				
-	</p:dataList>
+	<p:dataTable var="opinion" value="#{portfolioViewBean.analystOpinionsForValuePapers}" rows="10"
+                    paginator="true"
+                    paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                    rowsPerPageTemplate="5,10,15">
+    
+    	<p:column headerText="Datum" sortBy="#{opinion.created}">
+	        <h:outputText value="#{dateUtil.formatCalendar(opinion.created)}"></h:outputText>
+	    </p:column>
+	    <p:column headerText="Wertpapier" sortBy="#{opinion.stock.name}">
+	        <h:outputText value="#{opinion.stock.name}"></h:outputText>
+	    </p:column>
+	    <p:column headerText="Meinung" sortBy="#{opinion.stock.name}">
+			<h:outputText value="#{opinion.recommendation}" />
+	    </p:column>                     
+	    <p:column width="80">
+			<p:commandLink update=":portfolioViewForm:analystOpinionDialog"
+				oncomplete="PF('analystOpinionDialog').show()" title="Details">
+				<f:param name="valuePaperCode" value="#{valuePaperViewBean.valuePaper.code}" />
+				<f:setPropertyActionListener value="#{opinion}" target="#{valuePaperViewBean.selectedAnalystOpinion}" />
+				<h:outputText value="Details" />
+			</p:commandLink>
+	    </p:column>
+	
+	</p:dataTable>
 </ui:composition>

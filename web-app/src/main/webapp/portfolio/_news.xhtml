@@ -5,26 +5,30 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:p="http://primefaces.org/ui">
 
-
 	
-
-
-	<p:dataList value="#{portfolioViewBean.newsForValuePapers}" var="news"
-		type="unordered" itemType="none" paginator="true" rows="5"
-		styleClass="paginated news-items">
-
-		<p:commandLink update=":portfolioViewForm:newsDialog"
-			oncomplete="PF('newsDialog').show()" title="News anzeigen">
-			<f:param name="valuePaperCode" value="#{valuePaperViewBean.valuePaper.code}" />
-			<f:setPropertyActionListener value="#{news}" target="#{valuePaperViewBean.selectedNewsItem}" />
-			<h:outputText value="#{news.created.time}">
-				<f:convertDateTime pattern="dd.MM.yyyy" timeZone="CET"/>
-			</h:outputText>
-			<h:outputText value=", #{news.stock.name}" />
-			<h:outputText
-				value=", #{news.title.length() gt 90 ? news.title.subSequence(0,90).toString().concat('...') : news.title}" />
-		</p:commandLink>
-
-	</p:dataList>
+	<p:dataTable var="news" value="#{portfolioViewBean.newsForValuePapers}" rows="10"
+	             paginator="true"
+	             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+	             rowsPerPageTemplate="5,10,15">
+    
+    	<p:column headerText="Datum" sortBy="#{news.created.timeInMillis}" width="150">
+	        <h:outputText value="#{dateUtil.formatCalendar(news.created)}"></h:outputText>
+	    </p:column>
+	    <p:column headerText="Wertpapier" sortBy="#{news.stock.name}" width="150">
+	        <h:outputText value="#{news.stock.name}"></h:outputText>
+	    </p:column>
+	    <p:column headerText="Titel">
+			<h:outputText value="#{news.title.length() gt 90 ? news.title.subSequence(0,90).toString().concat('...') : news.title}" />
+	    </p:column>                     
+	    <p:column width="80">
+			<p:commandLink update=":portfolioViewForm:newsDialog"
+				oncomplete="PF('newsDialog').show()" title="Details">
+				<f:param name="valuePaperCode" value="#{valuePaperViewBean.valuePaper.code}" />
+				<f:setPropertyActionListener value="#{news}" target="#{valuePaperViewBean.selectedNewsItem}" />
+				<h:outputText value="Details" />
+			</p:commandLink>
+	    </p:column>
+	
+	</p:dataTable>
 
 </ui:composition>
