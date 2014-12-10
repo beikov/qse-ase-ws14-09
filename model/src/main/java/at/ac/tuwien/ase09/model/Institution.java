@@ -2,6 +2,7 @@ package at.ac.tuwien.ase09.model;
 
 import java.sql.Blob;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
@@ -40,6 +41,7 @@ public class Institution extends BaseEntity<Long> {
 		this.admin = admin;
 	}
 	
+	@Column(columnDefinition="TEXT")
 	public String getPageText() {
 		return pageText;
 	}

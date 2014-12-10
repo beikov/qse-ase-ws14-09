@@ -211,6 +211,10 @@ public class PortfolioViewBean implements Serializable {
 	private void createValuePaperTypePie() {
 		Map<ValuePaperType, Integer> valuePaperTypeCounterMap = portfolioService.getValuePaperTypeCountMap(portfolio);
 		
+		if (valuePaperTypeCounterMap.keySet().size() <= 0) {
+			return;
+		}
+		
 		valuePaperTypePie = new PieChartModel();
 		for (ValuePaperType type : valuePaperTypeCounterMap.keySet()) {
 			valuePaperTypePie.set(type.name() + ": " + valuePaperTypeCounterMap.get(type), valuePaperTypeCounterMap.get(type));
@@ -222,6 +226,10 @@ public class PortfolioViewBean implements Serializable {
 
 	private void createValuePaperCountryPie() {
 		Map<String, Integer> valuePaperCountryCountMap = portfolioService.getValuePaperCountryCountMap(portfolio);
+		
+		if (valuePaperCountryCountMap.keySet().size() <= 0) {
+			return;
+		}
 		
 		valuePaperCountryPie = new PieChartModel();
 		for (String country : valuePaperCountryCountMap.keySet()) {

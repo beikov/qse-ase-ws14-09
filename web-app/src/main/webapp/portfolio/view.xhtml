@@ -30,8 +30,12 @@
 		
 			<div class="row" style="margin-bottom: 15px;">
 				<div class="col-md-8">
-					<p:panel id="stats" header="Übersicht">
-						<p:commandButton value="Modal" type="button" onclick="PF('visibilityDialog').show();" />
+					<p:panel id="stats">
+						<f:facet name="header">
+							<h:outputText value="Übersicht" />
+							<p:commandButton type="button" onclick="PF('visibilityDialog').show();" icon="ui-icon-gear" style="float:right;"/>
+						</f:facet>
+						
 						
 						<ui:include src="_stats.xhtml" />
 					</p:panel>
@@ -56,16 +60,14 @@
 				            <ui:include src="_valuePaperTable.xhtml" />
 				        </p:tab>
 				        <p:tab title="Charts">
-				            <c:if test="#{not empty portfolioViewBean.portfolio.valuePapers}">
 				        		<div class="row">
 				        			<div class="col-md-6">
-				        				<p:chart type="pie" model="#{portfolioViewBean.valuePaperTypePie}" />
+				        				<p:chart type="pie" model="#{portfolioViewBean.valuePaperTypePie}" rendered="#{portfolioViewBean.valuePaperTypePie != null}" />
 				        			</div>
 				        			<div class="col-md-6">
-				        				<p:chart type="pie" model="#{portfolioViewBean.valuePaperCountryPie}" />
+				        				<p:chart type="pie" model="#{portfolioViewBean.valuePaperCountryPie}" rendered="#{portfolioViewBean.valuePaperCountryPie != null}" />
 				        			</div>
 				        		</div>
-							</c:if>
 				        </p:tab>
 				        <p:tab title="Orders">
 				        	<ui:include src="_orderTable.xhtml" />
