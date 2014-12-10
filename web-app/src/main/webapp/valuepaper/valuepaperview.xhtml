@@ -150,7 +150,7 @@
 									<f:setPropertyActionListener value="#{news}"
 										target="#{valuePaperViewBean.selectedNewsItem}" />
 									<h:outputText value="#{news.created.time}">
-										<f:convertDateTime pattern="dd.MM.yyyy" />
+										<f:convertDateTime pattern="dd.MM.yyyy" timeZone="CET"/>
 									</h:outputText>
 									<h:outputText
 										value=", #{news.title.length() gt 34 ? news.title.subSequence(0,34).toString().concat('...') : news.title}" />
@@ -169,7 +169,7 @@
 										<h:outputText
 											value="#{valuePaperViewBean.selectedNewsItem.created.time}"
 											style="font-size:10px">
-											<f:convertDateTime pattern="dd.MM.yyyy" />
+											<f:convertDateTime pattern="dd.MM.yyyy" timeZone="CET"/>
 										</h:outputText>
 
 										<br />
@@ -215,7 +215,7 @@
 										<f:setPropertyActionListener value="#{analystOpinion}"
 											target="#{valuePaperViewBean.selectedAnalystOpinion}" />
 										<h:outputText value="#{analystOpinion.created.time}">
-											<f:convertDateTime pattern="dd.MM.yyyy" />
+											<f:convertDateTime pattern="dd.MM.yyyy" timeZone="CET"/>
 										</h:outputText>
 										<h:outputText value=": #{analystOpinion.recommendation}" />
 									</p:commandLink>
@@ -234,7 +234,7 @@
 										<h:outputText
 											value="#{valuePaperViewBean.selectedAnalystOpinion.created.time}"
 											style="font-size:10px">
-											<f:convertDateTime pattern="dd.MM.yyyy" />
+											<f:convertDateTime pattern="dd.MM.yyyy" timeZone="CET"/>
 										</h:outputText>
 
 										<br />
