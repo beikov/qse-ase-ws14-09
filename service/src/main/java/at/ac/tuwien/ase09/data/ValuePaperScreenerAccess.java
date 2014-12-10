@@ -1,24 +1,22 @@
 package at.ac.tuwien.ase09.data;
 
-import java.util.ArrayList;
+import java.util.Currency;
 import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.ejb.EntityManagerImpl;
 
+import at.ac.tuwien.ase09.filter.AttributeFilter;
 import at.ac.tuwien.ase09.model.Stock;
 import at.ac.tuwien.ase09.model.ValuePaper;
 import at.ac.tuwien.ase09.model.ValuePaperType;
+
 
 @Stateless
 public class ValuePaperScreenerAccess {
@@ -27,10 +25,63 @@ public class ValuePaperScreenerAccess {
 	private EntityManager em;
 	
 	@SuppressWarnings("unchecked")
+	public List<ValuePaper> findByFilter(List<AttributeFilter> filters, ValuePaperType type)
+	{
+		Criteria crit = null;
+				
+				try{
+					crit=((Session)em.getDelegate()).createCriteria(ValuePaper.class, "valuePaper");
+				}
+				catch(ClassCastException e)
+				{
+					crit=((Session)((EntityManagerImpl)em.getDelegate()).getSession()).createCriteria(ValuePaper.class, "valuePaper");
+				}
+		
+		if(type!=null)
+		{
+			crit.add(Restrictions.eq("class", type.toString()));
+		}
+		if(filters!=null)
+		{
+		for(AttributeFilter filter:filters)
+		{
+			if (filter.getEnabled()&&filter.getAttribute()!=null) 
+			{
+				if (filter.getNumeric()) 
+				{
+					crit.add(filter.getOperator().createRestriction("valuePaper."+ filter.getAttribute().getParmName(),
+									filter.getNumericValue()));
+				} else if (filter.getTextValue() != null) 
+				{
+					String textValue = filter.getTextValue().replace('*', '%').replace('?', '_');
+					crit.add(Restrictions.ilike("valuePaper."+ filter.getAttribute().getParmName(), textValue));
+				} 
+				else if (filter.getCurrencyValue() != null) 
+				{			
+					crit.add(Restrictions.eq("valuePaper."+ filter.getAttribute().getParmName(), Currency.getInstance(filter.getCurrencyValue())));
+				}
+			}
+			
+		}
+		}
+		
+		return crit.list();
+	}
+	@SuppressWarnings("unchecked")
+	public List<Currency> getUsedCurrencyCodes()
+	{
+		//List<Currency> curList=new ArrayList<Currency>();
+		return em.createQuery("SELECT s.currency FROM Stock s Group by s.currency").getResultList();
+		
+		
+	}
+	@SuppressWarnings("unchecked")
 	public List<ValuePaper> findByValuePaper(ValuePaper valuePaper, Boolean isTypeSecificated) {
 		
 		
 		Criteria crit = ((Session)em.getDelegate()).createCriteria(ValuePaper.class, "valuePaper");
+		
+		
 		
 		if (valuePaper.getName() != null && !valuePaper.getName().isEmpty()) {
 			String name = valuePaper.getName().replace('*', '%').replace('?', '_');
@@ -40,58 +91,22 @@ public class ValuePaperScreenerAccess {
 			crit.add(Restrictions.eq("valuePaper.currency", ((Stock)valuePaper).getCurrency()));
 		}
 		if (valuePaper.getCode() != null && !valuePaper.getCode().isEmpty()) {
-			String code = valuePaper.getCode().replace('*', '%').replace('?', '_');
-			crit.add(Restrictions.ilike("valuePaper.code", code));
+			String isin = valuePaper.getCode().replace('*', '%').replace('?', '_');
+			crit.add(Restrictions.ilike("valuePaper.code", isin));
 		}
 		if (valuePaper.getType() == ValuePaperType.STOCK && ((Stock)valuePaper).getCountry() != null && !((Stock)valuePaper).getCountry().isEmpty()) {
 			String co = ((Stock)valuePaper).getCountry().replace('*', '%').replace('?', '_');
 			crit.add(Restrictions.ilike("valuePaper.country", co));
 		}
+		
 			
 		if(isTypeSecificated)
 		{	
 			crit.add(Restrictions.eq("class", valuePaper.getType().toString()));
 		}
-			
+		
 		return crit.list();
 		
-		/**
-		CriteriaBuilder builder = em.getCriteriaBuilder();
-		CriteriaQuery<ValuePaper> query = builder.createQuery(ValuePaper.class);
-		Root<ValuePaper> rootValuePaper = query.from(ValuePaper.class);
-		
-		List<Predicate> wherePredicates = new ArrayList<Predicate>();
-		
-		if (valuePaper.getName() != null && !valuePaper.getName().isEmpty()) {
-			String na = valuePaper.getName().replace('*', '%').replace('?', '_').toUpperCase();
-			wherePredicates.add( builder.like( builder.upper( rootValuePaper.<String>get("name") ), na) );
-		}
-		
-		if (valuePaper.getCurrency() != null) {
-			wherePredicates.add( builder.equal(rootValuePaper.get("currency") , valuePaper.getCurrency()));
-		}
-		
-		if (valuePaper.getIsin() != null && !valuePaper.getIsin().isEmpty()) {
-			String isin = valuePaper.getIsin().replace('*', '%').replace('?', '_').toUpperCase();
-			wherePredicates.add( builder.like( builder.upper(rootValuePaper.<String>get("isin")), isin));
-		}
-
-		if (valuePaper.getCountry() != null && !valuePaper.getCountry().isEmpty()) {
-			String co = valuePaper.getCountry().replace('*', '%').replace('?', '_').toUpperCase();
-			wherePredicates.add( builder.like( builder.upper( rootValuePaper.<String>get("country") ), co) );
-		}
-		if(isTypeSecificated)
-		{
-			
-			wherePredicates.add( builder.equal(rootValuePaper.get("class"), valuePaper.getType()) );
-		}
-		
-		Predicate whereClause = builder.and(wherePredicates.toArray(new Predicate[0]));
-		
-		query.where(whereClause);
-		
-		return em.createQuery(query).getResultList();
-		*/
 		
 	}
 }
