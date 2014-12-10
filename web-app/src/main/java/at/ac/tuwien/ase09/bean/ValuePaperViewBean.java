@@ -297,10 +297,6 @@ public class ValuePaperViewBean implements Serializable{
 				this.mainValuePaperAttributes.put("Währung:", s.getCurrency().getCurrencyCode());
 			}
 
-			if(s.getDetailUrl() != null){
-				this.additionalValuePaperAttributes.put("Details:", s.getDetailUrl());
-			}
-
 			if(s.getMarketCap() != null){
 				this.additionalValuePaperAttributes.put("Market Cap:", s.getMarketCap().toString());
 			}
@@ -525,13 +521,6 @@ public class ValuePaperViewBean implements Serializable{
 				this.additionalValuePaperAttributes.put("Ex Dividend Date:", format.format(s.getEx_DividendDate().getTime()));
 			}
 
-			//			if(s.getBoerseCertificatePageUrl() != null){
-			//				this.additionalValuePaperAttributes.put("Börse-Zertifikate:", s.getBoerseCertificatePageUrl());
-			//			}
-
-			if(s.getFinanzenCertificatePageUrl() != null){
-				this.additionalValuePaperAttributes.put("Finanzen-Zertifikate:", s.getFinanzenCertificatePageUrl());
-			}
 		}
 
 		if(valuePaper.getType() == ValuePaperType.BOND){
@@ -594,10 +583,6 @@ public class ValuePaperViewBean implements Serializable{
 				this.additionalValuePaperAttributes.put("Start des Geschäftsjahres:", f.getBusinessYearStartDay().toString() + "." + f.getBusinessYearStartMonth().toString() + ".");
 			}
 
-		}
-
-		if(valuePaper.getHistoricPricesPageUrl() != null){
-			this.additionalValuePaperAttributes.put("Historische Preise:", valuePaper.getHistoricPricesPageUrl());
 		}
 
 		if(getLastPriceEntry() != null){
