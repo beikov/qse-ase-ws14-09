@@ -1,9 +1,7 @@
 package at.ac.tuwien.ase09.bean;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.sql.Blob;
@@ -14,7 +12,6 @@ import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseId;
-import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.sql.rowset.serial.SerialBlob;
@@ -27,6 +24,7 @@ import org.primefaces.model.UploadedFile;
 
 import at.ac.tuwien.ase09.context.WebUserContext;
 import at.ac.tuwien.ase09.data.InstitutionDataAccess;
+import at.ac.tuwien.ase09.exception.AppException;
 import at.ac.tuwien.ase09.model.Institution;
 import at.ac.tuwien.ase09.model.User;
 import at.ac.tuwien.ase09.service.InstitutionService;
@@ -49,11 +47,6 @@ public class InstitutionBean implements Serializable {
 	private Institution institution;
 
 	private boolean editMode;
-	
-	private byte[] uploadedLogo;
-	
-	//private UploadedFile uploadedFile;
-	
 	
 	//@PostConstruct
 	public void init() {
@@ -101,13 +94,11 @@ public class InstitutionBean implements Serializable {
 	public void handleLogoUpload(FileUploadEvent event) {
 		try {
 			UploadedFile logo = event.getFile();
-			uploadedLogo = serialize(logo);
-			byte[] foto = IOUtils.toByteArray(logo.getInputstream());
-	        System.out.println(foto);
-			Blob newLogo = new SerialBlob(foto);
+			byte[] uploadedLogo = IOUtils.toByteArray(logo.getInputstream());
+			Blob newLogo = new SerialBlob(uploadedLogo);
 			
 			institution.setLogo(newLogo);
-			institutionService.update(institution);
+			//institutionService.update(institution);
 			FacesMessage message = new FacesMessage("Logo:", logo.getFileName() + " erfolgreich hochgeladen.");
 			FacesContext.getCurrentInstance().addMessage(null, message);
 		} catch (Exception e) {
@@ -121,16 +112,7 @@ public class InstitutionBean implements Serializable {
 		return institution;
 	}
 	
-	public DefaultStreamedContent getInstitutionLogo() {
-		try {
-			return new DefaultStreamedContent(institution.getLogo().getBinaryStream(), "image/png");
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-	
-	public StreamedContent getImage() throws IOException {
+	public StreamedContent getImage() {
         FacesContext context = FacesContext.getCurrentInstance();
 
         if (context.getCurrentPhaseId() == PhaseId.RENDER_RESPONSE) {
@@ -139,11 +121,14 @@ public class InstitutionBean implements Serializable {
         }
         else {
             // So, browser is requesting the image. Return a real StreamedContent with the image bytes.
-            try {
-				return new DefaultStreamedContent(new ByteArrayInputStream(institution.getLogo().getBytes(0, (int)institution.getLogo().length())));
+        	String admin = context.getExternalContext().getRequestParameterMap().get("admin");
+        	Institution i = institutionDataAccess.getByAdmin(admin);
+        	
+			try {
+				return new DefaultStreamedContent(i.getLogo().getBinaryStream());
 			} catch (SQLException e) {
 				e.printStackTrace();
-				return null;
+				throw new AppException(e.getMessage());
 			}
         }
     }

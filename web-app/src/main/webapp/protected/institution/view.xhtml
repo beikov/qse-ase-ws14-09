@@ -17,23 +17,37 @@
 		<h:form enctype="multipart/form-data">
 		    <p:growl id="messages" showDetail="true" />
 
-			<div class="row">
+			<div class="row" style="margin-bottom: 30px;">
     			<p:commandButton value="Editieren" update="@form" rendered="#{!institutionBean.editMode}" action="#{institutionBean.toggleEditMode()}" />
     			<p:commandButton value="Editieren beenden" update="@form" rendered="#{institutionBean.editMode}" action="#{institutionBean.toggleEditMode()}" />
 			</div>
     		
     		<c:choose>
     			<c:when test="#{institutionBean.editMode}">
-    				<div class="row">
-    					<!-- <p:fileUpload value="#{institutionBean.uploadedLogo}" mode="simple" skinSimple="true"/> -->
-    					<p:fileUpload fileUploadListener="#{institutionBean.handleLogoUpload}" mode="advanced" dragDropSupport="false"
+    				<div class="row" style="margin-bottom: 25px;">
+    					<div class="col-md-3">
+    						<h:outputLabel value="Logo" />
+    					</div>
+    					<div class="col-md-8">
+							<p:fileUpload fileUploadListener="#{institutionBean.handleLogoUpload}" mode="advanced" dragDropSupport="false"
            						update="messages" sizeLimit="100000" fileLimit="1" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" />
+    					</div>
     				</div>
-    				<div class="row">
-    					<h:inputText value="#{institutionBean.institution.name}" />
+    				<div class="row" style="margin-bottom: 25px;">
+    					<div class="col-md-3">
+    						<h:outputLabel value="Name" />
+    					</div>
+    					<div class="col-md-8">
+							<h:inputText value="#{institutionBean.institution.name}" />
+    					</div>
     				</div>
-    				<div class="row">
-						<h:inputText value="#{institutionBean.institution.pageText}" />
+    				<div class="row" style="margin-bottom: 10px;">
+    					<div class="col-md-3">
+    						<h:outputLabel value="Text" />
+    					</div>
+    					<div class="col-md-8">
+    						<p:editor id="editor" widgetVar="editorWidget" value="#{institutionBean.institution.pageText}" width="600" />
+    					</div>
 					</div>
 					<div class="row">
 						<p:commandButton value="Änderungen speichern" update="@form" action="#{institutionBean.saveUpdates()}" />
@@ -41,13 +55,19 @@
     			</c:when>
     			
     			<c:otherwise>
-    				<p:graphicImage value="#{institutionBean.image}"/> 
-    				<div class="row">
-    					<h:outputText value="#{institutionBean.institution.name}" />
+    				<div class="row" style="margin-bottom: 40px;">
+    					<div class="col-md-4">
+    						<h2>#{institutionBean.institution.name}</h2>
+    					</div>
+    					<div class="col-md-8">
+    						<p:graphicImage value="#{institutionBean.image}" style="max-width:800px;max-height:400px;">
+	    						<f:param name="admin" value="#{institutionBean.institution.admin.username}" />
+	    					</p:graphicImage>
+    					</div>
     				</div>
-    				<div class="row">
-						<h:outputText value="#{institutionBean.institution.pageText}" />
-					</div>
+    				
+    				<h:outputText value="#{institutionBean.institution.pageText}" escape="false" />
+    				
     			</c:otherwise>
     		</c:choose>
     		

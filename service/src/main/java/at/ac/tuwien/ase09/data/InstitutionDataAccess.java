@@ -16,7 +16,7 @@ public class InstitutionDataAccess {
 
 	public Institution getByAdmin(String username) {
 		try {
-			return em.createQuery("SELECT i FROM Institution i WHERE i.admin.username = :username", Institution.class).setParameter("username", username).getSingleResult();
+			return em.createQuery("SELECT i FROM Institution i join fetch i.admin WHERE i.admin.username = :username", Institution.class).setParameter("username", username).getSingleResult();
 		} catch (NoResultException e) {
 			return null;
 		} catch (Exception e) {
