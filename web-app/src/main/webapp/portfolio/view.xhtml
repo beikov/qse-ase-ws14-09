@@ -27,6 +27,64 @@
 			<p:dialog id="visibilityDialog" header="Sichtbarkeitseinstellungen" widgetVar="visibilityDialog" modal="true" >
 			    <ui:include src="_visibilitySettings.xhtml" />
 			</p:dialog>
+			
+			
+			<p:dialog header="News Info" widgetVar="newsDialog" modal="false" id="newsDialog"
+				showEffect="blind" hideEffect="blind" resizable="false" width="50%"
+				height="400px">
+		
+				<p:outputPanel id="newsDetail">
+					<h:panelGrid columns="1" border="0" style="text-align: justify">
+						<h:outputText
+							value="#{valuePaperViewBean.selectedNewsItem.created.time}"
+							style="font-size:10px">
+							<f:convertDateTime pattern="dd.MM.yyyy" timeZone="CET" />
+						</h:outputText>
+						<br />
+						<h:outputText value="#{valuePaperViewBean.selectedNewsItem.title}"
+							style="font-weight:bold" />
+						<br />
+						<h:outputText value="#{valuePaperViewBean.selectedNewsItem.text}" />
+						<br />
+						<h:outputText
+							value="Quelle: #{valuePaperViewBean.selectedNewsItem.source}"
+							style="font-size:10px" />
+					</h:panelGrid>
+				</p:outputPanel>
+			</p:dialog>
+			
+			
+			<p:dialog header="Analystenmeinung"
+				widgetVar="analystOpinionDialog" modal="false"
+				showEffect="blind" hideEffect="blind" resizable="false"
+				width="50%" height="400px">
+				<p:outputPanel id="analystOpinionDetail" style="text-align:left">
+					<h:panelGrid columns="1" border="0" style="text-align: justify">
+						<h:outputText
+							value="#{valuePaperViewBean.selectedAnalystOpinion.created.time}"
+							style="font-size:10px">
+							<f:convertDateTime pattern="dd.MM.yyyy" timeZone="CET"/>
+						</h:outputText>
+						<br />
+						<h:outputText
+							value="Empfehlung: #{valuePaperViewBean.selectedAnalystOpinion.recommendation}"
+							style="font-weight:bold" />
+						<br />
+						<h:outputText
+							value="Kursziel: #{valuePaperViewBean.selectedAnalystOpinion.targetPrice.value} #{valuePaperViewBean.selectedAnalystOpinion.targetPrice.currency}"
+							style="font-weight:bold" />
+						<br />
+						<h:outputText
+							value="#{valuePaperViewBean.selectedAnalystOpinion.text}" />
+						<br />
+						<h:outputText
+							value="Quelle: #{valuePaperViewBean.selectedAnalystOpinion.source}"
+							style="font-size:10px" />
+					</h:panelGrid>
+				</p:outputPanel>
+			</p:dialog>
+			
+			
 		
 			<div class="row" style="margin-bottom: 15px;">
 				<div class="col-md-8">
