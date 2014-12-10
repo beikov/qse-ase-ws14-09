@@ -13,7 +13,7 @@ import at.ac.tuwien.ase09.model.AnalystOpinion;
 @Stateless
 public class AnalystOpinionService {
 	
-	@Inject
+	@PersistenceContext
 	private EntityManager em;
 
 	@Inject

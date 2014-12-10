@@ -31,18 +31,18 @@ public class ValuePaperPriceEntryService {
 		em.persist(pe);
 	}
 
-	public void savePriceEntry(String code, BigDecimal price) {
+	public void savePriceEntry(String isin, BigDecimal price) {
 		ValuePaperPriceEntry priceEntry = new ValuePaperPriceEntry();
 		priceEntry.setPrice(price);
-		priceEntry.setValuePaper(valuePaperDataAccess.getValuePaperByCode(code, ValuePaper.class));
+		priceEntry.setValuePaper(valuePaperDataAccess.getValuePaperByCode(isin, ValuePaper.class));
 		savePriceEntry(priceEntry);
 	}
 	
-	public ValuePaperPriceEntry getLastPriceEntry(String code){
-		return valuePaperPriceEntryDataAccess.getLastPriceEntry(code);
+	public ValuePaperPriceEntry getLastPriceEntry(String isin){
+		return valuePaperPriceEntryDataAccess.getLastPriceEntry(isin);
 	}
 	
-	public List<ValuePaperHistoryEntry> getValuePaperPriceHistoryEntries(String code){
-		return valuePaperPriceEntryDataAccess.getValuePaperPriceHistoryEntries(code);
+	public List<ValuePaperHistoryEntry> getValuePaperPriceHistoryEntries(String isin){
+		return valuePaperPriceEntryDataAccess.getValuePaperPriceHistoryEntries(isin);
 	}
 }

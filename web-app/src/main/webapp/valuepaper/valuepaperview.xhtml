@@ -56,6 +56,7 @@
 							</p:panel>
 
 							<p:panel id="zusaetzlich" header="Zusätzliche Informationen"
+								toggleable="true" collapsed="true"
 								rendered="#{valuePaperViewBean.additionalValuePaperAttributes.size() > 0}">
 
 								<p:panelGrid columns="2">
@@ -137,6 +138,7 @@
 							<p:dataList value="#{valuePaperViewBean.newsItemsList}"
 								var="news" type="unordered" itemType="none" paginator="true"
 								rows="5" emptyMessage="keine Newseinträge vorhanden"
+								rendered="#{valuePaperViewBean.valuePaper.type == 'STOCK'}"
 								style="height:100%">
 								<f:facet name="header">
             						News
@@ -148,7 +150,7 @@
 									<f:setPropertyActionListener value="#{news}"
 										target="#{valuePaperViewBean.selectedNewsItem}" />
 									<h:outputText value="#{news.created.time}">
-										<f:convertDateTime pattern="dd.MM.yyyy" />
+										<f:convertDateTime pattern="dd.MM.yyyy" timeZone="CET"/>
 									</h:outputText>
 									<h:outputText
 										value=", #{news.title.length() gt 34 ? news.title.subSequence(0,34).toString().concat('...') : news.title}" />
@@ -158,31 +160,36 @@
 
 							<p:dialog header="News Info" widgetVar="newsDialog" modal="false"
 								showEffect="blind" hideEffect="blind" resizable="false"
-								width="700px">
-								<p:outputPanel id="newsDetail" style="text-align:left">
+								width="50%" height="400px">
 
-									<p:panelGrid columns="2">
+								<p:outputPanel id="newsDetail">
 
+									<h:panelGrid columns="1" border="0" style="text-align: justify">
 
-										<h:outputText value="Datum:" />
 										<h:outputText
 											value="#{valuePaperViewBean.selectedNewsItem.created.time}"
-											style="display:inline-block">
-											<f:convertDateTime pattern="dd.MM.yyyy" />
+											style="font-size:10px">
+											<f:convertDateTime pattern="dd.MM.yyyy" timeZone="CET"/>
 										</h:outputText>
 
-										<h:outputText value="Titel" />
-										<h:outputText
-											value="#{valuePaperViewBean.selectedNewsItem.title}" />
+										<br />
 
-										<h:outputText value="Text:" />
+										<h:outputText
+											value="#{valuePaperViewBean.selectedNewsItem.title}"
+											style="font-weight:bold" />
+
+										<br />
+
 										<h:outputText
 											value="#{valuePaperViewBean.selectedNewsItem.text}" />
 
-										<h:outputText value="Quelle:" />
+										<br />
+
 										<h:outputText
-											value="#{valuePaperViewBean.selectedNewsItem.source}" />
-									</p:panelGrid>
+											value="Quelle: #{valuePaperViewBean.selectedNewsItem.source}"
+											style="font-size:10px" />
+
+									</h:panelGrid>
 
 								</p:outputPanel>
 							</p:dialog>
@@ -208,7 +215,7 @@
 										<f:setPropertyActionListener value="#{analystOpinion}"
 											target="#{valuePaperViewBean.selectedAnalystOpinion}" />
 										<h:outputText value="#{analystOpinion.created.time}">
-											<f:convertDateTime pattern="dd.MM.yyyy" />
+											<f:convertDateTime pattern="dd.MM.yyyy" timeZone="CET"/>
 										</h:outputText>
 										<h:outputText value=": #{analystOpinion.recommendation}" />
 									</p:commandLink>
@@ -219,34 +226,40 @@
 							<p:dialog header="Analystenmeinung"
 								widgetVar="analystOpinionDialog" modal="false"
 								showEffect="blind" hideEffect="blind" resizable="false"
-								width="700px">
+								width="50%" height="400px">
 								<p:outputPanel id="analystOpinionDetail" style="text-align:left">
 
-									<p:panelGrid columns="2">
+									<h:panelGrid columns="1" border="0" style="text-align: justify">
 
-
-										<h:outputText value="Datum:" />
 										<h:outputText
-											value="#{valuePaperViewBean.selectedAnalystOpinion.created.time}">
-											<f:convertDateTime pattern="dd.MM.yyyy" />
+											value="#{valuePaperViewBean.selectedAnalystOpinion.created.time}"
+											style="font-size:10px">
+											<f:convertDateTime pattern="dd.MM.yyyy" timeZone="CET"/>
 										</h:outputText>
 
-										<h:outputText value="Empfehlung:" />
-										<h:outputText
-											value="#{valuePaperViewBean.selectedAnalystOpinion.recommendation}" />
+										<br />
 
-										<h:outputText value="Kursziel:" />
 										<h:outputText
-											value="#{valuePaperViewBean.selectedAnalystOpinion.targetPrice.value} #{valuePaperViewBean.selectedAnalystOpinion.targetPrice.currency}" />
+											value="Empfehlung: #{valuePaperViewBean.selectedAnalystOpinion.recommendation}"
+											style="font-weight:bold" />
 
-										<h:outputText value="Text:" />
+										<br />
+
+										<h:outputText
+											value="Kursziel: #{valuePaperViewBean.selectedAnalystOpinion.targetPrice.value} #{valuePaperViewBean.selectedAnalystOpinion.targetPrice.currency}"
+											style="font-weight:bold" />
+
+										<br />
+
 										<h:outputText
 											value="#{valuePaperViewBean.selectedAnalystOpinion.text}" />
 
-										<h:outputText value="Quelle:" />
+										<br />
+
 										<h:outputText
-											value="#{valuePaperViewBean.selectedAnalystOpinion.source}" />
-									</p:panelGrid>
+											value="Quelle: #{valuePaperViewBean.selectedAnalystOpinion.source}"
+											style="font-size:10px" />
+									</h:panelGrid>
 
 								</p:outputPanel>
 							</p:dialog>
