@@ -539,10 +539,60 @@ public class ValuePaperViewBean implements Serializable{
 			StockBond sb = (StockBond)valuePaper;
 			Stock baseStock = sb.getBaseStock();
 
+			if(sb.getEmitter() != null){
+				this.mainValuePaperAttributes.put("Emittent", sb.getEmitter());
+			}
+
+			if(sb.getCoupon() != null){
+				this.mainValuePaperAttributes.put("Nominalzins", sb.getCoupon().toString());
+			}
+
+			if(sb.getEndDate() != null){
+				this.mainValuePaperAttributes.put("Ende der Laufzeit:", format.format(sb.getEndDate().getTime()));
+			}
+
+			if(sb.getEmissionDate() != null){
+				this.additionalValuePaperAttributes.put("Emissionsdatum:", format.format(sb.getEmissionDate().getTime()));
+			}
+
+			if(sb.getEmissionPrice() != null){
+				this.additionalValuePaperAttributes.put("Emissionskurs:", sb.getEmissionPrice().toString()+"%");
+			}
+
 		}
 		if(valuePaper.getType() == ValuePaperType.FUND){
 
 			Fund f = (Fund)valuePaper;
+
+			if(f.getDepotBank() != null){
+				this.mainValuePaperAttributes.put("Depot-Bank", f.getDepotBank());
+			}
+
+			if(f.getCurrency() != null){
+				this.mainValuePaperAttributes.put("Währung:", f.getCurrency().getCurrencyCode());
+			}
+
+			if(f.getYieldType() != null){
+				switch (f.getYieldType()) {
+				case CUMULATIVE:
+					this.mainValuePaperAttributes.put("Ausschüttungsart:", "ausschüttend");
+					break;
+				case DISTRIBUTING:
+					this.mainValuePaperAttributes.put("Ausschüttungsart:", "thesaurierend");
+				}
+			}
+			
+			if(f.getCategory() != null){
+				this.additionalValuePaperAttributes.put("Kategorie:", f.getCategory());
+			}
+			
+			if(f.getDenomination() != null){
+				this.additionalValuePaperAttributes.put("Stückelung:", f.getDenomination().toString());
+			}
+			
+			if(f.getBusinessYearStartDay() != null && f.getBusinessYearStartMonth() != null){
+				this.additionalValuePaperAttributes.put("Start des Geschäftsjahres:", f.getBusinessYearStartDay().toString() + "." + f.getBusinessYearStartMonth().toString());
+			}
 
 		}
 

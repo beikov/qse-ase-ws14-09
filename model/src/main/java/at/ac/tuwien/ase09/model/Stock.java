@@ -86,6 +86,14 @@ public class Stock extends ValuePaper {
 	private Calendar dividendDate;
 	private Calendar ex_DividendDate;
 	
+	public Currency getCurrency() {
+		return currency;
+	}
+
+	public void setCurrency(Currency currency) {
+		this.currency = currency;
+	}
+	
 	@Override
 	@Transient
 	public ValuePaperType getType() {
@@ -126,14 +134,6 @@ public class Stock extends ValuePaper {
 		this.dividendHistoryEntries = dividendHistoryEntries;
 	}
 
-	public Currency getCurrency() {
-		return currency;
-	}
-
-	public void setCurrency(Currency currency) {
-		this.currency = currency;
-	}
-	
 	public String getTickerSymbol() {
 		return tickerSymbol;
 	}

@@ -31,6 +31,11 @@ public class BondDetailWriter extends AbstractEntityWriter {
 			existingBond.setBaseStock(bond.getBaseStock());
 			existingBond.setHistoricPricesPageUrl(bond.getHistoricPricesPageUrl());
 			existingBond.setDetailUrl(bond.getDetailUrl());
+			existingBond.setEmissionDate(bond.getEmissionDate());
+			existingBond.setEmissionPrice(bond.getEmissionPrice());
+			existingBond.setCoupon(bond.getCoupon());
+			existingBond.setEmitter(bond.getEmitter());
+			existingBond.setEndDate(bond.getEndDate());
 		}else{
 			em.persist(entity);
 		}
