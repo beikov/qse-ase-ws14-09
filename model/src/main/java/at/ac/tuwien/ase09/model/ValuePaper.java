@@ -1,5 +1,7 @@
 package at.ac.tuwien.ase09.model;
 
+import java.util.Currency;
+
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
@@ -20,6 +22,7 @@ public abstract class ValuePaper extends BaseEntity<Long> {
 	private String code;
 	private String detailUrl;
 	private String historicPricesPageUrl;
+	
 	
 	@Transient
 	public abstract ValuePaperType getType();

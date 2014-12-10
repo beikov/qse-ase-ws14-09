@@ -36,7 +36,7 @@ import at.ac.tuwien.ase09.model.Stock;
 @Named
 public class AnalystOpinionReader extends AbstractItemReader  {
 	private static final Pattern TARGET_PRICE_PATTERN = Pattern.compile("[^0-9]*([0-9]+,?[0-9]*)\\s*([^\\s]*)");
-	private static final DateFormat FINANZEN_NEWS_DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy");
+	private static final DateFormat FINANZEN_NEWS_DATE_FORMAT = new SimpleDateFormat("dd.MM.yy");
 	private static final DateFormat FINANZEN_CURRENT_NEWS_DATE_FORMAT = new SimpleDateFormat("HH:mm");
 	private static final Set<String> BUY_KEYWORDS = new HashSet<>(Arrays.asList(new String[]{
 			"kaufen",
@@ -57,6 +57,12 @@ public class AnalystOpinionReader extends AbstractItemReader  {
 			"hold",
 			"neutral"
 	}));
+	
+	static {
+		Calendar twoDigitYearStart = Calendar.getInstance();
+		twoDigitYearStart.set(2000, 1, 1); // 1.1.2000
+		((SimpleDateFormat) FINANZEN_NEWS_DATE_FORMAT).set2DigitYearStart(twoDigitYearStart.getTime());
+	}
 	
 	@Inject
 	private ValuePaperDataAccess valuePaperDataAccess;
@@ -159,7 +165,9 @@ public class AnalystOpinionReader extends AbstractItemReader  {
 		}catch(ParseException e){
 			// ignore
 		}
+		Calendar currentDate = Calendar.getInstance();
 		calendar.setTime(FINANZEN_CURRENT_NEWS_DATE_FORMAT.parse(s));
+		calendar.set(currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DAY_OF_MONTH));
 		return calendar;
 	}
 	
