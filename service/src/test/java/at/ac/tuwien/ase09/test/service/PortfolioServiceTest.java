@@ -1,4 +1,4 @@
-package at.ac.tuwien.ase09.service;
+package at.ac.tuwien.ase09.test.service;
 
 import static org.junit.Assert.assertEquals;
 
