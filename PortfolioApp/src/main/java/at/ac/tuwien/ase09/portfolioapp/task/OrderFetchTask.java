@@ -7,7 +7,7 @@ import android.os.AsyncTask;
 
 import java.util.ArrayList;
 import at.ac.tuwien.ase09.portfolioapp.PortfolioViewActivity;
-import at.ac.tuwien.ase09.portfolioapp.PortfolioViewFragment;
+import at.ac.tuwien.ase09.portfolioapp.fragment.PortfolioViewFragment;
 import at.ac.tuwien.ase09.portfolioapp.model.Order;
 
 public class OrderFetchTask extends AsyncTask<String, Integer, String>

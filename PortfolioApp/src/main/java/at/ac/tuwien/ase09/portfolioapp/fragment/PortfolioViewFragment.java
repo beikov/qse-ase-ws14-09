@@ -1,4 +1,4 @@
-package at.ac.tuwien.ase09.portfolioapp;
+package at.ac.tuwien.ase09.portfolioapp.fragment;
 
 import android.app.Fragment;
 import android.os.Bundle;
@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import at.ac.tuwien.ase09.portfolioapp.R;
 import at.ac.tuwien.ase09.portfolioapp.adapter.*;
 import at.ac.tuwien.ase09.portfolioapp.model.*;
 

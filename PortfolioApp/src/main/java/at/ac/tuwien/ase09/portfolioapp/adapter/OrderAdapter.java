@@ -11,7 +11,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 
-import at.ac.tuwien.ase09.portfolioapp.PortfolioViewFragment.MyOrderViewHolder;
+import at.ac.tuwien.ase09.portfolioapp.fragment.PortfolioViewFragment.MyOrderViewHolder;
 import at.ac.tuwien.ase09.portfolioapp.R;
 import at.ac.tuwien.ase09.portfolioapp.model.Order;
 

@@ -15,6 +15,7 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.view.Menu;
 
+import at.ac.tuwien.ase09.portfolioapp.fragment.PortfolioViewFragment;
 import at.ac.tuwien.ase09.portfolioapp.singleton.WebserviceFactory;
 
 
@@ -101,11 +102,5 @@ public class PortfolioViewActivity extends Activity implements TabListener {
         }
 
     }
-
-
-
-
-
-
 
 }
