@@ -1,4 +1,4 @@
-package at.ac.tuwien.ase09.portfolioapp.adapters;
+package at.ac.tuwien.ase09.portfolioapp.adapter;
 
 import java.util.ArrayList;
 
@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import at.ac.tuwien.ase09.portfolioapp.PortfolioViewFragment.MyOrderViewHolder;
 import at.ac.tuwien.ase09.portfolioapp.R;
-import at.ac.tuwien.ase09.portfolioapp.models.Order;
+import at.ac.tuwien.ase09.portfolioapp.model.Order;
 
 public class OrderAdapter extends BaseAdapter implements OnClickListener {
     private static final String debugTag = "OrderAdapter";

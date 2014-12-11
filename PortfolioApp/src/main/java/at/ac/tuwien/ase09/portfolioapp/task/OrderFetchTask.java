@@ -1,25 +1,20 @@
-package at.ac.tuwien.ase09.portfolioapp.Tasks;
+package at.ac.tuwien.ase09.portfolioapp.task;
 
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 
 import java.util.ArrayList;
-import at.ac.tuwien.ase09.portfolioapp.PortfolioView;
+import at.ac.tuwien.ase09.portfolioapp.PortfolioViewActivity;
 import at.ac.tuwien.ase09.portfolioapp.PortfolioViewFragment;
-import at.ac.tuwien.ase09.portfolioapp.R;
-import at.ac.tuwien.ase09.portfolioapp.models.Order;
+import at.ac.tuwien.ase09.portfolioapp.model.Order;
 
 public class OrderFetchTask extends AsyncTask<String, Integer, String>
 {
     private ProgressDialog progDialog;
     private Context context;
-    private PortfolioView activity;
+    private PortfolioViewActivity activity;
     private PortfolioViewFragment fragment;
 
 

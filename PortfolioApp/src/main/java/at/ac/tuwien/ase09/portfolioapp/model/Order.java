@@ -1,4 +1,4 @@
-package at.ac.tuwien.ase09.portfolioapp.models;
+package at.ac.tuwien.ase09.portfolioapp.model;
 
 // for test purposes
 public class Order {

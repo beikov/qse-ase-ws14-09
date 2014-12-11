@@ -1,4 +1,4 @@
-package at.ac.tuwien.ase09.portfolioapp.Tasks;
+package at.ac.tuwien.ase09.portfolioapp.task;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;

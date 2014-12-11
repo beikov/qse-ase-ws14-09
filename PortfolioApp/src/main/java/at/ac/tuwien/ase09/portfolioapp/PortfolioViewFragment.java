@@ -10,9 +10,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import at.ac.tuwien.ase09.portfolioapp.Tasks.OrderFetchTask;
-import at.ac.tuwien.ase09.portfolioapp.adapters.*;
-import at.ac.tuwien.ase09.portfolioapp.models.*;
+import at.ac.tuwien.ase09.portfolioapp.adapter.*;
+import at.ac.tuwien.ase09.portfolioapp.model.*;
 
 public class PortfolioViewFragment extends Fragment {
 
@@ -34,7 +33,7 @@ public class PortfolioViewFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         this.layoutInflator = inflater;
-        View v = inflater.inflate(R.layout.portfolio_view_main, null);
+        View v = inflater.inflate(R.layout.portfolio_view_fragment, null);
         if(index==0) {
             v = inflater.inflate(R.layout.fragment_table, null);
         }else if(index==1) {

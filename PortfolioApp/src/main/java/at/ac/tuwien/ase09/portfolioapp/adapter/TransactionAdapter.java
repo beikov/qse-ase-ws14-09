@@ -1,4 +1,4 @@
-package at.ac.tuwien.ase09.portfolioapp.adapters;
+package at.ac.tuwien.ase09.portfolioapp.adapter;
 
 import java.util.ArrayList;
 
@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import at.ac.tuwien.ase09.portfolioapp.PortfolioViewFragment.MyTransactionViewHolder;
 import at.ac.tuwien.ase09.portfolioapp.R;
-import at.ac.tuwien.ase09.portfolioapp.models.*;
+import at.ac.tuwien.ase09.portfolioapp.model.*;
 
 public class TransactionAdapter extends BaseAdapter implements OnClickListener {
 
