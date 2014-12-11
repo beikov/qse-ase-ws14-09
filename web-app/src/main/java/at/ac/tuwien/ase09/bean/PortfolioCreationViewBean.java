@@ -46,6 +46,9 @@ public class PortfolioCreationViewBean {
 		portfolio = new Portfolio();
 		portfolio.setVisibility(new PortfolioVisibility());
 		portfolio.setSetting(new PortfolioSetting());
+		orderFee = new BigDecimal(0);
+		portfolioFee = new BigDecimal(0);
+		capitalReturnTax = new BigDecimal(0);
 	}
 
 	public Portfolio getPortfolio() {
@@ -64,8 +67,10 @@ public class PortfolioCreationViewBean {
 		      FacesContext.getCurrentInstance().addMessage("createForm:name", facesMessage);
 		      return;
 		}
-		if( startCapital.compareTo(new BigDecimal(0)) == -1 ){
-			FacesMessage facesMessage = new FacesMessage("Fehler: Startkapital muss größer gleich 0 (0 für unendliches Kapital) sein!");
+		if( startCapital == null){
+			startCapital = new BigDecimal(0);
+		}else if( startCapital.compareTo(new BigDecimal(0)) == -1 ){
+			FacesMessage facesMessage = new FacesMessage("Fehler: Startkapital muss größer als 0 sein!");
 		      FacesContext.getCurrentInstance().addMessage("createForm:startCapital", facesMessage);
 		      return;
 		}

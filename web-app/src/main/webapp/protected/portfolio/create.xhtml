@@ -10,20 +10,79 @@
 
 	<!-- content -->
 	<ui:define name="body">
-	<h:form id="createForm">
-		 <p:panel header="Neues Portfolio">
-			
-			<h:panelGrid columns="3" cellpadding="5">
-			
-				<h:outputText value="Portfolioame: " />
-				<p:inputText id="name"
-					value="#{portfolioCreationViewBean.portfolio.name}" required="true" >
-					<f:validateRegex pattern="[a-zA-Z]+[a-zA-z0-9]*"></f:validateRegex>	
-				</p:inputText>
-				<h:message for="name" style="color:red" />
+		<h:form id="createForm">
+			<p:panel header="Neues Portfolio">
 
-			</h:panelGrid>	
+				<h:panelGrid columns="3" cellpadding="5">
 
+					<h:outputText value="Portfolioame: " />
+					<p:inputText id="name"
+						value="#{portfolioCreationViewBean.portfolio.name}"
+						required="true">
+						<f:validateRegex pattern="[a-zA-Z]+[a-zA-z0-9]*"></f:validateRegex>
+					</p:inputText>
+					<h:message for="name" style="color:red" />
+
+
+					<h:outputText value="Sichtbarkeit" />
+					<h:outputText value="" />
+					<h:outputText value="" />
+
+
+					<h:outputText value="Alles: " />
+					<p:inputSwitch
+						value="#{portfolioCreationViewBean.portfolio.visibility.publicVisible}" onLabel="an" offLabel="aus" />
+					<h:outputText value="" />
+
+					<h:outputText value="Statistiken: " />
+					<p:inputSwitch
+						value="#{portfolioCreationViewBean.portfolio.visibility.statisticsVisible}" onLabel="an" offLabel="aus" />
+					<h:outputText value="" />
+
+					<h:outputText value="Geschichte: " />
+					<p:inputSwitch
+						value="#{portfolioCreationViewBean.portfolio.visibility.historyVisible}" onLabel="an" offLabel="aus" />
+					<h:outputText value="" />
+
+					<h:outputText value="Wertpapiere: " />
+					<p:inputSwitch
+						value="#{portfolioCreationViewBean.portfolio.visibility.valuePaperListVisible}" onLabel="an" offLabel="aus" />
+					<h:outputText value="" />
+
+
+					<h:outputText value="Startkapital(€): " />
+					<p:inputText id="startCapital"
+						value="#{portfolioCreationViewBean.startCapital}" placeholder="unendlich">
+					</p:inputText>
+					<h:message for="startCapital" style="color:red" />
+
+					<h:outputText value="Ordergebühr(€): " />
+					<p:inputText id="orderFee"
+						value="#{portfolioCreationViewBean.orderFee}" required="true" />
+					<h:message for="orderFee" style="color:red" />
+
+
+					<h:outputText value="PortfolioGebühr(€): " />
+					<p:inputText id="portfolioFee"
+						value="#{portfolioCreationViewBean.portfolioFee}" required="true" />
+					<h:message for="portfolioFee" style="color:red" />
+
+
+					<h:outputText value="Kapitalertragssteuer(%): " />
+					<p:inputText id="capitalReturnTax"
+						value="#{portfolioCreationViewBean.capitalReturnTax}"
+						required="true" />
+					<h:message for="capitalReturnTax" style="color:red" />
+
+					<p:commandButton value="Reset" type="reset" />
+					<p:commandButton value="Erstellen"
+						action="#{portfolioCreationViewBean.create()}" update="createForm"
+						ajax="true" />
+					<h:outputText value="" />
+
+				</h:panelGrid>
+
+				<!-- 
 			<pa:portfolioVisibility visibilitySettings="#{portfolioCreationViewBean.portfolio.visibility}" />
 
 				<h:panelGrid columns="3" cellpadding="5">
@@ -57,7 +116,7 @@
 					ajax="true" />
 
 
-			</h:panelGrid>
+			</h:panelGrid> -->
 			</p:panel>
 		</h:form>
 	</ui:define>
