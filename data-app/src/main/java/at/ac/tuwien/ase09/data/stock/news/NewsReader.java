@@ -26,8 +26,15 @@ import at.ac.tuwien.ase09.model.Stock;
 @Dependent
 @Named
 public class NewsReader extends AbstractItemReader  {
-	private static final DateFormat FINANZEN_NEWS_DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy");
+	private static final DateFormat FINANZEN_NEWS_DATE_FORMAT = new SimpleDateFormat("dd.MM.yy");
 	private static final DateFormat FINANZEN_CURRENT_NEWS_DATE_FORMAT = new SimpleDateFormat("HH:mm");
+	
+	static {
+		Calendar twoDigitYearStart = Calendar.getInstance();
+		twoDigitYearStart.set(2000, 1, 1); // 1.1.2000
+		((SimpleDateFormat) FINANZEN_NEWS_DATE_FORMAT).set2DigitYearStart(twoDigitYearStart.getTime());
+	}
+	
 	@Inject
 	private ValuePaperDataAccess valuePaperDataAccess;
 	
@@ -67,23 +74,29 @@ public class NewsReader extends AbstractItemReader  {
 			loopBound = 0;
 		}
 		// iterate backwards to maintain chronological order
-		for(int i = newsRows.size()-1; i >= loopBound; i--){
+		for(int i = newsRows.size()-1-loopBound; i >= 0; i--){
 			Element newsRow = newsRows.get(i);
 			Elements newsColumns = newsRow.getElementsByTag("td");
 			if(newsColumns.size() == 3){
 				NewsItem newsItem = new NewsItem();
 				Calendar newsDate = parseTimeOrDate(newsColumns.get(0).text());
 				
-				String newsTitle = newsColumns.get(2).text();
+				String source = null;
+				Element sourceElement = newsColumns.get(2).select("span.news_source").first();
+				if(sourceElement != null){
+					source = unwrap(sourceElement.text());
+				}
 				
 				Document newsDetailPage = JsoupUtils.getPage(finanzenNetUrl + newsColumns.get(2).select("a").attr("href"));
+				String newsTitle = newsDetailPage.select("h1.news_title").first().text();
 				Element textElement = newsDetailPage.select("div.news_text").first();
 				String newsText = null;
 				if(textElement != null){
-					newsText= textElement.ownText();
+					newsText= textElement.text().trim();
 				}
 				
 				newsItem.setCreated(newsDate);
+				newsItem.setSource(source);
 				newsItem.setTitle(newsTitle);
 				newsItem.setText(newsText);
 				newsItem.setStock(stock);
@@ -102,7 +115,16 @@ public class NewsReader extends AbstractItemReader  {
 		}catch(ParseException e){
 			// ignore
 		}
+		Calendar currentDate = Calendar.getInstance();
 		calendar.setTime(FINANZEN_CURRENT_NEWS_DATE_FORMAT.parse(s));
+		calendar.set(currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DAY_OF_MONTH));
 		return calendar;
+	}
+	
+	private String unwrap(String s){
+		if(s.startsWith("(") && s.endsWith(")")){
+			return s.substring(1, s.length()-1);
+		}
+		return s;
 	}
 }

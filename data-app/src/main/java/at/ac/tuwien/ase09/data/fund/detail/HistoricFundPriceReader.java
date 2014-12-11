@@ -69,7 +69,7 @@ public class HistoricFundPriceReader extends AbstractItemReader {
 		List<ValuePaperHistoryEntry> historicPriceEntries = new ArrayList<>();
 		for(Element row : tableRows){
 			String dateStr = row.child(0).text();
-			BigDecimal price = new BigDecimal(row.child(1).text().replace(',', '.'));
+			BigDecimal price = new BigDecimal(row.child(1).text().replaceAll("\\.", "").replace(',', '.'));
 						
 			ValuePaperHistoryEntry historicPriceEntry = new ValuePaperHistoryEntry();
 			Calendar priceDate = Calendar.getInstance();

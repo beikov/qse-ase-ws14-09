@@ -1,0 +1,32 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+	
+	<p:dataTable var="opinion" value="#{portfolioViewBean.analystOpinionsForValuePapers}" rows="10"
+                    paginator="true"
+                    paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                    rowsPerPageTemplate="5,10,15">
+    
+    	<p:column headerText="Datum" sortBy="#{opinion.created}">
+	        <h:outputText value="#{dateUtil.formatCalendar(opinion.created)}"></h:outputText>
+	    </p:column>
+	    <p:column headerText="Wertpapier" sortBy="#{opinion.stock.name}">
+	        <h:outputText value="#{opinion.stock.name}"></h:outputText>
+	    </p:column>
+	    <p:column headerText="Meinung" sortBy="#{opinion.stock.name}">
+			<h:outputText value="#{opinion.recommendation}" />
+	    </p:column>                     
+	    <p:column width="80">
+			<p:commandLink update=":portfolioViewForm:analystOpinionDialog"
+				oncomplete="PF('analystOpinionDialog').show()" title="Details">
+				<f:param name="valuePaperCode" value="#{valuePaperViewBean.valuePaper.code}" />
+				<f:setPropertyActionListener value="#{opinion}" target="#{valuePaperViewBean.selectedAnalystOpinion}" />
+				<h:outputText value="Details" />
+			</p:commandLink>
+	    </p:column>
+	
+	</p:dataTable>
+</ui:composition>

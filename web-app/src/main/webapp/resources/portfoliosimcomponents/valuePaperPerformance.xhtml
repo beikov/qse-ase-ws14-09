@@ -1,0 +1,35 @@
+<ui:component xmlns="http://www.w3.org/1999/xhtml"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:cc="http://java.sun.com/jsf/composite"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:c="http://java.sun.com/jsp/jstl/core"
+		xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+		xmlns:p="http://primefaces.org/ui">
+		
+		<cc:interface>
+			<cc:attribute name="code" type="java.lang.String" required="true" />
+		</cc:interface>
+		
+		<cc:implementation>
+			<c:set var="change" value="#{portfolioViewBean.getChange(cc.attrs.code)}" />
+			<h:outputText value="#{change}" rendered="#{change lt 0}" style="color:red;">
+				<f:convertNumber pattern="#0.00" />
+			</h:outputText>
+			<h:outputText value="#{change}" rendered="#{change ge 0}" style="color:green;">
+				<f:convertNumber pattern="#0.00" />
+			</h:outputText>
+			<h:outputText value="%" rendered="#{change lt 0}" style="color:red;" />
+			<h:outputText value="%" rendered="#{change ge 0}" style="color:green;" />
+			
+			<!-- <c:choose>
+				<c:when test="#{change > 0}">
+					green 
+				</c:when>
+				<c:otherwise>
+					red
+				</c:otherwise>
+			</c:choose> -->
+		</cc:implementation>
+		
+</ui:component>

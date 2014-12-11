@@ -4,6 +4,8 @@ import java.util.Calendar;
 
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
@@ -44,6 +46,7 @@ public abstract class Order extends BaseEntity<Long> {
 		this.created = created;
 	}
 
+	//@Enumerated(EnumType.STRING)
 	public OrderAction getOrderAction() {
 		return orderAction;
 	}

@@ -1,0 +1,38 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<!-- content -->
+	<ui:define name="body">
+		<p:dataTable var="portfolio" value="#{portfolioBean.getUserPortfolios(user)}">
+			<f:facet name="header">
+		        Liste der Portfolios
+		    </f:facet>
+		
+		    <p:column headerText="Id">
+		        <h:outputText value="#{portfolio.id}" />
+		    </p:column>
+		 
+		    <p:column headerText="Name">
+		        <h:outputText value="#{portfolio.name}" />
+		    </p:column>
+		    
+		    <p:column style="text-align: center">
+				<h:button value="View" outcome="/portfolio/view"><!-- includeViewParams="true" -->
+					<f:param name="portfolioId" value="#{portfolio.id}" />
+				</h:button>
+	        </p:column>
+		    
+		    <f:facet name="footer">
+		    	<button type="button" class="btn btn-default btn-md" onclick="window.location.href='/protected/portfolio/create.xhtml'; return false;"><span class="glyphicon glyphicon-plus" aria-hidden="true" /></button>
+        	</f:facet>
+		   
+		</p:dataTable>
+	</ui:define><!-- content -->
+
+</ui:composition>

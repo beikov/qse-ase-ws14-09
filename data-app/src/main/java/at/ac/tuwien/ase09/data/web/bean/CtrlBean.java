@@ -40,10 +40,10 @@ public class CtrlBean {
 	}
 
 	public void startNewsExtraction(){
-		BatchRuntime.getJobOperator().start("analystOpinionExtraction", null);
+		BatchRuntime.getJobOperator().start("newsExtraction", null);
 	}
 	
 	public void startAnalystOpinionExtraction(){
-		BatchRuntime.getJobOperator().start("newsExtraction", null);
+		BatchRuntime.getJobOperator().start("analystOpinionExtraction", null);
 	}
 }

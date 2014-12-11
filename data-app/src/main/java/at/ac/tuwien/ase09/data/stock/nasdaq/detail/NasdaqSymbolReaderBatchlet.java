@@ -34,7 +34,10 @@ import com.google.gson.JsonParser;
 @Named
 public class NasdaqSymbolReaderBatchlet extends AbstractBatchlet {
 	private static final Logger LOG = Logger.getLogger(NasdaqSymbolReaderBatchlet.class.getName());
-	private static final String CNBC_STOCK_DETAIL_QUERY = "http://quote.cnbc.com/quote-html-webservice/quote.htm?partnerId=2&requestMethod=quick&exthrs=1&noform=1&fund=1&output=jsonp&symbols=AAPL|ADBE|ADI|ADP|ADSK|AKAM|ALTR|ALXN|AMAT|AMGN|AMZN|ATVI|AVGO|BBBY|BIDU|BIIB|BRCM|CA|CELG|CERN|CHKP|CHRW|CHTR|CMCSA|COST|CSCO|CTRX|CTSH|CTXS|DISCA";
+	private static final String CNBC_STOCK_DETAIL_QUERY1 = "http://quote.cnbc.com/quote-html-webservice/quote.htm?partnerId=2&requestMethod=quick&exthrs=1&noform=1&fund=1&output=jsonp&symbols=AAPL|ADBE|ADI|ADP|ADSK|AKAM|ALTR|ALXN|AMAT|AMGN|AMZN|ATVI|AVGO|BBBY|BIDU|BIIB|BRCM|CA|CELG|CERN|CHKP|CHRW|CHTR|CMCSA|COST|CSCO|CTRX|CTSH|CTXS|DISCA";
+	private static final String CNBC_STOCK_DETAIL_QUERY2 = "http://quote.cnbc.com/quote-html-webservice/quote.htm?partnerId=2&requestMethod=quick&exthrs=1&noform=1&fund=1&output=jsonp&symbols=DISH|DLTR|DTV|EBAY|EQIX|ESRX|EXPD|EXPE|FAST|FB|FFIV|FISV|FOSL|FOXA|GILD|GMCR|GOOG|GOOGL|GRMN|HSIC|INTC|INTU|ILMN|ISRG|KLAC|KRFT|LBTYA|QVCA|LLTC|LMCA";
+	private static final String CNBC_STOCK_DETAIL_QUERY3 = "http://quote.cnbc.com/quote-html-webservice/quote.htm?partnerId=2&requestMethod=quick&exthrs=1&noform=1&fund=1&output=jsonp&symbols=MAR|MAT|MDLZ|MNST|MSFT|MU|MXIM|MYL|NFLX|NTAP|NVDA|NXPI|ORLY|PAYX|PCAR|PCLN|QCOM|REGN|ROST|SBAC|SBUX|SIAL|SNDK|SPLS|SRCL|STX|SYMC|TSCO|TSLA|TRIP";
+	private static final String CNBC_STOCK_DETAIL_QUERY4 = "http://quote.cnbc.com/quote-html-webservice/quote.htm?partnerId=2&requestMethod=quick&exthrs=1&noform=1&fund=1&output=jsonp&symbols=TXN|VIAB|VIP|VOD|VRSK|VRTX|WDC|WFM|WYNN|XLNX|YHOO";
 	
 	@Inject
 	@BatchProperty(name = "nasdaqListUrl")
@@ -65,10 +68,10 @@ public class NasdaqSymbolReaderBatchlet extends AbstractBatchlet {
 			tmpStockDetailLinkModels.add(new TemporaryStockDetailLinkModel(finanzenNetUrl + linkElem.attr("href"), isin, companyName));
 		}
 
-		String cnbcNasdaqDetails = JsoupUtils.getPageAndIgnoreContentType(CNBC_STOCK_DETAIL_QUERY, Method.GET, 3000);
-		cnbcNasdaqDetails = cnbcNasdaqDetails.substring(cnbcNasdaqDetails.indexOf('(') + 1, cnbcNasdaqDetails.lastIndexOf(')'));
-	    JsonObject detailsObject = jsonParser.parse(cnbcNasdaqDetails).getAsJsonObject();
-	    JsonArray quickQuotes = detailsObject.getAsJsonObject("QuickQuoteResult").getAsJsonArray("QuickQuote");
+		JsonArray quickQuotes = getQuickQuotes(CNBC_STOCK_DETAIL_QUERY1);
+		quickQuotes.addAll(getQuickQuotes(CNBC_STOCK_DETAIL_QUERY2));
+		quickQuotes.addAll(getQuickQuotes(CNBC_STOCK_DETAIL_QUERY3));
+		quickQuotes.addAll(getQuickQuotes(CNBC_STOCK_DETAIL_QUERY4));
 	    
 		for(int i = 0; i < quickQuotes.size(); i++){
 			JsonObject quickQuote = quickQuotes.get(i).getAsJsonObject();
@@ -119,6 +122,13 @@ public class NasdaqSymbolReaderBatchlet extends AbstractBatchlet {
 			this.isin = isin;
 			this.companyName = companyName;
 		}
+	}
+	
+	private JsonArray getQuickQuotes(String url) throws Exception{
+		String cnbcNasdaqDetails = JsoupUtils.getPageAndIgnoreContentType(url, Method.GET, 3000);
+		cnbcNasdaqDetails = cnbcNasdaqDetails.substring(cnbcNasdaqDetails.indexOf('(') + 1, cnbcNasdaqDetails.lastIndexOf(')'));
+	    JsonObject detailsObject = jsonParser.parse(cnbcNasdaqDetails).getAsJsonObject();
+	    return detailsObject.getAsJsonObject("QuickQuoteResult").getAsJsonArray("QuickQuote");
 	}
 
 }

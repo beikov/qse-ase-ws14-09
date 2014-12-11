@@ -16,6 +16,7 @@ import org.jsoup.nodes.Element;
 import at.ac.tuwien.ase09.data.JsoupUtils;
 import at.ac.tuwien.ase09.data.ValuePaperDataAccess;
 import at.ac.tuwien.ase09.data.model.IntradayPrice;
+import at.ac.tuwien.ase09.model.Stock;
 
 @Dependent
 @Named
@@ -29,31 +30,33 @@ public class YahooPriceReader extends AbstractItemReader{
 	@Inject
 	private ValuePaperDataAccess valuePaperDataAccess;
 	
-	private List<String> stockSymbols;
+	private List<Stock> stocks;
 	private int itemNumber;
 	
 	@Override
 	public void open(Serializable checkpoint) throws Exception {
-		stockSymbols = valuePaperDataAccess.getStockCodesByIndex(indexName);
+		stocks = valuePaperDataAccess.getStocksByIndex(indexName);
 		if(checkpoint == null){
 			itemNumber = 0;
 		}else{
-			itemNumber = (Integer) 0;
+			itemNumber = (Integer) checkpoint;
 		}
 	}
 	
 	@Override
 	public Object readItem() throws Exception {
-		if(itemNumber >= stockSymbols.size()){
+		if(itemNumber >= stocks.size()){
 			return null;
 		}
-		String stockSymbol = stockSymbols.get(itemNumber);
-		Document quote = JsoupUtils.getPage(YQL_QUOTE_QUERY_TEMPLATE.replaceAll("#\\{symbolPlaceholder\\}", stockSymbol));
+		Stock stock = stocks.get(itemNumber);
+		Document quote = JsoupUtils.getPage(YQL_QUOTE_QUERY_TEMPLATE.replaceAll("#\\{symbolPlaceholder\\}", stock.getTickerSymbol()));
 		Element first = quote.select("results quote LastTradePriceOnly").first();
 		IntradayPrice priceModel = null;
 		if(first != null){
 			BigDecimal price = new BigDecimal(quote.select("results quote LastTradePriceOnly").first().text());
-			priceModel = new IntradayPrice(stockSymbol, price);
+			priceModel = new IntradayPrice(stock.getCode(), price);
+		}else{
+			priceModel = new IntradayPrice(null, null);
 		}
 		itemNumber++;
 		return priceModel;

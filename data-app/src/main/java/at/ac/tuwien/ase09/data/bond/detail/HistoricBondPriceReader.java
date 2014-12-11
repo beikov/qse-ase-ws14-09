@@ -81,10 +81,18 @@ public class HistoricBondPriceReader extends AbstractItemReader {
 				Calendar priceDate = Calendar.getInstance();
 				priceDate.setTime(df.parse(dateStr));
 				historicPriceEntry.setDate(priceDate);
-				historicPriceEntry.setOpeningPrice(new BigDecimal(openingPriceStr));
-				historicPriceEntry.setClosingPrice(new BigDecimal(closingPriceStr));
-				historicPriceEntry.setDayHighPrice(new BigDecimal(dayHighStr));
-				historicPriceEntry.setDayLowPrice(new BigDecimal(dayLowStr));
+				if(!openingPriceStr.isEmpty()){
+					historicPriceEntry.setOpeningPrice(new BigDecimal(openingPriceStr));
+				}
+				if(!closingPriceStr.isEmpty()){
+					historicPriceEntry.setClosingPrice(new BigDecimal(closingPriceStr));
+				}
+				if(!dayHighStr.isEmpty()){
+					historicPriceEntry.setDayHighPrice(new BigDecimal(dayHighStr));
+				}
+				if(!dayLowStr.isEmpty()){
+					historicPriceEntry.setDayLowPrice(new BigDecimal(dayLowStr));
+				}
 				historicPriceEntry.setValuePaper(bond);
 				
 				historicPriceEntries.add(historicPriceEntry);

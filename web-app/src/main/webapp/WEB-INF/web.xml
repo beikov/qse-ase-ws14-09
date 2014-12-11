@@ -140,6 +140,7 @@
     <!-- 
     		Security Constraints
     -->
+    <!-- 
     <security-constraint>
     	<web-resource-collection>
     		<web-resource-name>Protected</web-resource-name>
@@ -158,6 +159,7 @@
     <security-role>
     	<role-name>user</role-name>
     </security-role>
+    -->
     
     <welcome-file-list>
     	<welcome-file>index.xhtml</welcome-file>

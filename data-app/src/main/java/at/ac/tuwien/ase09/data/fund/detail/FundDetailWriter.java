@@ -30,6 +30,12 @@ public class FundDetailWriter extends AbstractEntityWriter {
 			existingFund.setName(fund.getName());
 			existingFund.setDetailUrl(fund.getDetailUrl());
 			existingFund.setHistoricPricesPageUrl(fund.getHistoricPricesPageUrl());
+			existingFund.setBusinessYearStartDay(fund.getBusinessYearStartDay());
+			existingFund.setBusinessYearStartMonth(fund.getBusinessYearStartMonth());
+			existingFund.setCategory(fund.getCategory());
+			existingFund.setDenomination(fund.getDenomination());
+			existingFund.setDepotBank(fund.getDepotBank());
+			existingFund.setYieldType(fund.getYieldType());
 		}else{
 			em.persist(fund);
 		}

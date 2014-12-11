@@ -1,5 +1,6 @@
 package at.ac.tuwien.ase09.data;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -16,6 +17,7 @@ import at.ac.tuwien.ase09.model.NewsItem;
 import at.ac.tuwien.ase09.model.Stock;
 import at.ac.tuwien.ase09.model.StockBond;
 import at.ac.tuwien.ase09.model.ValuePaper;
+import at.ac.tuwien.ase09.model.ValuePaperType;
 
 @Stateless
 public class ValuePaperDataAccess {
@@ -24,6 +26,15 @@ public class ValuePaperDataAccess {
 
 	public <T extends ValuePaper> T getValuePaperByCode(String code, Class<T> clazz){
 		try{
+//			ValuePaper p = em.createQuery("SELECT v FROM " + clazz.getSimpleName() + " v WHERE v.code = :code", clazz).setParameter("code", code).getSingleResult();
+//		
+//			if(p.getType() == ValuePaperType.BOND){
+//				if(((StockBond)p).getBaseStock() != null)
+//				em.createQuery("SELECT b.baseStock FROM StockBond b WHERE b.code = :code", clazz).setParameter("code", code).getSingleResult();
+//			}
+//			
+//			return (T) p;
+			
 			return em.createQuery("SELECT v FROM " + clazz.getSimpleName() + " v WHERE v.code = :code", clazz).setParameter("code", code).getSingleResult();
 		}catch(NoResultException e){
 			throw new EntityNotFoundException(e);
@@ -51,14 +62,6 @@ public class ValuePaperDataAccess {
 	public <T extends ValuePaper> List<T> getValuePapers(Class<T> clazz){
 		try{
 			return em.createQuery("SELECT v FROM " + clazz.getSimpleName() + " v", clazz).getResultList();
-		}catch(Exception e){
-			throw new AppException(e);
-		}
-	}
-	
-	public List<String> getStockCodesByIndex(String indexName){
-		try{
-			return em.createQuery("SELECT stock.code FROM Stock stock WHERE stock.index = :index", String.class).setParameter("index", indexName).getResultList();
 		}catch(Exception e){
 			throw new AppException(e);
 		}

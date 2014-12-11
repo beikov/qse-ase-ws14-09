@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/templates/template.xhtml">
+	
+	<ui:define name="head">
+		<h:outputStylesheet library="webjars" name="codemirror/4.8/lib/codemirror.css"/>
+		<h:outputStylesheet library="webjars" name="codemirror/4.8/addon/hint/show-hint.css"/>
+		<h:outputScript library="webjars" name="codemirror/4.8/lib/codemirror.js"/>
+		<h:outputScript library="webjars" name="codemirror/4.8/addon/mode/simple.js"/>
+		<h:outputScript library="webjars" name="codemirror/4.8/addon/hint/show-hint.js"/>
+		<h:outputScript library="portfolio" name="editor/pwatch.js"/>
+	</ui:define>
+	
+	<ui:define name="body">
+		<p:tabView>
+			<p:tab title="Einfach">
+			</p:tab>
+			
+			<p:tab title="Erweitert">
+				<h:inputTextarea id="watch-editor" value="#{watchBean.watchExpression}" />
+			</p:tab>
+		</p:tabView>
+		
+		
+		<script>
+			//<![CDATA[
+			
+			CodeMirror.fromTextArea(document.getElementById("#{p:component('watch-editor')}"), {
+				lineNumbers: false,
+		        extraKeys: {"Ctrl-Space": "autocomplete"},
+				mode: "pwatch"
+			});
+			
+			//]]>
+		</script>
+	</ui:define>
+	
+</ui:composition>

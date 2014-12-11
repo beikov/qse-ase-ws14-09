@@ -1,0 +1,126 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<!-- content -->
+	<ui:define name="body">
+	
+	<h:form id="searchValuePapers">
+	 <p:tabView id="searchTab">
+        <p:tab title="Einfache Aktiensuche">
+	 
+			<h:panelGrid columns="2" cellpadding="10">		
+				<p:outputLabel for="type" value="Wähle Aktientyp: " style="padding: 10px;"/>
+				<p:selectOneMenu id="type" value="#{valuePaperScreenerBean.valuePaperType}" style="width:200px">
+					<f:selectItem itemLabel="Beliebig" itemValue="#{null}" />
+					<f:selectItems value="#{valuePaperScreenerBean.valuePaperTypes}" var="paperTypes"
+						itemValue="#{paperTypes}" itemLabel="#{paperTypes.label}"/>
+					<p:ajax process="@this" update="@form" />
+				</p:selectOneMenu>
+			</h:panelGrid>
+			
+			<p:separator />
+			
+			<ui:repeat id="repeatTag" var="filter" value="#{valuePaperScreenerBean.filters}" >
+			
+				<h:panelGrid columns="7" cellpadding="10">
+					<p:commandButton icon="ui-icon-closethick"  >
+				        	<f:ajax listener="#{valuePaperScreenerBean.delete(filter)}" immediate="true" render="@form" />
+					</p:commandButton>
+				
+					<p:selectOneMenu id="attributeSelect" value="#{filter.attribute}" style="width:250px;margin: 5px;" required="true">				
+						 <f:selectItem itemLabel="Wähle Filterattribut" itemValue="#{null}" noSelectionOption="true" />
+						<f:selectItems value="#{valuePaperScreenerBean.attributeTypes}" var="attribute"
+						itemValue="#{attribute}" itemLabel="#{attribute.label}"/>
+							<f:ajax  immediate="true" render="@form" />
+					</p:selectOneMenu>
+					
+					<p:selectOneMenu id="operator" value="#{filter.operator}" style="width:50px;margin:5px;" rendered="#{filter.numeric and filter.attribute != null}">				
+						<f:selectItems value="#{valuePaperScreenerBean.operatorTypes}" var="operator"
+						itemValue="#{operator}" itemLabel="#{operator.label}"/>
+					</p:selectOneMenu>
+					
+					<p:inputText id="nummericField" value="#{filter.numericValue}" style="margin:5px;" required="true" rendered="#{filter.numeric  and filter.attribute != null}" >
+				    	 <f:convertNumber type="number" />
+				    </p:inputText>
+				    
+				    <p:inputText id="textField" value="#{filter.textValue}" style="width:247px;margin: 5px;" required="true" rendered="#{!filter.numeric and filter.attribute != 'CURRENCY' and filter.attribute != null}" />
+				 <!--    
+				    <p:inputText id="currencyField" value="#{filter.currencyValue}" style="width:245px;margin: 5px;" required="true" rendered="#{!filter.numeric and filter.attribute == 'CURRENCY' and filter.attribute != null}" >
+				    	 <f:validateRegex pattern="^[a-zA-Z]{3}$" />
+				    </p:inputText>
+				 --> 
+				 	<p:selectOneMenu id="currencySelect" value="#{filter.currencyValue}" style="width:100px;margin:5px;" rendered="#{!filter.numeric and filter.attribute == 'CURRENCY' and filter.attribute != null}">				
+						<f:selectItems value="#{valuePaperScreenerBean.usedCurrencies}" var="currencyValue"
+						itemValue="#{currencyValue.currencyCode}" itemLabel="#{currencyValue.currencyCode}"/>
+						
+					</p:selectOneMenu>
+					
+				   	<p:selectBooleanCheckbox value="#{filter.enabled}" style="margin:5px;" rendered="#{filter.attribute != null}" />
+				</h:panelGrid>
+				
+			</ui:repeat>
+
+			<p:commandButton icon="ui-icon-plusthick" style="margin-top: 10px;">
+					<f:ajax listener="#{valuePaperScreenerBean.addFilter()}" execute="@form" render="@form" /> 
+			</p:commandButton>
+			  
+				
+		</p:tab>
+		 <p:tab title="Komplexe Aktiensuche">
+		 </p:tab>
+	</p:tabView>	
+		
+				<h:panelGroup layout="block" style="text-align: center;">
+					<p:commandButton value="Reset" type="reset" style="margin: 5px;"/>
+					<p:commandButton value="Suche"
+						action="#{valuePaperScreenerBean.search()}" update="@form"
+						ajax="true" />
+				</h:panelGroup>	
+				<br/>
+				<!-- 
+				<p:message for=":searchValuePapers:searchTab:repeatTag:attributeSelect" style="color:red" />
+				<p> </p>
+				<p:message for=":searchValuePapers:searchTab:repeatTag:nummericField" style="color:red" />			
+				<p> </p>
+				<p:message for=":searchValuePapers:searchTab:repeatTag:textField" style="color:red" />
+				<p> </p>
+				<p:message for=":searchValuePapers:searchTab:repeatTag:currencyField" style="color:red" />	
+				 -->
+		<p:separator />
+		
+		<p:dataTable var="valuePaper" value="#{valuePaperScreenerBean.searchedValuePapers}" rows="15"
+                         paginator="true"
+                         paginatorTemplate=" {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
+				    <p:column headerText="Name" sortBy="#{valuePaper.name}">
+				        <h:outputText value="#{valuePaper.name}" />
+				    </p:column>
+				    <p:column headerText="Währung" >
+				        <h:outputText value="#{valuePaper.currency.currencyCode} (#{valuePaper.currency.symbol})" rendered="#{valuePaper.type == 'STOCK'}"/>
+				    </p:column>
+				    <p:column headerText="Land" >
+				        <h:outputText value="#{valuePaper.country}"  rendered="#{valuePaper.type == 'STOCK'}"/>
+				    </p:column>
+				    <p:column headerText="ISIN" sortBy="#{valuePaper.code}">
+				        <h:outputText value="#{valuePaper.code}" />
+				    </p:column>
+				    <p:column headerText="Typ" sortBy="#{valuePaper.type}">
+				        <h:outputText value="#{valuePaper.type}" />
+				    </p:column>
+				    <p:column >
+				    	<h:button value="Details" outcome="/protected/valuepaper/valuepaperview">
+							<!--  includeViewParams="true" -->
+							<f:param name="valuePaperCode" value="#{valuePaper.code}" />
+						</h:button> 
+				    </p:column>
+				</p:dataTable>
+			</h:form>
+	</ui:define>
+	<!-- content -->
+
+</ui:composition>

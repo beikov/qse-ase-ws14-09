@@ -22,9 +22,9 @@ public class Stock extends ValuePaper {
 	private Currency currency;
 	private String tickerSymbol;
 	private String country;
-	private String finanzenCertificatePageUrl;
-	private String finanzenDividendHistoryPageUrl;
-	private String finanzenNewsPageUrl;
+	private String finanzenCertificatePageUrl; // for extraction
+	private String finanzenDividendHistoryPageUrl; // for extraction
+	private String finanzenNewsPageUrl; // for extraction
 	private String index;
 	private Set<DividendHistoryEntry> dividendHistoryEntries = new HashSet<DividendHistoryEntry>();
 	
@@ -86,6 +86,14 @@ public class Stock extends ValuePaper {
 	private Calendar dividendDate;
 	private Calendar ex_DividendDate;
 	
+	public Currency getCurrency() {
+		return currency;
+	}
+
+	public void setCurrency(Currency currency) {
+		this.currency = currency;
+	}
+	
 	@Override
 	@Transient
 	public ValuePaperType getType() {
@@ -126,14 +134,6 @@ public class Stock extends ValuePaper {
 		this.dividendHistoryEntries = dividendHistoryEntries;
 	}
 
-	public Currency getCurrency() {
-		return currency;
-	}
-
-	public void setCurrency(Currency currency) {
-		this.currency = currency;
-	}
-	
 	public String getTickerSymbol() {
 		return tickerSymbol;
 	}

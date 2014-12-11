@@ -33,6 +33,11 @@ public class BondDetailProcessor implements ItemProcessor{
 			stockBond.setDetailUrl(bondModel.getDetailUrl());
 			stockBond.setCode(bondModel.getIsin());
 			stockBond.setName(bondModel.getName());
+			stockBond.setEmissionDate(bondModel.getEmissionDate());
+			stockBond.setEmissionPrice(bondModel.getEmissionPrice());
+			stockBond.setCoupon(bondModel.getCoupon());
+			stockBond.setEmitter(bondModel.getEmitter());
+			stockBond.setEndDate(bondModel.getEndDate());
 			return stockBond;
 		}catch(ElementNotFoundException e){
 			LOG.warning("Could not find base value (" + bondModel.getBaseValueIsin() + ") for bond (" + bondModel.getIsin() + ")");
