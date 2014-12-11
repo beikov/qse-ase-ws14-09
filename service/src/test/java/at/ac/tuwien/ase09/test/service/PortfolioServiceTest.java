@@ -283,6 +283,23 @@ public class PortfolioServiceTest extends AbstractContainerTest<PortfolioService
 	}
 	
 	@Test
+	public void testGetPortfolioValuePaperProfit() throws ParseException {
+		Portfolio p = createPortfolio();
+		p = addValuePaper(p, ValuePaperType.STOCK);
+		double latestPrice = 14.50;
+		int volume = 20;
+		double payed = 265.;
+		double profit;
+		
+		profit = latestPrice*volume - payed;
+		
+		// When
+		double actual = portfolioService.getProfit( p.getValuePapers().iterator().next() );
+		
+		assertEquals(profit, actual, 0.0001);
+	}
+	
+	@Test
 	public void testGetPortfolioChartEntriesNoValuePapers() throws ParseException {
 		// Given
 		Portfolio p = createPortfolio();
