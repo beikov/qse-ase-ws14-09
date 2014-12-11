@@ -172,14 +172,13 @@ public class PortfolioServiceTest extends AbstractContainerTest<PortfolioService
 		price5.setValuePaper(vp);
 		dataManager.persist(price5);
 		
-		PortfolioValuePaper pvp = new PortfolioValuePaper();
-		pvp.setPortfolio(p);
-		pvp.setValuePaper(vp);
-		pvp.setVolume(10);
-		Set<PortfolioValuePaper> vpSet = new HashSet<PortfolioValuePaper>();
-		vpSet.add(pvp);
-		p.setValuePapers(vpSet);
-		dataManager.persist(pvp);
+		ValuePaperPriceEntry price6 = new ValuePaperPriceEntry();
+		priceDate = Calendar.getInstance();
+		priceDate.setTime(format.parse("2014-12-06"));
+		price6.setCreated(priceDate);
+		price6.setPrice(new BigDecimal("14.50"));
+		price6.setValuePaper(vp);
+		dataManager.persist(price6);
 		
 		Order order = new LimitOrder();
 		Calendar oCreated = Calendar.getInstance();
@@ -235,6 +234,15 @@ public class PortfolioServiceTest extends AbstractContainerTest<PortfolioService
 		ot.setValue(new Money(new BigDecimal("115.00"), Currency.getInstance("EUR")));
 		dataManager.persist(ot);
 		
+		PortfolioValuePaper pvp = new PortfolioValuePaper();
+		pvp.setPortfolio(p);
+		pvp.setValuePaper(vp);
+		pvp.setVolume(10);
+		Set<PortfolioValuePaper> vpSet = new HashSet<PortfolioValuePaper>();
+		vpSet.add(pvp);
+		p.setValuePapers(vpSet);
+		dataManager.persist(pvp);
+		
 		OrderTransactionEntry ot2 = new OrderTransactionEntry();
 		otCreated = Calendar.getInstance();
 		otCreated.setTime(format.parse("2014-12-05"));
@@ -243,6 +251,8 @@ public class PortfolioServiceTest extends AbstractContainerTest<PortfolioService
 		ot2.setPortfolio(p);
 		ot2.setValue(new Money(new BigDecimal("150.00"), Currency.getInstance("EUR")));
 		dataManager.persist(ot2);
+		
+		pvp.setVolume(20);
 		
 		Set<TransactionEntry> transactionEntries = p.getTransactionEntries();
 		transactionEntries.add(ot);
@@ -259,15 +269,20 @@ public class PortfolioServiceTest extends AbstractContainerTest<PortfolioService
 	public void testGetPortfolioValuePaperChange() throws ParseException {
 		Portfolio p = createPortfolio();
 		p = addValuePaper(p, ValuePaperType.STOCK);
-		double change = 10.;
+		double latestPrice = 14.50;
+		int volume = 20;
+		double payed = 265.;
+		double change;
+		
+		change = (latestPrice*volume - payed) * 100 / payed;
 		
 		// When
-		double actual = portfolioService.getChange((PortfolioValuePaper)p.getValuePapers().toArray()[0]);
+		double actual = portfolioService.getChange( p.getValuePapers().iterator().next() );
 		
 		assertEquals(change, actual, 0.0001);
 	}
 	
-	//@Test
+	@Test
 	public void testGetPortfolioChartEntriesNoValuePapers() throws ParseException {
 		// Given
 		Portfolio p = createPortfolio();
