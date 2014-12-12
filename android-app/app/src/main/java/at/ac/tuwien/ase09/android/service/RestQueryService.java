@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.ResultReceiver;
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import at.ac.tuwien.ase09.android.singleton.PortfolioContext;
@@ -23,6 +24,8 @@ public class RestQueryService extends IntentService {
     public static final int STATUS_FINISHED = 2;
     public static final int STATUS_ERROR = 3;
 
+    public static final String COMMAND_PORTFOLIOS = "portfolios";
+
     public RestQueryService() {
         super(LOG_TAG);
     }
@@ -31,12 +34,11 @@ public class RestQueryService extends IntentService {
         final ResultReceiver receiver = intent.getParcelableExtra("receiver");
         String command = intent.getStringExtra("command");
         Bundle b = new Bundle();
-        if(command.equals("query")) {
+        if(command.equals(COMMAND_PORTFOLIOS)) {
             receiver.send(STATUS_RUNNING, Bundle.EMPTY);
             try {
                 // get some data or something
-                getPortfolioContext();
-//                b.putParcelableArrayList("results", results);
+                b.putSerializable("results", getPortfolios());
                 receiver.send(STATUS_FINISHED, b);
             } catch(Exception e) {
                 b.putString(Intent.EXTRA_TEXT, e.toString());
@@ -56,5 +58,10 @@ public class RestQueryService extends IntentService {
             }
         }
         return PortfolioContext.getPortfolio();
+    }
+
+    private ArrayList<PortfolioDto> getPortfolios(){
+        PortfolioResource portfolioResource = WebserviceFactory.getInstance().getPortfolioResource();
+        return new ArrayList<PortfolioDto>(portfolioResource.getPortfolios(7730l)); //TODO: use user id of logged in user
     }
 }

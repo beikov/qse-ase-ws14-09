@@ -8,6 +8,7 @@ import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,6 +20,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 import at.ac.tuwien.ase09.android.fragment.NavigationDrawerFragment;
+import at.ac.tuwien.ase09.android.fragment.PortfolioContextFragment;
 import at.ac.tuwien.ase09.android.fragment.PortfolioViewFragment;
 import at.ac.tuwien.ase09.android.singleton.PortfolioContext;
 import at.ac.tuwien.ase09.android.singleton.WebserviceFactory;
@@ -27,7 +29,9 @@ import at.ac.tuwien.ase09.rest.model.PortfolioDto;
 
 
 public class MainActivity extends Activity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks, PortfolioContextFragment.OnFragmentInteractionListener {
+    private static final String LOG_TAG = "MainActivity";
+
     private static int REQUEST_PORTFOLIO_CONTEXT = 1;
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -127,13 +131,19 @@ public class MainActivity extends Activity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_portfolio_context) {
-            Intent intent = new Intent(this, PortfolioContextActivity.class);
-            intent.putExtra(PortfolioContextActivity.PARAM_KEY_PORTFOLIO_CONTEXT, PortfolioContext.getPortfolio());
-            startActivityForResult(intent, REQUEST_PORTFOLIO_CONTEXT);
+            getFragmentManager().beginTransaction().replace(R.id.container, new PortfolioContextFragment()).commit();
+//            Intent intent = new Intent(this, PortfolioContextActivity.class);
+//            intent.putExtra(PortfolioContextActivity.PARAM_KEY_PORTFOLIO_CONTEXT, PortfolioContext.getPortfolio());
+//            startActivityForResult(intent, REQUEST_PORTFOLIO_CONTEXT);
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onFragmentInteraction(String id) {
+        Log.i(LOG_TAG, "onFragmentInteraction " + id);
     }
 
     /**

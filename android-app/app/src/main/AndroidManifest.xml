@@ -19,14 +19,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".activity.PortfolioContextActivity"
-            android:label="@string/title_activity_portfolio_context"
-            android:parentActivityName=".activity.MainActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.MainActivity" />
-        </activity>
+
         <service android:enabled="true" android:name="at.ac.tuwien.ase09.android.service.RestQueryService"></service>
     </application>
 
