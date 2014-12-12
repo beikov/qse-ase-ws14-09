@@ -2,12 +2,14 @@
 <resources>
 
     <string name="app_name">Portfolio Simulation</string>
-    <string name="title_section1">Section 1</string>
-    <string name="title_section2">Section 2</string>
-    <string name="title_section3">Section 3</string>
+    <string name="menu_portfolio_view">Portfolio View</string>
+    <string name="menu_valuepaper_search">Wertpapiersuche</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_example">Example action</string>
-    <string name="action_settings">Settings</string>
-
+    <string name="action_portfolio_context">Select active portfolio</string>
+    <string name="tab_performance">Performance</string>
+    <string name="tab_transactions">Transactions</string>
+    <string name="tab_valuepapers">Value papers</string>
+    <string name="tab_orders">Orders</string>
 </resources>

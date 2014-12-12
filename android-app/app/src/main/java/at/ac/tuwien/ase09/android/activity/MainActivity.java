@@ -1,10 +1,12 @@
-package at.ac.tuwien.ase09.android;
+package at.ac.tuwien.ase09.android.activity;
 
 import android.app.Activity;
 
 import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Intent;
+import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -13,13 +15,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
 
+import java.io.IOException;
+import java.util.Properties;
+
 import at.ac.tuwien.ase09.android.fragment.NavigationDrawerFragment;
-import at.ac.tuwien.ase09.android_app.R;
+import at.ac.tuwien.ase09.android.fragment.PortfolioViewFragment;
+import at.ac.tuwien.ase09.android.singleton.PortfolioContext;
+import at.ac.tuwien.ase09.android.singleton.WebserviceFactory;
+import at.ac.tuwien.ase09.android.R;
+import at.ac.tuwien.ase09.rest.model.PortfolioDto;
 
 
 public class MainActivity extends Activity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
-
+    private static int REQUEST_PORTFOLIO_CONTEXT = 1;
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
@@ -43,27 +52,40 @@ public class MainActivity extends Activity
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
+
+        AssetManager assetMgr = getAssets();
+        Properties settings = new Properties();
+        try {
+            settings.load(assetMgr.open("settings.properties"));
+            WebserviceFactory.configure(settings);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
-        FragmentManager fragmentManager = getFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
-                .commit();
+        switch(position) {
+            case 0:
+                // open portfolio view
+                FragmentManager fragmentManager = getFragmentManager();
+                PortfolioViewFragment fragment = new PortfolioViewFragment();
+                fragmentManager.beginTransaction().replace(R.id.container, fragment).commit();
+                break;
+            case 1:
+                // TODO: instantiate value paper search fragment
+                break;
+        }
     }
 
     public void onSectionAttached(int number) {
         switch (number) {
             case 1:
-                mTitle = getString(R.string.title_section1);
+                mTitle = getString(R.string.menu_portfolio_view);
                 break;
             case 2:
-                mTitle = getString(R.string.title_section2);
-                break;
-            case 3:
-                mTitle = getString(R.string.title_section3);
+                mTitle = getString(R.string.menu_valuepaper_search);
                 break;
         }
     }
@@ -90,6 +112,13 @@ public class MainActivity extends Activity
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == REQUEST_PORTFOLIO_CONTEXT && resultCode == RESULT_OK) {
+            PortfolioContext.setPortfolio((PortfolioDto) data.getSerializableExtra("result"));
+        }
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -97,7 +126,10 @@ public class MainActivity extends Activity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_portfolio_context) {
+            Intent intent = new Intent(this, PortfolioContextActivity.class);
+            intent.putExtra(PortfolioContextActivity.PARAM_KEY_PORTFOLIO_CONTEXT, PortfolioContext.getPortfolio());
+            startActivityForResult(intent, REQUEST_PORTFOLIO_CONTEXT);
             return true;
         }
 

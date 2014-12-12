@@ -25,9 +25,11 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:support-v4:21.0.3'
     compile('org.jboss.resteasy.mobile:resteasy-mobile:1.0.0') {
-        exclude module: 'org.apache.httpcomponents:httpclient'
+        exclude module: 'httpclient'
     }
-    compile ''
+    compile 'com.android.support:support-v4:21.0.3'
+    compile('at.ac.tuwien.ase09:rest-api:1.0.0-SNAPSHOT') {
+        exclude module: 'model'
+    }
 }
