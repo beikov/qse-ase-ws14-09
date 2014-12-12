@@ -20,10 +20,6 @@
 			<groupId>org.apache.openejb</groupId>
 			<artifactId>javaee-api</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>model</artifactId>
-		</dependency>
 	</dependencies>
 	
 	<build>

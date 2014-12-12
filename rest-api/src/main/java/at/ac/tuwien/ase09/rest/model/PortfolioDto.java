@@ -2,15 +2,15 @@ package at.ac.tuwien.ase09.rest.model;
 
 import java.io.Serializable;
 
-import at.ac.tuwien.ase09.model.Money;
-
 public class PortfolioDto implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private String name;
-	private Money currentCapital;
+	private MoneyDto currentCapital;
 
-	public PortfolioDto(String name, Money currentCapital) {
+	public PortfolioDto(){}
+	
+	public PortfolioDto(String name, MoneyDto currentCapital) {
 		super();
 		this.name = name;
 		this.currentCapital = currentCapital;
@@ -24,11 +24,11 @@ public class PortfolioDto implements Serializable {
 		this.name = name;
 	}
 	
-	public Money getCurrentCapital() {
+	public MoneyDto getCurrentCapital() {
 		return currentCapital;
 	}
 	
-	public void setCurrentCapital(Money currentCapital) {
+	public void setCurrentCapital(MoneyDto currentCapital) {
 		this.currentCapital = currentCapital;
 	}
 	

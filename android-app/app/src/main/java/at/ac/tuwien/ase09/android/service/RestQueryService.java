@@ -46,19 +46,11 @@ public class RestQueryService extends IntentService {
         }
     }
 
-    private void queryDefaultPortfolioContext(){
-        PortfolioResource portfolioResource = WebserviceFactory.getInstance().getPortfolioResource();
-        List<PortfolioDto> portfolios = portfolioResource.getPortfolios(1l); //TODO: use user id of logged in user
-        if(!portfolios.isEmpty()){
-            PortfolioContext.setPortfolio(portfolios.get(0));
-        }
-    }
-
     private PortfolioDto getPortfolioContext(){
         if(PortfolioContext.getPortfolio() == null){
             Log.i(LOG_TAG, "Query default portfolio context");
             PortfolioResource portfolioResource = WebserviceFactory.getInstance().getPortfolioResource();
-            List<PortfolioDto> portfolios = portfolioResource.getPortfolios(1l); //TODO: use user id of logged in user
+            List<PortfolioDto> portfolios = portfolioResource.getPortfolios(7730l); //TODO: use user id of logged in user
             if(!portfolios.isEmpty()){
                 PortfolioContext.setPortfolio(portfolios.get(0));
             }

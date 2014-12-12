@@ -29,7 +29,6 @@ dependencies {
         exclude module: 'httpclient'
     }
     compile 'com.android.support:support-v4:21.0.3'
-    compile('at.ac.tuwien.ase09:rest-api:1.0.0-SNAPSHOT') {
-        exclude module: 'model'
-    }
+    compile 'at.ac.tuwien.ase09:rest-api:1.0.0-SNAPSHOT'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.4.2'
 }
