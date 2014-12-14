@@ -468,9 +468,34 @@ public class ValuePaperScreenerAccessTest extends AbstractContainerTest<ValuePap
 		List<ValuePaper> valuePapers=valuePaperScreener.findByFilter(filterList, ValuePaperType.STOCK);
 		
 		assertEquals(1,valuePapers.size());
+		if(valuePapers.size()>0)
+			assertEquals("Google",valuePapers.get(0).getName());
 		
 		
 	}
+	@Test
+	public void testSpecificAttributesFilterGreaterLower()
+	{
+		List<AttributeFilter> filterList=new ArrayList<AttributeFilter>();
+		
+		AttributeFilter atfilter1=new AttributeFilter();
+		atfilter1.setAttribute(AttributeType.MARKETCAP);
+		atfilter1.setNumericValue(new BigDecimal(71000000.5));
+		atfilter1.setOperator(OperatorType.LOWER);
+		
+		AttributeFilter atfilter2=new AttributeFilter();
+		atfilter2.setAttribute(AttributeType.WEEKHIGH);
+		atfilter2.setNumericValue(new BigDecimal(60.5));
+		atfilter2.setOperator(OperatorType.GREATER);
+		
+		filterList.add(atfilter1);
+		filterList.add(atfilter2);
+		
+		List<ValuePaper> valuePapers=valuePaperScreener.findByFilter(filterList, ValuePaperType.STOCK);
+		
+		assertEquals(1,valuePapers.size());
+		if(valuePapers.size()>0)
+			assertEquals("Google",valuePapers.get(0).getName());
 	
-
+	}
 }
