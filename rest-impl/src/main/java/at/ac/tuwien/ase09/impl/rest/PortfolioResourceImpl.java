@@ -24,7 +24,7 @@ public class PortfolioResourceImpl implements PortfolioResource {
 		User user = new User();
 		user.setId(userId);
 		List<Portfolio> portfolios = portfolioDataAccess.getPortfoliosByUser(user);
-		List<PortfolioDto> portfolioDtos =  portfolios.stream().map(portfolio -> new PortfolioDto(portfolio.getName(), new MoneyDto(portfolio.getCurrentCapital().getValue(), portfolio.getCurrentCapital().getCurrency()))).collect(Collectors.toList());
+		List<PortfolioDto> portfolioDtos =  portfolios.stream().map(portfolio -> new PortfolioDto(portfolio.getId(), portfolio.getName(), new MoneyDto(portfolio.getCurrentCapital().getValue(), portfolio.getCurrentCapital().getCurrency()))).collect(Collectors.toList());
 		return portfolioDtos;
 	}
 }

@@ -1,10 +1,13 @@
 package at.ac.tuwien.ase09.android.fragment;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +24,7 @@ import at.ac.tuwien.ase09.android.R;
 
 import at.ac.tuwien.ase09.android.service.RestQueryResultReceiver;
 import at.ac.tuwien.ase09.android.service.RestQueryService;
+import at.ac.tuwien.ase09.android.singleton.PortfolioContext;
 import at.ac.tuwien.ase09.rest.model.PortfolioDto;
 
 /**
@@ -29,21 +33,12 @@ import at.ac.tuwien.ase09.rest.model.PortfolioDto;
  * Large screen devices (such as tablets) are supported by replacing the ListView
  * with a GridView.
  * <p/>
- * Activities containing this fragment MUST implement the {@link OnFragmentInteractionListener}
+ * Activities containing this fragment MUST implement the {@link at.ac.tuwien.ase09.android.fragment.PortfolioContextFragment.PortfolioContextChangeListener}
  * interface.
  */
 public class PortfolioContextFragment extends Fragment implements AbsListView.OnItemClickListener, RestQueryResultReceiver.Receiver {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    private OnFragmentInteractionListener mListener;
+    private PortfolioContextChangeListener mListener;
 
     /**
      * The fragment's ListView/GridView.
@@ -55,17 +50,7 @@ public class PortfolioContextFragment extends Fragment implements AbsListView.On
      * The Adapter which will be used to populate the ListView/GridView with
      * Views.
      */
-    private ListAdapter mAdapter;
-
-    // TODO: Rename and change types of parameters
-    public static PortfolioContextFragment newInstance(String param1, String param2) {
-        PortfolioContextFragment fragment = new PortfolioContextFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    private PortfolioArrayAdapter mAdapter;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -81,14 +66,9 @@ public class PortfolioContextFragment extends Fragment implements AbsListView.On
                 //show progress
                 break;
             case RestQueryService.STATUS_FINISHED:
-                // TODO: Change Adapter to display your content
                 List<PortfolioDto> portfolios = (List<PortfolioDto>) resultData.getSerializable("results");
-                List<String> portfolioNames = new ArrayList<>();
-                for(PortfolioDto portfolio : portfolios){
-                    portfolioNames.add(portfolio.getName());
-                }
-                mAdapter = new ArrayAdapter<String>(getActivity(),
-                        android.R.layout.simple_list_item_1, android.R.id.text1, portfolioNames);
+                mAdapter = new PortfolioArrayAdapter(getActivity(),
+                        R.layout.portfolio_item, R.id.portfolio_name, portfolios);
                 ((AdapterView<ListAdapter>) mListView).setAdapter(mAdapter);
 
                 // do something interesting
@@ -109,11 +89,6 @@ public class PortfolioContextFragment extends Fragment implements AbsListView.On
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
 
         receiver = new RestQueryResultReceiver(new Handler());
         receiver.setReceiver(this);
@@ -141,7 +116,7 @@ public class PortfolioContextFragment extends Fragment implements AbsListView.On
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mListener = (OnFragmentInteractionListener) activity;
+            mListener = (PortfolioContextChangeListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -160,7 +135,7 @@ public class PortfolioContextFragment extends Fragment implements AbsListView.On
         if (null != mListener) {
             // Notify the active callbacks interface (the activity, if the
             // fragment is attached to one) that an item has been selected.
-//            mListener.onFragmentInteraction(DummyContent.ITEMS.get(position).id);
+            mListener.onPortfolioContextChange(mAdapter.getItem(position));
         }
     }
 
@@ -187,9 +162,84 @@ public class PortfolioContextFragment extends Fragment implements AbsListView.On
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        public void onFragmentInteraction(String id);
+    public interface PortfolioContextChangeListener {
+        public void onPortfolioContextChange(PortfolioDto portfolio);
     }
 
+    private class PortfolioArrayAdapter extends ArrayAdapter<PortfolioDto>  {
+        private static final String LOG_TAG = "PortfolioArrayAdapter";
+
+        private int resource;
+        private int fieldId = 0;
+
+        public PortfolioArrayAdapter(Context context, int resource) {
+            super(context, resource);
+            this.resource = resource;
+        }
+
+        public PortfolioArrayAdapter(Context context, int resource, int textViewResourceId) {
+            super(context, resource, textViewResourceId);
+            this.resource = resource;
+            this.fieldId = textViewResourceId;
+        }
+
+        public PortfolioArrayAdapter(Context context, int resource, PortfolioDto[] objects) {
+            super(context, resource, objects);
+            this.resource = resource;
+        }
+
+        public PortfolioArrayAdapter(Context context, int resource, int textViewResourceId, PortfolioDto[] objects) {
+            super(context, resource, textViewResourceId, objects);
+            this.resource = resource;
+            this.fieldId = textViewResourceId;
+        }
+
+        public PortfolioArrayAdapter(Context context, int resource, List<PortfolioDto> objects) {
+            super(context, resource, objects);
+            this.resource = resource;
+        }
+
+        public PortfolioArrayAdapter(Context context, int resource, int textViewResourceId, List<PortfolioDto> objects) {
+            super(context, resource, textViewResourceId, objects);
+            this.resource = resource;
+            this.fieldId = textViewResourceId;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            View view;
+            TextView text;
+
+            if (convertView == null) {
+                view = getActivity().getLayoutInflater().inflate(resource, parent, false);
+            } else {
+                view = convertView;
+            }
+
+            try {
+                if (fieldId == 0) {
+                    //  If no custom field is assigned, assume the whole resource is a TextView
+                    text = (TextView) view;
+                } else {
+                    //  Otherwise, find the TextView field within the layout
+                    text = (TextView) view.findViewById(fieldId);
+                }
+            } catch (ClassCastException e) {
+                Log.e("ArrayAdapter", "You must supply a resource ID for a TextView");
+                throw new IllegalStateException(
+                        "ArrayAdapter requires the resource ID to be a TextView", e);
+            }
+
+            PortfolioDto portfolio = getItem(position);
+            text.setText(portfolio.getName());
+
+            if(PortfolioContext.getPortfolio() != null){
+                if(portfolio.getId().equals(PortfolioContext.getPortfolio().getId())){
+                    text.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
+                }
+            }
+
+            return view;
+        }
+    }
 }
