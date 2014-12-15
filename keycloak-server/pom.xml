@@ -27,4 +27,5 @@
 			<artifactId>keycloak-theme</artifactId>
 		</dependency>
 	</dependencies>
+	
 </project>
