@@ -41,7 +41,7 @@
 			<type>war</type>
 		</dependency>
 		<dependency>
-			<groupId>org.keycloak</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>keycloak-server</artifactId>
 			<type>war</type>
 		</dependency>
@@ -61,7 +61,7 @@
 					<skinnyWars>true</skinnyWars>
 					<modules>
 						<webModule>
-							<groupId>org.keycloak</groupId>
+							<groupId>${project.groupId}</groupId>
 							<artifactId>keycloak-server</artifactId>
 							<bundleFileName>keycloak-server.war</bundleFileName>
 							<contextRoot>/auth</contextRoot>

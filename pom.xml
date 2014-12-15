@@ -30,6 +30,8 @@
 		<module>ear</module>
 		<module>web-skinny</module>
 		<module>web-final</module>
+		<module>keycloak-server</module>
+		<module>keycloak-theme</module>
 	</modules>
 
 	<dependencyManagement>
@@ -142,6 +144,17 @@
 				<artifactId>web-final</artifactId>
 				<version>${project.version}</version>
 				<type>war</type>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>keycloak-server</artifactId>
+				<version>${project.version}</version>
+				<type>war</type>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>keycloak-theme</artifactId>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>${project.groupId}</groupId>
