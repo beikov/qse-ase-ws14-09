@@ -26,6 +26,10 @@
 			<groupId>${project.groupId}</groupId>
 			<artifactId>model</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>parser</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>org.apache.deltaspike.core</groupId>

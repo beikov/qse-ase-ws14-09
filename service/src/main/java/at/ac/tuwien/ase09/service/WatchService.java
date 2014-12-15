@@ -7,8 +7,7 @@ import javax.enterprise.event.TransactionPhase;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
-import com.espertech.esper.client.EPServiceProvider;
-
+import at.ac.tuwien.ase09.cep.EventProcessingSingleton;
 import at.ac.tuwien.ase09.event.Added;
 import at.ac.tuwien.ase09.model.Watch;
 
@@ -17,12 +16,12 @@ public class WatchService {
 	
 	@Inject
 	private EntityManager em;
-	@Inject
-	private EPServiceProvider epService;
 	
 	@Inject
 	@Added
 	private Event<Watch> watchAdded;
+	@Inject
+	private EventProcessingSingleton epService;
 	
 	public void saveWatch(Watch watch) {
 		em.persist(watch);
@@ -31,6 +30,6 @@ public class WatchService {
 	}
 	
 	public void onWatchAdded(@Observes(during = TransactionPhase.AFTER_COMPLETION) @Added Watch watch) {
-		epService.
+		epService.addWatch(watch);
 	}
 }

@@ -30,6 +30,8 @@
 		<module>ear</module>
 		<module>web-skinny</module>
 		<module>web-final</module>
+		<module>data-skinny</module>
+		<module>data-final</module>
 		<module>keycloak-server</module>
 		<module>keycloak-theme</module>
 	</modules>
@@ -142,6 +144,24 @@
 			<dependency>
 				<groupId>${project.groupId}</groupId>
 				<artifactId>web-final</artifactId>
+				<version>${project.version}</version>
+				<type>war</type>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>data-app</artifactId>
+				<version>${project.version}</version>
+				<type>war</type>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>data-skinny</artifactId>
+				<version>${project.version}</version>
+				<type>war</type>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>data-final</artifactId>
 				<version>${project.version}</version>
 				<type>war</type>
 			</dependency>

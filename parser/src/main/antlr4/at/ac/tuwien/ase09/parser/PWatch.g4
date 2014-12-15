@@ -67,14 +67,14 @@ arithmetic_factor
     : ( '+' | '-' )? arithmetic_primary;
 
 arithmetic_primary
-    : NUMERIC_ATTRIBUTE
-    | NUMERIC_LITERAL
-    | '('arithmetic_expression')'
-    | SIN '(' arithmetic_expression ')'
-    | COS '(' arithmetic_expression ')'
-    | TAN '(' arithmetic_expression ')'
-    | EXP '(' arithmetic_expression ')'
-    | LOG '(' arithmetic_expression ')'
-    | POW '(' arithmetic_expression ',' arithmetic_expression ')'
-    | SQRT '(' arithmetic_expression ')'
+    : NUMERIC_ATTRIBUTE												#ArithmeticAttribute
+    | NUMERIC_LITERAL												#ArithmeticLiteral
+    | '('arithmetic_expression')'									#ArithmeticNested
+    | SIN '(' arithmetic_expression ')'								#ArithmeticFunction
+    | COS '(' arithmetic_expression ')'								#ArithmeticFunction
+    | TAN '(' arithmetic_expression ')'								#ArithmeticFunction
+    | EXP '(' arithmetic_expression ')'								#ArithmeticFunction
+    | LOG '(' arithmetic_expression ')'								#ArithmeticFunction
+    | POW '(' arithmetic_expression ',' arithmetic_expression ')'   #ArithmeticFunction
+    | SQRT '(' arithmetic_expression ')'							#ArithmeticFunction
     ;
