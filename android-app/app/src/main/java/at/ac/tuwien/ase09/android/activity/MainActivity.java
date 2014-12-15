@@ -29,10 +29,9 @@ import at.ac.tuwien.ase09.rest.model.PortfolioDto;
 
 
 public class MainActivity extends Activity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks, PortfolioContextFragment.OnFragmentInteractionListener {
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks, PortfolioContextFragment.PortfolioContextChangeListener {
     private static final String LOG_TAG = "MainActivity";
 
-    private static int REQUEST_PORTFOLIO_CONTEXT = 1;
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
@@ -116,13 +115,6 @@ public class MainActivity extends Activity
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == REQUEST_PORTFOLIO_CONTEXT && resultCode == RESULT_OK) {
-            PortfolioContext.setPortfolio((PortfolioDto) data.getSerializableExtra("result"));
-        }
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -132,9 +124,6 @@ public class MainActivity extends Activity
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_portfolio_context) {
             getFragmentManager().beginTransaction().replace(R.id.container, new PortfolioContextFragment()).commit();
-//            Intent intent = new Intent(this, PortfolioContextActivity.class);
-//            intent.putExtra(PortfolioContextActivity.PARAM_KEY_PORTFOLIO_CONTEXT, PortfolioContext.getPortfolio());
-//            startActivityForResult(intent, REQUEST_PORTFOLIO_CONTEXT);
             return true;
         }
 
@@ -142,8 +131,9 @@ public class MainActivity extends Activity
     }
 
     @Override
-    public void onFragmentInteraction(String id) {
-        Log.i(LOG_TAG, "onFragmentInteraction " + id);
+    public void onPortfolioContextChange(PortfolioDto portfolio) {
+        PortfolioContext.setPortfolio(portfolio);
+        getFragmentManager().beginTransaction().replace(R.id.container, new PortfolioViewFragment()).commit();
     }
 
     /**

@@ -6,7 +6,7 @@
     <string name="menu_valuepaper_search">Wertpapiersuche</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="action_example">Example action</string>
+    <string name="action_logout">Logout</string>
     <string name="action_portfolio_context">Select active portfolio</string>
     <string name="tab_performance">Performance</string>
     <string name="tab_transactions">Transactions</string>
