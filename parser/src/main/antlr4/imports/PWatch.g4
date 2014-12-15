@@ -1,4 +1,4 @@
-lexer grammar PWatchLexer;
+lexer grammar PWatch;
 
 AND : A N D;
 OR : O R;

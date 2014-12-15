@@ -1,6 +1,6 @@
-grammar PWatchParser;
+grammar PWatch;
 
-import PWatchLexer;
+import PWatch;
 
 start
     : conditional_expression EOF;

@@ -40,6 +40,12 @@
 			<groupId>com.blazebit</groupId>
 			<artifactId>blaze-ee-utils</artifactId>
 		</dependency>
+		
+		<dependency>
+	        <groupId>com.espertech</groupId>
+	        <artifactId>esper</artifactId>
+	        <version>5.1.0</version>
+        </dependency>
 
 		<!-- Test -->
 
@@ -85,6 +91,13 @@
 					<source>1.7</source>
 					<target>1.7</target>
 				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-ejb-plugin</artifactId>
+		        <version>2.4</version>
+		        <configuration>
+					<ejbVersion>3.0</ejbVersion>
+		        </configuration>
 			</plugin>
 		</plugins>
 	</build>
