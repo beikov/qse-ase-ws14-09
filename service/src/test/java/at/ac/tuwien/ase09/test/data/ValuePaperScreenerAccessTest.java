@@ -557,5 +557,13 @@ public class ValuePaperScreenerAccessTest extends AbstractContainerTest<ValuePap
 		if(valuePapers.size()>0)
 			assertEquals("Andritz",valuePapers.get(0).getName());
 	}
+	@Test
+	public void testdefaultSearchbyValuePaper()
+	{
+		
+		List<ValuePaper> valuePapers=valuePaperScreener.findByValuePaper(null, true);
+		
+		assertEquals(6,valuePapers.size());
+	}
 	
 }
