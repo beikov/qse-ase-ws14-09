@@ -7,9 +7,9 @@ import java.util.Currency;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import at.ac.tuwien.ase09.data.ValuePaperScreenerAccess;
 import at.ac.tuwien.ase09.filter.AttributeFilter;
@@ -18,8 +18,8 @@ import at.ac.tuwien.ase09.filter.OperatorType;
 import at.ac.tuwien.ase09.model.ValuePaper;
 import at.ac.tuwien.ase09.model.ValuePaperType;
 
-@ManagedBean
-@ViewScoped
+@Named
+@SessionScoped
 public class ValuePaperScreenerBean implements Serializable {
 
 	private static final long serialVersionUID = 1L;

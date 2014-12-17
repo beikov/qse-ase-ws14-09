@@ -2,6 +2,7 @@ package at.ac.tuwien.ase09.bean;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.deltaspike.core.api.scope.ViewAccessScoped;
 import org.primefaces.model.chart.AxisType;
 import org.primefaces.model.chart.DateAxis;
 import org.primefaces.model.chart.LineChartModel;
@@ -46,6 +48,18 @@ public class PortfolioViewBean implements Serializable {
 	
 	@Inject
 	private ValuePaperPriceEntryDataAccess priceDataAccess;
+
+	private List<User> followers;
+	
+	private List<PortfolioValuePaper> portfolioValuePapers;
+	
+	private List<Order> orders;
+	private List<TransactionEntry> transactions;
+	
+	private List<NewsItem> news;
+	
+	private List<AnalystOpinion> opinions;
+
 	
 	private Long portfolioId;
 	
@@ -62,6 +76,13 @@ public class PortfolioViewBean implements Serializable {
 		loadPortfolio(portfolioId);
         createPieModels();
         createPortfolioChart();
+        followers = new LinkedList<User>(portfolio.getFollowers());
+        portfolioValuePapers = new ArrayList<>(portfolio.getValuePapers());
+        orders = new LinkedList<Order>(portfolio.getOrders());
+        transactions = new LinkedList<TransactionEntry>(portfolio.getTransactionEntries());
+        news = portfolioDataAccess.getNewsForValuePapers(portfolio.getValuePapers());
+        opinions = portfolioDataAccess.getAnalystOpinionsForValuePapers(portfolio.getValuePapers());
+        
     }
     
     public Portfolio getPortfolio() {
@@ -90,11 +111,11 @@ public class PortfolioViewBean implements Serializable {
 	}
 	
 	public List<NewsItem> getNewsForValuePapers() {
-		return portfolioDataAccess.getNewsForValuePapers(portfolio.getValuePapers());
+		return news;
 	}
 	
 	public List<AnalystOpinion> getAnalystOpinionsForValuePapers() {
-		return portfolioDataAccess.getAnalystOpinionsForValuePapers(portfolio.getValuePapers());
+		return opinions;
 	}
 	
 	/*public String getTransactionValuePaperName(TransactionEntry t) {
@@ -112,19 +133,19 @@ public class PortfolioViewBean implements Serializable {
 	}*/
 	
 	public List<PortfolioValuePaper> getValuePaperList() {
-		return new LinkedList<PortfolioValuePaper>(portfolio.getValuePapers());
+		return portfolioValuePapers;
 	}
 	
 	public List<Order> getOrderList() {
-		return new LinkedList<Order>(portfolio.getOrders());
+		return orders;
 	}
 	
 	public List<TransactionEntry> getTransactionList() {
-		return new LinkedList<TransactionEntry>(portfolio.getTransactionEntries());
+		return transactions;
 	}
 	
 	public List<User> getFollowerList() {
-		return new LinkedList<User>(portfolio.getFollowers());
+		return followers;
 	}
 	
 	public void changeVisibility() {
