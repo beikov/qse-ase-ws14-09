@@ -26,15 +26,15 @@
 
 			<h:outputText value="Statistiken sichtbar: " />
 			<p:inputSwitch id="statisticsSwitch"
-					value="#{cc.attrs.visibilitySettings.statisticsVisible}" onLabel="an" offLabel="aus" disabled="#{!portfolioCreationViewBean.portfolio.visibility.publicVisible}"/>
+					value="#{cc.attrs.visibilitySettings.statisticsVisible}" onLabel="an" offLabel="aus" disabled="#{!cc.attrs.visibilitySettings.publicVisible}"/>
 
 			<h:outputText value="Geschichte sichtbar: " />
 			<p:inputSwitch id="historySwitch"
-						value="#{cc.attrs.visibilitySettings.historyVisible}" onLabel="an" offLabel="aus" disabled="#{!portfolioCreationViewBean.portfolio.visibility.publicVisible}"/>
+						value="#{cc.attrs.visibilitySettings.historyVisible}" onLabel="an" offLabel="aus" disabled="#{!cc.attrs.visibilitySettings.publicVisible}"/>
 				
 			<h:outputText value="Wertpapiere sichtbar: " />
 			<p:inputSwitch id="valuePaperSwitch"
-						value="#{cc.attrs.visibilitySettings.valuePaperListVisible}" onLabel="an" offLabel="aus" disabled="#{!portfolioCreationViewBean.portfolio.visibility.publicVisible}"/>
+						value="#{cc.attrs.visibilitySettings.valuePaperListVisible}" onLabel="an" offLabel="aus" disabled="#{!cc.attrs.visibilitySettings.publicVisible}"/>
 		</h:panelGrid>
 	</h:form>
 </composite:implementation>
