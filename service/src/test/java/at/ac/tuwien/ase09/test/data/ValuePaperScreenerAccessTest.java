@@ -246,7 +246,7 @@ public class ValuePaperScreenerAccessTest extends AbstractContainerTest<ValuePap
 	{
 		AttributeFilter atfilter=new AttributeFilter();
 		atfilter.setAttribute(AttributeType.INDEX);
-		atfilter.setTextValue("ATX");
+		atfilter.setIndexValue("ATX");
 		List<AttributeFilter> filterList=new ArrayList<AttributeFilter>();
 		filterList.add(atfilter);
 		
