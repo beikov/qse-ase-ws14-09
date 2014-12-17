@@ -20,7 +20,7 @@
 					<f:selectItem itemLabel="Beliebig" itemValue="#{null}" />
 					<f:selectItems value="#{valuePaperScreenerBean.valuePaperTypes}" var="paperTypes"
 						itemValue="#{paperTypes}" itemLabel="#{paperTypes.label}"/>
-					<p:ajax process="@this" update="@form" />
+					<p:ajax process="@form" update="@form" />
 				</p:selectOneMenu>
 			</h:panelGrid>
 			
@@ -49,15 +49,15 @@
 				    	 <f:convertNumber type="number" />
 				    </p:inputText>
 				    
-				    <p:inputText id="textField" value="#{filter.textValue}" style="width:247px;margin: 5px;" required="true" rendered="#{!filter.numeric and filter.attribute != 'CURRENCY' and filter.attribute != null}" />
-				 <!--    
-				    <p:inputText id="currencyField" value="#{filter.currencyValue}" style="width:245px;margin: 5px;" required="true" rendered="#{!filter.numeric and filter.attribute == 'CURRENCY' and filter.attribute != null}" >
-				    	 <f:validateRegex pattern="^[a-zA-Z]{3}$" />
-				    </p:inputText>
-				 --> 
+				    <p:inputText id="textField" value="#{filter.textValue}" style="width:247px;margin: 5px;" required="true" rendered="#{!filter.numeric and filter.attribute != 'CURRENCY' and filter.attribute != 'INDEX' and filter.attribute != null}" />
+				
 				 	<p:selectOneMenu id="currencySelect" value="#{filter.currencyValue}" style="width:100px;margin:5px;" rendered="#{!filter.numeric and filter.attribute == 'CURRENCY' and filter.attribute != null}">				
 						<f:selectItems value="#{valuePaperScreenerBean.usedCurrencies}" var="currencyValue"
 						itemValue="#{currencyValue.currencyCode}" itemLabel="#{currencyValue.currencyCode}"/>
+						
+					</p:selectOneMenu>
+					<p:selectOneMenu id="indexSelect" value="#{filter.indexValue}" style="width:100px;margin:5px;" rendered="#{!filter.numeric and filter.attribute == 'INDEX' and filter.attribute != null}">				
+						<f:selectItems value="#{valuePaperScreenerBean.usedIndexes}" />
 						
 					</p:selectOneMenu>
 					
@@ -101,7 +101,7 @@
 				        <h:outputText value="#{valuePaper.name}" />
 				    </p:column>
 				    <p:column headerText="Währung" >
-				        <h:outputText value="#{valuePaper.currency.currencyCode} (#{valuePaper.currency.symbol})" rendered="#{valuePaper.type == 'STOCK'}"/>
+				        <h:outputText value="#{valuePaper.currency.currencyCode} (#{valuePaper.currency.symbol})" rendered="#{valuePaper.type == 'STOCK' or valuePaper.type == 'FUND'}"/>
 				    </p:column>
 				    <p:column headerText="Land" >
 				        <h:outputText value="#{valuePaper.country}"  rendered="#{valuePaper.type == 'STOCK'}"/>

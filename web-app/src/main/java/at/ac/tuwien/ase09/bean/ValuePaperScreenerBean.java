@@ -69,6 +69,14 @@ public class ValuePaperScreenerBean implements Serializable {
 			{
 				return Arrays.asList(AttributeType.values());
 			}
+			else if(paperType.equals(ValuePaperType.FUND))
+			{
+				List<AttributeType> attributes=new ArrayList<AttributeType>();
+				attributes.add(AttributeType.NAME);
+				attributes.add(AttributeType.CODE);
+				attributes.add(AttributeType.CURRENCY);
+				return attributes;
+			}
 			else
 			{
 				List<AttributeType> attributes=new ArrayList<AttributeType>();
@@ -90,7 +98,9 @@ public class ValuePaperScreenerBean implements Serializable {
 		public List<Currency> getUsedCurrencies() {
 			return screenerDataAccess.getUsedCurrencyCodes();
 		}
-
+		public List<String> getUsedIndexes() {
+			return screenerDataAccess.getUsedIndexes();
+		}
 		
 
 		public void delete(AttributeFilter filter)
