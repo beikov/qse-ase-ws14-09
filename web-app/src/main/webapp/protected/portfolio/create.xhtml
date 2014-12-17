@@ -4,8 +4,6 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:p="http://primefaces.org/ui"
-	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:pa="http://java.sun.com/jsf/composite/portfolioVisibility"
 	template="/WEB-INF/templates/template.xhtml">
 
 	<!-- content -->
@@ -23,32 +21,35 @@
 					</p:inputText>
 					<h:message for="name" style="color:red" />
 
-
 					<h:outputText value="Sichtbarkeit" />
 					<h:outputText value="" />
 					<h:outputText value="" />
 
 
-					<h:outputText value="Alles: " />
-					<p:inputSwitch
-						value="#{portfolioCreationViewBean.portfolio.visibility.publicVisible}" onLabel="an" offLabel="aus" />
+					<h:outputText value="Öffentlich sichtbar: " />
+					<p:inputSwitch id="publicSwitch"
+						value="#{portfolioCreationViewBean.portfolio.visibility.publicVisible}" onLabel="an" offLabel="aus" immediate="true"  >
+				 		<p:ajax event="change" update="createForm:statisticsSwitch createForm:historySwitch createForm:valuePaperSwitch" />
+				 	</p:inputSwitch>
+				 		
 					<h:outputText value="" />
 
-					<h:outputText value="Statistiken: " />
-					<p:inputSwitch
-						value="#{portfolioCreationViewBean.portfolio.visibility.statisticsVisible}" onLabel="an" offLabel="aus" />
+					<h:outputText value="Statistiken sichtbar: " />
+					<p:inputSwitch id="statisticsSwitch"
+						value="#{portfolioCreationViewBean.portfolio.visibility.statisticsVisible}" onLabel="an" offLabel="aus" disabled="#{!portfolioCreationViewBean.portfolio.visibility.publicVisible}"/>
 					<h:outputText value="" />
 
-					<h:outputText value="Geschichte: " />
-					<p:inputSwitch
-						value="#{portfolioCreationViewBean.portfolio.visibility.historyVisible}" onLabel="an" offLabel="aus" />
+					<h:outputText value="Geschichte sichtbar: " />
+					<p:inputSwitch id="historySwitch"
+						value="#{portfolioCreationViewBean.portfolio.visibility.historyVisible}" onLabel="an" offLabel="aus" disabled="#{!portfolioCreationViewBean.portfolio.visibility.publicVisible}"/>
 					<h:outputText value="" />
 
-					<h:outputText value="Wertpapiere: " />
-					<p:inputSwitch
-						value="#{portfolioCreationViewBean.portfolio.visibility.valuePaperListVisible}" onLabel="an" offLabel="aus" />
-					<h:outputText value="" />
+					
 
+					<h:outputText value="Wertpapiere sichtbar: " />
+					<p:inputSwitch id="valuePaperSwitch"
+						value="#{portfolioCreationViewBean.portfolio.visibility.valuePaperListVisible}" onLabel="an" offLabel="aus" disabled="#{!portfolioCreationViewBean.portfolio.visibility.publicVisible}"/>
+					<h:outputText value="" />
 
 					<h:outputText value="Startkapital(€): " />
 					<p:inputText id="startCapital"
