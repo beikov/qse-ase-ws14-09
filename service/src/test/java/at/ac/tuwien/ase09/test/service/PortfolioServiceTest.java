@@ -5,22 +5,28 @@ import static org.junit.Assert.assertEquals;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Currency;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
 import javax.inject.Inject;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import at.ac.tuwien.ase09.data.PortfolioDataAccess;
+import at.ac.tuwien.ase09.model.AnalystOpinion;
+import at.ac.tuwien.ase09.model.AnalystRecommendation;
 import at.ac.tuwien.ase09.model.Fund;
 import at.ac.tuwien.ase09.model.Money;
+import at.ac.tuwien.ase09.model.NewsItem;
 import at.ac.tuwien.ase09.model.Portfolio;
 import at.ac.tuwien.ase09.model.PortfolioSetting;
 import at.ac.tuwien.ase09.model.PortfolioValuePaper;
@@ -50,13 +56,18 @@ public class PortfolioServiceTest extends AbstractContainerTest<PortfolioService
 	private BigDecimal startCapital = new BigDecimal("1000.00");
 	private Calendar portfolioCreated = Calendar.getInstance();
 	
+	private Map<String, ValuePaper> valuePapers = new HashMap<>();
+	
+	private Portfolio portfolio;
+	
 	@Inject
 	private PortfolioDataAccess portfolioService;
 	
 	@Inject
 	private PortfolioDataAccess portfolioDataAccess;
 	
-	private Portfolio createPortfolio() throws ParseException {
+	@Before
+	public void createPortfolio() throws ParseException {
 		User u = new User();
 		u.setUsername("test_user");
 		dataManager.persist(u);
@@ -75,22 +86,20 @@ public class PortfolioServiceTest extends AbstractContainerTest<PortfolioService
 		dataManager.persist(p);
 		em.clear();
 		
-		return p;
+		portfolio = p;
 	}
 	
-	private Portfolio addValuePaper(Portfolio p, ValuePaperType type) throws ParseException {
-		ValuePaper vp;
-		if (type == ValuePaperType.STOCK) {
-			vp = new Stock();
-		} else if (type == ValuePaperType.BOND) {
-			vp = new StockBond();
-		} else {
-			vp = new Fund();
-		}
+	
+	
+	@Before
+	public void initValuePapers() throws ParseException {
+		ValuePaper vp = new Stock();
+		
 		//Stock vp = new Stock();
-		vp.setCode("A1234");
+		vp.setCode("vp1");
 		vp.setName("test_valuePaper");
 		dataManager.persist(vp);
+		
 		
 		ValuePaperHistoryEntry pe = new ValuePaperHistoryEntry();
 		pe.setClosingPrice(new BigDecimal("10.00"));
@@ -180,6 +189,12 @@ public class PortfolioServiceTest extends AbstractContainerTest<PortfolioService
 		price6.setValuePaper(vp);
 		dataManager.persist(price6);
 		
+		valuePapers.put(vp.getCode(), vp);
+	}
+	
+	private void buyValuePaper(Portfolio p, ValuePaper vp) throws ParseException {
+		
+		
 		Order order = new LimitOrder();
 		Calendar oCreated = Calendar.getInstance();
 		oCreated.setTime(format.parse("2014-12-02"));
@@ -262,13 +277,11 @@ public class PortfolioServiceTest extends AbstractContainerTest<PortfolioService
 		p.setTransactionEntries(transactionEntries);
 		
 		em.clear();
-		return p;
 	}
 	
 	@Test
 	public void testGetPortfolioValuePaperChange() throws ParseException {
-		Portfolio p = createPortfolio();
-		p = addValuePaper(p, ValuePaperType.STOCK);
+		buyValuePaper(portfolio, valuePapers.get("vp1"));
 		double latestPrice = 14.50;
 		int volume = 20;
 		double payed = 265.;
@@ -277,15 +290,14 @@ public class PortfolioServiceTest extends AbstractContainerTest<PortfolioService
 		change = (latestPrice*volume - payed) * 100 / payed;
 		
 		// When
-		double actual = portfolioService.getChange( p.getValuePapers().iterator().next() );
+		double actual = portfolioService.getChange( portfolio.getValuePapers().iterator().next() );
 		
 		assertEquals(change, actual, 0.0001);
 	}
 	
 	@Test
 	public void testGetPortfolioValuePaperProfit() throws ParseException {
-		Portfolio p = createPortfolio();
-		p = addValuePaper(p, ValuePaperType.STOCK);
+		buyValuePaper(portfolio, valuePapers.get("vp1"));
 		double latestPrice = 14.50;
 		int volume = 20;
 		double payed = 265.;
@@ -294,7 +306,7 @@ public class PortfolioServiceTest extends AbstractContainerTest<PortfolioService
 		profit = latestPrice*volume - payed;
 		
 		// When
-		double actual = portfolioService.getProfit( p.getValuePapers().iterator().next() );
+		double actual = portfolioService.getProfit( portfolio.getValuePapers().iterator().next() );
 		
 		assertEquals(profit, actual, 0.0001);
 	}
@@ -302,12 +314,11 @@ public class PortfolioServiceTest extends AbstractContainerTest<PortfolioService
 	@Test
 	public void testGetPortfolioChartEntriesNoValuePapers() throws ParseException {
 		// Given
-		Portfolio p = createPortfolio();
 		Map<String, BigDecimal> entries = new HashMap<>();
 		entries.put("2014-12-01", new BigDecimal("1000.00"));
 		
 		// When
-		Map<String, BigDecimal> actual = portfolioService.getPortfolioChartEntries(p);
+		Map<String, BigDecimal> actual = portfolioService.getPortfolioChartEntries(portfolio);
 		
 		// Then
 		assertEquals(entries, actual);
@@ -316,8 +327,7 @@ public class PortfolioServiceTest extends AbstractContainerTest<PortfolioService
 	@Test
 	public void testGetPortfolioChartEntries() throws ParseException {
 		// Given
-		Portfolio p = createPortfolio();
-		p = addValuePaper(p, ValuePaperType.STOCK);
+		buyValuePaper(portfolio, valuePapers.get("vp1"));
 		
 		Map<String, BigDecimal> entries = new HashMap<>();
 		// entry for start capital
@@ -331,11 +341,167 @@ public class PortfolioServiceTest extends AbstractContainerTest<PortfolioService
 		
 		// When
 		//Portfolio actualPortfolio = portfolioDataAccess.getPortfolioById(p.getId());
-		Map<String, BigDecimal> actual = portfolioService.getPortfolioChartEntries(p);
+		Map<String, BigDecimal> actual = portfolioService.getPortfolioChartEntries(portfolio);
 		
 		// Then
 		assertEquals(entries, actual);
 		
+	}
+	
+	@Test
+	public void test_getNewsForPortfolio_forOneValuePaper() throws ParseException {
+		ValuePaper stock = new Stock();
+		stock.setCode("abc");
+		stock.setName("abc");
+		dataManager.persist(stock);
+		
+		PortfolioValuePaper pvp = new PortfolioValuePaper();
+		pvp.setPortfolio(portfolio);
+		pvp.setValuePaper(stock);
+		pvp.setVolume(10);
+		dataManager.persist(pvp);
+		
+		Set<PortfolioValuePaper> valuePapers = portfolio.getValuePapers();
+		valuePapers.add(pvp);
+		portfolio.setValuePapers(valuePapers);
+		
+		Calendar date = Calendar.getInstance();
+		date.setTime(format.parse("2014-12-01"));
+		
+		NewsItem news = new NewsItem();
+		news.setCreated(date);
+		news.setTitle("news for vp1");
+		news.setSource("s");
+		news.setText("t");
+		news.setStock((Stock)stock);
+		dataManager.persist(news);
+		List<NewsItem> newsList = new ArrayList<>();
+		newsList.add(news);
+		
+		List<NewsItem> actual = portfolioService.getNewsForPortfolio(portfolio);
+		
+		assertEquals(newsList.size(), actual.size());
+		
+		for (int i = 0; i < actual.size(); i++) {
+			assertEquals(newsList.get(i), actual.get(i));
+		}
+		
+		
+	}
+	
+	@Test
+	public void test_getNewsForPortfolio_forMoreValuePapers() throws ParseException {
+		ValuePaper stock = new Stock();
+		stock.setCode("abc");
+		stock.setName("abc");
+		dataManager.persist(stock);
+		
+		ValuePaper stock2 = new Stock();
+		stock2.setCode("def");
+		dataManager.persist(stock2);
+		
+		PortfolioValuePaper pvp = new PortfolioValuePaper();
+		pvp.setPortfolio(portfolio);
+		pvp.setValuePaper(stock);
+		pvp.setVolume(10);
+		dataManager.persist(pvp);
+		
+		PortfolioValuePaper pvp2 = new PortfolioValuePaper();
+		pvp2.setPortfolio(portfolio);
+		pvp2.setValuePaper(stock2);
+		pvp2.setVolume(10);
+		dataManager.persist(pvp2);
+		
+		Set<PortfolioValuePaper> valuePapers = portfolio.getValuePapers();
+		valuePapers.add(pvp);
+		valuePapers.add(pvp2);
+		portfolio.setValuePapers(valuePapers);
+		
+		Calendar date = Calendar.getInstance();
+		date.setTime(format.parse("2014-12-01"));
+		
+		NewsItem news = new NewsItem();
+		news.setCreated(date);
+		news.setTitle("news for abc");
+		news.setStock((Stock)stock);
+		dataManager.persist(news);
+		
+		Calendar date2 = Calendar.getInstance();
+		date.setTime(format.parse("2014-12-02"));
+		
+		NewsItem news2 = new NewsItem();
+		news2.setCreated(date2);
+		news2.setTitle("news for def");
+		news2.setStock((Stock)stock2);
+		dataManager.persist(news2);
+
+		List<NewsItem> newsList = new ArrayList<>();
+		newsList.add(news);
+		newsList.add(news2);
+		
+		List<NewsItem> actual = portfolioService.getNewsForPortfolio(portfolio);
+		
+		assertEquals(newsList.size(), actual.size());
+		
+		for (int i = 0; i < actual.size(); i++) {
+			assertEquals(newsList.get(i), actual.get(i));
+		}
+		
+		
+	}
+	
+	@Test
+	public void test_getNewsForPortfolio_withoutExistingNews() throws ParseException {
+		buyValuePaper(portfolio, valuePapers.get("vp1"));
+		
+		List<NewsItem> actual = portfolioService.getNewsForPortfolio(portfolio);
+		
+		assertEquals(true, actual.isEmpty());
+	}
+	
+	
+	@Test
+	public void test_getAnalystOpinionForPortfolio_withoutExistingOpinions() throws ParseException {
+		buyValuePaper(portfolio, valuePapers.get("vp1"));
+		
+		List<AnalystOpinion> actual = portfolioService.getAnalystOpinionsForPortfolio(portfolio);
+		
+		assertEquals(true, actual.isEmpty());
+	}
+	
+	@Test
+	public void test_getAnalystOpinionForPortfolio_oneValuePaper() throws ParseException {
+		ValuePaper stock = new Stock();
+		stock.setCode("abc");
+		stock.setName("abc");
+		dataManager.persist(stock);
+		
+		PortfolioValuePaper pvp = new PortfolioValuePaper();
+		pvp.setPortfolio(portfolio);
+		pvp.setValuePaper(stock);
+		pvp.setVolume(10);
+		dataManager.persist(pvp);
+		
+		Set<PortfolioValuePaper> valuePapers = portfolio.getValuePapers();
+		valuePapers.add(pvp);
+		portfolio.setValuePapers(valuePapers);
+		
+		Calendar date = Calendar.getInstance();
+		date.setTime(format.parse("2014-12-01"));
+		
+		AnalystOpinion opinion = new AnalystOpinion();
+		opinion.setCreated(date);
+		opinion.setRecommendation(AnalystRecommendation.BUY);
+		opinion.setStock((Stock)stock);
+		dataManager.persist(opinion);
+		
+		List<AnalystOpinion> opinionList = new ArrayList<>();
+		opinionList.add(opinion);
+		
+		List<AnalystOpinion> actual = portfolioService.getAnalystOpinionsForPortfolio(portfolio);
+		
+		assertEquals(1, actual.size());
+		assertEquals(opinion, actual.get(0));
 	}
 
 }

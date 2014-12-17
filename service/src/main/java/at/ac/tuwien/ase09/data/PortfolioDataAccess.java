@@ -266,9 +266,9 @@ public class PortfolioDataAccess {
 	}
 	
 
-	public List<NewsItem> getNewsForValuePapers(Set<PortfolioValuePaper> valuePapers) {
+	public List<NewsItem> getNewsForPortfolio(Portfolio portfolio) {
 		List<NewsItem> news = new ArrayList<>();
-		for (PortfolioValuePaper pvp : valuePapers) {
+		for (PortfolioValuePaper pvp : portfolio.getValuePapers()) {
 			ValuePaper valuePaper = pvp.getValuePaper();
 			List<NewsItem> tmpNews = newsItemDataAccess.getNewsItemsByValuePaperCode(valuePaper.getCode());
 			news.addAll(tmpNews);
@@ -276,9 +276,9 @@ public class PortfolioDataAccess {
 		return news;
 	}
 	
-	public List<AnalystOpinion> getAnalystOpinionsForValuePapers(Set<PortfolioValuePaper> valuePapers) {
+	public List<AnalystOpinion> getAnalystOpinionsForPortfolio(Portfolio portfolio) {
 		List<AnalystOpinion> opinions = new ArrayList<>();
-		for (PortfolioValuePaper pvp : valuePapers) {
+		for (PortfolioValuePaper pvp : portfolio.getValuePapers()) {
 			ValuePaper valuePaper = pvp.getValuePaper();
 			List<AnalystOpinion> tmpOpinions = analystOpinionDataAccess.getAnalystOpinionsByValuePaperCode(valuePaper.getCode());
 			opinions.addAll(tmpOpinions);
