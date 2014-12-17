@@ -13,6 +13,7 @@ import org.hibernate.criterion.Restrictions;
 import org.hibernate.ejb.EntityManagerImpl;
 
 import at.ac.tuwien.ase09.filter.AttributeFilter;
+import at.ac.tuwien.ase09.filter.AttributeType;
 import at.ac.tuwien.ase09.model.Stock;
 import at.ac.tuwien.ase09.model.ValuePaper;
 import at.ac.tuwien.ase09.model.ValuePaperType;
@@ -24,6 +25,14 @@ public class ValuePaperScreenerAccess {
 	@Inject
 	private EntityManager em;
 	
+	/*
+	 * Searchmethod used by AndroidApp
+	 * 
+	 * @param filters Suchfilter
+	 * @param type Wertpapiertyp
+	 * 
+	 * @return Liste der übereinstimmenden Wertpapiere
+	 */
 	@SuppressWarnings("unchecked")
 	public List<ValuePaper> findByFilter(List<AttributeFilter> filters, ValuePaperType type)
 	{
@@ -51,15 +60,20 @@ public class ValuePaperScreenerAccess {
 				{
 					crit.add(filter.getOperator().createRestriction("valuePaper."+ filter.getAttribute().getParmName(),
 									filter.getNumericValue()));
-				} else if (filter.getTextValue() != null) 
+				}
+				else if (filter.getIndexValue() != null && filter.getAttribute().equals(AttributeType.INDEX))
+				{
+					crit.add(Restrictions.eq("valuePaper."+ filter.getAttribute().getParmName(), filter.getIndexValue()));
+				} 
+				else if (filter.getCurrencyValue() != null && filter.getAttribute().equals(AttributeType.CURRENCY))
+				{			
+					crit.add(Restrictions.eq("valuePaper."+ filter.getAttribute().getParmName(), Currency.getInstance(filter.getCurrencyValue())));
+				}
+				 else if (filter.getTextValue() != null) 
 				{
 					String textValue = filter.getTextValue().replace('*', '%').replace('?', '_');
 					crit.add(Restrictions.ilike("valuePaper."+ filter.getAttribute().getParmName(), textValue));
 				} 
-				else if (filter.getCurrencyValue() != null) 
-				{			
-					crit.add(Restrictions.eq("valuePaper."+ filter.getAttribute().getParmName(), Currency.getInstance(filter.getCurrencyValue())));
-				}
 			}
 			
 		}
@@ -70,18 +84,35 @@ public class ValuePaperScreenerAccess {
 	@SuppressWarnings("unchecked")
 	public List<Currency> getUsedCurrencyCodes()
 	{
-		//List<Currency> curList=new ArrayList<Currency>();
-		return em.createQuery("SELECT s.currency FROM Stock s Group by s.currency").getResultList();
-		
-		
+		return em.createQuery("SELECT s.currency FROM Stock s Group by s.currency").getResultList();	
 	}
+	@SuppressWarnings("unchecked")
+	public List<String> getUsedIndexes()
+	{
+		return em.createQuery("SELECT s.index FROM Stock s Group by s.index").getResultList();	
+	}
+	
+	/*
+	 * Searchmethod used by AndroidApp
+	 * 
+	 * @param valuePaper Wertpapier
+	 * @param isTypeSpecificated Wertpapiertyp ausgewählt
+	 * 
+	 * @return Liste der übereinstimmenden Wertpapiere
+	 */
 	@SuppressWarnings("unchecked")
 	public List<ValuePaper> findByValuePaper(ValuePaper valuePaper, Boolean isTypeSecificated) {
 		
 		
-		Criteria crit = ((Session)em.getDelegate()).createCriteria(ValuePaper.class, "valuePaper");
+		Criteria crit = null;
 		
-		
+		try{
+			crit=((Session)em.getDelegate()).createCriteria(ValuePaper.class, "valuePaper");
+		}
+		catch(ClassCastException e)
+		{
+			crit=((Session)((EntityManagerImpl)em.getDelegate()).getSession()).createCriteria(ValuePaper.class, "valuePaper");
+		}
 		
 		if (valuePaper.getName() != null && !valuePaper.getName().isEmpty()) {
 			String name = valuePaper.getName().replace('*', '%').replace('?', '_');

@@ -8,6 +8,7 @@ public enum AttributeType {
 	CODE( "code","Code/Isin",false),
 	
 	COUNTRY("country","Land",false),
+	INDEX("index","Aktienindex",false),
 	CURRENCY( "currency","Währungscode",false),
 	MARKETCAP("marketCap","Börsenwert",true),
 	ENTERPRISEVALUE("enterpriseValue","Unternehmenswert",true),
