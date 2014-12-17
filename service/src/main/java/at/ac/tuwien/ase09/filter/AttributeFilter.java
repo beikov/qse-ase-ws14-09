@@ -8,8 +8,8 @@ public class AttributeFilter {
 
 	private BigDecimal numericValue;
 	private String textValue;
-	private ValuePaperType typeValue;
 	private String currencyValue;
+	private String indexValue;
 	private AttributeType attribute;
 	private OperatorType operator;
 	private Boolean numeric,enabled;
@@ -40,14 +40,15 @@ public class AttributeFilter {
 	public String getTextValue() {
 		return textValue;
 	}
+	
+	public String getIndexValue() {
+		return indexValue;
+	}
+	public void setIndexValue(String indexValue) {
+		this.indexValue = indexValue;
+	}
 	public void setTextValue(String textValue) {
 		this.textValue = textValue;
-	}
-	public ValuePaperType getTypeValue() {
-		return typeValue;
-	}
-	public void setTypeValue(ValuePaperType typeValue) {
-		this.typeValue = typeValue;
 	}
 	public AttributeType getAttribute() {
 		return attribute;

@@ -3,22 +3,16 @@ package at.ac.tuwien.ase09.test.data;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Calendar;
 import java.util.List;
-
-import at.ac.tuwien.ase09.data.AnalystOpinionDataAccess;
-import at.ac.tuwien.ase09.data.NewsItemDataAccess;
-import at.ac.tuwien.ase09.exception.EntityNotFoundException;
-import at.ac.tuwien.ase09.test.AbstractContainerTest;
-import at.ac.tuwien.ase09.test.Assert;
 
 import javax.inject.Inject;
 
 import org.junit.Test;
 
-import at.ac.tuwien.ase09.model.AnalystOpinion;
+import at.ac.tuwien.ase09.data.NewsItemDataAccess;
 import at.ac.tuwien.ase09.model.NewsItem;
 import at.ac.tuwien.ase09.model.Stock;
+import at.ac.tuwien.ase09.test.AbstractContainerTest;
 import at.ac.tuwien.ase09.test.DatabaseAware;
 
 @DatabaseAware
