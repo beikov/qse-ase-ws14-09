@@ -6,6 +6,8 @@
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:ase="http://java.sun.com/jsf/composite/portfoliosimcomponents">
 	
+	<strong><h:outputText value="* Beträge exklusive Gebühren, etc." /></strong>
+	
 	<p:dataTable var="association" value="#{portfolioViewBean.valuePaperList}" rows="5"
                          paginator="true"
                          paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
@@ -22,15 +24,17 @@
 	    <p:column headerText="Stück" sortBy="#{association.volume}" width="90">
 	        <h:outputText value="#{association.volume}"></h:outputText>
 	    </p:column>
-	    <p:column headerText="Bezahlt">
+	    <p:column headerText="Einstandswert *">
 	    	<c:set var="payed" value="#{portfolioViewBean.getTotalPayed(paper.code)}" />
-	    	<c:set var="payedLong" value="#{portfolioViewBean.getTotalPayed(paper.code).value.longValue()}" />
-	        <h:outputText value="#{payed} (~ #{payedLong/association.volume})" />
+	        <h:outputText value="#{payed}" />
+	    	<!-- <c:set var="payedLong" value="#{portfolioViewBean.getTotalPayed(paper.code).value.longValue()}" />
+	        <h:outputText value="#{portfolioViewBean.portfolio.currentCapital.currency.symbol}" />
+	        <h:outputText value="#{payedLong/association.volume}" /> -->
 	    </p:column>
-	    <p:column headerText="Gewinn/Verlust">
+	    <p:column headerText="Gewinn/Verlust *">
 	        <h:outputText value="#{portfolioViewBean.getProfit(association)}" />
 	    </p:column>
-	    <p:column headerText="Performance">
+	    <p:column headerText="Performance *">
 	        <ase:valuePaperPerformance code="#{paper.code}" />
 	    </p:column>
 	    
@@ -51,8 +55,8 @@
 	    	<p:tooltip for="btn-sell" value="Verkaufen" />
 	    	
 	    	<!-- <a href="/valuepaper/valuepaperview.xhtml?valuePaperCode=#{paper.code}" class="btn btn-default btn-md"><span class="glyphicon glyphicon-search" aria-hidden="true" /></a>
-	    	<a href="/protected/portfolio/list.xhtml?valuePaperId=#{paper.id}" class="btn btn-default btn-md"><span class="glyphicon glyphicon glyphicon-usd" aria-hidden="true" /></a> -->
-       </p:column>
+			<a href="/protected/portfolio/list.xhtml?valuePaperId=#{paper.id}" class="btn btn-default btn-md"><span class="glyphicon glyphicon glyphicon-usd" aria-hidden="true" /></a> -->
+		</p:column>
 	</p:dataTable>
 
 </ui:composition>
