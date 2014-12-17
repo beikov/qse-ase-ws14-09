@@ -99,36 +99,30 @@ public class PortfolioDataAccess {
 	
 	public Map<ValuePaperType, Integer> getValuePaperTypeCountMap(Portfolio portfolio) {
 		Map<ValuePaperType, Integer> valuePaperTypeCounterMap = new HashMap<ValuePaperType, Integer>();
-		Iterator<PortfolioValuePaper> iter = portfolio.getValuePapers().iterator(); 
-		while (iter.hasNext()) {
-			PortfolioValuePaper association = iter.next();
-			ValuePaper paper = association.getValuePaper();
+		for (PortfolioValuePaper pvp : portfolio.getValuePapers()) {
+			ValuePaper paper = pvp.getValuePaper();
 			ValuePaperType type = paper.getType();
-			int current = 0;
+			int old = 0;
 			if (valuePaperTypeCounterMap.get(type) != null)
-				current = valuePaperTypeCounterMap.get(type);
-			valuePaperTypeCounterMap.put(type, ++current);
+				old = valuePaperTypeCounterMap.get(type);
+			valuePaperTypeCounterMap.put(type, ++old);
 		}
 		return valuePaperTypeCounterMap;
 	}
 	
 	public Map<String, Integer> getValuePaperCountryCountMap(Portfolio portfolio) {
-		Map<String, Integer> valuePaperCountryCountMap = new HashMap<String, Integer>();
-		Iterator<PortfolioValuePaper> iter = portfolio.getValuePapers().iterator(); 
-		while (iter.hasNext()) {
-			PortfolioValuePaper portfolioValuePaper = iter.next();
-			ValuePaper paper = portfolioValuePaper.getValuePaper();
+		Map<String, Integer> valuePaperCountryCountMap = new HashMap<String, Integer>(); 
+		for (PortfolioValuePaper pvp : portfolio.getValuePapers()) {
+			ValuePaper paper = pvp.getValuePaper();
 			if (!(paper instanceof Stock)) {
 				continue;
 			}
 			Stock stock = (Stock)paper;
-			
 			String country = stock.getCountry();
-			//String country = paper.getIsin().substring(0, 2);
-			int current = 0;
+			int old = 0;
 			if (valuePaperCountryCountMap.get(country) != null)
-				current = valuePaperCountryCountMap.get(country);
-			valuePaperCountryCountMap.put(country, ++current);
+				old = valuePaperCountryCountMap.get(country);
+			valuePaperCountryCountMap.put(country, ++old);
 		}
 		return valuePaperCountryCountMap;
 	}

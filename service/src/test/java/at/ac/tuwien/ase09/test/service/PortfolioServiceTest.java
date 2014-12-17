@@ -192,6 +192,19 @@ public class PortfolioServiceTest extends AbstractContainerTest<PortfolioService
 		valuePapers.put(vp.getCode(), vp);
 	}
 	
+	
+	private void addValuePaper(Portfolio p, ValuePaper vp) {
+		PortfolioValuePaper pvp = new PortfolioValuePaper();
+		pvp.setPortfolio(p);
+		pvp.setValuePaper(vp);
+		pvp.setVolume(10);
+		dataManager.persist(pvp);
+		
+		Set<PortfolioValuePaper> valuePapers = portfolio.getValuePapers();
+		valuePapers.add(pvp);
+		p.setValuePapers(valuePapers);
+	}
+	
 	private void buyValuePaper(Portfolio p, ValuePaper vp) throws ParseException {
 		
 		
@@ -280,7 +293,7 @@ public class PortfolioServiceTest extends AbstractContainerTest<PortfolioService
 	}
 	
 	@Test
-	public void testGetPortfolioValuePaperChange() throws ParseException {
+	public void test_getPortfolioValuePaperChange() throws ParseException {
 		buyValuePaper(portfolio, valuePapers.get("vp1"));
 		double latestPrice = 14.50;
 		int volume = 20;
@@ -296,7 +309,7 @@ public class PortfolioServiceTest extends AbstractContainerTest<PortfolioService
 	}
 	
 	@Test
-	public void testGetPortfolioValuePaperProfit() throws ParseException {
+	public void test_getPortfolioValuePaperProfit() throws ParseException {
 		buyValuePaper(portfolio, valuePapers.get("vp1"));
 		double latestPrice = 14.50;
 		int volume = 20;
@@ -312,7 +325,7 @@ public class PortfolioServiceTest extends AbstractContainerTest<PortfolioService
 	}
 	
 	@Test
-	public void testGetPortfolioChartEntriesNoValuePapers() throws ParseException {
+	public void test_getPortfolioChartEntries_noValuePapers() throws ParseException {
 		// Given
 		Map<String, BigDecimal> entries = new HashMap<>();
 		entries.put("2014-12-01", new BigDecimal("1000.00"));
@@ -325,7 +338,7 @@ public class PortfolioServiceTest extends AbstractContainerTest<PortfolioService
 	}
 	
 	@Test
-	public void testGetPortfolioChartEntries() throws ParseException {
+	public void test_getPortfolioChartEntries() throws ParseException {
 		// Given
 		buyValuePaper(portfolio, valuePapers.get("vp1"));
 		
@@ -355,15 +368,7 @@ public class PortfolioServiceTest extends AbstractContainerTest<PortfolioService
 		stock.setName("abc");
 		dataManager.persist(stock);
 		
-		PortfolioValuePaper pvp = new PortfolioValuePaper();
-		pvp.setPortfolio(portfolio);
-		pvp.setValuePaper(stock);
-		pvp.setVolume(10);
-		dataManager.persist(pvp);
-		
-		Set<PortfolioValuePaper> valuePapers = portfolio.getValuePapers();
-		valuePapers.add(pvp);
-		portfolio.setValuePapers(valuePapers);
+		addValuePaper(portfolio, stock);
 		
 		Calendar date = Calendar.getInstance();
 		date.setTime(format.parse("2014-12-01"));
@@ -400,22 +405,9 @@ public class PortfolioServiceTest extends AbstractContainerTest<PortfolioService
 		stock2.setCode("def");
 		dataManager.persist(stock2);
 		
-		PortfolioValuePaper pvp = new PortfolioValuePaper();
-		pvp.setPortfolio(portfolio);
-		pvp.setValuePaper(stock);
-		pvp.setVolume(10);
-		dataManager.persist(pvp);
+		addValuePaper(portfolio, stock);
+		addValuePaper(portfolio, stock2);
 		
-		PortfolioValuePaper pvp2 = new PortfolioValuePaper();
-		pvp2.setPortfolio(portfolio);
-		pvp2.setValuePaper(stock2);
-		pvp2.setVolume(10);
-		dataManager.persist(pvp2);
-		
-		Set<PortfolioValuePaper> valuePapers = portfolio.getValuePapers();
-		valuePapers.add(pvp);
-		valuePapers.add(pvp2);
-		portfolio.setValuePapers(valuePapers);
 		
 		Calendar date = Calendar.getInstance();
 		date.setTime(format.parse("2014-12-01"));
@@ -476,15 +468,7 @@ public class PortfolioServiceTest extends AbstractContainerTest<PortfolioService
 		stock.setName("abc");
 		dataManager.persist(stock);
 		
-		PortfolioValuePaper pvp = new PortfolioValuePaper();
-		pvp.setPortfolio(portfolio);
-		pvp.setValuePaper(stock);
-		pvp.setVolume(10);
-		dataManager.persist(pvp);
-		
-		Set<PortfolioValuePaper> valuePapers = portfolio.getValuePapers();
-		valuePapers.add(pvp);
-		portfolio.setValuePapers(valuePapers);
+		addValuePaper(portfolio, stock);
 		
 		Calendar date = Calendar.getInstance();
 		date.setTime(format.parse("2014-12-01"));
@@ -504,4 +488,46 @@ public class PortfolioServiceTest extends AbstractContainerTest<PortfolioService
 		assertEquals(opinion, actual.get(0));
 	}
 
+	@Test
+	public void test_getValuePaperTypeCountMap_portoflioWithoutValuePapers() {
+		assertEquals(true, portfolioService.getValuePaperTypeCountMap(portfolio).isEmpty());
+	}
+	
+	@Test
+	public void test_getValuePaperTypeCountMapFrom_portoflioWithOneStock() throws ParseException {
+		
+		ValuePaper stock = new Stock();
+		stock.setCode("abc");
+		stock.setName("abc");
+		dataManager.persist(stock);
+		
+		addValuePaper(portfolio, stock);
+		
+		Map<ValuePaperType, Integer> map = new HashMap<>();
+		map.put(ValuePaperType.STOCK, 1);
+		
+		assertEquals(1, portfolioService.getValuePaperTypeCountMap(portfolio).size());
+	}
+	
+	@Test
+	public void test_getValuePaperCountryCountMap_portoflioWithoutValuePapers() {
+		assertEquals(true, portfolioService.getValuePaperCountryCountMap(portfolio).isEmpty());
+	}
+	
+	
+	@Test
+	public void test_getValuePaperCountryCountMap_portoflioWithOneStock() throws ParseException {
+		
+		ValuePaper stock = new Stock();
+		stock.setCode("abc");
+		stock.setName("abc");
+		dataManager.persist(stock);
+		
+		addValuePaper(portfolio, stock);
+		
+		Map<ValuePaperType, Integer> map = new HashMap<>();
+		map.put(ValuePaperType.STOCK, 1);
+		
+		assertEquals(1, portfolioService.getValuePaperCountryCountMap(portfolio).size());
+	}
 }
