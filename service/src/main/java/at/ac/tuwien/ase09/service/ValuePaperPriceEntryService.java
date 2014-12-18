@@ -24,15 +24,11 @@ public class ValuePaperPriceEntryService {
 	@Inject
 	private ValuePaperDataAccess valuePaperDataAccess;
 
-	public void savePriceEntry(ValuePaperPriceEntry pe) {
-		em.persist(pe);
-	}
-
-	public void savePriceEntry(String isin, BigDecimal price) {
+	public void savePriceEntry(String code, BigDecimal price) {
 		ValuePaperPriceEntry priceEntry = new ValuePaperPriceEntry();
 		priceEntry.setPrice(price);
-		priceEntry.setValuePaper(valuePaperDataAccess.getValuePaperByCode(isin, ValuePaper.class));
-		savePriceEntry(priceEntry);
+		priceEntry.setValuePaper(valuePaperDataAccess.getValuePaperByCode(code, ValuePaper.class));
+		em.persist(priceEntry);
 	}
 	
 }

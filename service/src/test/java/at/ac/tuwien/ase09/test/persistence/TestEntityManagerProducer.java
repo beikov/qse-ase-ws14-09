@@ -11,5 +11,6 @@ import at.ac.tuwien.ase09.persistence.EntityManagerProducer;
 public class TestEntityManagerProducer extends EntityManagerProducer {
 	@Produces
 	@PersistenceContext(unitName = "PortfolioTestPU")
-	EntityManager em;
+	private EntityManager em;
+	
 }

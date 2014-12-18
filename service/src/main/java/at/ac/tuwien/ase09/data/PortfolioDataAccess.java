@@ -141,19 +141,6 @@ public class PortfolioDataAccess {
 		}
 		return payed;
 	}
-	
-	/*public Money getTotalPayedPortfolioValuePaper(Portfolio portfolio, String code) {
-		Money money = portfolio.getCurrentCapital();
-		money.setValue(new BigDecimal(0));
-		for (TransactionEntry t : portfolio.getTransactionEntries()) {
-			if (t.getType() == TransactionType.ORDER && ((OrderTransactionEntry)t).getOrder().getValuePaper().getCode().equals(code)) {
-				BigDecimal oldVal = money.getValue();
-				BigDecimal newVal = oldVal.add(t.getValue().getValue());
-				money.setValue(newVal);
-			}
-		}
-		return money;
-	}*/
 
 	public Map<String, BigDecimal> getPortfolioChartEntries(Portfolio portfolio) {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");

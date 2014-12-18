@@ -8,11 +8,11 @@ import java.io.Serializable;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 
 import org.junit.runner.RunWith;
 
 import at.ac.tuwien.ase09.test.persistence.DataManager;
+import at.ac.tuwien.ase09.test.persistence.TestEntityManagerProducer;
 
 @RunWith(ContainerRunner.class)
 public abstract class AbstractContainerTest<T extends AbstractContainerTest<T>> implements Serializable {
@@ -27,4 +27,6 @@ public abstract class AbstractContainerTest<T extends AbstractContainerTest<T>> 
     protected EntityManager em;
     @Inject
     protected DataManager dataManager;
+    @Inject
+    protected TestEntityManagerProducer emProducer;
 }

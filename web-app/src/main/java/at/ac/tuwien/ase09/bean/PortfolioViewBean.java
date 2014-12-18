@@ -154,7 +154,7 @@ public class PortfolioViewBean implements Serializable {
 	}
 	
 	public void changeVisibility() {
-		portfolio = portfolioService.updatePortfolio(portfolio);
+		portfolioService.savePortfolio(portfolio);
 		FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Sichtbarkeitseinstellungen gespeichert",  null);
         FacesContext.getCurrentInstance().addMessage(null, message);
 	}
