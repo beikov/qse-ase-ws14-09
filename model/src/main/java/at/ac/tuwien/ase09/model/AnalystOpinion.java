@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -20,8 +21,8 @@ public class AnalystOpinion extends BaseEntity<Long> {
 	private AnalystRecommendation recommendation;
 	private Money targetPrice;
 	private Stock stock;
-	
-	@Column(columnDefinition="TEXT")
+
+	@Lob
 	public String getText() {
 		return text;
 	}

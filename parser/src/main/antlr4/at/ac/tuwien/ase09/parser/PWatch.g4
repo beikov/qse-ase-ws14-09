@@ -8,7 +8,7 @@ private boolean stringExpressionAllowed;
 public PWatchParser(TokenStream input, boolean stringExpressionAllowed){
        this(input);
        this.stringExpressionAllowed = stringExpressionAllowed;
-}      
+}
 }
 
 start
@@ -34,9 +34,9 @@ conditional_primary
 
 
 comparison_expression
-    : left=datetime_expression op=comparison_operator right=datetime_expression									#ComparisonExpression
-    | left=arithmetic_expression op=comparison_operator right=arithmetic_expression								#ComparisonExpression
-    | {stringExpressionAllowed}? left=string_expression op=equality_comparison_operator right=string_expression	#ComparisonExpression
+    : left=datetime_expression op=comparison_operator right=datetime_expression									#DateTimeComparisonExpression
+    | left=arithmetic_expression op=comparison_operator right=arithmetic_expression								#ArithmeticComparisonExpression
+    | {stringExpressionAllowed}? left=string_expression op=equality_comparison_operator right=string_expression	#StringComparisonExpression
     ;
 
 equality_comparison_operator
@@ -55,27 +55,28 @@ comparison_operator
 
 
 datetime_expression
-    : DATE_TIME_ATTRIBUTE
-    | CURRENT_TIMESTAMP
-    | TIMESTAMP_LITERAL
+    : DATE_TIME_ATTRIBUTE	#DateTimeAttribute
+    | CURRENT_TIMESTAMP		#CurrentTimestamp
+    | TIMESTAMP_LITERAL		#TimestampLiteral
     ;
 
 string_expression
-	: STRING_ATTRIBUTE
-	| STRING_LITERAL;
-
+	: STRING_ATTRIBUTE	#StringAttribute
+	| STRING_LITERAL	#StringLiteral
+	;
+	
 arithmetic_expression
-    : arithmetic_term										#ArithmeticTerm
-    | arithmetic_expression ( '+' | '-' ) arithmetic_term	#AdditiveExpression
+    : term=arithmetic_term												#SimpleArithmeticTerm
+    | left=arithmetic_expression op=( '+' | '-' ) term=arithmetic_term	#AdditiveExpression
     ;
 
 arithmetic_term
-    : arithmetic_factor										#ArithmeticFactor
-    | arithmetic_term ( '*' | '/' ) arithmetic_factor		#MultiplicativeExpression
+    : factor=arithmetic_factor											#SimpleArithmeticFactor
+    | left=arithmetic_term op=( '*' | '/' ) factor=arithmetic_factor	#MultiplicativeExpression
     ;
 
 arithmetic_factor
-    : ( '+' | '-' )? arithmetic_primary;
+    : sign=( '+' | '-' )? value=arithmetic_primary;
 
 arithmetic_primary
     : NUMERIC_ATTRIBUTE												#ArithmeticAttribute

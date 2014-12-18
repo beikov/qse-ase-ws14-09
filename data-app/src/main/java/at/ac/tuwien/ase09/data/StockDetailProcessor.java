@@ -6,12 +6,10 @@ import javax.batch.api.chunk.ItemProcessor;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.persistence.NoResultException;
 
 import at.ac.tuwien.ase09.data.model.StockDetailModel;
 import at.ac.tuwien.ase09.exception.EntityNotFoundException;
 import at.ac.tuwien.ase09.model.DividendHistoryEntry;
-import at.ac.tuwien.ase09.model.Stock;
 
 @Named
 @Dependent

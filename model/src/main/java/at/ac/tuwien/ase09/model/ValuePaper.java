@@ -7,6 +7,7 @@ import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.Lob;
 import javax.persistence.Transient;
 
 @Entity
@@ -49,7 +50,7 @@ public abstract class ValuePaper extends BaseEntity<Long> {
 		return String.format("[type=%s, code=%s, name=%s]", getType(), code, name);
 	}
 
-	@Column(columnDefinition="TEXT")
+	@Lob
 	public String getDetailUrl() {
 		return detailUrl;
 	}
@@ -58,7 +59,7 @@ public abstract class ValuePaper extends BaseEntity<Long> {
 		this.detailUrl = detailUrl;
 	}
 
-	@Column(columnDefinition="TEXT")
+	@Lob
 	public String getHistoricPricesPageUrl() {
 		return historicPricesPageUrl;
 	}

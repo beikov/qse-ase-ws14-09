@@ -11,45 +11,35 @@ import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.atn.ATNConfigSet;
 import org.antlr.v4.runtime.dfa.DFA;
-import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import at.ac.tuwien.ase09.parser.PWatchParser.AdditiveExpressionContext;
 import at.ac.tuwien.ase09.parser.PWatchParser.AndExpressionContext;
 import at.ac.tuwien.ase09.parser.PWatchParser.ArithmeticAttributeContext;
-import at.ac.tuwien.ase09.parser.PWatchParser.ArithmeticComparisonContext;
-import at.ac.tuwien.ase09.parser.PWatchParser.ArithmeticExpressionContext;
-import at.ac.tuwien.ase09.parser.PWatchParser.ArithmeticFactorContext;
+import at.ac.tuwien.ase09.parser.PWatchParser.ArithmeticComparisonExpressionContext;
 import at.ac.tuwien.ase09.parser.PWatchParser.ArithmeticFunctionContext;
 import at.ac.tuwien.ase09.parser.PWatchParser.ArithmeticLiteralContext;
 import at.ac.tuwien.ase09.parser.PWatchParser.ArithmeticNestedContext;
-import at.ac.tuwien.ase09.parser.PWatchParser.ArithmeticTermContext;
-import at.ac.tuwien.ase09.parser.PWatchParser.Arithmetic_expressionContext;
 import at.ac.tuwien.ase09.parser.PWatchParser.Arithmetic_factorContext;
-import at.ac.tuwien.ase09.parser.PWatchParser.Arithmetic_primaryContext;
-import at.ac.tuwien.ase09.parser.PWatchParser.Arithmetic_termContext;
-import at.ac.tuwien.ase09.parser.PWatchParser.ComparisonExpressionContext;
-import at.ac.tuwien.ase09.parser.PWatchParser.Comparison_expressionContext;
 import at.ac.tuwien.ase09.parser.PWatchParser.Comparison_operatorContext;
-import at.ac.tuwien.ase09.parser.PWatchParser.Conditional_expressionContext;
 import at.ac.tuwien.ase09.parser.PWatchParser.Conditional_factorContext;
-import at.ac.tuwien.ase09.parser.PWatchParser.Conditional_primaryContext;
-import at.ac.tuwien.ase09.parser.PWatchParser.Conditional_termContext;
-import at.ac.tuwien.ase09.parser.PWatchParser.DateComparisonContext;
-import at.ac.tuwien.ase09.parser.PWatchParser.DateExpressionContext;
-import at.ac.tuwien.ase09.parser.PWatchParser.Datetime_expressionContext;
+import at.ac.tuwien.ase09.parser.PWatchParser.CurrentTimestampContext;
+import at.ac.tuwien.ase09.parser.PWatchParser.DateTimeAttributeContext;
+import at.ac.tuwien.ase09.parser.PWatchParser.DateTimeComparisonExpressionContext;
 import at.ac.tuwien.ase09.parser.PWatchParser.Equality_comparison_operatorContext;
 import at.ac.tuwien.ase09.parser.PWatchParser.FactorExpressionContext;
 import at.ac.tuwien.ase09.parser.PWatchParser.MultiplicativeExpressionContext;
 import at.ac.tuwien.ase09.parser.PWatchParser.NestedExpressionContext;
 import at.ac.tuwien.ase09.parser.PWatchParser.OrExpressionContext;
+import at.ac.tuwien.ase09.parser.PWatchParser.SimpleArithmeticFactorContext;
+import at.ac.tuwien.ase09.parser.PWatchParser.SimpleArithmeticTermContext;
 import at.ac.tuwien.ase09.parser.PWatchParser.SimpleExpressionContext;
-import at.ac.tuwien.ase09.parser.PWatchParser.Simple_cond_expressionContext;
 import at.ac.tuwien.ase09.parser.PWatchParser.StartContext;
-import at.ac.tuwien.ase09.parser.PWatchParser.StringComparisonContext;
-import at.ac.tuwien.ase09.parser.PWatchParser.StringExpressionContext;
-import at.ac.tuwien.ase09.parser.PWatchParser.String_expressionContext;
+import at.ac.tuwien.ase09.parser.PWatchParser.StringAttributeContext;
+import at.ac.tuwien.ase09.parser.PWatchParser.StringComparisonExpressionContext;
+import at.ac.tuwien.ase09.parser.PWatchParser.StringLiteralContext;
 import at.ac.tuwien.ase09.parser.PWatchParser.TermExpressionContext;
+import at.ac.tuwien.ase09.parser.PWatchParser.TimestampLiteralContext;
 
 public class PWatchToEPLCompiler extends PWatchBaseVisitor<CharSequence> {
 
@@ -79,11 +69,14 @@ public class PWatchToEPLCompiler extends PWatchBaseVisitor<CharSequence> {
         parser.removeErrorListeners();
         parser.addErrorListener(ERR_LISTENER);
         
-        ParserRuleContext ctx = parser.arithmetic_primary();
+        ParserRuleContext ctx = parser.start();
         
         PWatchToEPLCompiler visitor = new PWatchToEPLCompiler(tokens);
-        System.out.println(ctx.toStringTree());
-        return visitor.visit(ctx).toString();
+        CharSequence result = visitor.visit(ctx);
+        StringBuilder sb = new StringBuilder(result.length() + 100);
+        sb.append("SELECT ");
+        sb.append(result);
+        return result.toString();
 	}
 
     protected static final ANTLRErrorListener ERR_LISTENER = new ANTLRErrorListener() {
@@ -155,19 +148,45 @@ public class PWatchToEPLCompiler extends PWatchBaseVisitor<CharSequence> {
 	public CharSequence visitArithmeticAttribute(ArithmeticAttributeContext ctx) {
 		return ctx.getText();
 	}
+	
+	@Override
+	public CharSequence visitStringAttribute(StringAttributeContext ctx) {
+		return ctx.getText();
+	}
 
 	@Override
-	public CharSequence visitComparisonExpression(ComparisonExpressionContext ctx) {
-		CharSequence left = ctx.left.accept(this);
-		CharSequence op = ctx.op.accept(this);
-		CharSequence right = ctx.right.accept(this);
-		
-		StringBuilder sb = new StringBuilder(left.length() + right.length() + op.length() + 2);
-		sb.append(left).append(' ');
-		sb.append(op).append(' ');
-		sb.append(right);
-		
-		return sb;
+	public CharSequence visitCurrentTimestamp(CurrentTimestampContext ctx) {
+		return ctx.getText();
+	}
+
+	@Override
+	public CharSequence visitDateTimeAttribute(DateTimeAttributeContext ctx) {
+		return ctx.getText();
+	}
+
+	@Override
+	public CharSequence visitTimestampLiteral(TimestampLiteralContext ctx) {
+		return ctx.getText();
+	}
+
+	@Override
+	public CharSequence visitStringLiteral(StringLiteralContext ctx) {
+		return ctx.getText();
+	}
+
+	@Override
+	public CharSequence visitStringComparisonExpression(StringComparisonExpressionContext ctx) {
+		return handleBinaryExpression(ctx.left, ctx.op, ctx.right);
+	}
+
+	@Override
+	public CharSequence visitArithmeticComparisonExpression(ArithmeticComparisonExpressionContext ctx) {
+		return handleBinaryExpression(ctx.left, ctx.op, ctx.right);
+	}
+
+	@Override
+	public CharSequence visitDateTimeComparisonExpression(DateTimeComparisonExpressionContext ctx) {
+		return handleBinaryExpression(ctx.left, ctx.op, ctx.right);
 	}
 
 	@Override
@@ -220,15 +239,7 @@ public class PWatchToEPLCompiler extends PWatchBaseVisitor<CharSequence> {
 
 	@Override
 	public CharSequence visitAndExpression(AndExpressionContext ctx) {
-		CharSequence left = ctx.left.accept(this);
-		CharSequence right = ctx.factor.accept(this);
-
-		StringBuilder sb = new StringBuilder(left.length() + right.length() + 5);
-		sb.append(left);
-		sb.append(" AND ");
-		sb.append(right);
-		
-		return sb;
+		return handleBinaryExpression(ctx.left, "AND", ctx.factor);
 	}
 
 	@Override
@@ -238,15 +249,7 @@ public class PWatchToEPLCompiler extends PWatchBaseVisitor<CharSequence> {
 
 	@Override
 	public CharSequence visitOrExpression(OrExpressionContext ctx) {
-		CharSequence left = ctx.left.accept(this);
-		CharSequence right = ctx.term.accept(this);
-
-		StringBuilder sb = new StringBuilder(left.length() + right.length() + 4);
-		sb.append(left);
-		sb.append(" OR ");
-		sb.append(right);
-		
-		return sb;
+		return handleBinaryExpression(ctx.left, "OR", ctx.term);
 	}
 
 	@Override
@@ -255,45 +258,54 @@ public class PWatchToEPLCompiler extends PWatchBaseVisitor<CharSequence> {
 	}
 
 	@Override
-	public CharSequence visitArithmeticFactor(ArithmeticFactorContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitArithmeticFactor(ctx);
-	}
-
-	@Override
-	public CharSequence visitArithmeticTerm(ArithmeticTermContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitArithmeticTerm(ctx);
-	}
-
-	@Override
-	public CharSequence visitMultiplicativeExpression(
-			MultiplicativeExpressionContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitMultiplicativeExpression(ctx);
-	}
-
-	@Override
 	public CharSequence visitArithmetic_factor(Arithmetic_factorContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitArithmetic_factor(ctx);
+		CharSequence value = ctx.value.accept(this);
+		StringBuilder sb;
+		
+		if (ctx.sign != null) {
+			sb = new StringBuilder(value.length() + 1);
+			sb.append(ctx.sign.getText());
+		} else {
+			sb = new StringBuilder(value.length());
+		}
+		
+		sb.append(value);
+		return sb;
+	}
+
+	@Override
+	public CharSequence visitSimpleArithmeticTerm(SimpleArithmeticTermContext ctx) {
+		return ctx.term.accept(this);
+	}
+
+	@Override
+	public CharSequence visitSimpleArithmeticFactor(SimpleArithmeticFactorContext ctx) {
+		return ctx.factor.accept(this);
+	}
+
+	@Override
+	public CharSequence visitMultiplicativeExpression(MultiplicativeExpressionContext ctx) {
+		return handleBinaryExpression(ctx.left, ctx.op.getText(), ctx.factor);
 	}
 
 	@Override
 	public CharSequence visitAdditiveExpression(AdditiveExpressionContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitAdditiveExpression(ctx);
+		return handleBinaryExpression(ctx.left, ctx.op.getText(), ctx.term);
 	}
 
-	@Override
-	public CharSequence visitDatetime_expression(Datetime_expressionContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitDatetime_expression(ctx);
+	private CharSequence handleBinaryExpression(ParserRuleContext leftCtx, ParserRuleContext opCtx, ParserRuleContext rightCtx) {
+		return handleBinaryExpression(leftCtx, opCtx.accept(this), rightCtx);
 	}
 
-	@Override
-	public CharSequence visitString_expression(String_expressionContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitString_expression(ctx);
+	private CharSequence handleBinaryExpression(ParserRuleContext leftCtx, CharSequence op, ParserRuleContext rightCtx) {
+		CharSequence left = leftCtx.accept(this);
+		CharSequence right = rightCtx.accept(this);
+		
+		StringBuilder sb = new StringBuilder(left.length() + right.length() + op.length() + 2);
+		sb.append(left).append(' ');
+		sb.append(op).append(' ');
+		sb.append(right);
+		
+		return sb;
 	}
 }

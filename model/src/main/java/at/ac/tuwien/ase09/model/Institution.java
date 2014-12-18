@@ -5,6 +5,7 @@ import java.sql.Blob;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 
 @Entity
@@ -41,7 +42,7 @@ public class Institution extends BaseEntity<Long> {
 		this.admin = admin;
 	}
 	
-	@Column(columnDefinition="TEXT")
+	@Lob
 	public String getPageText() {
 		return pageText;
 	}
