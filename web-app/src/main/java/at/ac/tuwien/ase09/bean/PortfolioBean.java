@@ -20,6 +20,8 @@ public class PortfolioBean implements Serializable {
 	@Inject
 	private PortfolioDataAccess portfolioDataAccess;
 	
+	private List<Portfolio> portfolios;
+	
 	public List<Portfolio> getPortfolios() {
 		return portfolioDataAccess.getPortfolios();
 	}
@@ -28,4 +30,10 @@ public class PortfolioBean implements Serializable {
 		return portfolioDataAccess.getPortfoliosByUser(user);
 	}	
 	
+	public List<Portfolio> getActiveUserPortfolios(User user) {
+		if (portfolios == null) {
+			portfolios = portfolioDataAccess.getActiveUserPortfolios(user);
+		}
+		return portfolios;
+	}
 }
