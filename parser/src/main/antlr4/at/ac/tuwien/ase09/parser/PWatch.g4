@@ -2,34 +2,41 @@ grammar PWatch;
 
 import PWatch;
 
+@parser::members {
+private boolean stringExpressionAllowed;
+
+public PWatchParser(TokenStream input, boolean stringExpressionAllowed){
+       this(input);
+       this.stringExpressionAllowed = stringExpressionAllowed;
+}      
+}
+
 start
     : conditional_expression EOF;
 
 conditional_expression
-    : conditional_term
-    | conditional_expression OR conditional_term
+    : term=conditional_term							 		#TermExpression
+    | left=conditional_expression OR term=conditional_term 	#OrExpression
     ;
 
 conditional_term
-    : conditional_factor
-    | conditional_term AND conditional_factor
+    : factor=conditional_factor							  #FactorExpression
+    | left=conditional_term AND factor=conditional_factor #AndExpression
     ;
 
 conditional_factor
-    : (NOT)? conditional_primary;
+    : (not=NOT)? expr=conditional_primary;
 
 conditional_primary
-    : simple_cond_expression
-    | '('conditional_expression')'
+    : expr=comparison_expression	    #SimpleExpression
+    | '('expr=conditional_expression')' #NestedExpression
     ;
-
-simple_cond_expression
-    : comparison_expression;
 
 
 comparison_expression
-    : datetime_expression comparison_operator datetime_expression
-    | arithmetic_expression comparison_operator arithmetic_expression
+    : left=datetime_expression op=comparison_operator right=datetime_expression									#ComparisonExpression
+    | left=arithmetic_expression op=comparison_operator right=arithmetic_expression								#ComparisonExpression
+    | {stringExpressionAllowed}? left=string_expression op=equality_comparison_operator right=string_expression	#ComparisonExpression
     ;
 
 equality_comparison_operator
@@ -53,14 +60,18 @@ datetime_expression
     | TIMESTAMP_LITERAL
     ;
 
+string_expression
+	: STRING_ATTRIBUTE
+	| STRING_LITERAL;
+
 arithmetic_expression
-    : arithmetic_term
-    | arithmetic_expression ( '+' | '-' ) arithmetic_term
+    : arithmetic_term										#ArithmeticTerm
+    | arithmetic_expression ( '+' | '-' ) arithmetic_term	#AdditiveExpression
     ;
 
 arithmetic_term
-    : arithmetic_factor
-    | arithmetic_term ( '*' | '/' ) arithmetic_factor
+    : arithmetic_factor										#ArithmeticFactor
+    | arithmetic_term ( '*' | '/' ) arithmetic_factor		#MultiplicativeExpression
     ;
 
 arithmetic_factor
