@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Portfolio Simulation</string>
+    <string name="menu_portfolio_view">Portfolio View</string>
+    <string name="menu_valuepaper_search">Wertpapiersuche</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_logout">Logout</string>
+    <string name="action_portfolio_context">Select active portfolio</string>
+    <string name="tab_performance">Performance</string>
+    <string name="tab_transactions">Transactions</string>
+    <string name="tab_valuepapers">Value papers</string>
+    <string name="tab_orders">Orders</string>
+</resources>
