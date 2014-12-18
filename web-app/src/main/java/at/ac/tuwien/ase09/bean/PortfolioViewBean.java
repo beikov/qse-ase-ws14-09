@@ -20,6 +20,8 @@ import org.primefaces.model.chart.LineChartModel;
 import org.primefaces.model.chart.LineChartSeries;
 import org.primefaces.model.chart.PieChartModel;
 
+import at.ac.tuwien.ase09.context.UserContext;
+import at.ac.tuwien.ase09.context.WebUserContext;
 import at.ac.tuwien.ase09.data.PortfolioDataAccess;
 import at.ac.tuwien.ase09.data.ValuePaperPriceEntryDataAccess;
 import at.ac.tuwien.ase09.model.AnalystOpinion;
@@ -48,6 +50,9 @@ public class PortfolioViewBean implements Serializable {
 	
 	@Inject
 	private ValuePaperPriceEntryDataAccess priceDataAccess;
+	
+	@Inject
+	WebUserContext userContext;
 
 	private List<User> followers;
 	
@@ -80,8 +85,8 @@ public class PortfolioViewBean implements Serializable {
         portfolioValuePapers = new ArrayList<>(portfolio.getValuePapers());
         orders = new LinkedList<Order>(portfolio.getOrders());
         transactions = new LinkedList<TransactionEntry>(portfolio.getTransactionEntries());
-        news = portfolioDataAccess.getNewsForValuePapers(portfolio.getValuePapers());
-        opinions = portfolioDataAccess.getAnalystOpinionsForValuePapers(portfolio.getValuePapers());
+        news = portfolioDataAccess.getNewsForPortfolio(portfolio);
+        opinions = portfolioDataAccess.getAnalystOpinionsForPortfolio(portfolio);
         
     }
     
@@ -149,7 +154,7 @@ public class PortfolioViewBean implements Serializable {
 	}
 	
 	public void changeVisibility() {
-		portfolio = portfolioService.updatePortfolio(portfolio);
+		portfolioService.savePortfolio(portfolio);
 		FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Sichtbarkeitseinstellungen gespeichert",  null);
         FacesContext.getCurrentInstance().addMessage(null, message);
 	}
@@ -161,13 +166,13 @@ public class PortfolioViewBean implements Serializable {
 	}
 	
 	public Money getTotalPayed(String code) {
-		Money money = portfolio.getCurrentCapital();
+		Money money = portfolio.getSetting().getStartCapital();
 		money.setValue(portfolioDataAccess.getTotalPayedForValuePaper(code));
 		return money;
 	}
 	
 	public Money getProfit(PortfolioValuePaper pvp) {
-		Money money = portfolio.getCurrentCapital();
+		Money money = portfolio.getSetting().getStartCapital();
 		money.setValue(new BigDecimal(portfolioDataAccess.getProfit(pvp)));
 		return money;
 	}
@@ -195,6 +200,24 @@ public class PortfolioViewBean implements Serializable {
 		}
 		return portfolioDataAccess.getChange(pvp);
 		//return 0;
+	}
+	
+	public boolean isVisible(String context) {
+		boolean setting = false;
+		if (context.equals("valuePapers")) {
+			setting = portfolio.getVisibility().getValuePaperListVisible();
+		}
+		if (setting) { // dont need to check user if current "tab" should be visible
+			return true;
+		} else if (userContext != null) {
+			// setting = false -> only owner should see current "tab"
+			User u = userContext.getUser();
+			if (u == null) {
+				return false;
+			}
+			return portfolio.getOwner().getUsername().equals(u.getUsername());
+		}
+		return false;
 	}
 	
 	
@@ -241,7 +264,7 @@ public class PortfolioViewBean implements Serializable {
 	
 	private void createPortfolioChart() {
 		portfolioChart = new LineChartModel();
-		portfolioChart.setTitle("Portfoliochart");
+		portfolioChart.setTitle("Portfoliochart mit Gebühren, etc.");
         portfolioChart.setZoom(true);
         portfolioChart.getAxis(AxisType.Y).setLabel("Wert in " + portfolio.getCurrentCapital().getCurrency().getCurrencyCode());
         DateAxis axis = new DateAxis("Datum");

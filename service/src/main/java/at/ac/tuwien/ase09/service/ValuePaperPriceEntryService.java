@@ -37,11 +37,11 @@ public class ValuePaperPriceEntryService {
 		priceEntryAdded.fire(pe);
 	}
 
-	public void savePriceEntry(String isin, BigDecimal price) {
+	public void savePriceEntry(String code, BigDecimal price) {
 		ValuePaperPriceEntry priceEntry = new ValuePaperPriceEntry();
 		priceEntry.setPrice(price);
-		priceEntry.setValuePaper(valuePaperDataAccess.getValuePaperByCode(isin, ValuePaper.class));
-		savePriceEntry(priceEntry);
+		priceEntry.setValuePaper(valuePaperDataAccess.getValuePaperByCode(code, ValuePaper.class));
+		em.persist(priceEntry);
 	}
 	
 	public void onPriceEntryAdded(@Observes(during = TransactionPhase.AFTER_COMPLETION) @Added ValuePaperPriceEntry pe) {

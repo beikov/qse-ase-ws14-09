@@ -6,6 +6,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 
 import at.ac.tuwien.ase09.exception.AppException;
+import at.ac.tuwien.ase09.exception.EntityNotFoundException;
 import at.ac.tuwien.ase09.model.User;
 
 @Stateless
@@ -13,11 +14,11 @@ public class UserDataAccess {
 	@Inject
 	private EntityManager em;
 
-	public User getByUsername(String username) {
+	public User getUserByUsername(String username) {
 		try {
 			return em.createQuery("SELECT u FROM User u WHERE u.username = :username", User.class).setParameter("username", username).getSingleResult();
 		} catch (NoResultException e) {
-			return null;
+			throw new EntityNotFoundException();
 		} catch (Exception e) {
 			throw new AppException(e);
 		}

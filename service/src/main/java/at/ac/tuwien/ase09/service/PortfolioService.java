@@ -11,11 +11,14 @@ public class PortfolioService {
 	@Inject
 	private EntityManager em;
 	
-	public void savePortfolio(Portfolio portfolio){
+	public Portfolio savePortfolio(Portfolio portfolio){
+		if(portfolio.getId() != null){
+			if(em.find(Portfolio.class, portfolio.getId()) != null){
+				return em.merge(portfolio);
+			}
+		}
 		em.persist(portfolio);
+		return portfolio;
 	}
 	
-	public Portfolio updatePortfolio(Portfolio portfolio){
-		return em.merge(portfolio);
-	}
 }

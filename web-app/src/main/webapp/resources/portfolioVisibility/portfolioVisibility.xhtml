@@ -15,24 +15,24 @@
 
 <composite:implementation>
 	<h:form>
-		<h:outputText value="Sichtbarkeit " />
-
 		<h:panelGrid columns="2" cellpadding="5">
-			<h:outputText value="Alles: " />
-			<p:inputSwitch value="#{cc.attrs.visibilitySettings.publicVisible}" />
+			<h:outputText value="Öffentlich sichtbar: " />
+			<p:inputSwitch id="publicSwitch"
+				value="#{cc.attrs.visibilitySettings.publicVisible}" onLabel="an" offLabel="aus" immediate="true"  >
+					<p:ajax event="change" update="statisticsSwitch historySwitch valuePaperSwitch" />
+			</p:inputSwitch>
 
-			<h:outputText value="Statistiken: " />
-			<p:inputSwitch value="#{cc.attrs.visibilitySettings.statisticsVisible}" />
+			<h:outputText value="Statistiken sichtbar: " />
+			<p:inputSwitch id="statisticsSwitch"
+					value="#{cc.attrs.visibilitySettings.statisticsVisible}" onLabel="an" offLabel="aus" disabled="#{!cc.attrs.visibilitySettings.publicVisible}"/>
 
-
-			<h:outputText value="Geschichte: " />
-			<p:inputSwitch value="#{cc.attrs.visibilitySettings.historyVisible}" />
-
-
-			<h:outputText value="Wertpapiere: " />
-			<p:inputSwitch value="#{cc.attrs.visibilitySettings.valuePaperListVisible}" />
-
-
+			<h:outputText value="Geschichte sichtbar: " />
+			<p:inputSwitch id="historySwitch"
+						value="#{cc.attrs.visibilitySettings.historyVisible}" onLabel="an" offLabel="aus" disabled="#{!cc.attrs.visibilitySettings.publicVisible}"/>
+				
+			<h:outputText value="Wertpapiere sichtbar: " />
+			<p:inputSwitch id="valuePaperSwitch"
+						value="#{cc.attrs.visibilitySettings.valuePaperListVisible}" onLabel="an" offLabel="aus" disabled="#{!cc.attrs.visibilitySettings.publicVisible}"/>
 		</h:panelGrid>
 	</h:form>
 </composite:implementation>

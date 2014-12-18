@@ -4,7 +4,6 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:p="http://primefaces.org/ui"
-	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:pa="http://java.sun.com/jsf/composite/portfolioVisibility"
 	template="/WEB-INF/templates/template.xhtml">
 
@@ -13,42 +12,15 @@
 		<h:form id="createForm">
 			<p:panel header="Neues Portfolio">
 
-				<h:panelGrid columns="3" cellpadding="5">
+				<h:panelGrid columns="3" cellpadding="5" >
 
-					<h:outputText value="Portfolioame: " />
+					<h:outputText value="Portfolioname: " />
 					<p:inputText id="name"
 						value="#{portfolioCreationViewBean.portfolio.name}"
 						required="true">
 						<f:validateRegex pattern="[a-zA-Z]+[a-zA-z0-9]*"></f:validateRegex>
 					</p:inputText>
 					<h:message for="name" style="color:red" />
-
-
-					<h:outputText value="Sichtbarkeit" />
-					<h:outputText value="" />
-					<h:outputText value="" />
-
-
-					<h:outputText value="Alles: " />
-					<p:inputSwitch
-						value="#{portfolioCreationViewBean.portfolio.visibility.publicVisible}" onLabel="an" offLabel="aus" />
-					<h:outputText value="" />
-
-					<h:outputText value="Statistiken: " />
-					<p:inputSwitch
-						value="#{portfolioCreationViewBean.portfolio.visibility.statisticsVisible}" onLabel="an" offLabel="aus" />
-					<h:outputText value="" />
-
-					<h:outputText value="Geschichte: " />
-					<p:inputSwitch
-						value="#{portfolioCreationViewBean.portfolio.visibility.historyVisible}" onLabel="an" offLabel="aus" />
-					<h:outputText value="" />
-
-					<h:outputText value="Wertpapiere: " />
-					<p:inputSwitch
-						value="#{portfolioCreationViewBean.portfolio.visibility.valuePaperListVisible}" onLabel="an" offLabel="aus" />
-					<h:outputText value="" />
-
 
 					<h:outputText value="Startkapital(€): " />
 					<p:inputText id="startCapital"
@@ -62,7 +34,7 @@
 					<h:message for="orderFee" style="color:red" />
 
 
-					<h:outputText value="PortfolioGebühr(€): " />
+					<h:outputText value="Portfoliogebühr(€): " />
 					<p:inputText id="portfolioFee"
 						value="#{portfolioCreationViewBean.portfolioFee}" required="true" />
 					<h:message for="portfolioFee" style="color:red" />
@@ -74,49 +46,22 @@
 						required="true" />
 					<h:message for="capitalReturnTax" style="color:red" />
 
+
+				</h:panelGrid>
+				
+					<h:outputText value="Sichtbarkeit" />
+					<pa:portfolioVisibility visibilitySettings="#{portfolioCreationViewBean.portfolio.visibility}" />
+
+				<h:panelGrid columns="2" cellpadding="10" style="width: 40%">
 					<p:commandButton value="Reset" type="reset" />
 					<p:commandButton value="Erstellen"
 						action="#{portfolioCreationViewBean.create()}" update="createForm"
 						ajax="true" />
-					<h:outputText value="" />
-
 				</h:panelGrid>
+			
 
-				<!-- 
-			<pa:portfolioVisibility visibilitySettings="#{portfolioCreationViewBean.portfolio.visibility}" />
+			
 
-				<h:panelGrid columns="3" cellpadding="5">
-
-				<h:outputText value="Startkapital(€): " />
-				<p:inputText id="startCapital"
-					value="#{portfolioCreationViewBean.startCapital}" required="true">
-				</p:inputText>
-				<h:message for="startCapital" style="color:red" />
-		
-				<h:outputText value="Ordergebühr(€): " />
-				<p:inputText id="orderFee"
-					value="#{portfolioCreationViewBean.orderFee}" required="true"/>
-				<h:message for="orderFee" style="color:red" />
-				
-				
-				<h:outputText value="PortfolioGebühr(€): " />
-				<p:inputText id="portfolioFee"
-					value="#{portfolioCreationViewBean.portfolioFee}" required="true"/>
-				<h:message for="portfolioFee" style="color:red" />
-				
-				
-				<h:outputText value="Kapitalertragssteuer(%): " />
-				<p:inputText id="capitalReturnTax"
-					value="#{portfolioCreationViewBean.capitalReturnTax}" required="true"/>
-				<h:message for="capitalReturnTax" style="color:red" />
-				
-				<p:commandButton value="Reset" type="reset" />
-				<p:commandButton value="Erstellen"
-					action="#{portfolioCreationViewBean.create()}" update="createForm"
-					ajax="true" />
-
-
-			</h:panelGrid> -->
 			</p:panel>
 		</h:form>
 	</ui:define>

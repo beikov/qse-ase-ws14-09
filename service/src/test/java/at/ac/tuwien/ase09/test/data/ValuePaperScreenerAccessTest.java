@@ -143,6 +143,7 @@ public class ValuePaperScreenerAccessTest extends AbstractContainerTest<ValuePap
 		Fund f = new Fund();
 		f.setCode("fund1");
 		f.setName("Superfund");
+		f.setCurrency(Currency.getInstance("EUR"));
 		dataManager.persist(f);
 		em.clear();
 	}
@@ -222,6 +223,49 @@ public class ValuePaperScreenerAccessTest extends AbstractContainerTest<ValuePap
 		{
 			assertEquals("EUR",((Stock)vp).getCurrency().getCurrencyCode());
 		}
+	}
+	@Test
+	public void testCurrencyFilterFund()
+	{
+		AttributeFilter atfilter=new AttributeFilter();
+		atfilter.setAttribute(AttributeType.CURRENCY);
+		atfilter.setCurrencyValue("EUR");
+		List<AttributeFilter> filterList=new ArrayList<AttributeFilter>();
+		filterList.add(atfilter);
+		
+		List<ValuePaper> valuePapers=valuePaperScreener.findByFilter(filterList, ValuePaperType.FUND);
+		
+		assertEquals(1,valuePapers.size());
+		for(ValuePaper vp: valuePapers)
+		{
+			assertEquals("EUR",((Fund)vp).getCurrency().getCurrencyCode());
+		}
+	}
+	@Test
+	public void testIndexFilter()
+	{
+		AttributeFilter atfilter=new AttributeFilter();
+		atfilter.setAttribute(AttributeType.INDEX);
+		atfilter.setIndexValue("ATX");
+		List<AttributeFilter> filterList=new ArrayList<AttributeFilter>();
+		filterList.add(atfilter);
+		
+		List<ValuePaper> valuePapers=valuePaperScreener.findByFilter(filterList, ValuePaperType.STOCK);
+		
+		assertEquals(1,valuePapers.size());
+		for(ValuePaper vp: valuePapers)
+		{
+			assertEquals("ATX",((Stock)vp).getIndex());
+		}
+	}
+	@Test
+	public void testGetIndexesAvailable()
+	{
+		
+		List<String> currencies=valuePaperScreener.getUsedIndexes();
+		
+		assertEquals(2,currencies.size());
+		
 	}
 	@Test
 	public void testGetCurrenciesAvailable()
@@ -498,4 +542,28 @@ public class ValuePaperScreenerAccessTest extends AbstractContainerTest<ValuePap
 			assertEquals("Google",valuePapers.get(0).getName());
 	
 	}
+	@Test
+	public void testSearchbyValuePaper()
+	{
+		Stock s=new Stock();
+		s.setCode("stock1");
+		s.setCountry("Österreich");
+		s.setCurrency(Currency.getInstance("EUR"));
+		s.setName("Andritz");
+		
+		List<ValuePaper> valuePapers=valuePaperScreener.findByValuePaper(s, true);
+		
+		assertEquals(1,valuePapers.size());
+		if(valuePapers.size()>0)
+			assertEquals("Andritz",valuePapers.get(0).getName());
+	}
+	@Test
+	public void testdefaultSearchbyValuePaper()
+	{
+		
+		List<ValuePaper> valuePapers=valuePaperScreener.findByValuePaper(null, true);
+		
+		assertEquals(6,valuePapers.size());
+	}
+	
 }
