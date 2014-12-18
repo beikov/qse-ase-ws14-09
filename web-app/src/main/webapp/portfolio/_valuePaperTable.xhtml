@@ -32,7 +32,7 @@
 	        <h:outputText value="#{payedLong/association.volume}" /> -->
 	    </p:column>
 	    <p:column headerText="Gewinn/Verlust *">
-	        <h:outputText value="#{portfolioViewBean.getProfit(association)}" />
+	        <h:outputText value="#{portfolioViewBean.getProfit(paper.code)}" />
 	    </p:column>
 	    <p:column headerText="Performance *">
 	        <ase:valuePaperPerformance code="#{paper.code}" />
