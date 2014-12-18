@@ -14,6 +14,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import at.ac.tuwien.ase09.context.UserContext;
 import at.ac.tuwien.ase09.context.WebUserContext;
 import at.ac.tuwien.ase09.data.PortfolioDataAccess;
 import at.ac.tuwien.ase09.model.Money;
@@ -35,7 +36,7 @@ public class PortfolioCreationViewBean implements Serializable{
 	private BigDecimal capitalReturnTax;
 
 	@Inject
-	WebUserContext userContext;
+	UserContext userContext;
 
 	@Inject
 	private PortfolioDataAccess portfolioDataAccess;
@@ -124,7 +125,7 @@ public class PortfolioCreationViewBean implements Serializable{
 		this.startCapital = startCapital;
 	}
 
-	public WebUserContext getUserContext() {
+	public UserContext getUserContext() {
 		return userContext;
 	}
 

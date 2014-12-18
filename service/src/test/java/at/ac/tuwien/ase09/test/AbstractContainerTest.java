@@ -22,7 +22,7 @@ public abstract class AbstractContainerTest<T extends AbstractContainerTest<T>> 
     @Inject
     protected Instance<T> self;
     @Inject
-    protected DefaultUserContext userContext;
+    protected TestUserContext userContext;
     @Inject
     protected EntityManager em;
     @Inject
