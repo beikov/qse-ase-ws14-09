@@ -32,25 +32,20 @@
 
 								<p:panelGrid columns="2">
 
-									<p:outputLabel value="Name: " style="padding: 10px;" />
-									<p:outputLabel value="#{stockMarketGameViewBean.stockMarketGame.name} " style="font-weight:bold" />
-									
-									<p:outputLabel value="Name: " style="font-weight:bold" />
-									<p:outputLabel value="Name: " style="font-weight:bold" />
-									
-									<p:outputLabel value="Name: " style="font-weight:bold" />
-									<p:outputLabel value="Name: " style="font-weight:bold" />
-									
-									<p:outputLabel value="Name: " style="font-weight:bold" />
-									<p:outputLabel value="Name: " style="font-weight:bold" />
+									<c:forEach var="attribute"
+										items="#{stockMarketGameViewBean.mainGameAttributes}">
+										<p:outputLabel value="#{attribute.key}"
+											style="font-weight:bold" />
+										<h:outputLabel value="#{attribute.value}" />
+									</c:forEach>
 
 								</p:panelGrid>
 
 							</p:panel>
 
-							<p:panel id="additional" header="Zusätzliche Informationen"
+							<p:panel id="additional" header="Zusätzliche Informationen/Beschreibung"
 								toggleable="true" collapsed="true"
-								rendered="#{valuePaperViewBean.additionalValuePaperAttributes.size() > 0}">
+								rendered="#{stockMarketGameViewBean.stockMarketGame.text!=null}">
 
 								<p:panelGrid columns="2">
 									
@@ -58,6 +53,12 @@
 
 							</p:panel>
 
+						</p:layoutUnit>
+						
+						<p:layoutUnit position="east" resizable="true" size="500"
+							minSize="50" maxSize="500" style="border: 0">
+
+							
 						</p:layoutUnit>
 					</p:layout>
 				</c:when>

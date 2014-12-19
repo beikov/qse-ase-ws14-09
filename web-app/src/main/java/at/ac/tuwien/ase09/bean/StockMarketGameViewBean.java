@@ -13,7 +13,6 @@ import at.ac.tuwien.ase09.data.StockMarketGameDataAccess;
 import at.ac.tuwien.ase09.exception.EntityNotFoundException;
 import at.ac.tuwien.ase09.model.StockMarketGame;
 import at.ac.tuwien.ase09.model.User;
-import at.ac.tuwien.ase09.model.ValuePaper;
 
 @Named
 @ViewScoped
@@ -84,6 +83,16 @@ public class StockMarketGameViewBean {
 	}
 
 
+	public Map<String, String> getMainGameAttributes() {
+		return mainGameAttributes;
+	}
+
+
+	public void setMainGameAttributes(Map<String, String> mainGameAttributes) {
+		this.mainGameAttributes = mainGameAttributes;
+	}
+	
+	
 	private void checkAdminLoggedIn() {
 		if(stockMarketGame!=null)
 			adminLoggedIn=user.equals(stockMarketGame.getOwner().getAdmin());
@@ -99,11 +108,13 @@ public class StockMarketGameViewBean {
 		}
 
 	}
+	
+
+
 	private void loadGameAttributes(){
 		
 		this.mainGameAttributes = new LinkedHashMap<String, String>();
-		//this.additionalValuePaperAttributes = new LinkedHashMap<String, String>();
-
+		
 		SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");	
 
 		if(stockMarketGame.getName() != null){
@@ -113,7 +124,42 @@ public class StockMarketGameViewBean {
 		if(stockMarketGame.getOwner().getName() != null){
 			this.mainGameAttributes.put("Ersteller: ", stockMarketGame.getOwner().getName());
 		}
-
 		
+		if(stockMarketGame.getRegistrationFrom()!=null)
+		{
+			this.mainGameAttributes.put("Anmeldestart: ", format.format(stockMarketGame.getRegistrationFrom().getTime()));
+		}
+		
+		if(stockMarketGame.getRegistrationTo()!=null)
+		{
+			this.mainGameAttributes.put("Anmeldeende: ", format.format(stockMarketGame.getRegistrationTo().getTime()));
+		}
+		
+		if(stockMarketGame.getValidFrom()!=null)
+		{
+			this.mainGameAttributes.put("Startdatum: ", format.format(stockMarketGame.getValidFrom().getTime()));
+		}
+		
+		if(stockMarketGame.getValidTo()!=null)
+		{
+			this.mainGameAttributes.put("Enddatum: ", format.format(stockMarketGame.getValidTo().getTime()));
+		}
+
+		if(stockMarketGame.getSetting().getStartCapital() != null){
+			this.mainGameAttributes.put("Startkapital: ", stockMarketGame.getSetting().getStartCapital()+""+stockMarketGame.getSetting().getStartCapital().getCurrency().getSymbol());
+		}
+		
+		if(stockMarketGame.getSetting().getPortfolioFee() != null){
+			this.mainGameAttributes.put("Portfoliospesen: ", stockMarketGame.getSetting().getPortfolioFee()+""+stockMarketGame.getSetting().getPortfolioFee().getCurrency().getSymbol());
+		}
+		
+		if(stockMarketGame.getSetting().getOrderFee() != null){
+			this.mainGameAttributes.put("Orderspesen: ", stockMarketGame.getSetting().getOrderFee()+""+stockMarketGame.getSetting().getOrderFee().getCurrency().getSymbol());
+		}
+		
+		if(stockMarketGame.getSetting().getCapitalReturnTax()!=null)
+		{
+			this.mainGameAttributes.put("Kapitalertragssteuer: ", stockMarketGame.getSetting().getCapitalReturnTax()+"%");
+		}
 	}
 }
