@@ -19,7 +19,7 @@
 		</f:metadata>
 		
 		<c:choose>
-			<c:when test="#{portfolioViewBean.isHidden()}"><ui:include src="_hidden.xhtml" /></c:when>
+			<c:when test="#{not portfolioViewBean.isOwner()}"><ui:include src="_notOwner.xhtml" /></c:when>
 			<c:otherwise><ui:include src="_portfolio.xhtml" /></c:otherwise>
 		</c:choose>
 		
