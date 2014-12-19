@@ -31,6 +31,48 @@ public class StockMarketGameViewBean {
 		checkAdminLoggedIn();
 		
 	}
+	
+	
+	public Long getGameID() {
+		return gameID;
+	}
+
+
+	public void setGameID(Long gameID) {
+		this.gameID = gameID;
+	}
+
+
+	public boolean isAdminLoggedIn() {
+		return adminLoggedIn;
+	}
+
+
+	public void setAdminLoggedIn(boolean adminLoggedIn) {
+		this.adminLoggedIn = adminLoggedIn;
+	}
+
+
+	public User getUser() {
+		return user;
+	}
+
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+
+	public StockMarketGame getStockMarketGame() {
+		return stockMarketGame;
+	}
+
+
+	public void setStockMarketGame(StockMarketGame stockMarketGame) {
+		this.stockMarketGame = stockMarketGame;
+	}
+
+
 	private void checkAdminLoggedIn() {
 		if(stockMarketGame!=null)
 			adminLoggedIn=user.equals(stockMarketGame.getOwner().getAdmin());
