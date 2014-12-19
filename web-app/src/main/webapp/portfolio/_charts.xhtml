@@ -1,0 +1,24 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+	<c:choose>
+		<c:when test="#{portfolioViewBean.valuePaperTypePie == null || portfolioViewBean.valuePaperCountryPie == null}">
+			Keine Wertpapiere
+		</c:when>
+		<c:otherwise>
+			<div class="row">
+				<div class="col-md-6">
+					<p:chart type="pie" model="#{portfolioViewBean.valuePaperTypePie}" rendered="#{portfolioViewBean.valuePaperTypePie != null}" />
+				</div>
+				<div class="col-md-6">
+					<p:chart type="pie" model="#{portfolioViewBean.valuePaperCountryPie}" rendered="#{portfolioViewBean.valuePaperCountryPie != null}" />
+				</div>
+			</div>
+		</c:otherwise>
+	</c:choose>
+
+</ui:composition>

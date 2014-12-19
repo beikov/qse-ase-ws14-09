@@ -8,7 +8,8 @@
 	<p:dataTable var="opinion" value="#{portfolioViewBean.analystOpinionsForValuePapers}" rows="10"
                     paginator="true"
                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                    rowsPerPageTemplate="5,10,15">
+                    rowsPerPageTemplate="5,10,15"
+                    emptyMessage="Keine Einträge vorhanden">
     
     	<p:column headerText="Datum" sortBy="#{opinion.created}">
 	        <h:outputText value="#{dateUtil.formatCalendar(opinion.created)}"></h:outputText>
