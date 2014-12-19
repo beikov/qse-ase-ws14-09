@@ -32,13 +32,23 @@
 
 								<p:panelGrid columns="2">
 
+									<p:outputLabel value="Name: " style="padding: 10px;" />
+									<p:outputLabel value="#{stockMarketGameViewBean.stockMarketGame.name} " style="font-weight:bold" />
 									
+									<p:outputLabel value="Name: " style="font-weight:bold" />
+									<p:outputLabel value="Name: " style="font-weight:bold" />
+									
+									<p:outputLabel value="Name: " style="font-weight:bold" />
+									<p:outputLabel value="Name: " style="font-weight:bold" />
+									
+									<p:outputLabel value="Name: " style="font-weight:bold" />
+									<p:outputLabel value="Name: " style="font-weight:bold" />
 
 								</p:panelGrid>
 
 							</p:panel>
 
-							<p:panel id="zusaetzlich" header="Zusätzliche Informationen"
+							<p:panel id="additional" header="Zusätzliche Informationen"
 								toggleable="true" collapsed="true"
 								rendered="#{valuePaperViewBean.additionalValuePaperAttributes.size() > 0}">
 

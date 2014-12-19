@@ -1,5 +1,9 @@
 package at.ac.tuwien.ase09.bean;
 
+import java.text.SimpleDateFormat;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -25,10 +29,17 @@ public class StockMarketGameViewBean {
 	private User user;
 	private StockMarketGame stockMarketGame;
 	
+	private Map<String,String> mainGameAttributes=null;
+	
 	public void init(){
 		User user=userContext.getUser();
 		loadStockMarketGame(gameID);
 		checkAdminLoggedIn();
+		
+		if(stockMarketGame!=null)
+		{
+			loadGameAttributes();
+		}
 		
 	}
 	
@@ -87,5 +98,22 @@ public class StockMarketGameViewBean {
 			this.stockMarketGame = null;
 		}
 
+	}
+	private void loadGameAttributes(){
+		
+		this.mainGameAttributes = new LinkedHashMap<String, String>();
+		//this.additionalValuePaperAttributes = new LinkedHashMap<String, String>();
+
+		SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");	
+
+		if(stockMarketGame.getName() != null){
+			this.mainGameAttributes.put("Bezeichnung: ", stockMarketGame.getName());
+		}
+
+		if(stockMarketGame.getOwner().getName() != null){
+			this.mainGameAttributes.put("Ersteller: ", stockMarketGame.getOwner().getName());
+		}
+
+		
 	}
 }
