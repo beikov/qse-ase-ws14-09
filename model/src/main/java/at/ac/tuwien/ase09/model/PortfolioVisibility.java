@@ -10,7 +10,8 @@ public class PortfolioVisibility implements Serializable {
 
 	private Boolean publicVisible = false;
 	private Boolean statisticsVisible = false;
-	private Boolean historyVisible = false;
+	private Boolean orderHistoryVisible = false;
+	private Boolean transactionHistoryVisible = false;
 	private Boolean valuePaperListVisible = false;
 	
 	public Boolean getPublicVisible() {
@@ -29,14 +30,22 @@ public class PortfolioVisibility implements Serializable {
 		this.statisticsVisible = statisticsVisible;
 	}
 	
-	public Boolean getHistoryVisible() {
-		return historyVisible;
+	public Boolean getOrderHistoryVisible() {
+		return orderHistoryVisible;
 	}
-	
-	public void setHistoryVisible(Boolean historyVisible) {
-		this.historyVisible = historyVisible;
+
+	public void setOrderHistoryVisible(Boolean orderHistoryVisible) {
+		this.orderHistoryVisible = orderHistoryVisible;
 	}
-	
+
+	public Boolean getTransactionHistoryVisible() {
+		return transactionHistoryVisible;
+	}
+
+	public void setTransactionHistoryVisible(Boolean transactionHistoryVisible) {
+		this.transactionHistoryVisible = transactionHistoryVisible;
+	}
+
 	public Boolean getValuePaperListVisible() {
 		return valuePaperListVisible;
 	}

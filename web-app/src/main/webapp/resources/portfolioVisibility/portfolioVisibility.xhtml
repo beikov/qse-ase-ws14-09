@@ -19,16 +19,20 @@
 			<h:outputText value="Öffentlich sichtbar: " />
 			<p:inputSwitch id="publicSwitch"
 				value="#{cc.attrs.visibilitySettings.publicVisible}" onLabel="an" offLabel="aus" immediate="true"  >
-					<p:ajax event="change" update="statisticsSwitch historySwitch valuePaperSwitch" />
+					<p:ajax event="change" update="statisticsSwitch orderHistorySwitch transactionHistorySwitch valuePaperSwitch" />
 			</p:inputSwitch>
 
 			<h:outputText value="Statistiken sichtbar: " />
 			<p:inputSwitch id="statisticsSwitch"
 					value="#{cc.attrs.visibilitySettings.statisticsVisible}" onLabel="an" offLabel="aus" disabled="#{!cc.attrs.visibilitySettings.publicVisible}"/>
 
-			<h:outputText value="Geschichte sichtbar: " />
-			<p:inputSwitch id="historySwitch"
-						value="#{cc.attrs.visibilitySettings.historyVisible}" onLabel="an" offLabel="aus" disabled="#{!cc.attrs.visibilitySettings.publicVisible}"/>
+			<h:outputText value="Ordergeschichte sichtbar: " />
+			<p:inputSwitch id="orderHistorySwitch"
+						value="#{cc.attrs.visibilitySettings.orderHistoryVisible}" onLabel="an" offLabel="aus" disabled="#{!cc.attrs.visibilitySettings.publicVisible}"/>
+			
+			<h:outputText value="Transaktionsgeschichte sichtbar: " />
+			<p:inputSwitch id="transactionHistorySwitch"
+						value="#{cc.attrs.visibilitySettings.transactionHistoryVisible}" onLabel="an" offLabel="aus" disabled="#{!cc.attrs.visibilitySettings.publicVisible}"/>
 				
 			<h:outputText value="Wertpapiere sichtbar: " />
 			<p:inputSwitch id="valuePaperSwitch"
