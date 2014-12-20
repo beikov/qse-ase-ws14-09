@@ -46,7 +46,7 @@ public class UserFilter implements Filter {
 				UserInfo userInfo = AdminClient.getCurrentUser(httpRequest);
 				
 				if (userInfo != null) {
-					User user = userDataAccess.getByUsername(userInfo.getUsername());
+					User user = userDataAccess.getUserByUsername(userInfo.getUsername());
 					
 					if (user == null) {
 						user = AdminClient.createUser(httpRequest);

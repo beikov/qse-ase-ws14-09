@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<!-- content -->
+	<ui:define name="body">
+	
+		<f:metadata>
+			<f:viewParam name="portfolioId" value="#{portfolioViewBean.portfolioId}" required="#{!facesContext.postback}" />
+		    <f:viewAction action="#{portfolioViewBean.init}" />
+		</f:metadata>
+		
+		<c:choose>
+			<c:when test="#{not portfolioViewBean.isOwner()}"><ui:include src="_notOwner.xhtml" /></c:when>
+			<c:otherwise><ui:include src="_portfolio.xhtml" /></c:otherwise>
+		</c:choose>
+		
+	</ui:define><!-- content -->
+</ui:composition>
