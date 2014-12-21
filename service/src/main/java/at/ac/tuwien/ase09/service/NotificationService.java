@@ -5,6 +5,8 @@ import java.util.Calendar;
 import java.util.List;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
 
 import at.ac.tuwien.ase09.model.StockMarketGame;
 import at.ac.tuwien.ase09.model.User;
@@ -15,6 +17,9 @@ import at.ac.tuwien.ase09.model.notification.Notification;
 @Stateless
 public class NotificationService {
 
+	@Inject
+	private EntityManager em;
+	
 	public List<? extends Notification> getNotificationsForUser(User u){
 		List<Notification> notifications = new ArrayList<Notification>(); 
 
@@ -42,6 +47,10 @@ public class NotificationService {
 
 
 		return notifications;
+	}
+	
+	public void addNotification(Notification n){
+		em.persist(n);
 	}
 
 }
