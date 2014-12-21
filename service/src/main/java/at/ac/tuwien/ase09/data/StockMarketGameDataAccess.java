@@ -7,6 +7,7 @@ import javax.persistence.NoResultException;
 
 import at.ac.tuwien.ase09.exception.AppException;
 import at.ac.tuwien.ase09.exception.EntityNotFoundException;
+import at.ac.tuwien.ase09.model.Portfolio;
 import at.ac.tuwien.ase09.model.StockMarketGame;
 
 @Stateless
@@ -14,7 +15,7 @@ public class StockMarketGameDataAccess {
 
 	@Inject
 	private EntityManager em;
-	
+
 	public  StockMarketGame getStockMarketGameByID(Long id){
 		try{
 
@@ -28,5 +29,15 @@ public class StockMarketGameDataAccess {
 		}catch(Exception e){
 			throw new AppException(e);
 		}
+	}
+
+	public StockMarketGame saveStockMarketGame(StockMarketGame stockMarketGame){
+		if(stockMarketGame.getId() != null){
+			if(em.find(StockMarketGame.class, stockMarketGame.getId()) != null){
+				return em.merge(stockMarketGame);
+			}
+		}
+		em.persist(stockMarketGame);
+		return stockMarketGame;	
 	}
 }
