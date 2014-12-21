@@ -58,7 +58,10 @@
 						<p:layoutUnit position="east" resizable="true" size="500"
 							minSize="50" maxSize="500" style="border: 0">
 
-							
+							<p:graphicImage value="#{stockMarketGameViewBean.stockMarketGame.logo}" style="max-width:800px;max-height:400px;">
+	    						<f:param name="admin" value="#{stockMarketGameViewBean.stockMarketGame.owner.admin.username}" />
+	    					</p:graphicImage>
+	    					
 						</p:layoutUnit>
 					</p:layout>
 					
