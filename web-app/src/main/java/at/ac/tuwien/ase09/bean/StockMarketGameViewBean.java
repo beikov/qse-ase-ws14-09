@@ -1,5 +1,6 @@
 package at.ac.tuwien.ase09.bean;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -19,8 +20,11 @@ import at.ac.tuwien.ase09.model.ValuePaper;
 
 @Named
 @ViewScoped
-public class StockMarketGameViewBean {
+public class StockMarketGameViewBean implements Serializable{
 
+
+	private static final long serialVersionUID = 1L;
+	
 	@Inject
 	private StockMarketGameDataAccess stockMarketGameAccess;
 	@Inject
