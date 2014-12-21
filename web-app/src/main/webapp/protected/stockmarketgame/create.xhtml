@@ -18,7 +18,56 @@
 
 		</f:metadata>
 
-		<h:form id="stockmarketgame_create">
+		<h:form id="stockmarketgame_create" enctype="multipart/form-data">
+
+			<p:growl id="messages" showDetail="true" />
+
+			<p:panel header="Börsenspiel-Einstellungen">
+
+				<h:panelGrid columns="3" cellpadding="5">
+
+					<h:outputText value="Börsenspielbezeichnung: " />
+					<p:inputText id="name" value="#{stockMarketGameCreationBean.name}"
+						required="true">
+					</p:inputText>
+					<h:message for="name" style="color:red" />
+
+					<h:outputText value="Beschreibung: " />
+					<p:inputText id="text" value="#{stockMarketGameCreationBean.text}"
+						required="true">
+					</p:inputText>
+					<h:message for="text" style="color:red" />
+
+					<h:outputText value="Spiel beginnt am: " />
+					<p:inputText id="validFrom"
+						value="#{stockMarketGameCreationBean.validFrom}" required="true">
+						<f:convertDateTime pattern="dd.MM.yyyy" />
+					</p:inputText>
+					<h:message for="validFrom" style="color:red" />
+
+					<h:outputText value="Spiel endet am: " />
+					<p:inputText id="validTo"
+						value="#{stockMarketGameCreationBean.validTo}" required="true">
+						<f:convertDateTime pattern="dd.MM.yyyy" />
+					</p:inputText>
+					<h:message for="validFrom" style="color:red" />
+					
+					<h:outputText value="Registrierung beginnt am: " />
+					<p:inputText id="registrationFrom"
+						value="#{stockMarketGameCreationBean.registrationFrom}" required="true">
+						<f:convertDateTime pattern="dd.MM.yyyy" />
+					</p:inputText>
+					<h:message for="registrationFrom" style="color:red" />
+
+					<h:outputText value="Registrierung endet am: " />
+					<p:inputText id="registrationTo"
+						value="#{stockMarketGameCreationBean.registrationTo}" required="true">
+						<f:convertDateTime pattern="dd.MM.yyyy" />
+					</p:inputText>
+					<h:message for="registrationTo" style="color:red" />
+
+				</h:panelGrid>
+			</p:panel>
 
 			<p:panel header="Portfolio-Voreinstellungen">
 
@@ -38,7 +87,8 @@
 
 					<h:outputText value="Portfoliogebühr(€): " />
 					<p:inputText id="portfolioFee"
-						value="#{stockMarketGameCreationBean.portfolioFee}" required="true" />
+						value="#{stockMarketGameCreationBean.portfolioFee}"
+						required="true" />
 					<h:message for="portfolioFee" style="color:red" />
 
 					<h:outputText value="Kapitalertragssteuer(%): " />

@@ -1,10 +1,10 @@
 package at.ac.tuwien.ase09.bean;
 
 import java.math.BigDecimal;
+import java.sql.Blob;
+import java.util.Calendar;
 import java.util.Currency;
-import java.util.GregorianCalendar;
 
-import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
@@ -14,10 +14,8 @@ import javax.inject.Named;
 import at.ac.tuwien.ase09.context.WebUserContext;
 import at.ac.tuwien.ase09.data.StockMarketGameDataAccess;
 import at.ac.tuwien.ase09.model.Money;
-import at.ac.tuwien.ase09.model.Portfolio;
-import at.ac.tuwien.ase09.model.PortfolioSetting;
-import at.ac.tuwien.ase09.model.PortfolioVisibility;
 import at.ac.tuwien.ase09.model.StockMarketGame;
+import at.ac.tuwien.ase09.service.StockMarketGameService;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -25,6 +23,7 @@ import java.io.Serializable;
 @Named
 @ViewScoped
 public class StockMarketGameCreationBean implements Serializable {
+	
 	private static final long serialVersionUID = 1L;
 
 	@Inject
@@ -32,11 +31,22 @@ public class StockMarketGameCreationBean implements Serializable {
 	
 	@Inject
 	private StockMarketGameDataAccess stockMarketGameDataAccess;
+	
+	@Inject
+	private StockMarketGameService stockMarketGameService;
 
 	private Long stockMarketGameId;
 
 	private StockMarketGame stockMarketGame;
 
+	private String name;
+	private Calendar validFrom;
+	private Calendar validTo;
+	private Calendar registrationFrom;
+	private Calendar registrationTo;
+	private String text;
+	private Blob logo;
+	
 	private BigDecimal startCapital;
 	private BigDecimal orderFee;
 	private BigDecimal portfolioFee;
@@ -44,6 +54,60 @@ public class StockMarketGameCreationBean implements Serializable {
 
 
 
+	public Long getStockMarketGameId() {
+		return stockMarketGameId;
+	}
+	public void setStockMarketGameId(Long stockMarketGameId) {
+		this.stockMarketGameId = stockMarketGameId;
+	}
+	public StockMarketGame getStockMarketGame() {
+		return stockMarketGame;
+	}
+	public void setStockMarketGame(StockMarketGame stockMarketGame) {
+		this.stockMarketGame = stockMarketGame;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public Calendar getValidFrom() {
+		return validFrom;
+	}
+	public void setValidFrom(Calendar validFrom) {
+		this.validFrom = validFrom;
+	}
+	public Calendar getValidTo() {
+		return validTo;
+	}
+	public void setValidTo(Calendar validTo) {
+		this.validTo = validTo;
+	}
+	public Calendar getRegistrationFrom() {
+		return registrationFrom;
+	}
+	public void setRegistrationFrom(Calendar registrationFrom) {
+		this.registrationFrom = registrationFrom;
+	}
+	public Calendar getRegistrationTo() {
+		return registrationTo;
+	}
+	public void setRegistrationTo(Calendar registrationTo) {
+		this.registrationTo = registrationTo;
+	}
+	public String getText() {
+		return text;
+	}
+	public void setText(String text) {
+		this.text = text;
+	}
+	public Blob getLogo() {
+		return logo;
+	}
+	public void setLogo(Blob logo) {
+		this.logo = logo;
+	}
 	public BigDecimal getStartCapital() {
 		return startCapital;
 	}
@@ -69,9 +133,10 @@ public class StockMarketGameCreationBean implements Serializable {
 		this.capitalReturnTax = capitalReturnTax;
 	}
 
-	@PostConstruct
 	public void init() {
 
+		loadStockMarketGame();
+		
 		if(stockMarketGame != null){
 			orderFee = stockMarketGame.getSetting().getOrderFee().getValue();
 			portfolioFee = stockMarketGame.getSetting().getPortfolioFee().getValue();
@@ -81,6 +146,12 @@ public class StockMarketGameCreationBean implements Serializable {
 			orderFee = new BigDecimal(0);
 			portfolioFee = new BigDecimal(0);
 			capitalReturnTax = new BigDecimal(0);
+		}
+	}
+	
+	public void loadStockMarketGame(){
+		if(stockMarketGameId != null){
+			stockMarketGame = stockMarketGameDataAccess.getStockMarketGameByID(stockMarketGameId);
 		}
 	}
 
@@ -116,12 +187,18 @@ public class StockMarketGameCreationBean implements Serializable {
 			stockMarketGame = new StockMarketGame();
 		}
 		
+		stockMarketGame.setName(name);
+		stockMarketGame.setText(text);
+		stockMarketGame.setValidFrom(validFrom);
+		stockMarketGame.setValidTo(validTo);
+		stockMarketGame.setRegistrationFrom(registrationFrom);
+		stockMarketGame.setRegistrationTo(registrationTo);
 		stockMarketGame.getSetting().setStartCapital(new Money(startCapital, Currency.getInstance("EUR")));
 		stockMarketGame.getSetting().setOrderFee(new Money(orderFee, Currency.getInstance("EUR")));
 		stockMarketGame.getSetting().setPortfolioFee(new Money(portfolioFee, Currency.getInstance("EUR")));
 		stockMarketGame.getSetting().setCapitalReturnTax(capitalReturnTax);
 
-		//portfolioService.savePortfolio(portfolio);
+		stockMarketGameService.saveStockMarketGame(stockMarketGame);
 
 		try {
 			FacesContext.getCurrentInstance().getExternalContext().redirect("list.xhtml");

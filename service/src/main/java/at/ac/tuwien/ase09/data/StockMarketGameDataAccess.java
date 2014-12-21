@@ -31,13 +31,4 @@ public class StockMarketGameDataAccess {
 		}
 	}
 
-	public StockMarketGame saveStockMarketGame(StockMarketGame stockMarketGame){
-		if(stockMarketGame.getId() != null){
-			if(em.find(StockMarketGame.class, stockMarketGame.getId()) != null){
-				return em.merge(stockMarketGame);
-			}
-		}
-		em.persist(stockMarketGame);
-		return stockMarketGame;	
-	}
 }

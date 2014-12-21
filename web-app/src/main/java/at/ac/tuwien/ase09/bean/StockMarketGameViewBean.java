@@ -1,5 +1,6 @@
 package at.ac.tuwien.ase09.bean;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -13,12 +14,13 @@ import at.ac.tuwien.ase09.data.StockMarketGameDataAccess;
 import at.ac.tuwien.ase09.exception.EntityNotFoundException;
 import at.ac.tuwien.ase09.model.StockMarketGame;
 import at.ac.tuwien.ase09.model.User;
-import at.ac.tuwien.ase09.model.ValuePaper;
 
 @Named
 @ViewScoped
-public class StockMarketGameViewBean {
+public class StockMarketGameViewBean implements Serializable{
 
+	private static final long serialVersionUID = 1L;
+	
 	@Inject
 	private StockMarketGameDataAccess stockMarketGameAccess;
 	@Inject
