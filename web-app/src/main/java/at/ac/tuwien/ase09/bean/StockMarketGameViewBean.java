@@ -1,8 +1,10 @@
 package at.ac.tuwien.ase09.bean;
 
 import java.text.SimpleDateFormat;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
@@ -13,6 +15,7 @@ import at.ac.tuwien.ase09.data.StockMarketGameDataAccess;
 import at.ac.tuwien.ase09.exception.EntityNotFoundException;
 import at.ac.tuwien.ase09.model.StockMarketGame;
 import at.ac.tuwien.ase09.model.User;
+import at.ac.tuwien.ase09.model.ValuePaper;
 
 @Named
 @ViewScoped
@@ -29,6 +32,7 @@ public class StockMarketGameViewBean {
 	private StockMarketGame stockMarketGame;
 	
 	private Map<String,String> mainGameAttributes=null;
+	private Set<ValuePaper> allowedPapers=null;
 	
 	public void init(){
 		User user=userContext.getUser();
@@ -114,9 +118,14 @@ public class StockMarketGameViewBean {
 	private void loadGameAttributes(){
 		
 		this.mainGameAttributes = new LinkedHashMap<String, String>();
+		this.allowedPapers=new HashSet<ValuePaper>();
 		
 		SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");	
 
+		if(stockMarketGame.getAllowedValuePapers()!=null)
+		{
+			this.allowedPapers=stockMarketGame.getAllowedValuePapers();
+		}
 		if(stockMarketGame.getName() != null){
 			this.mainGameAttributes.put("Bezeichnung: ", stockMarketGame.getName());
 		}

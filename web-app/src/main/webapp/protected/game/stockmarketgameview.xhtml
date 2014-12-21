@@ -48,7 +48,7 @@
 								rendered="#{stockMarketGameViewBean.stockMarketGame.text!=null}">
 
 								<p:panelGrid columns="2">
-									
+									<p:outputLabel value="#{stockMarketGameViewBean.stockMarketGame.text}" />
 								</p:panelGrid>
 
 							</p:panel>
@@ -61,6 +61,43 @@
 							
 						</p:layoutUnit>
 					</p:layout>
+					
+					<p:separator />
+
+					<p:panel id="allowedValuePapers" header="Erlaubte Wertpapiere"
+						toggleable="true" collapsed="true">
+
+						<p:dataTable var="valuePaper"
+							value="#{stockMarketGameViewBean.stockMarketGame.allowedValuePapers}"
+							rows="15" paginator="true"
+							paginatorTemplate=" {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
+							<p:column headerText="Name" sortBy="#{valuePaper.name}">
+								<h:outputText value="#{valuePaper.name}" />
+							</p:column>
+							<p:column headerText="Währung">
+								<h:outputText
+									value="#{valuePaper.currency.currencyCode} (#{valuePaper.currency.symbol})"
+									rendered="#{valuePaper.type == 'STOCK' or valuePaper.type == 'FUND'}" />
+							</p:column>
+							<p:column headerText="Land">
+								<h:outputText value="#{valuePaper.country}"
+									rendered="#{valuePaper.type == 'STOCK'}" />
+							</p:column>
+							<p:column headerText="ISIN" sortBy="#{valuePaper.code}">
+								<h:outputText value="#{valuePaper.code}" />
+							</p:column>
+							<p:column headerText="Typ" sortBy="#{valuePaper.type}">
+								<h:outputText value="#{valuePaper.type}" />
+							</p:column>
+							<p:column>
+								<h:button value="Details"
+									outcome="/protected/valuepaper/valuepaperview">
+									<!--  includeViewParams="true" -->
+									<f:param name="valuePaperCode" value="#{valuePaper.code}" />
+								</h:button>
+							</p:column>
+						</p:dataTable>
+					</p:panel>
 				</c:when>
 
 				<c:otherwise>
