@@ -15,14 +15,22 @@
 
 <composite:implementation>
 	<h:form>
-		<p:commandButton id="notificationBtn" value="Notifikationen" type="button" icon="ui-icon-mail-closed"/>
-		<p:overlayPanel id="notificationPanel" for="notificationBtn" hideEffect="fade" dynamic="true" style="width:600px">
-			 <p:dataTable var="notifications" value="#{notificationBean.notifications}"  emptyMessage="Keine Notifikationen verfügbar" >
+		<p:commandButton id="notificationBtn" value="Notifikationen" type="button" icon="ui-icon-mail-closed" update="@this"/>
+		<p:overlayPanel id="notificationPanel" for="notificationBtn" hideEffect="fade" dynamic="true" style="width:500px">
+			 <p:dataTable id="notificationTable" var="notifications" value="#{notificationBean.notifications}" scrollable="true" scrollHeight="250" scrollRows="5" liveScroll="true" emptyMessage="Keine Notifikationen verfügbar" >
 			 	<p:column id="icon" style="width:50px">
-					<p:graphicImage name="/images/notificationicons/#{notifications.type}.gif" />
+					<p:graphicImage name="/images/notificationicons/#{notifications.type}_#{notifications.read}.gif" />
 				</p:column>
 				<p:column id="message">
-				 #{notificationBean.getTextForNotification(notifications)}
+				<p:column id="messageRead" rendered="#{notifications.read}">
+					#{notificationBean.getTextForNotification(notifications)}
+				</p:column>
+				<p:column id="messageNew" rendered="#{!notifications.read}">
+					<b> #{notificationBean.getTextForNotification(notifications)}</b>
+				</p:column>
+				</p:column>
+				<p:column id="created" style="width:75px">
+				<font size="1"> #{notifications.created.time} </font>
 				</p:column>
 			 </p:dataTable>
 		</p:overlayPanel>

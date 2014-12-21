@@ -29,7 +29,6 @@ public class NotificationBean {
 	@PostConstruct
 	public void init(){
 		notifications = new ArrayList<Notification>();
-		
 		notifications = notificationService.getNotificationsForUser(userContext.getUser());
 	}
 	
