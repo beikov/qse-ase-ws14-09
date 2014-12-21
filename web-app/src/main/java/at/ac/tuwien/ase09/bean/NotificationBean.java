@@ -8,11 +8,13 @@ import javax.faces.bean.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.hibernate.Hibernate;
+
 import at.ac.tuwien.ase09.context.WebUserContext;
+import at.ac.tuwien.ase09.data.NotificationDataAccess;
 import at.ac.tuwien.ase09.model.notification.FollowerAddedNotification;
 import at.ac.tuwien.ase09.model.notification.GameStartedNotification;
 import at.ac.tuwien.ase09.model.notification.Notification;
-import at.ac.tuwien.ase09.service.NotificationService;
 
 @Named
 @SessionScoped
@@ -21,7 +23,7 @@ public class NotificationBean {
 	private List<? extends Notification> notifications;
 
 	@Inject
-	private NotificationService notificationService;
+	private NotificationDataAccess data;
 	
 	@Inject
 	WebUserContext userContext;
@@ -29,7 +31,7 @@ public class NotificationBean {
 	@PostConstruct
 	public void init(){
 		notifications = new ArrayList<Notification>();
-		notifications = notificationService.getNotificationsForUser(userContext.getUser());
+		notifications = data.getNotificationsForUser(userContext.getUser());
 	}
 	
 	public List<? extends Notification> getNotifications() {

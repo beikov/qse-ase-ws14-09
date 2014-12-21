@@ -39,9 +39,6 @@ public class NotificationDataAccessTest extends AbstractContainerTest<Notificati
 	@Inject
 	private NotificationService notiService;
 	
-	@Resource
-	UserTransaction ut;
-	
 	private User u1,u2;
 
 	@Before
