@@ -140,6 +140,67 @@ public class NotificationDataAccessTest extends AbstractContainerTest<Notificati
 		
 		assertEquals(data.getUnreadNotificationsForUser(u1).size(), 1);
 	}
+	
+	
+	@Test
+	public void testGetUnreadnotificationsCountReturnsOne(){
+		FollowerAddedNotification fn = new FollowerAddedNotification();
+		fn.setCreated(Calendar.getInstance());
+		fn.setFollower(u2);
+		fn.setUser(u1);
+		fn.setRead(false);
+		notiService.addNotification(fn);
+		
+		assertEquals(1, data.getUnreadNotificationsCount(u1));
+	}
+	
+	
+	@Test
+	public void testGetUnreadnotificationsCountReturnsZero(){
+		FollowerAddedNotification fn = new FollowerAddedNotification();
+		fn.setCreated(Calendar.getInstance());
+		fn.setFollower(u2);
+		fn.setUser(u1);
+		fn.setRead(true);
+		notiService.addNotification(fn);
+		
+		assertEquals(0, data.getUnreadNotificationsCount(u1));
+	}
+	
+	@Test
+	public void testGetUnreadnotificationsCountReturnsPositiveCount(){
+		FollowerAddedNotification fn = new FollowerAddedNotification();
+		fn.setCreated(Calendar.getInstance());
+		fn.setFollower(u2);
+		fn.setUser(u1);
+		fn.setRead(false);
+		notiService.addNotification(fn);
+		
+		fn = new FollowerAddedNotification();
+		fn.setCreated(Calendar.getInstance());
+		fn.setFollower(u2);
+		fn.setUser(u1);
+		fn.setRead(false);
+		notiService.addNotification(fn);
+		
+		fn = new FollowerAddedNotification();
+		fn.setCreated(Calendar.getInstance());
+		fn.setFollower(u2);
+		fn.setUser(u1);
+		fn.setRead(true);
+		notiService.addNotification(fn);
+		
+		fn = new FollowerAddedNotification();
+		fn.setCreated(Calendar.getInstance());
+		fn.setFollower(u2);
+		fn.setUser(u1);
+		fn.setRead(false);
+		notiService.addNotification(fn);
+		
+		assertEquals(3, data.getUnreadNotificationsCount(u1));
+	}
+	
+	
 
 
 

@@ -70,4 +70,12 @@ public class NotificationDataAccess {
 		}
 	}
 
+	public int getUnreadNotificationsCount(User user) {
+		try{
+			return  em.createQuery("SELECT count(n) FROM Notification n WHERE n.user = :user AND n.read = false", Long.class).setParameter("user", user).getSingleResult().intValue();
+		}catch(Exception e){
+			throw new AppException(e);
+		}
+	}
+
 }

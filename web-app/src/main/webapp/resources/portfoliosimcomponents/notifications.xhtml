@@ -14,10 +14,10 @@
 </composite:interface>
 
 <composite:implementation>
-	<h:form>
-		<p:commandButton id="notificationBtn" value="Notifikationen" type="button" icon="ui-icon-mail-closed" update="@this"/>
-		<p:overlayPanel id="notificationPanel" for="notificationBtn" hideEffect="fade" dynamic="true" style="width:500px">
-			 <p:dataTable id="notificationTable" var="notifications" value="#{notificationBean.notifications}" scrollable="true" scrollHeight="250" scrollRows="5" liveScroll="true" emptyMessage="Keine Notifikationen verfügbar" >
+	<h:form id="form">
+		<p:commandButton id="notificationBtn" value="#{notificationBean.unreadCount}" icon="ui-icon-mail-closed" update="notificationTable" />
+		<p:overlayPanel id="notificationPanel" widgetVar="ovl" for="notificationBtn" hideEffect="fade" style="width:500px" >
+			 <p:dataTable id="notificationTable" widgetVar="ovlList" var="notifications" value="#{notificationBean.notifications}" scrollable="true" scrollHeight="250" scrollRows="5" liveScroll="true" emptyMessage="Keine Notifikationen verfügbar" >
 				 <f:attribute name="collectionType" value="java.util.ArrayList" />
 			 	<p:column id="icon" style="width:50px">
 					<p:graphicImage name="/images/notificationicons/#{notifications.type}_#{notifications.read}.gif" />
