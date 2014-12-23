@@ -1,15 +1,13 @@
 package at.ac.tuwien.ase09.bean;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import at.ac.tuwien.ase09.context.WebUserContext;
 import at.ac.tuwien.ase09.data.NotificationDataAccess;
@@ -18,11 +16,12 @@ import at.ac.tuwien.ase09.model.notification.GameStartedNotification;
 import at.ac.tuwien.ase09.model.notification.Notification;
 import at.ac.tuwien.ase09.service.NotificationService;
 
-@Named
+@ManagedBean
 @SessionScoped
 public class NotificationBean {
 
 	private List<? extends Notification> notifications;
+	private boolean reading=false;
 
 	@Inject
 	private NotificationDataAccess data;
@@ -36,9 +35,12 @@ public class NotificationBean {
 
 	@PostConstruct
 	public void init(){
+		for(int i=0;i<10;i++){
+			System.out.println("initializing");
+		}
 		notifications = data.getNotificationsForUser(userContext.getUser());
 	}
-	
+
 
 	public void addMessage(String summary) {
 		FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, summary,  null);
@@ -55,8 +57,11 @@ public class NotificationBean {
 
 
 	public String getTextForNotification(FollowerAddedNotification notification) {
-		notification.setRead(true);
-		service.setRead(notification);
+		System.out.println("getting text");
+		if(reading){
+			notification.setRead(true);
+			service.setRead(notification);
+		}
 		return "Benutzer: '"+notification.getFollower().getUsername()+"' folgt Ihnen nun.";
 	}
 
@@ -66,6 +71,10 @@ public class NotificationBean {
 
 	public int getUnreadCount(){
 		return data.getUnreadNotificationsCount(userContext.getUser());
+	}
+
+	public void bla(){
+		reading=true;
 	}
 
 
