@@ -41,28 +41,28 @@
 					<h:outputText value="Spiel beginnt am: " />
 					<p:inputText id="validFrom"
 						value="#{stockMarketGameCreationBean.validFrom}" required="true">
-						<f:convertDateTime pattern="dd.MM.yyyy" />
+						<f:convertDateTime pattern="dd.MM.yyyy" timeZone="CET"/>
 					</p:inputText>
 					<h:message for="validFrom" style="color:red" />
 
 					<h:outputText value="Spiel endet am: " />
 					<p:inputText id="validTo"
 						value="#{stockMarketGameCreationBean.validTo}" required="true">
-						<f:convertDateTime pattern="dd.MM.yyyy" />
+						<f:convertDateTime pattern="dd.MM.yyyy" timeZone="CET"/>
 					</p:inputText>
 					<h:message for="validFrom" style="color:red" />
 					
 					<h:outputText value="Registrierung beginnt am: " />
 					<p:inputText id="registrationFrom"
 						value="#{stockMarketGameCreationBean.registrationFrom}" required="true">
-						<f:convertDateTime pattern="dd.MM.yyyy" />
+						<f:convertDateTime pattern="dd.MM.yyyy" timeZone="CET"/>
 					</p:inputText>
 					<h:message for="registrationFrom" style="color:red" />
 
 					<h:outputText value="Registrierung endet am: " />
 					<p:inputText id="registrationTo"
 						value="#{stockMarketGameCreationBean.registrationTo}" required="true">
-						<f:convertDateTime pattern="dd.MM.yyyy" />
+						<f:convertDateTime pattern="dd.MM.yyyy" timeZone="CET"/>
 					</p:inputText>
 					<h:message for="registrationTo" style="color:red" />
 
@@ -103,7 +103,7 @@
 				<h:panelGrid columns="2" cellpadding="10" style="width: 40%">
 					<p:commandButton value="Reset" type="reset" />
 					<p:commandButton value="Erstellen"
-						action="#{portfolioCreationViewBean.create()}" update="createForm"
+						action="#{stockMarketGameCreationBean.createStockMarketGame()}" update="stockmarketgame_create"
 						ajax="true" />
 				</h:panelGrid>
 

@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.sql.Blob;
 import java.util.Calendar;
 import java.util.Currency;
+import java.util.Date;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -14,6 +15,7 @@ import javax.inject.Named;
 import at.ac.tuwien.ase09.context.WebUserContext;
 import at.ac.tuwien.ase09.data.StockMarketGameDataAccess;
 import at.ac.tuwien.ase09.model.Money;
+import at.ac.tuwien.ase09.model.PortfolioSetting;
 import at.ac.tuwien.ase09.model.StockMarketGame;
 import at.ac.tuwien.ase09.service.StockMarketGameService;
 
@@ -40,10 +42,10 @@ public class StockMarketGameCreationBean implements Serializable {
 	private StockMarketGame stockMarketGame;
 
 	private String name;
-	private Calendar validFrom;
-	private Calendar validTo;
-	private Calendar registrationFrom;
-	private Calendar registrationTo;
+	private Date validFrom;
+	private Date validTo;
+	private Date registrationFrom;
+	private Date registrationTo;
 	private String text;
 	private Blob logo;
 	
@@ -72,28 +74,29 @@ public class StockMarketGameCreationBean implements Serializable {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public Calendar getValidFrom() {
+
+	public Date getValidFrom() {
 		return validFrom;
 	}
-	public void setValidFrom(Calendar validFrom) {
+	public void setValidFrom(Date validFrom) {
 		this.validFrom = validFrom;
 	}
-	public Calendar getValidTo() {
+	public Date getValidTo() {
 		return validTo;
 	}
-	public void setValidTo(Calendar validTo) {
+	public void setValidTo(Date validTo) {
 		this.validTo = validTo;
 	}
-	public Calendar getRegistrationFrom() {
+	public Date getRegistrationFrom() {
 		return registrationFrom;
 	}
-	public void setRegistrationFrom(Calendar registrationFrom) {
+	public void setRegistrationFrom(Date registrationFrom) {
 		this.registrationFrom = registrationFrom;
 	}
-	public Calendar getRegistrationTo() {
+	public Date getRegistrationTo() {
 		return registrationTo;
 	}
-	public void setRegistrationTo(Calendar registrationTo) {
+	public void setRegistrationTo(Date registrationTo) {
 		this.registrationTo = registrationTo;
 	}
 	public String getText() {
@@ -182,22 +185,27 @@ public class StockMarketGameCreationBean implements Serializable {
 			FacesContext.getCurrentInstance().addMessage("createForm:capitalReturnTax", facesMessage);
 			return;
 		}
-
-		if(stockMarketGame != null){
+		
+		if(stockMarketGame == null){
 			stockMarketGame = new StockMarketGame();
 		}
 		
 		stockMarketGame.setName(name);
 		stockMarketGame.setText(text);
-		stockMarketGame.setValidFrom(validFrom);
-		stockMarketGame.setValidTo(validTo);
-		stockMarketGame.setRegistrationFrom(registrationFrom);
-		stockMarketGame.setRegistrationTo(registrationTo);
-		stockMarketGame.getSetting().setStartCapital(new Money(startCapital, Currency.getInstance("EUR")));
-		stockMarketGame.getSetting().setOrderFee(new Money(orderFee, Currency.getInstance("EUR")));
-		stockMarketGame.getSetting().setPortfolioFee(new Money(portfolioFee, Currency.getInstance("EUR")));
-		stockMarketGame.getSetting().setCapitalReturnTax(capitalReturnTax);
+		stockMarketGame.setValidFrom(StockMarketGameCreationBean.dateToCalendar(validFrom));
+		stockMarketGame.setValidTo(StockMarketGameCreationBean.dateToCalendar(validTo));
+		stockMarketGame.setRegistrationFrom(StockMarketGameCreationBean.dateToCalendar(registrationFrom));
+		stockMarketGame.setRegistrationTo(StockMarketGameCreationBean.dateToCalendar(registrationTo));
+		
+		PortfolioSetting portfolioSetting = new PortfolioSetting();
+			
+		portfolioSetting.setStartCapital(new Money(startCapital, Currency.getInstance("EUR")));
+		portfolioSetting.setOrderFee(new Money(orderFee, Currency.getInstance("EUR")));
+		portfolioSetting.setPortfolioFee(new Money(portfolioFee, Currency.getInstance("EUR")));
+		portfolioSetting.setCapitalReturnTax(capitalReturnTax);
 
+		stockMarketGame.setSetting(portfolioSetting);
+		
 		stockMarketGameService.saveStockMarketGame(stockMarketGame);
 
 		try {
@@ -208,6 +216,10 @@ public class StockMarketGameCreationBean implements Serializable {
 		}
 
 	}
-
-
+	
+	public static Calendar dateToCalendar(Date date){ 
+		  Calendar cal = Calendar.getInstance();
+		  cal.setTime(date);
+		  return cal;
+		}
 }
