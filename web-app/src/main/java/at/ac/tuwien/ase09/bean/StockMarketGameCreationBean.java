@@ -13,10 +13,13 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import at.ac.tuwien.ase09.context.WebUserContext;
+import at.ac.tuwien.ase09.data.InstitutionDataAccess;
 import at.ac.tuwien.ase09.data.StockMarketGameDataAccess;
+import at.ac.tuwien.ase09.model.Institution;
 import at.ac.tuwien.ase09.model.Money;
 import at.ac.tuwien.ase09.model.PortfolioSetting;
 import at.ac.tuwien.ase09.model.StockMarketGame;
+import at.ac.tuwien.ase09.model.User;
 import at.ac.tuwien.ase09.service.StockMarketGameService;
 
 import java.io.IOException;
@@ -35,11 +38,17 @@ public class StockMarketGameCreationBean implements Serializable {
 	private StockMarketGameDataAccess stockMarketGameDataAccess;
 	
 	@Inject
+	private InstitutionDataAccess institutionDataAccess;
+	
+	@Inject
 	private StockMarketGameService stockMarketGameService;
 
 	private Long stockMarketGameId;
 
 	private StockMarketGame stockMarketGame;
+	
+	private User loggedInUser;
+	private Institution userInstitution;
 
 	private String name;
 	private Date validFrom;
@@ -74,7 +83,6 @@ public class StockMarketGameCreationBean implements Serializable {
 	public void setName(String name) {
 		this.name = name;
 	}
-
 	public Date getValidFrom() {
 		return validFrom;
 	}
@@ -135,9 +143,29 @@ public class StockMarketGameCreationBean implements Serializable {
 	public void setCapitalReturnTax(BigDecimal capitalReturnTax) {
 		this.capitalReturnTax = capitalReturnTax;
 	}
-
+	public User getLoggedInUser() {
+		return loggedInUser;
+	}
+	public void setLoggedInUser(User loggedInUser) {
+		this.loggedInUser = loggedInUser;
+	}
+	public Institution getUserInstitution() {
+		return userInstitution;
+	}
+	public void setUserInstitution(Institution userInstitution) {
+		this.userInstitution = userInstitution;
+	}
+	
+	
+	
 	public void init() {
 
+		loggedInUser = userContext.getUser();
+		
+		if(loggedInUser != null){
+			userInstitution = institutionDataAccess.getByAdmin(loggedInUser.getUsername());
+		}
+		
 		loadStockMarketGame();
 		
 		if(stockMarketGame != null){
@@ -150,6 +178,13 @@ public class StockMarketGameCreationBean implements Serializable {
 			portfolioFee = new BigDecimal(0);
 			capitalReturnTax = new BigDecimal(0);
 		}
+	}
+	
+	public boolean isStockMarketGameAdmin(){
+		if(stockMarketGame != null && stockMarketGame.getOwner() != null){
+			return stockMarketGame.getOwner() == userInstitution;
+		}
+		return true;
 	}
 	
 	public void loadStockMarketGame(){
@@ -192,6 +227,7 @@ public class StockMarketGameCreationBean implements Serializable {
 		
 		stockMarketGame.setName(name);
 		stockMarketGame.setText(text);
+		stockMarketGame.setOwner(userInstitution);
 		stockMarketGame.setValidFrom(StockMarketGameCreationBean.dateToCalendar(validFrom));
 		stockMarketGame.setValidTo(StockMarketGameCreationBean.dateToCalendar(validTo));
 		stockMarketGame.setRegistrationFrom(StockMarketGameCreationBean.dateToCalendar(registrationFrom));
