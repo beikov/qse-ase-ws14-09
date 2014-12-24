@@ -31,19 +31,19 @@
 
 							<p:panel header="Börsenspiel-Einstellungen">
 								<h:panelGrid columns="3" cellpadding="5">
-									<h:outputText value="Börsenspielbezeichnung: " />
+									<h:outputText value="Börsenspielbezeichnung:" />
 									<p:inputText id="name"
 										value="#{stockMarketGameCreationBean.name}" required="true">
 									</p:inputText>
 									<h:message for="name" style="color:red" />
 
-									<h:outputText value="Beschreibung: " />
+									<h:outputText value="Beschreibung:" />
 									<p:inputText id="text"
 										value="#{stockMarketGameCreationBean.text}" required="true">
 									</p:inputText>
 									<h:message for="text" style="color:red" />
 
-									<h:outputText value="Spiel beginnt am: " />
+									<h:outputText value="Spiel beginnt am:" />
 									<p:inputText id="validFrom"
 										value="#{stockMarketGameCreationBean.validFrom}"
 										required="true">
@@ -51,14 +51,14 @@
 									</p:inputText>
 									<h:message for="validFrom" style="color:red" />
 
-									<h:outputText value="Spiel endet am: " />
+									<h:outputText value="Spiel endet am:" />
 									<p:inputText id="validTo"
 										value="#{stockMarketGameCreationBean.validTo}" required="true">
 										<f:convertDateTime pattern="dd.MM.yyyy" timeZone="CET" />
 									</p:inputText>
-									<h:message for="validFrom" style="color:red" />
+									<h:message for="validTo" style="color:red" />
 
-									<h:outputText value="Registrierung beginnt am: " />
+									<h:outputText value="Registrierung beginnt am:" />
 									<p:inputText id="registrationFrom"
 										value="#{stockMarketGameCreationBean.registrationFrom}"
 										required="true">
@@ -66,13 +66,23 @@
 									</p:inputText>
 									<h:message for="registrationFrom" style="color:red" />
 
-									<h:outputText value="Registrierung endet am: " />
+									<h:outputText value="Registrierung endet am:" />
 									<p:inputText id="registrationTo"
 										value="#{stockMarketGameCreationBean.registrationTo}"
 										required="true">
 										<f:convertDateTime pattern="dd.MM.yyyy" timeZone="CET" />
 									</p:inputText>
 									<h:message for="registrationTo" style="color:red" />
+
+									<h:outputText value="Logo:" />
+									<p:fileUpload
+										fileUploadListener="#{stockMarketGameCreationBean.handleLogoUpload}"
+										mode="advanced" dragDropSupport="false" update="messages"
+										sizeLimit="100000" fileLimit="1"
+										allowTypes="/(\.|\/)(gif|jpe?g|png)$/" />
+
+									<!-- <p:graphicImage value="#{stockMarketGameCreationBean.image}"
+										style="max-width:800px;max-height:400px;" /> -->
 
 								</h:panelGrid>
 							</p:panel>
