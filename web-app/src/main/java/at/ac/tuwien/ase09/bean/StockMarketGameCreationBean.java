@@ -162,18 +162,29 @@ public class StockMarketGameCreationBean implements Serializable {
 
 		loggedInUser = userContext.getUser();
 		
-		if(loggedInUser != null){
+		if(loggedInUser != null){		
 			userInstitution = institutionDataAccess.getByAdmin(loggedInUser.getUsername());
 		}
 		
 		loadStockMarketGame();
 		
 		if(stockMarketGame != null){
+			
+			name = stockMarketGame.getName();
+			validFrom = stockMarketGame.getValidFrom().getTime();
+			validTo = stockMarketGame.getValidTo().getTime();
+			registrationFrom = stockMarketGame.getRegistrationFrom().getTime();
+			registrationTo = stockMarketGame.getRegistrationTo().getTime();
+			text = stockMarketGame.getText();
+			logo = stockMarketGame.getLogo();
+			
+			startCapital = stockMarketGame.getSetting().getStartCapital().getValue();
 			orderFee = stockMarketGame.getSetting().getOrderFee().getValue();
 			portfolioFee = stockMarketGame.getSetting().getPortfolioFee().getValue();
 			capitalReturnTax = stockMarketGame.getSetting().getCapitalReturnTax();
 		}
 		else{
+			
 			orderFee = new BigDecimal(0);
 			portfolioFee = new BigDecimal(0);
 			capitalReturnTax = new BigDecimal(0);
@@ -182,7 +193,7 @@ public class StockMarketGameCreationBean implements Serializable {
 	
 	public boolean isStockMarketGameAdmin(){
 		if(stockMarketGame != null && stockMarketGame.getOwner() != null){
-			return stockMarketGame.getOwner() == userInstitution;
+			return stockMarketGame.getOwner().getId() == userInstitution.getId();
 		}
 		return true;
 	}
