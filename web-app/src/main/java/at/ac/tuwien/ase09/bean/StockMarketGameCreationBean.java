@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.Currency;
 import java.util.Date;
 
+import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseId;
@@ -33,12 +34,11 @@ import at.ac.tuwien.ase09.model.User;
 import at.ac.tuwien.ase09.service.StockMarketGameService;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 @Named
-@ViewScoped
+@SessionScoped
 public class StockMarketGameCreationBean implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -288,13 +288,14 @@ public class StockMarketGameCreationBean implements Serializable {
 	public void handleLogoUpload(FileUploadEvent event) {
 
 		try {
-			UploadedFile logo = event.getFile();
-			byte[] uploadedLogo = IOUtils.toByteArray(logo.getInputstream());
+			UploadedFile logoFile = event.getFile();
+			byte[] uploadedLogo = IOUtils.toByteArray(logoFile.getInputstream());
 			Blob newLogo = new SerialBlob(uploadedLogo);
 
-			stockMarketGame.setLogo(newLogo);
+			//stockMarketGame.setLogo(newLogo);
+			logo = newLogo;
 
-			FacesMessage message = new FacesMessage("Logo: " + logo.getFileName() + " erfolgreich hochgeladen");
+			FacesMessage message = new FacesMessage("Logo: " + logoFile.getFileName() + " erfolgreich hochgeladen");
 			FacesContext.getCurrentInstance().addMessage(null, message);
 
 		} catch (Exception e) {
@@ -319,11 +320,11 @@ public class StockMarketGameCreationBean implements Serializable {
 		else {
 
 			// So, browser is requesting the image. Return a real StreamedContent with the image bytes.
-			//String admin = context.getExternalContext().getRequestParameterMap().get("admin");
-			//Institution i = institutionDataAccess.getByAdmin(admin);
+			String id = context.getExternalContext().getRequestParameterMap().get("id");
+			StockMarketGame smg = stockMarketGameDataAccess.getStockMarketGameByID(Long.parseLong(id));
 
 			try {
-				return new DefaultStreamedContent(logo.getBinaryStream());
+				return new DefaultStreamedContent(smg.getLogo().getBinaryStream());
 				//return new DefaultStreamedContent(i.getLogo().getBinaryStream());
 
 			} catch (SQLException e) {
@@ -332,28 +333,6 @@ public class StockMarketGameCreationBean implements Serializable {
 			}
 		}
 	}
-
-
-
-	public static byte[] serialize(UploadedFile object) {  
-
-		ByteArrayOutputStream baos = null;  
-		ObjectOutputStream out = null;  
-		byte[] byteObject = null;  
-
-		try {  
-			baos = new ByteArrayOutputStream();  
-			out = new ObjectOutputStream(baos);  
-			out.writeObject(object);  
-			out.close();  
-			byteObject = baos.toByteArray();  
-		} catch (Throwable e) {
-			System.out.println(e.getMessage());
-		}  
-
-		return byteObject;  
-	} 
-
 
 	public static Calendar dateToCalendar(Date date){ 
 		Calendar cal = Calendar.getInstance();

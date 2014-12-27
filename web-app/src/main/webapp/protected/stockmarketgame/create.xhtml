@@ -82,7 +82,11 @@
 										allowTypes="/(\.|\/)(gif|jpe?g|png)$/" />
 
 									<!-- <p:graphicImage value="#{stockMarketGameCreationBean.image}"
-										style="max-width:800px;max-height:400px;" /> -->
+										style="max-width:800px;max-height:400px;"
+										rendered="#{stockMarketGameCreationBean.logo != null}">
+										<f:param name="id"
+											value="#{stockMarketGameCreationBean.stockMarketGame.id}" />
+									</p:graphicImage>  -->
 
 								</h:panelGrid>
 							</p:panel>
@@ -119,7 +123,7 @@
 								</h:panelGrid>
 
 								<h:panelGrid columns="2" cellpadding="10" style="width: 40%">
-									<p:commandButton value="Reset" type="reset" />
+									<!-- <p:commandButton value="Reset" type="reset" /> -->
 									<p:commandButton value="Erstellen"
 										action="#{stockMarketGameCreationBean.createStockMarketGame()}"
 										update="stockmarketgame_create" ajax="true" />
