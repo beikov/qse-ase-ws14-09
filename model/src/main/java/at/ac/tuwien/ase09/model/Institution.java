@@ -6,9 +6,10 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 
 @Entity
-public class Institution extends BaseEntity<Long> {
+public class Institution extends BaseEntity<Long> implements Logo {
 	private static final long serialVersionUID = 1L;
 
 	private String name;
@@ -49,4 +50,16 @@ public class Institution extends BaseEntity<Long> {
 	public void setPageText(String pageText) {
 		this.pageText = pageText;
 	}
+
+	@Override
+	@Transient
+	public String getFullyQualifiedClassName() {
+		return "at.ac.tuwien.ase09.model.Institution";
+	}
+	
+	@Override
+	public void setFullyQualifiedClassName(String unused) {
+	}
+	
+	
 }

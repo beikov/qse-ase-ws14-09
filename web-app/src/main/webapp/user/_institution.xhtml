@@ -1,0 +1,23 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+	
+	<div class="row" style="margin-bottom: 40px;">
+		<div class="col-md-4">
+			<h2>#{userProfileBean.institution.name}</h2>
+		</div>
+		<div class="col-md-8">
+			<p:graphicImage value="#{logoBean.logo}" style="max-width:800px;max-height:400px;">
+				<f:param name="entityClass" value="#{userProfileBean.institution.fullyQualifiedClassName}" />
+	    		<f:param name="entityId" value="#{userProfileBean.institution.id}" />
+			</p:graphicImage>
+		</div>
+	</div>
+	
+	<h:outputText value="#{institutionBean.institution.pageText}" escape="false" />
+	
+	
+</ui:composition>

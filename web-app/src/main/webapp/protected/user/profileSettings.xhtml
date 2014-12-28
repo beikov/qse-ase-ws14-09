@@ -1,0 +1,46 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<!-- content -->
+	<ui:define name="body">
+		<h:form id="profileSettingsForm">
+			<p:growl id="messages" />
+			
+			<p:fieldset legend="Benutzereinstellungen" style="margin-bottom:20px">
+				<div class="row">
+					<div class="col-md-3">
+						<p:outputLabel value="Logo" />
+					</div>
+					<div class="col-md-7">
+						<p:fileUpload fileUploadListener="#{logoBean.handleLogoUpload}" mode="advanced" dragDropSupport="false"
+				    		update="messages" sizeLimit="100000" fileLimit="1" allowTypes="/(\.|\/)(gif|jpe?g|png)$/">
+				    		<f:attribute name="entityClass" value="#{userProfileSettingsBean.user.fullyQualifiedClassName}" />
+				    		<f:attribute name="entityId" value="#{userProfileSettingsBean.user.id}" />
+				    	</p:fileUpload>
+					</div>
+				</div>
+			
+				<div class="row">
+					<div class="col-md-3">
+						<p:outputLabel value="Email" />
+					</div>
+				</div>
+			</p:fieldset>
+			
+			<c:if test="#{userProfileSettingsBean.institutionAdmin}">
+				<p:fieldset legend="Institutionseinstellungen">
+					<ui:include src="_institutionSettings.xhtml" />
+				</p:fieldset>
+			</c:if>
+			
+			<p:commandButton value="Änderungen speichern" update="@form" action="#{userProfileSettingsBean.saveChanges()}" />
+		</h:form>
+	</ui:define>
+	
+</ui:composition>
