@@ -6,6 +6,9 @@ import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.Currency;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
@@ -25,20 +28,24 @@ import org.primefaces.model.UploadedFile;
 import at.ac.tuwien.ase09.context.WebUserContext;
 import at.ac.tuwien.ase09.data.InstitutionDataAccess;
 import at.ac.tuwien.ase09.data.StockMarketGameDataAccess;
+import at.ac.tuwien.ase09.data.ValuePaperScreenerAccess;
 import at.ac.tuwien.ase09.exception.AppException;
+import at.ac.tuwien.ase09.model.Fund;
 import at.ac.tuwien.ase09.model.Institution;
 import at.ac.tuwien.ase09.model.Money;
 import at.ac.tuwien.ase09.model.PortfolioSetting;
+import at.ac.tuwien.ase09.model.Stock;
+import at.ac.tuwien.ase09.model.StockBond;
 import at.ac.tuwien.ase09.model.StockMarketGame;
 import at.ac.tuwien.ase09.model.User;
+import at.ac.tuwien.ase09.model.ValuePaper;
+import at.ac.tuwien.ase09.model.ValuePaperType;
 import at.ac.tuwien.ase09.service.StockMarketGameService;
 
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 @Named
-@SessionScoped
+@ViewScoped
 public class StockMarketGameCreationBean implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -55,6 +62,9 @@ public class StockMarketGameCreationBean implements Serializable {
 	@Inject
 	private StockMarketGameService stockMarketGameService;
 
+	@Inject
+	private ValuePaperScreenerAccess valuePaperScreenerDataAccess;
+
 	private Long stockMarketGameId;
 
 	private StockMarketGame stockMarketGame;
@@ -62,6 +72,7 @@ public class StockMarketGameCreationBean implements Serializable {
 	private User loggedInUser;
 	private Institution userInstitution;
 
+	//StockMarketGame-Attributes
 	private String name;
 	private Date validFrom;
 	private Date validTo;
@@ -70,13 +81,81 @@ public class StockMarketGameCreationBean implements Serializable {
 	private String text;
 	private Blob logo;
 
+	//Portfolio-Setting-Attributes
 	private BigDecimal startCapital;
 	private BigDecimal orderFee;
 	private BigDecimal portfolioFee;
 	private BigDecimal capitalReturnTax;
 
+	//Allowed ValuePapers-Attributes
+	private Set<ValuePaper> allowedValuePapers = new HashSet<>();
+	private ValuePaper searchValuePaper;
+	private ValuePaperType valuePaperType;
+	private Boolean isTypeSpecificated = false;
+	private String valuePaperName, valuePaperCode, valuePaperCountry, valuePaperCurrencyCode, valuePaperIndex;
+	private List<ValuePaper> searchedValuePapers;
 
 
+	public String getValuePaperIndex() {
+		return valuePaperIndex;
+	}
+	public void setValuePaperIndex(String valuePaperIndex) {
+		this.valuePaperIndex = valuePaperIndex;
+	}
+	public ValuePaper getSearchValuePaper() {
+		return searchValuePaper;
+	}
+	public void setSearchValuePaper(ValuePaper searchValuePaper) {
+		this.searchValuePaper = searchValuePaper;
+	}
+	public ValuePaperType getValuePaperType() {
+		return valuePaperType;
+	}
+	public void setValuePaperType(ValuePaperType valuePaperType) {
+		this.valuePaperType = valuePaperType;
+	}
+	public Boolean getIsTypeSpecificated() {
+		return isTypeSpecificated;
+	}
+	public void setIsTypeSpecificated(Boolean isTypeSpecificated) {
+		this.isTypeSpecificated = isTypeSpecificated;
+	}
+	public String getValuePaperName() {
+		return valuePaperName;
+	}
+	public void setValuePaperName(String valuePaperName) {
+		this.valuePaperName = valuePaperName;
+	}
+	public String getValuePaperCode() {
+		return valuePaperCode;
+	}
+	public void setValuePaperCode(String valuePaperCode) {
+		this.valuePaperCode = valuePaperCode;
+	}
+	public String getValuePaperCountry() {
+		return valuePaperCountry;
+	}
+	public void setValuePaperCountry(String valuePaperCountry) {
+		this.valuePaperCountry = valuePaperCountry;
+	}
+	public String getValuePaperCurrencyCode() {
+		return valuePaperCurrencyCode;
+	}
+	public void setValuePaperCurrencyCode(String valuePaperCurrencyCode) {
+		this.valuePaperCurrencyCode = valuePaperCurrencyCode;
+	}
+	public List<ValuePaper> getSearchedValuePapers() {
+		return searchedValuePapers;
+	}
+	public void setSearchedValuePapers(List<ValuePaper> searchedValuePapers) {
+		this.searchedValuePapers = searchedValuePapers;
+	}
+	public Set<ValuePaper> getAllowedValuePapers() {
+		return allowedValuePapers;
+	}
+	public void setAllowedValuePapers(Set<ValuePaper> allowedValuePapers) {
+		this.allowedValuePapers = allowedValuePapers;
+	}
 	public Long getStockMarketGameId() {
 		return stockMarketGameId;
 	}
@@ -216,6 +295,20 @@ public class StockMarketGameCreationBean implements Serializable {
 		}
 	}
 
+	public ValuePaperType[] getValuePaperTypes(){
+		return ValuePaperType.values();
+	}
+
+	public List<Currency> getUsedCurrencies() {
+		return valuePaperScreenerDataAccess.getUsedCurrencyCodes();
+	}
+	public List<String> getUsedIndexes() {
+		return valuePaperScreenerDataAccess.getUsedIndexes();
+	}
+	public List<String> getUsedCountries(){
+		return valuePaperScreenerDataAccess.getUsedCountries();
+	}
+
 	public void createStockMarketGame(){
 
 		if( startCapital == null){
@@ -332,6 +425,50 @@ public class StockMarketGameCreationBean implements Serializable {
 				throw new AppException(e.getMessage());
 			}
 		}
+	}
+
+	public void searchValuePapers(){
+		if(valuePaperType != null){
+			isTypeSpecificated = true;
+
+			if(valuePaperType.equals(ValuePaperType.BOND)){
+				searchValuePaper = new StockBond();
+			}
+
+			else if(valuePaperType.equals(ValuePaperType.STOCK)){
+				searchValuePaper = new Stock();
+			}
+
+			else{
+				searchValuePaper = new Fund();
+			}
+
+		}
+		else{
+			isTypeSpecificated=false;
+			searchValuePaper = new Stock();
+		}
+
+		if (searchValuePaper.getType() == ValuePaperType.STOCK) {
+			((Stock)searchValuePaper).setCountry(valuePaperCountry);
+			((Stock)searchValuePaper).setIndex(valuePaperIndex);
+		}
+
+		searchValuePaper.setCode(valuePaperCode);
+		searchValuePaper.setName(valuePaperName);
+
+
+		if((searchValuePaper.getType() == ValuePaperType.STOCK || searchValuePaper.getType() == ValuePaperType.FUND) && !valuePaperCurrencyCode.isEmpty() && valuePaperCurrencyCode != null) {
+			try{
+				((Stock)searchValuePaper).setCurrency(Currency.getInstance(valuePaperCurrencyCode));
+			}
+
+			catch(IllegalArgumentException e){
+				FacesMessage facesMessage = new FacesMessage("Error: Currency-Code does not exist");
+				FacesContext.getCurrentInstance().addMessage("searchValuePapers:currency", facesMessage);
+			}
+		}
+		searchedValuePapers = valuePaperScreenerDataAccess.findByValuePaper(searchValuePaper, isTypeSpecificated);
 	}
 
 	public static Calendar dateToCalendar(Date date){ 

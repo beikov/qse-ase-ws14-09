@@ -14,6 +14,7 @@ import org.hibernate.ejb.EntityManagerImpl;
 
 import at.ac.tuwien.ase09.filter.AttributeFilter;
 import at.ac.tuwien.ase09.filter.AttributeType;
+import at.ac.tuwien.ase09.model.Fund;
 import at.ac.tuwien.ase09.model.Stock;
 import at.ac.tuwien.ase09.model.ValuePaper;
 import at.ac.tuwien.ase09.model.ValuePaperType;
@@ -84,13 +85,19 @@ public class ValuePaperScreenerAccess {
 	@SuppressWarnings("unchecked")
 	public List<Currency> getUsedCurrencyCodes()
 	{
-		return em.createQuery("SELECT s.currency FROM Stock s Group by s.currency").getResultList();	
+		return em.createQuery("SELECT s.currency FROM Stock s Group by s.currency UNION SELECT f.currency FROM Fund f Group by f.currency").getResultList();	
 	}
 	@SuppressWarnings("unchecked")
 	public List<String> getUsedIndexes()
 	{
 		return em.createQuery("SELECT s.index FROM Stock s Group by s.index").getResultList();	
 	}
+	@SuppressWarnings("unchecked")
+	public List<String> getUsedCountries()
+	{
+		return em.createQuery("SELECT s.country FROM Stock s Group by s.country").getResultList();	
+	}
+	
 	
 	/*
 	 * Searchmethod used by AndroidApp
@@ -125,6 +132,11 @@ public class ValuePaperScreenerAccess {
 				crit.add(Restrictions.eq("valuePaper.currency",
 						((Stock) valuePaper).getCurrency()));
 			}
+			if (valuePaper.getType() == ValuePaperType.FUND
+					&& ((Fund) valuePaper).getCurrency() != null) {
+				crit.add(Restrictions.eq("valuePaper.currency",
+						((Fund) valuePaper).getCurrency()));
+			}
 			if (valuePaper.getCode() != null && !valuePaper.getCode().isEmpty()) {
 				String isin = valuePaper.getCode().replace('*', '%')
 						.replace('?', '_');
@@ -137,7 +149,13 @@ public class ValuePaperScreenerAccess {
 						.replace('?', '_');
 				crit.add(Restrictions.ilike("valuePaper.country", co));
 			}
-		
+			if (valuePaper.getType() == ValuePaperType.STOCK
+					&& ((Stock) valuePaper).getIndex() != null
+					&& !((Stock) valuePaper).getIndex().isEmpty()) {
+				String co = ((Stock) valuePaper).getIndex().replace('*', '%')
+						.replace('?', '_');
+				crit.add(Restrictions.ilike("valuePaper.index", co));
+			}
 		
 			
 			if(isTypeSecificated)

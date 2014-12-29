@@ -130,6 +130,7 @@
 								</h:panelGrid>
 
 							</p:panel>
+
 						</c:when>
 
 						<c:otherwise>
@@ -146,6 +147,121 @@
 						value="Börsenspiele können nur von Institutionen erstellt/bearbeitet werden." />
 				</c:otherwise>
 			</c:choose>
+
+		</h:form>
+
+		<h:form id="allowed_ValuePapers"
+			rendered="#{stockMarketGameCreationBean.userInstitution != null and stockMarketGameCreationBean.stockMarketGameAdmin}">
+
+			<p:panel header="erlaubte Wertpapiere">
+
+				<h:panelGrid columns="4" cellpadding="5">
+
+					<p:outputLabel for="valuePaperName" value="Aktienname: "
+						style="padding: 10px;" />
+					<p:inputText id="valuePaperName"
+						value="#{stockMarketGameCreationBean.valuePaperName}" />
+
+					<p:outputLabel for="valuePaperType" value="Aktientyp: "
+						style="padding: 10px;" />
+					<p:selectOneMenu id="valuePaperType"
+						value="#{stockMarketGameCreationBean.valuePaperType}"
+						style="width:200px">
+						<f:selectItem itemLabel="Beliebig" itemValue="#{null}" />
+						<f:selectItems value="#{valuePaperScreenerBean.valuePaperTypes}"
+							var="paperTypes" itemValue="#{paperTypes}"
+							itemLabel="#{paperTypes.label}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel for="valuePaperCode" value="Code: "
+						style="padding: 10px;" />
+					<p:inputText id="valuePaperCode"
+						value="#{stockMarketGameCreationBean.valuePaperCode}">
+						<f:validateRegex
+							pattern="^([a-zA-Z]|\?|\*){2}([a-zA-Z0-9]|\?|\*)*" />
+					</p:inputText>
+
+					<p:outputLabel for="valuePaperCountry" value="Land: "
+						style="padding: 10px;" />
+					<p:selectOneMenu id="valuePaperCountry"
+						value="#{stockMarketGameCreationBean.valuePaperCountry}"
+						style="width:100px;margin:5px;">
+						<f:selectItem itemLabel="Beliebig" itemValue="#{null}" />
+						<f:selectItems
+							value="#{stockMarketGameCreationBean.usedCountries}"
+							var="country" itemValue="#{country}" itemLabel="#{country}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel for="valuePaperCurrency" value="Währungscode: "
+						style="padding: 10px;" />
+					<p:selectOneMenu id="valuePaperCurrency"
+						value="#{stockMarketGameCreationBean.valuePaperCurrencyCode}"
+						style="width:100px;margin:5px;">
+						<f:selectItem itemLabel="Beliebig" itemValue="#{null}" />
+						<f:selectItems
+							value="#{stockMarketGameCreationBean.usedCurrencies}"
+							var="currencyValue" itemValue="#{currencyValue.currencyCode}"
+							itemLabel="#{currencyValue.currencyCode}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel for="valuePaperIndex" value="Index: "
+						style="padding: 10px;" />
+					<p:selectOneMenu id="valuePaperIndex"
+						value="#{stockMarketGameCreationBean.valuePaperIndex}"
+						style="width:100px;margin:5px;">
+						<f:selectItem itemLabel="Beliebig" itemValue="#{null}" />
+						<f:selectItems
+							value="#{stockMarketGameCreationBean.usedIndexes}"
+							var="index" itemValue="#{index}"
+							itemLabel="#{index}" />
+					</p:selectOneMenu>
+
+				</h:panelGrid>
+
+				<p:commandButton value="Suche"
+					action="#{stockMarketGameCreationBean.searchValuePapers()}"
+					update="valuePaperTable" ajax="true" />
+
+
+				<p:separator />
+
+				<p:dataTable id="valuePaperTable" var="valuePaper"
+					value="#{stockMarketGameCreationBean.searchedValuePapers}">
+
+					<p:column headerText="Name" sortBy="#{valuePaper.name}">
+						<h:outputText value="#{valuePaper.name}" />
+					</p:column>
+
+					<p:column headerText="Währung"
+						sortBy="#{valuePaper.currency.currencyCode}">
+						<h:outputText
+							value="#{valuePaper.currency.currencyCode} (#{valuePaper.currency.symbol})"
+							rendered="#{valuePaper.type == 'STOCK' or valuePaper.type == 'FUND'}" />
+					</p:column>
+
+					<p:column headerText="Land" sortBy="#{valuePaper.country}">
+						<h:outputText value="#{valuePaper.country}"
+							rendered="#{valuePaper.type == 'STOCK'}" />
+					</p:column>
+					
+					<p:column headerText="Index" sortBy="#{valuePaper.index}">
+						<h:outputText value="#{valuePaper.index}"
+							rendered="#{valuePaper.type == 'STOCK'}" />
+					</p:column>
+
+					<p:column headerText="Code" sortBy="#{valuePaper.code}">
+						<h:outputText value="#{valuePaper.code}" />
+					</p:column>
+
+					<p:column headerText="Typ" sortBy="#{valuePaper.type}">
+						<h:outputText value="#{valuePaper.type}" />
+					</p:column>
+
+				</p:dataTable>
+
+				<p:messages autoUpdate="true" />
+
+			</p:panel>
 
 		</h:form>
 
