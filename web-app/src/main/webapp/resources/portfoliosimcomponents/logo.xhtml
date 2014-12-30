@@ -1,0 +1,27 @@
+<ui:component xmlns="http://www.w3.org/1999/xhtml"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:cc="http://java.sun.com/jsf/composite"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:c="http://java.sun.com/jsp/jstl/core"
+		xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+		xmlns:p="http://primefaces.org/ui">
+		<cc:interface>
+			<cc:attribute name="logoEntity" required="true" />
+			<cc:attribute name="max-width" default="100px" />
+			<cc:attribute name="max-height" default="100px" />
+		</cc:interface>
+		<cc:implementation>
+			<c:choose>
+				<c:when test="#{cc.attrs.logoEntity != null}">
+					<p:graphicImage value="#{logoBean.logo}" style="max-width:#{cc.attrs.max-width};max-height:#{cc.attrs.max-height};">
+						<f:param name="entityClass" value="#{cc.attrs.logoEntity.fullyQualifiedClassName}" />
+						<f:param name="entityId" value="#{cc.attrs.logoEntity.id}" />
+					</p:graphicImage>
+				</c:when>
+				<c:otherwise>
+					default logo
+				</c:otherwise>
+			</c:choose>
+		</cc:implementation>
+</ui:component>
