@@ -35,10 +35,7 @@ public class LogoBean {
 			UploadedFile logo = event.getFile();
 			byte[] uploadedLogo = IOUtils.toByteArray(logo.getInputstream());
 			Blob newLogo = new SerialBlob(uploadedLogo);
-			
-			String entityClass = (String)event.getComponent().getAttributes().get("entityClass");
-			Long entityId = (Long)event.getComponent().getAttributes().get("entityId");
-			Logo entity = loadLogo(entityClass, entityId); 
+			Logo entity = (Logo)event.getComponent().getAttributes().get("entity");
 			entity.setLogo(newLogo);
 			FacesMessage message = new FacesMessage("Logo: " + logo.getFileName() + " erfolgreich hochgeladen.");
 			FacesContext.getCurrentInstance().addMessage(null, message);
@@ -59,7 +56,9 @@ public class LogoBean {
 			try {
 				String entityClass = context.getExternalContext().getRequestParameterMap().get("entityClass");
 				Long entityId = Long.valueOf(context.getExternalContext().getRequestParameterMap().get("entityId"));
-				Logo entity = loadLogo(entityClass, entityId);
+				@SuppressWarnings("unchecked")
+				Class<Logo> logoClass = (Class<Logo>) Class.forName(entityClass);
+				Logo entity = logoDataAccess.getByClassAndId(logoClass, entityId);
 				return new DefaultStreamedContent(entity.getLogo().getBinaryStream());
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -67,10 +66,4 @@ public class LogoBean {
 			}
         }
     }
-	
-	private Logo loadLogo(String entityClass, Long id) throws ClassNotFoundException {
-		@SuppressWarnings("unchecked")
-		Class<Logo> logoClass = (Class<Logo>) Class.forName(entityClass);
-		return logoDataAccess.getByClassAndId(logoClass, id);
-	}
 }
