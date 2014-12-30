@@ -9,7 +9,7 @@
 
 	<!-- content -->
 	<ui:define name="body">
-		<h:form id="profileSettingsForm">
+		<h:form id="profileSettingsForm" enctype="multipart/form-data">
 			<p:growl id="messages" />
 			
 			<p:fieldset legend="Benutzereinstellungen" style="margin-bottom:20px">
@@ -20,8 +20,7 @@
 					<div class="col-md-7">
 						<p:fileUpload fileUploadListener="#{logoBean.handleLogoUpload}" mode="advanced" dragDropSupport="false"
 				    		update="messages" sizeLimit="100000" fileLimit="1" allowTypes="/(\.|\/)(gif|jpe?g|png)$/">
-				    		<f:attribute name="entityClass" value="#{userProfileSettingsBean.user.fullyQualifiedClassName}" />
-				    		<f:attribute name="entityId" value="#{userProfileSettingsBean.user.id}" />
+				    		<f:attribute name="entity" value="#{userProfileSettingsBean.user}" />
 				    	</p:fileUpload>
 					</div>
 				</div>

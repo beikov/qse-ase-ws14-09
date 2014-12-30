@@ -74,25 +74,25 @@
 			</p:outputPanel>
 		</p:dialog>
 		
-		<div class="row" style="margin-bottom: 25px;">
-			<h3 style="display: inline-block;"><h:outputText value="Portfolio: " /><h:outputText value="#{portfolioViewBean.portfolio.name}" /></h3>
-		</div>
-	
 		<div class="row" style="margin-bottom: 15px;">
 			<div class="col-md-8">
 				<p:panel id="stats">
 					<f:facet name="header">
-						<h:outputText value="Übersicht" />
+						<h:outputText value="Portfolio: " /><h:outputText value="#{portfolioViewBean.portfolio.name}" />
 						<p:commandButton type="button" onclick="PF('visibilityDialog').show();" icon="ui-icon-gear" style="float:right;" />
 					</f:facet>
-					<ui:include src="/portfolio/_stats.xhtml" />
+					<c:if test="#{portfolioViewBean.isStatisticsVisible()}">
+						<ui:include src="/portfolio/_stats.xhtml" />
+					</c:if>
 				</p:panel>
 			</div>
+			<c:if test="#{portfolioViewBean.isStatisticsVisible()}">
  				<div class="col-md-4">
  					<p:panel id="follower" header="Follower">
 					<ui:include src="/portfolio/_followerList.xhtml" />
 				</p:panel>
  				</div>
+			</c:if>
 		</div>
 		
 		<div class="row" style="margin-bottom: 15px;">

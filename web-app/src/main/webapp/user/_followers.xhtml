@@ -1,15 +1,23 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:p="http://primefaces.org/ui">
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ase="http://java.sun.com/jsf/composite/portfoliosimcomponents">
 	
 	<div class="row">
-		<c:forEach items="#{userProfileBean.followers}" var="follower" >
-	 		<div>
-	 			<h:outputText value="#{follower}" />
-	 		</div>
-	 	</c:forEach>
+		<p:fieldset legend="Followers" class="col-md-7 col-md-offset-2" style="margin-bottom: 20px;">
+			<c:forEach items="#{userProfileBean.followers}" var="follower" >
+		 		<div>
+		 			<ase:logo logoEntity="#{follower}" />
+		 			
+		 			<p:link value="#{follower.username}" outcome="/user/profile">
+						<f:param name="user" value="#{portfolioViewBean.portfolio.owner.username}"/>
+					</p:link>
+		 		</div>
+		 	</c:forEach>
+		 </p:fieldset>
 	</div>
 	
 	

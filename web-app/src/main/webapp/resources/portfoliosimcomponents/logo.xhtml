@@ -8,13 +8,13 @@
 		xmlns:p="http://primefaces.org/ui">
 		<cc:interface>
 			<cc:attribute name="logoEntity" required="true" />
-			<cc:attribute name="max-width" default="100px" />
-			<cc:attribute name="max-height" default="100px" />
+			<cc:attribute name="maxWidth" default="100px" />
+			<cc:attribute name="maxHeight" default="100px" />
 		</cc:interface>
 		<cc:implementation>
 			<c:choose>
-				<c:when test="#{cc.attrs.logoEntity != null}">
-					<p:graphicImage value="#{logoBean.logo}" style="max-width:#{cc.attrs.max-width};max-height:#{cc.attrs.max-height};">
+				<c:when test="#{cc.attrs.logoEntity.logo != null}">
+					<p:graphicImage value="#{logoBean.logo}" style="max-width: #{cc.attrs.maxWidth}; max-height: #{cc.attrs.maxHeight}">
 						<f:param name="entityClass" value="#{cc.attrs.logoEntity.fullyQualifiedClassName}" />
 						<f:param name="entityId" value="#{cc.attrs.logoEntity.id}" />
 					</p:graphicImage>
