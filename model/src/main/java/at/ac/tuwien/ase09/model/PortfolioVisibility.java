@@ -10,9 +10,12 @@ public class PortfolioVisibility implements Serializable {
 
 	private Boolean publicVisible = false;
 	private Boolean statisticsVisible = false;
+	private Boolean valuePaperListVisible = false;
+	private Boolean chartsVisible = false;
 	private Boolean orderHistoryVisible = false;
 	private Boolean transactionHistoryVisible = false;
-	private Boolean valuePaperListVisible = false;
+	private Boolean newsVisible = false;
+	private Boolean analystOpinionsVisible = false;
 	
 	public Boolean getPublicVisible() {
 		return publicVisible;
@@ -52,6 +55,30 @@ public class PortfolioVisibility implements Serializable {
 	
 	public void setValuePaperListVisible(Boolean valuePaperListVisible) {
 		this.valuePaperListVisible = valuePaperListVisible;
+	}
+
+	public Boolean getChartsVisible() {
+		return chartsVisible;
+	}
+
+	public void setChartsVisible(Boolean chartsVisible) {
+		this.chartsVisible = chartsVisible;
+	}
+
+	public Boolean getNewsVisible() {
+		return newsVisible;
+	}
+
+	public void setNewsVisible(Boolean newsVisible) {
+		this.newsVisible = newsVisible;
+	}
+
+	public Boolean getAnalystOpinionsVisible() {
+		return analystOpinionsVisible;
+	}
+
+	public void setAnalystOpinionsVisible(Boolean analystOpinionsVisible) {
+		this.analystOpinionsVisible = analystOpinionsVisible;
 	}
 	
 }
