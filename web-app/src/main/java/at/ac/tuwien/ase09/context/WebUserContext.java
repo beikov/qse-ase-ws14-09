@@ -1,6 +1,7 @@
 package at.ac.tuwien.ase09.context;
 
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Produces;
 import javax.inject.Named;
@@ -24,6 +25,8 @@ public class WebUserContext implements UserContext {
 	@RequestScoped
 	@Override
 	public User getUser() {
+		if (userInfo == null) 
+			return null;
 		return userInfo.getUser();
 	}
 
