@@ -25,6 +25,7 @@ import at.ac.tuwien.ase09.model.StockBond;
 import at.ac.tuwien.ase09.model.ValuePaper;
 import at.ac.tuwien.ase09.model.ValuePaperType;
 import at.ac.tuwien.ase09.test.AbstractContainerTest;
+import at.ac.tuwien.ase09.test.Assert;
 import at.ac.tuwien.ase09.test.DatabaseAware;
 
 @DatabaseAware
@@ -551,7 +552,7 @@ public class ValuePaperScreenerAccessTest extends AbstractContainerTest<ValuePap
 		s.setCurrency(Currency.getInstance("EUR"));
 		s.setName("Andritz");
 		
-		List<ValuePaper> valuePapers=valuePaperScreener.findByValuePaper(s, true);
+		List<Stock> valuePapers = valuePaperScreener.findByValuePaper(s);
 		
 		assertEquals(1,valuePapers.size());
 		if(valuePapers.size()>0)
@@ -560,10 +561,7 @@ public class ValuePaperScreenerAccessTest extends AbstractContainerTest<ValuePap
 	@Test
 	public void testdefaultSearchbyValuePaper()
 	{
-		
-		List<ValuePaper> valuePapers=valuePaperScreener.findByValuePaper(null, true);
-		
-		assertEquals(6,valuePapers.size());
+		Assert.verifyException(valuePaperScreener, NullPointerException.class).findByValuePaper(null);
 	}
 	
 }

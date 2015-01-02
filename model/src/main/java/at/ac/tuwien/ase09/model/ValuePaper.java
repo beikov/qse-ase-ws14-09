@@ -17,7 +17,7 @@ public abstract class ValuePaper extends BaseEntity<Long> {
 
 	private String name;
 	/**
-	 * The code is either an ISIN or a symbol (for US stocks)
+	 * The code is either an ISIN
 	 */
 	private String code;
 	private String detailUrl;	// for extraction

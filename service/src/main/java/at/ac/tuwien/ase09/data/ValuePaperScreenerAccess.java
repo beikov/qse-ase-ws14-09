@@ -1,14 +1,22 @@
 package at.ac.tuwien.ase09.data;
 
+import java.util.ArrayList;
 import java.util.Currency;
 import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import javax.persistence.metamodel.EntityType;
+import javax.persistence.metamodel.Metamodel;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.ejb.EntityManagerImpl;
 
@@ -96,57 +104,45 @@ public class ValuePaperScreenerAccess {
 	 * Searchmethod used by AndroidApp
 	 * 
 	 * @param valuePaper Wertpapier
-	 * @param isTypeSpecificated Wertpapiertyp ausgewählt
 	 * 
-	 * @return Liste der übereinstimmenden Wertpapiere
+	 * @return List of matching value papers
 	 */
 	@SuppressWarnings("unchecked")
-	public List<ValuePaper> findByValuePaper(ValuePaper valuePaper, Boolean isTypeSecificated) {
-		
-		
-		Criteria crit = null;
-		
-		try{
-			crit=((Session)em.getDelegate()).createCriteria(ValuePaper.class, "valuePaper");
+	public <T extends ValuePaper> List<T> findByValuePaper(T valuePaper) {
+		if(valuePaper == null){
+			throw new NullPointerException("valuePaper");
 		}
-		catch(ClassCastException e)
-		{
-			crit=((Session)((EntityManagerImpl)em.getDelegate()).getSession()).createCriteria(ValuePaper.class, "valuePaper");
-		}
+
+		Metamodel m = em.getMetamodel();
+		Class<T> clazz = (Class<T>) valuePaper.getClass();
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<T> cq = cb.createQuery(clazz);
+		Root<T> valuePaperRoot = cq.from(clazz);
+		EntityType<T> valuePaperMetamodel = m.entity(clazz);
 		
-		if (valuePaper != null) {
-			if (valuePaper.getName() != null && !valuePaper.getName().isEmpty()) {
-				String name = valuePaper.getName().replace('*', '%')
-						.replace('?', '_');
-				crit.add(Restrictions.ilike("valuePaper.name", name));
-			}
-			if (valuePaper.getType() == ValuePaperType.STOCK
-					&& ((Stock) valuePaper).getCurrency() != null) {
-				crit.add(Restrictions.eq("valuePaper.currency",
-						((Stock) valuePaper).getCurrency()));
-			}
-			if (valuePaper.getCode() != null && !valuePaper.getCode().isEmpty()) {
-				String isin = valuePaper.getCode().replace('*', '%')
-						.replace('?', '_');
-				crit.add(Restrictions.ilike("valuePaper.code", isin));
-			}
-			if (valuePaper.getType() == ValuePaperType.STOCK
-					&& ((Stock) valuePaper).getCountry() != null
-					&& !((Stock) valuePaper).getCountry().isEmpty()) {
-				String co = ((Stock) valuePaper).getCountry().replace('*', '%')
-						.replace('?', '_');
-				crit.add(Restrictions.ilike("valuePaper.country", co));
-			}
-		
-		
+		List<Predicate> disjunctivePredicates = new ArrayList<>();
+		if (valuePaper.getName() != null) {
+			String name = valuePaper.getName().replace('*', '%')
+					.replace('?', '_');
 			
-			if(isTypeSecificated)
-			{	
-				crit.add(Restrictions.eq("class", valuePaper.getType().toString()));
+			disjunctivePredicates.add(cb.like(cb.lower(valuePaperRoot.get(valuePaperMetamodel.getSingularAttribute("name", String.class))), name.toLowerCase()));
+		}
+		if (valuePaper.getCode() != null) {
+			String isin = valuePaper.getCode().replace('*', '%')
+					.replace('?', '_');
+			disjunctivePredicates.add(cb.like(cb.lower(valuePaperRoot.get(valuePaperMetamodel.getSingularAttribute("code", String.class))), isin.toLowerCase()));
+		}
+		if (valuePaper.getType() == ValuePaperType.STOCK){
+			Stock stock = (Stock) valuePaper;
+			if(stock.getTickerSymbol() != null){
+				String tickerSymbol = stock.getTickerSymbol().replace('*', '%')
+						.replace('?', '_');
+				disjunctivePredicates.add(cb.like(cb.lower(valuePaperRoot.get(valuePaperMetamodel.getSingularAttribute("tickerSymbol", String.class))), tickerSymbol.toLowerCase()));
 			}
 		}
-		return crit.list();
 		
-		
+		cq.where(cb.or(disjunctivePredicates.toArray(new Predicate[0])));
+	
+		return em.createQuery(cq).getResultList();
 	}
 }

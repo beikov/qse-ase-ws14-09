@@ -1,6 +1,7 @@
 package at.ac.tuwien.ase09.android.fragment;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -15,7 +16,9 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +55,8 @@ public class PortfolioContextFragment extends Fragment implements AbsListView.On
      */
     private PortfolioArrayAdapter mAdapter;
 
+    private ProgressBar progress;
+
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
@@ -63,7 +68,7 @@ public class PortfolioContextFragment extends Fragment implements AbsListView.On
     public void onReceiveResult(int resultCode, Bundle resultData) {
         switch (resultCode) {
             case RestQueryService.STATUS_RUNNING:
-                //show progress
+                progress.setVisibility(View.VISIBLE);
                 break;
             case RestQueryService.STATUS_FINISHED:
                 List<PortfolioDto> portfolios = (List<PortfolioDto>) resultData.getSerializable("results");
@@ -72,10 +77,11 @@ public class PortfolioContextFragment extends Fragment implements AbsListView.On
                 ((AdapterView<ListAdapter>) mListView).setAdapter(mAdapter);
 
                 // do something interesting
-                // hide progress
+                progress.setVisibility(View.GONE);
                 break;
             case RestQueryService.STATUS_ERROR:
-                // handle the error;
+                progress.setVisibility(View.GONE);
+                Toast.makeText(getActivity(), resultData.getString(Intent.EXTRA_TEXT), Toast.LENGTH_LONG);
                 break;
         }
     }
@@ -101,7 +107,9 @@ public class PortfolioContextFragment extends Fragment implements AbsListView.On
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_portfolio, container, false);
+        View view = inflater.inflate(R.layout.portfolio_context_fragment, container, false);
+
+        progress = (ProgressBar) view.findViewById(android.R.id.progress);
 
         // Set the adapter
         mListView = (AbsListView) view.findViewById(android.R.id.list);

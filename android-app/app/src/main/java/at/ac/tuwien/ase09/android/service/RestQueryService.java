@@ -24,7 +24,8 @@ public class RestQueryService extends IntentService {
     public static final int STATUS_FINISHED = 2;
     public static final int STATUS_ERROR = 3;
 
-    public static final String COMMAND_PORTFOLIOS = "portfolios";
+    public static final String COMMAND_PORTFOLIOS = "PORTFOLIOS";
+    public static final String COMMAND_INITIAL_PORTFOLIO = "INITIAL_PORTFOLIOS";
 
     public RestQueryService() {
         super(LOG_TAG);
@@ -45,17 +46,26 @@ public class RestQueryService extends IntentService {
                 receiver.send(STATUS_ERROR, b);
                 Log.e(LOG_TAG, "Could not load portfolio context", e);
             }
+        }else if(command.equals(COMMAND_INITIAL_PORTFOLIO)){
+            receiver.send(STATUS_RUNNING, Bundle.EMPTY);
+            try {
+                // get some data or something
+                b.putSerializable("results", getInitialPortfolioContext());
+                receiver.send(STATUS_FINISHED, b);
+            } catch(Exception e) {
+                b.putString(Intent.EXTRA_TEXT, e.toString());
+                receiver.send(STATUS_ERROR, b);
+                Log.e(LOG_TAG, "Could not load portfolio context", e);
+            }
         }
     }
 
-    private PortfolioDto getPortfolioContext(){
-        if(PortfolioContext.getPortfolio() == null){
-            Log.i(LOG_TAG, "Query default portfolio context");
-            PortfolioResource portfolioResource = WebserviceFactory.getInstance().getPortfolioResource();
-            List<PortfolioDto> portfolios = portfolioResource.getPortfolios(7730l); //TODO: use user id of logged in user
-            if(!portfolios.isEmpty()){
-                PortfolioContext.setPortfolio(portfolios.get(0));
-            }
+    private PortfolioDto getInitialPortfolioContext(){
+        Log.i(LOG_TAG, "Query default portfolio context");
+        PortfolioResource portfolioResource = WebserviceFactory.getInstance().getPortfolioResource();
+        List<PortfolioDto> portfolios = portfolioResource.getPortfolios(7730l); //TODO: use user id of logged in user
+        if(!portfolios.isEmpty()){
+            PortfolioContext.setPortfolio(portfolios.get(0));
         }
         return PortfolioContext.getPortfolio();
     }

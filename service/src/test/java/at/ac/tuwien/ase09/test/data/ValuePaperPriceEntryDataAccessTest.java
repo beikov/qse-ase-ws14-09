@@ -4,7 +4,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
+import java.text.DateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -13,6 +15,7 @@ import org.junit.Test;
 
 import at.ac.tuwien.ase09.data.ValuePaperPriceEntryDataAccess;
 import at.ac.tuwien.ase09.exception.EntityNotFoundException;
+import at.ac.tuwien.ase09.model.Fund;
 import at.ac.tuwien.ase09.model.Portfolio;
 import at.ac.tuwien.ase09.model.PortfolioValuePaper;
 import at.ac.tuwien.ase09.model.Stock;
@@ -252,5 +255,141 @@ public class ValuePaperPriceEntryDataAccessTest extends AbstractContainerTest<Va
 		assertEquals(actualHistoricValuePaperPricesByPortfolioId.size(), 2);
 		assertTrue(actualHistoricValuePaperPricesByPortfolioId.contains(vphe1));
 		assertTrue(actualHistoricValuePaperPricesByPortfolioId.contains(vphe2));
+	}
+	
+	@Test
+	public void testGetDayHighPrice_nonExistent(){
+		assertEquals(null, valuePaperPriceEntryDataAccess.getDayHighPrice("ABC"));
+	}
+	
+	@Test
+	public void testGetDayHighPrice(){
+		// Given
+		Stock s = new Stock();
+		s.setCode("ABC");
+		Fund f = new Fund();
+		f.setCode("EFG");
+		
+		final float expectedPrice = 24.6f;
+		final Calendar today1 = Calendar.getInstance();
+		today1.set(Calendar.HOUR, 5);
+		final Calendar today2 = Calendar.getInstance();
+		today2.setTime(today1.getTime());
+		today2.set(Calendar.HOUR, 15);
+		today2.set(Calendar.MILLISECOND, today2.getMinimum(Calendar.MILLISECOND));
+		today2.set(Calendar.SECOND, today2.getMinimum(Calendar.SECOND));
+		today2.set(Calendar.MINUTE, today2.getMinimum(Calendar.MINUTE));
+		today2.set(Calendar.HOUR, today2.getMinimum(Calendar.HOUR));
+		Calendar yesterday = Calendar.getInstance();
+		yesterday.setTime(today1.getTime());
+		yesterday.add(Calendar.DAY_OF_MONTH, -1);
+		yesterday.set(Calendar.MILLISECOND, yesterday.getMaximum(Calendar.MILLISECOND));
+		yesterday.set(Calendar.SECOND, yesterday.getMaximum(Calendar.SECOND));
+		yesterday.set(Calendar.MINUTE, yesterday.getMaximum(Calendar.MINUTE));
+		yesterday.set(Calendar.HOUR, yesterday.getMaximum(Calendar.HOUR));
+		
+		ValuePaperPriceEntry pe1 = new ValuePaperPriceEntry();
+		pe1.setCreated(today1);
+		pe1.setValuePaper(s);
+		pe1.setPrice(new BigDecimal("24.5"));
+		ValuePaperPriceEntry pe2 = new ValuePaperPriceEntry();
+		pe2.setCreated(today2);
+		pe2.setValuePaper(s);
+		pe2.setPrice(new BigDecimal(expectedPrice));
+		ValuePaperPriceEntry pe3 = new ValuePaperPriceEntry();
+		pe3.setCreated(today2);
+		pe3.setValuePaper(f);
+		pe3.setPrice(new BigDecimal("22.5"));
+		ValuePaperPriceEntry pe4 = new ValuePaperPriceEntry();
+		pe4.setCreated(yesterday);
+		pe4.setValuePaper(s);
+		pe4.setPrice(new BigDecimal("26.5"));
+		ValuePaperPriceEntry pe5 = new ValuePaperPriceEntry();
+		pe5.setCreated(yesterday);
+		pe5.setValuePaper(f);
+		pe5.setPrice(new BigDecimal("21.5"));
+		
+		dataManager.persist(s);
+		dataManager.persist(f);
+		dataManager.persist(pe1);
+		dataManager.persist(pe2);
+		dataManager.persist(pe3);
+		dataManager.persist(pe4);
+		dataManager.persist(pe5);
+		em.clear();
+			
+		// When
+		BigDecimal actualDayHighPrice = valuePaperPriceEntryDataAccess.getDayHighPrice(s.getCode());
+	
+		// Then
+		assertEquals(expectedPrice, actualDayHighPrice.floatValue(), 0.001);
+	}
+	
+	@Test
+	public void testGetDayLowPrice_nonExistent(){
+		assertEquals(null, valuePaperPriceEntryDataAccess.getDayLowPrice("ABC"));
+	}
+	
+	@Test
+	public void testGetDayLowPrice(){
+		// Given
+		Stock s = new Stock();
+		s.setCode("ABC");
+		Fund f = new Fund();
+		f.setCode("EFG");
+		
+		final float expectedPrice = 24.5f;
+		final Calendar today1 = Calendar.getInstance();
+		today1.set(Calendar.HOUR, 5);
+		final Calendar today2 = Calendar.getInstance();
+		today2.setTime(today1.getTime());
+		today2.set(Calendar.HOUR, 15);
+		today2.set(Calendar.MILLISECOND, today2.getMinimum(Calendar.MILLISECOND));
+		today2.set(Calendar.SECOND, today2.getMinimum(Calendar.SECOND));
+		today2.set(Calendar.MINUTE, today2.getMinimum(Calendar.MINUTE));
+		today2.set(Calendar.HOUR, today2.getMinimum(Calendar.HOUR));
+		Calendar yesterday = Calendar.getInstance();
+		yesterday.setTime(today1.getTime());
+		yesterday.add(Calendar.DAY_OF_MONTH, -1);
+		yesterday.set(Calendar.MILLISECOND, yesterday.getMaximum(Calendar.MILLISECOND));
+		yesterday.set(Calendar.SECOND, yesterday.getMaximum(Calendar.SECOND));
+		yesterday.set(Calendar.MINUTE, yesterday.getMaximum(Calendar.MINUTE));
+		yesterday.set(Calendar.HOUR, yesterday.getMaximum(Calendar.HOUR));
+		
+		ValuePaperPriceEntry pe1 = new ValuePaperPriceEntry();
+		pe1.setCreated(today1);
+		pe1.setValuePaper(s);
+		pe1.setPrice(new BigDecimal(expectedPrice));
+		ValuePaperPriceEntry pe2 = new ValuePaperPriceEntry();
+		pe2.setCreated(today2);
+		pe2.setValuePaper(s);
+		pe2.setPrice(new BigDecimal("24.6"));
+		ValuePaperPriceEntry pe3 = new ValuePaperPriceEntry();
+		pe3.setCreated(today2);
+		pe3.setValuePaper(f);
+		pe3.setPrice(new BigDecimal("22.5"));
+		ValuePaperPriceEntry pe4 = new ValuePaperPriceEntry();
+		pe4.setCreated(yesterday);
+		pe4.setValuePaper(s);
+		pe4.setPrice(new BigDecimal("26.5"));
+		ValuePaperPriceEntry pe5 = new ValuePaperPriceEntry();
+		pe5.setCreated(yesterday);
+		pe5.setValuePaper(f);
+		pe5.setPrice(new BigDecimal("21.5"));
+		
+		dataManager.persist(s);
+		dataManager.persist(f);
+		dataManager.persist(pe1);
+		dataManager.persist(pe2);
+		dataManager.persist(pe3);
+		dataManager.persist(pe4);
+		dataManager.persist(pe5);
+		em.clear();
+			
+		// When
+		BigDecimal actualDayLowPrice = valuePaperPriceEntryDataAccess.getDayLowPrice(s.getCode());
+	
+		// Then
+		assertEquals(expectedPrice, actualDayLowPrice.floatValue(), 0.001);
 	}
 }
