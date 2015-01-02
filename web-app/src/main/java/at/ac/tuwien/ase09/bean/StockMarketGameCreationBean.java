@@ -358,6 +358,8 @@ public class StockMarketGameCreationBean implements Serializable {
 		stockMarketGame.setValidTo(StockMarketGameCreationBean.dateToCalendar(validTo));
 		stockMarketGame.setRegistrationFrom(StockMarketGameCreationBean.dateToCalendar(registrationFrom));
 		stockMarketGame.setRegistrationTo(StockMarketGameCreationBean.dateToCalendar(registrationTo));
+		
+		stockMarketGame.setAllowedValuePapers(allowedValuePapers);
 
 		PortfolioSetting portfolioSetting = new PortfolioSetting();
 
@@ -493,6 +495,10 @@ public class StockMarketGameCreationBean implements Serializable {
 			searchedValuePapers.removeAll(selectedAllowedValuePapers);
 			selectedAllowedValuePapers.clear();
 		}
+	}
+	
+	public void resetAllowedValuePapers(){
+		allowedValuePapers.clear();
 	}
 
 	public static Calendar dateToCalendar(Date date){ 
