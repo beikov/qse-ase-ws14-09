@@ -3,6 +3,7 @@ package at.ac.tuwien.ase09.bean;
 import java.math.BigDecimal;
 import java.sql.Blob;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Currency;
 import java.util.Date;
@@ -88,6 +89,7 @@ public class StockMarketGameCreationBean implements Serializable {
 	private BigDecimal capitalReturnTax;
 
 	//Allowed ValuePapers-Attributes
+	private List<ValuePaper> selectedAllowedValuePapers = new ArrayList<ValuePaper>();
 	private Set<ValuePaper> allowedValuePapers = new HashSet<>();
 	private ValuePaper searchValuePaper;
 	private ValuePaperType valuePaperType;
@@ -96,6 +98,13 @@ public class StockMarketGameCreationBean implements Serializable {
 	private List<ValuePaper> searchedValuePapers;
 
 
+	public List<ValuePaper> getSelectedAllowedValuePapers() {
+		return selectedAllowedValuePapers;
+	}
+	public void setSelectedAllowedValuePapers(
+			List<ValuePaper> selectedAllowedValuePapers) {
+		this.selectedAllowedValuePapers = selectedAllowedValuePapers;
+	}
 	public String getValuePaperIndex() {
 		return valuePaperIndex;
 	}
@@ -468,7 +477,22 @@ public class StockMarketGameCreationBean implements Serializable {
 				FacesContext.getCurrentInstance().addMessage("searchValuePapers:currency", facesMessage);
 			}
 		}
+		
 		searchedValuePapers = valuePaperScreenerDataAccess.findByValuePaper(searchValuePaper, isTypeSpecificated);
+		
+		searchedValuePapers.removeAll(allowedValuePapers);
+		
+		selectedAllowedValuePapers = searchedValuePapers;
+		
+	}
+	
+	public void addSelectedValuePapersToAllowedValuePapers(){
+		if(!selectedAllowedValuePapers.isEmpty()){
+			allowedValuePapers.addAll(selectedAllowedValuePapers);
+			
+			searchedValuePapers.removeAll(selectedAllowedValuePapers);
+			selectedAllowedValuePapers.clear();
+		}
 	}
 
 	public static Calendar dateToCalendar(Date date){ 
