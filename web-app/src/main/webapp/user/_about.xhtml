@@ -10,7 +10,8 @@
 		<ase:logo logoEntity="#{userProfileBean.owner}" />
 		
 		<h3 style="display: inline-block; margin-right: 10px;">#{userProfileBean.owner.username}</h3>
-		<p:commandButton value="Folgen" />
+		<p:commandButton value="Folgen" rendered="#{!userProfileBean.profileOwner}" />
+		<h3>#{userProfileBean.user.username}</h3>
 	</div>
 	
 	

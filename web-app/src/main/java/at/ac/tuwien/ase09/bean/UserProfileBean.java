@@ -18,6 +18,7 @@ import org.primefaces.model.DefaultDashboardModel;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
+import at.ac.tuwien.ase09.context.UserContext;
 import at.ac.tuwien.ase09.context.WebUserContext;
 import at.ac.tuwien.ase09.data.InstitutionDataAccess;
 import at.ac.tuwien.ase09.data.PortfolioDataAccess;
@@ -40,7 +41,7 @@ public class UserProfileBean implements Serializable {
 	private UserDataAccess userDataAccess;
 	
 	@Inject
-	private WebUserContext userContext;
+	private UserContext userContext;
 	
 	@Inject
 	private InstitutionDataAccess institutionDataAccess;
@@ -57,24 +58,18 @@ public class UserProfileBean implements Serializable {
 	
 	
 	public void init() {
+		if (username == null) {
+			// no param given
+			return;
+		}
+
+		owner = userDataAccess.loadUserForProfile(username);
 		user = userContext.getUser();
 		
-		
-		if (user == null && username == null) {
-			// todo
-		}
-		
-		else if (user != null) {
-			// profile settings page
-			username = user.getUsername();
-		}
-		
-		institution = institutionDataAccess.getByAdmin(username);
+		institution = institutionDataAccess.getByAdmin(owner.getUsername());
 		if (institution != null) {
 			institutionAdmin = true;
 		}
-		
-		owner = userDataAccess.loadUserForProfile(username);
 		
 		followers = new ArrayList<>(owner.getFollowers());
 		portfolios = portfolioDataAccess.getActiveUserPortfolios(owner);
@@ -120,6 +115,14 @@ public class UserProfileBean implements Serializable {
 	
 	public User getOwner() {
 		return owner;
+	}
+	
+	public User getUser() {
+		return user;
+	}
+	
+	public boolean isProfileOwner() {
+		return user.getId() == owner.getId(); 
 	}
 	
 	public boolean isInstitutionAdmin() {

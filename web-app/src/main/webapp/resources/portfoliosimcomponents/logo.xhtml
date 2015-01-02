@@ -13,15 +13,13 @@
 		</cc:interface>
 		<cc:implementation>
 			<c:choose>
-				<c:when test="#{cc.attrs.logoEntity.logo != null}">
+				<c:when test="#{cc.attrs.logoEntity != null and cc.attrs.logoEntity.logo != null}">
 					<p:graphicImage value="#{logoBean.logo}" style="max-width: #{cc.attrs.maxWidth}; max-height: #{cc.attrs.maxHeight}">
 						<f:param name="entityClass" value="#{cc.attrs.logoEntity.fullyQualifiedClassName}" />
 						<f:param name="entityId" value="#{cc.attrs.logoEntity.id}" />
 					</p:graphicImage>
 				</c:when>
-				<c:otherwise>
-					default logo
-				</c:otherwise>
+				<c:otherwise>default logo</c:otherwise>
 			</c:choose>
 		</cc:implementation>
 </ui:component>

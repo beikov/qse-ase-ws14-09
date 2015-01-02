@@ -12,8 +12,11 @@
 		 		<div>
 		 			<ase:logo logoEntity="#{follower}" />
 		 			
-		 			<p:link value="#{follower.username}" outcome="/user/profile">
-						<f:param name="user" value="#{portfolioViewBean.portfolio.owner.username}"/>
+		 			<p:link value="#{follower.username}" outcome="/user/profile" rendered="#{follower.username != portfolioViewBean.user.username}">
+						<f:param name="user" value="#{follower.username}"/>
+					</p:link>
+					<p:link value="Ich" outcome="/user/profile" rendered="#{follower.username == portfolioViewBean.user.username}">
+						<f:param name="user" value="#{follower.username}"/>
 					</p:link>
 		 		</div>
 		 	</c:forEach>

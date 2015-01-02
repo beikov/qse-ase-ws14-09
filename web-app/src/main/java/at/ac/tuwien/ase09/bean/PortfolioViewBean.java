@@ -54,8 +54,9 @@ public class PortfolioViewBean implements Serializable {
 	private ValuePaperPriceEntryDataAccess priceDataAccess;
 	
 	@Inject
-	private WebUserContext userContext;
+	private UserContext userContext;
 	
+	private User owner;
 	private User user;
 
 	private List<User> followers;
@@ -95,6 +96,7 @@ public class PortfolioViewBean implements Serializable {
     	if (portfolio == null) {
     		return;
     	}
+    	owner = portfolio.getOwner();
         createPieModels();
         createPortfolioChart();
         followers = new LinkedList<User>(portfolio.getFollowers());
@@ -123,6 +125,10 @@ public class PortfolioViewBean implements Serializable {
         
         boolean valuePapersVisible = portfolio.getVisibility().getValuePaperListVisible();
 		this.valuePapersVisible = checkVisibilitySetting(valuePapersVisible);
+    }
+    
+    public User getUser() {
+    	return user;
     }
     
     public Portfolio getPortfolio() {
@@ -220,7 +226,7 @@ public class PortfolioViewBean implements Serializable {
 	}
 	
 	public boolean isChangeButtonVisible() {
-		return isOwner();
+		return isPortfolioOwner();
 	}
 	
 	public boolean isValuePapersVisible() {
@@ -251,16 +257,12 @@ public class PortfolioViewBean implements Serializable {
 		return checkVisibilitySetting(portfolio.getVisibility().getAnalystOpinionsVisible());
 	}
 	
-	public boolean isOwner() {
-		User current = userContext.getUser();
-		if (current == null) {
-			return false;
-		}
-		return portfolio.getOwner().getUsername().equals(current.getUsername());
+	public boolean isPortfolioOwner() {
+		return portfolio.getOwner().getId() == user.getId();
 	}
 	
 	private boolean checkVisibilitySetting(boolean setting) {
-		if (!isOwner()) {
+		if (!isPortfolioOwner()) {
 			if (!portfolio.getVisibility().getPublicVisible()) {
 				return false;
 			}
@@ -270,12 +272,12 @@ public class PortfolioViewBean implements Serializable {
 	}
 	
 	private void loadPortfolio(Long portfolioId) {
+		if (portfolioId == null) {
+			// no param
+			return;
+		}
 		try {
-			if (user != null) {
-				portfolio = portfolioDataAccess.getPortfolioByUsernameAndId(user.getUsername(), portfolioId);
-			} else {
-				portfolio = portfolioDataAccess.getPortfolioById(portfolioId);
-			}
+			portfolio = portfolioDataAccess.getPortfolioById(portfolioId);
 		} catch (EntityNotFoundException e) {
 		}
 	}

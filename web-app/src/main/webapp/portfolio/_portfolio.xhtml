@@ -75,7 +75,7 @@
 				<p:panel id="stats">
 					<f:facet name="header">
 						<h:outputText value="Portfolio: " /><h:outputText value="#{portfolioViewBean.portfolio.name}" />
-						<p:commandButton value="Folgen" style="margin-left: 20px;" />
+						<p:commandButton value="Folgen" style="margin-left: 20px;" rendered="#{!portfolioViewBean.portfolioOwner}" />
 					</f:facet>
 					<c:if test="#{portfolioViewBean.isStatisticsVisible()}">
 						<ui:include src="_stats.xhtml" />
