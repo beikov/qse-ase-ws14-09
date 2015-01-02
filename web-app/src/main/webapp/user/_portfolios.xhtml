@@ -7,13 +7,14 @@
 	
 	<div class="row">
 		<p:fieldset legend="Portfolios" class="col-md-7 col-md-offset-2">
-			<p:dashboard id="portfolios" model="#{userProfileBean.portfolioDashboard}">
+			<p:dashboard id="portfolios" model="#{userProfileBean.portfolioDashboard}" rendered="#{userProfileBean.portfolios.size() gt 0}">
 				<c:forEach items="#{userProfileBean.portfolios}" var="portfolio" >
 					<p:panel id="#{portfolio.name}" header="#{portfolio.name}">
 			            <h:outputText value="..." />
 			        </p:panel>
 		        </c:forEach>
 			</p:dashboard>
+			<h:outputText value="Keine Portfolios vorhanden" rendered="#{userProfileBean.portfolios.size() == 0}" />
 		</p:fieldset>
 	</div>
 	
