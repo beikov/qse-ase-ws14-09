@@ -13,7 +13,6 @@
         <servlet-name>Faces Servlet</servlet-name>
         <url-pattern>*.xhtml</url-pattern>
     </servlet-mapping>
-    
 	<!--
     <error-page>
         <exception-type>java.lang.Exception</exception-type>
@@ -130,7 +129,7 @@
     </filter-mapping>
     <filter-mapping>
     	<filter-name>UserFilter</filter-name>
-    	<url-pattern>/protected/*</url-pattern>
+    	<url-pattern>/*</url-pattern>
         <dispatcher>REQUEST</dispatcher>
         <dispatcher>FORWARD</dispatcher>
         <dispatcher>ERROR</dispatcher>
