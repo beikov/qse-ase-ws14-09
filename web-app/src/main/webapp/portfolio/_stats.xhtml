@@ -7,8 +7,8 @@
 	<div class="row">
 		<div class="col-md-6">
 			<p:panelGrid columns="2">
-				<h:outputText value="Portfolio:" />
-				<h:outputText value="#{portfolioViewBean.portfolio.name}" />
+				<!-- <h:outputText value="Portfolio:" />
+				<h:outputText value="#{portfolioViewBean.portfolio.name}" /> -->
 				
 				<h:outputText value="Besitzer:" />
 				<h:outputText value="#{portfolioViewBean.portfolio.owner.username}" />
@@ -16,15 +16,15 @@
 				<h:outputText value="Erstellt:" />
 				<h:outputText value="#{dateUtil.formatDate( portfolioViewBean.portfolio.created.time )}" />
 				
+				<h:outputText value="Startkapital:" />
+				<h:outputText value="#{portfolioViewBean.portfolio.setting.startCapital}" />
+				
 				<h:outputText value="Aktuelles Kapital:" />
 				<h:outputText value="#{portfolioViewBean.portfolio.currentCapital}" />
 			</p:panelGrid>
 		</div>
 		<div class="col-md-6">
 			<p:panelGrid columns="2">
-				<h:outputText value="Startkapital:" />
-				<h:outputText value="#{portfolioViewBean.portfolio.setting.startCapital}" />
-				
 				<h:outputText value="Ordergebühr:" />
 				<h:outputText value="#{portfolioViewBean.portfolio.setting.orderFee}" />
 				

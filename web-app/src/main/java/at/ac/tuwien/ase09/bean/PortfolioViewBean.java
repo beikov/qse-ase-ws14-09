@@ -25,6 +25,7 @@ import at.ac.tuwien.ase09.context.UserContext;
 import at.ac.tuwien.ase09.context.WebUserContext;
 import at.ac.tuwien.ase09.data.PortfolioDataAccess;
 import at.ac.tuwien.ase09.data.ValuePaperPriceEntryDataAccess;
+import at.ac.tuwien.ase09.exception.EntityNotFoundException;
 import at.ac.tuwien.ase09.model.AnalystOpinion;
 import at.ac.tuwien.ase09.model.Money;
 import at.ac.tuwien.ase09.model.NewsItem;
@@ -54,6 +55,8 @@ public class PortfolioViewBean implements Serializable {
 	
 	@Inject
 	private WebUserContext userContext;
+	
+	private User user;
 
 	private List<User> followers;
 	
@@ -87,7 +90,11 @@ public class PortfolioViewBean implements Serializable {
 	
 	
     public void init() {
-		loadPortfolio(portfolioId);
+    	user = userContext.getUser();
+    	loadPortfolio(portfolioId);
+    	if (portfolio == null) {
+    		return;
+    	}
         createPieModels();
         createPortfolioChart();
         followers = new LinkedList<User>(portfolio.getFollowers());
@@ -232,6 +239,18 @@ public class PortfolioViewBean implements Serializable {
 		return checkVisibilitySetting(portfolio.getVisibility().getTransactionHistoryVisible());
 	}
 	
+	public boolean isChartsVisible() {
+		return checkVisibilitySetting(portfolio.getVisibility().getChartsVisible());
+	}
+	
+	public boolean isNewsVisible() {
+		return checkVisibilitySetting(portfolio.getVisibility().getNewsVisible());
+	}
+	
+	public boolean isAnalystOpinionsVisible() {
+		return checkVisibilitySetting(portfolio.getVisibility().getAnalystOpinionsVisible());
+	}
+	
 	public boolean isOwner() {
 		User current = userContext.getUser();
 		if (current == null) {
@@ -251,7 +270,14 @@ public class PortfolioViewBean implements Serializable {
 	}
 	
 	private void loadPortfolio(Long portfolioId) {
-		this.portfolio = portfolioDataAccess.getPortfolioById(portfolioId);
+		try {
+			if (user != null) {
+				portfolio = portfolioDataAccess.getPortfolioByUsernameAndId(user.getUsername(), portfolioId);
+			} else {
+				portfolio = portfolioDataAccess.getPortfolioById(portfolioId);
+			}
+		} catch (EntityNotFoundException e) {
+		}
 	}
 	
 	private void createPieModels() {

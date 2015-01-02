@@ -68,7 +68,10 @@
 			</p:outputPanel>
 		</p:dialog>
 		
-		
+		<div class="row" style="margin-bottom: 25px;">
+			<h3 style="display: inline-block;"><h:outputText value="Portfolio: " /><h:outputText value="#{portfolioViewBean.portfolio.name}" /></h3>
+			<p:commandButton value="Folgen" style="margin-left: 20px;" />
+		</div>
 	
 		<c:if test="#{portfolioViewBean.isStatisticsVisible()}">
 			<div class="row" style="margin-bottom: 15px;">
@@ -97,7 +100,7 @@
 			            </f:facet>
 			            <ui:include src="_valuePaperTable.xhtml" />
 			        </p:tab>
-			        <p:tab title="Charts" rendered="#{portfolioViewBean.valuePapersVisible}">
+			        <p:tab title="Charts" rendered="#{portfolioViewBean.chartsVisible}">
 			        	<ui:include src="_charts.xhtml" />
 			        </p:tab>
 			        <p:tab title="Orders" rendered="#{portfolioViewBean.ordersVisible}">
@@ -107,17 +110,17 @@
 			            <ui:include src="_transactionTable.xhtml" />
 			        </p:tab>
 			        
-			        <p:tab title="News" rendered="#{portfolioViewBean.valuePapersVisible}">
+			        <p:tab title="News" rendered="#{portfolioViewBean.newsVisible}">
 			            <ui:include src="_news.xhtml" />
 			        </p:tab>
 			        
-			        <p:tab title="Meinungen" rendered="#{portfolioViewBean.valuePapersVisible}">
+			        <p:tab title="Meinungen" rendered="#{portfolioViewBean.analystOpinionsVisible}">
 			            <ui:include src="_analystOpinions.xhtml" />
 			        </p:tab>
 		    	</p:tabView>
 			</div>
 		</div>
-		<c:if test="#{portfolioViewBean.portfolioChart != null}">
+		<c:if test="#{portfolioViewBean.portfolioChart != null and portfolioViewBean.chartsVisible}">
 			<div class="row">
 				<div class="col-md-12">
 					<p:chart type="line" model="#{portfolioViewBean.portfolioChart}" style="height:400px;"/>
