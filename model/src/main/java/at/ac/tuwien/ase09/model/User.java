@@ -22,6 +22,14 @@ public class User extends BaseEntity<Long> {
 	// email? country?
 	private Set<User> followers = new HashSet<>();
 
+	public User() {
+		super();
+	}
+
+	public User(String username) {
+		this.username = username;
+	}
+
 	public String getUsername() {
 		return username;
 	}
