@@ -304,7 +304,7 @@ public class PortfolioDataAccess {
 
 	public List<Portfolio> getActiveUserPortfolios(User user) {
 		try{
-			List<Portfolio> portfolios = em.createQuery("FROM Portfolio p LEFT JOIN FETCH p.game WHERE p.owner = :user", Portfolio.class).setParameter("user", user).getResultList();
+			List<Portfolio> portfolios = em.createQuery("FROM Portfolio p LEFT JOIN FETCH p.game JOIN FETCH p.owner WHERE p.owner = :user", Portfolio.class).setParameter("user", user).getResultList();
 			List<Portfolio> result = new ArrayList<>();
 			for (Portfolio p : portfolios) {
 				if (p.getGame() == null) {

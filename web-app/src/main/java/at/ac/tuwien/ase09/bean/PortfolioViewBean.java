@@ -222,6 +222,8 @@ public class PortfolioViewBean implements Serializable {
 	}
 	
 	public boolean isHidden() {
+		if (isPortfolioOwner())
+			return false;
 		return !portfolio.getVisibility().getPublicVisible();
 	}
 	
@@ -258,17 +260,17 @@ public class PortfolioViewBean implements Serializable {
 	}
 	
 	public boolean isPortfolioOwner() {
-		return portfolio.getOwner().getId() == user.getId();
+		return owner.getId() == user.getId();
 	}
 	
 	private boolean checkVisibilitySetting(boolean setting) {
-		if (!isPortfolioOwner()) {
-			if (!portfolio.getVisibility().getPublicVisible()) {
-				return false;
-			}
-			return setting;
+		if (isPortfolioOwner()) {
+			return true;
 		}
-		return true;
+		if (!portfolio.getVisibility().getPublicVisible()) {
+			return false;
+		}
+		return setting;
 	}
 	
 	private void loadPortfolio(Long portfolioId) {
