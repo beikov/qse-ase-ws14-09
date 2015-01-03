@@ -9,7 +9,7 @@
 		<p:fieldset legend="Portfolios" class="col-md-7 col-md-offset-2">
 			<p:dashboard id="portfolios" model="#{userProfileBean.portfolioDashboard}" rendered="#{userProfileBean.portfolios.size() gt 0}">
 				<c:forEach items="#{userProfileBean.portfolios}" var="portfolio" >
-					<p:panel id="#{portfolio.name}" header="#{portfolio.name}">
+					<p:panel id="#{portfolio.name}" header="#{portfolio.name}" rendered="#{portfolio.getVisibility().getPublicVisible()}">
 			            <h:outputText value="..." />
 			        </p:panel>
 		        </c:forEach>
