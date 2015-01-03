@@ -1,12 +1,11 @@
-package at.ac.tuwien.ase09.data.web.bean;
+package at.ac.tuwien.ase09.data.bean;
 
 import javax.batch.runtime.BatchRuntime;
 import javax.ejb.Stateless;
-import javax.inject.Named;
 
-@Named
 @Stateless
-public class CtrlBean {
+public class CrawlerService {
+	
 	public void startATXStockDetailExtraction(){
 		BatchRuntime.getJobOperator().start("detailStockExtractionATX", null);
 	}
@@ -46,4 +45,5 @@ public class CtrlBean {
 	public void startAnalystOpinionExtraction(){
 		BatchRuntime.getJobOperator().start("analystOpinionExtraction", null);
 	}
+	
 }
