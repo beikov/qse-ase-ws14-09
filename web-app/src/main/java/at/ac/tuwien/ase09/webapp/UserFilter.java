@@ -16,6 +16,7 @@ import org.keycloak.representations.idm.UserRepresentation;
 
 import at.ac.tuwien.ase09.context.Login;
 import at.ac.tuwien.ase09.data.UserDataAccess;
+import at.ac.tuwien.ase09.exception.EntityNotFoundException;
 import at.ac.tuwien.ase09.keycloak.AdminClient;
 import at.ac.tuwien.ase09.keycloak.UserInfo;
 import at.ac.tuwien.ase09.keycloak.AdminClient.Failure;
@@ -46,13 +47,13 @@ public class UserFilter implements Filter {
 				UserInfo userInfo = AdminClient.getCurrentUser(httpRequest);
 				
 				if (userInfo != null) {
-					User user = userDataAccess.getUserByUsername(userInfo.getUsername());
-					
-					if (user == null) {
+					User user;
+					try {
+						user = userDataAccess.getUserByUsername(userInfo.getUsername());
+					} catch (EntityNotFoundException e) {
 						user = AdminClient.createUser(httpRequest);
 						userService.saveUser(user);
 					}
-					
 					userInfo.setUser(user);
 					loginEvent.fire(userInfo);
 				}
