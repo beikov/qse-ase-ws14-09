@@ -13,6 +13,7 @@ import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
 
 import at.ac.tuwien.ase09.rest.PortfolioResource;
+import at.ac.tuwien.ase09.rest.ValuePaperResource;
 
 /**
  * Created by Moritz on 27.10.2014.
@@ -45,10 +46,18 @@ public class WebserviceFactory {
         instance = new WebserviceFactory(webserviceEndpointAddress, connectionTimeout);
     }
 
-    public PortfolioResource getPortfolioResource(){
+    private <T> T getResource(Class<T> clazz){
         HttpParams httpParams = new BasicHttpParams();
         HttpConnectionParams.setConnectionTimeout(httpParams, connectionTimeout);
-        return ProxyFactory.create(PortfolioResource.class, webserviceEndpointAddress, new ApacheHttpClient4Executor(httpParams));
+        return ProxyFactory.create(clazz, webserviceEndpointAddress, new ApacheHttpClient4Executor(httpParams));
+    }
+
+    public PortfolioResource getPortfolioResource(){
+        return getResource(PortfolioResource.class);
+    }
+
+    public ValuePaperResource getValuePaperResource(){
+        return getResource(ValuePaperResource.class);
     }
 
     public static WebserviceFactory getInstance(){
