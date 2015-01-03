@@ -5,46 +5,64 @@ import java.math.BigDecimal;
 import java.util.Currency;
 
 public class ValuePaperDto implements Serializable {
-	private final String name;
-	private final String code;
-	private final Currency currency;
-	private final BigDecimal lastPrice;
-	private final BigDecimal previousDayPrice;
-	private final BigDecimal dayHighPrice;
-	private final BigDecimal dayLowPrice;
+	private static final long serialVersionUID = -9184479286835690280L;
+
+	private String name;
+	private String code;
+	private Currency currency;
+	private BigDecimal lastPrice;
+	private BigDecimal previousDayPrice;
+	
+	public ValuePaperDto(){ }
 	
 	public ValuePaperDto(String name, String code, Currency currency,
-			BigDecimal lastPrice, BigDecimal previousDayPrice,
-			BigDecimal dayHighPrice, BigDecimal dayLowPrice) {
+			BigDecimal lastPrice, BigDecimal previousDayPrice) {
 		super();
 		this.name = name;
 		this.code = code;
 		this.currency = currency;
 		this.lastPrice = lastPrice;
 		this.previousDayPrice = previousDayPrice;
-		this.dayHighPrice = dayHighPrice;
-		this.dayLowPrice = dayLowPrice;
 	}
 
 	public String getName() {
 		return name;
 	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	public String getCode() {
 		return code;
 	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+
 	public Currency getCurrency() {
 		return currency;
 	}
+
+	public void setCurrency(Currency currency) {
+		this.currency = currency;
+	}
+
 	public BigDecimal getLastPrice() {
 		return lastPrice;
 	}
+
+	public void setLastPrice(BigDecimal lastPrice) {
+		this.lastPrice = lastPrice;
+	}
+
 	public BigDecimal getPreviousDayPrice() {
 		return previousDayPrice;
 	}
-	public BigDecimal getDayHighPrice() {
-		return dayHighPrice;
+
+	public void setPreviousDayPrice(BigDecimal previousDayPrice) {
+		this.previousDayPrice = previousDayPrice;
 	}
-	public BigDecimal getDayLowPrice() {
-		return dayLowPrice;
-	}
+
 }

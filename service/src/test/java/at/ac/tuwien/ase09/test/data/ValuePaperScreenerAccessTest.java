@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Currency;
 import java.util.List;
 
@@ -552,16 +553,65 @@ public class ValuePaperScreenerAccessTest extends AbstractContainerTest<ValuePap
 		s.setCurrency(Currency.getInstance("EUR"));
 		s.setName("Andritz");
 		
-		List<Stock> valuePapers = valuePaperScreener.findByValuePaper(s);
+		List<ValuePaper> valuePapers = valuePaperScreener.findByValuePaper(s.getType(), s);
 		
 		assertEquals(1,valuePapers.size());
 		if(valuePapers.size()>0)
 			assertEquals("Andritz",valuePapers.get(0).getName());
 	}
 	@Test
-	public void testdefaultSearchbyValuePaper()
+	public void testSearchbyValuePaper_stock()
 	{
-		Assert.verifyException(valuePaperScreener, NullPointerException.class).findByValuePaper(null);
+		// Given
+		Stock s = new Stock();
+		s.setCode("ABC");
+		s.setTickerSymbol("AAA");
+		
+		dataManager.persist(s);
+		em.clear();
+		
+		// When
+		Stock template  = new Stock();
+		template.setTickerSymbol("A*");
+		List<ValuePaper> valuePapers = valuePaperScreener.findByValuePaper(template.getType(), template);
+		
+		// Then
+		assertEquals(1,valuePapers.size());
+		assertEquals(s, valuePapers.get(0));
+	}
+	@Test
+	public void testSearchbyValuePaper_noType()
+	{
+		// Given
+		Stock s = new Stock();
+		s.setCode("ABC");
+		
+		Fund f = new Fund();
+		f.setCode("AXY");
+		
+		dataManager.persist(s);
+		dataManager.persist(f);
+		em.clear();
+		
+		// When
+		Stock template = new Stock();
+		template.setCode("A*");
+		List<ValuePaper> valuePapers = valuePaperScreener.findByValuePaper(null, template);
+		
+		// Then
+		assertEquals(2,valuePapers.size());
+		Assert.assertUnorderedEquals(Arrays.asList(new ValuePaper[]{s, f}), valuePapers);
+	}
+	@Test
+	public void testSearchbyValuePaper_templateNull()
+	{
+		Assert.verifyException(valuePaperScreener, NullPointerException.class).findByValuePaper(ValuePaperType.STOCK, null);
+	}
+	@Test
+	public void testSearchbyValuePaper_typeAndTemplateMismatch()
+	{
+		Stock s = new Stock();
+		Assert.verifyException(valuePaperScreener, IllegalArgumentException.class).findByValuePaper(ValuePaperType.FUND, s);
 	}
 	
 }

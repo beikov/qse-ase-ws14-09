@@ -23,16 +23,18 @@ import java.util.Properties;
 import at.ac.tuwien.ase09.android.fragment.NavigationDrawerFragment;
 import at.ac.tuwien.ase09.android.fragment.PortfolioContextFragment;
 import at.ac.tuwien.ase09.android.fragment.PortfolioViewFragment;
+import at.ac.tuwien.ase09.android.fragment.ValuePaperSearchFragment;
 import at.ac.tuwien.ase09.android.service.RestQueryResultReceiver;
 import at.ac.tuwien.ase09.android.service.RestQueryService;
 import at.ac.tuwien.ase09.android.singleton.PortfolioContext;
 import at.ac.tuwien.ase09.android.singleton.WebserviceFactory;
 import at.ac.tuwien.ase09.android.R;
 import at.ac.tuwien.ase09.rest.model.PortfolioDto;
+import at.ac.tuwien.ase09.rest.model.ValuePaperDto;
 
 
 public class MainActivity extends Activity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks, PortfolioContextFragment.PortfolioContextChangeListener {
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks, PortfolioContextFragment.PortfolioContextChangeListener, ValuePaperSearchFragment.ValuePaperSelectionListener {
     private static final String LOG_TAG = "MainActivity";
 
     /**
@@ -52,7 +54,7 @@ public class MainActivity extends Activity
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getFragmentManager().findFragmentById(R.id.navigation_drawer);
-        mTitle = getTitle();
+        //mTitle = getTitle();
 
         // Set up the drawer.
         mNavigationDrawerFragment.setUp(
@@ -72,25 +74,18 @@ public class MainActivity extends Activity
     @Override
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
+        FragmentManager fragmentManager = getFragmentManager();
         switch(position) {
             case 0:
                 // open portfolio view
-                FragmentManager fragmentManager = getFragmentManager();
-                PortfolioViewFragment fragment = new PortfolioViewFragment();
-                fragmentManager.beginTransaction().replace(R.id.container, fragment).commit();
-                break;
-            case 1:
-                // TODO: instantiate value paper search fragment
-                break;
-        }
-    }
-
-    public void onSectionAttached(int number) {
-        switch (number) {
-            case 1:
+                PortfolioViewFragment portfolioViewFragment = new PortfolioViewFragment();
+                fragmentManager.beginTransaction().replace(R.id.container, portfolioViewFragment).commit();
                 mTitle = getString(R.string.menu_portfolio_view);
                 break;
-            case 2:
+            case 1:
+                // open value paper search
+                ValuePaperSearchFragment valuePaperSearchFragment = new ValuePaperSearchFragment();
+                fragmentManager.beginTransaction().replace(R.id.container, valuePaperSearchFragment).commit();
                 mTitle = getString(R.string.menu_valuepaper_search);
                 break;
         }
@@ -139,44 +134,9 @@ public class MainActivity extends Activity
         getFragmentManager().beginTransaction().replace(R.id.container, new PortfolioViewFragment()).commit();
     }
 
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
-
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        public PlaceholderFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.main_fragment, container, false);
-            return rootView;
-        }
-
-        @Override
-        public void onAttach(Activity activity) {
-            super.onAttach(activity);
-            ((MainActivity) activity).onSectionAttached(
-                    getArguments().getInt(ARG_SECTION_NUMBER));
-        }
+    @Override
+    public void onValuePaperSelected(ValuePaperDto valuePaper) {
+        // TODO: display value paper view for selected value paper
     }
 
 }

@@ -124,10 +124,12 @@ public class ValuePaperPriceEntryDataAccess {
 	
 	public ValuePaperHistoryEntry getHistoricPriceEntry(String code, Calendar date){
 		try{
-			return em.createQuery("SELECT pe FROM ValuePaperHistoryEntry pe JOIN pe.valuePaper vp WHERE vp.code = :code AND pe.created = :date", ValuePaperHistoryEntry.class)
+			return em.createQuery("SELECT pe FROM ValuePaperHistoryEntry pe JOIN pe.valuePaper vp WHERE vp.code = :code AND pe.date = :date", ValuePaperHistoryEntry.class)
 				.setParameter("date", date)
 				.setParameter("code", code)
 				.getSingleResult();
+		}catch(NoResultException e){
+			throw new EntityNotFoundException(e);
 		}catch(Exception e){
 			throw new AppException(e);
 		}

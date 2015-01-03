@@ -11,6 +11,7 @@ import javax.inject.Inject;
 
 import at.ac.tuwien.ase09.data.ValuePaperPriceEntryDataAccess;
 import at.ac.tuwien.ase09.data.ValuePaperScreenerAccess;
+import at.ac.tuwien.ase09.exception.EntityNotFoundException;
 import at.ac.tuwien.ase09.model.Fund;
 import at.ac.tuwien.ase09.model.Stock;
 import at.ac.tuwien.ase09.model.StockBond;
@@ -31,7 +32,7 @@ public class ValuePaperResourceImpl implements ValuePaperResource{
 	private ValuePaperPriceEntryDataAccess valuePaperPriceEntryDataAccess;
 	
 	@Override
-	public List<ValuePaperDto> getPortfolios(String filter,
+	public List<ValuePaperDto> getValuePapers(String filter,
 			ValuePaperType valuePaperType) {
 		ValuePaper  valuePaper = null;
 		
@@ -42,15 +43,15 @@ public class ValuePaperResourceImpl implements ValuePaperResource{
 						break;
 			case BOND:	valuePaper = new StockBond();
 						break;
-			case FUND:	valuePaper = new Fund();
-						break;
+			case FUND:	
+			default:	valuePaper = new Fund();
 		}
 		
 		valuePaper.setName(filter);
 		valuePaper.setCode(filter);
 		
 		List<ValuePaperDto> results = new ArrayList<>();
-		List<ValuePaper> matchingValuePapers = valuePaperScreenerDataAccess.findByValuePaper(valuePaper);
+		List<ValuePaper> matchingValuePapers = valuePaperScreenerDataAccess.findByValuePaper(valuePaperType, valuePaper);
 		for(ValuePaper vp : matchingValuePapers){
 			Currency currency = null;
 			if(vp instanceof Stock){
@@ -59,14 +60,20 @@ public class ValuePaperResourceImpl implements ValuePaperResource{
 				currency = ((Fund) vp).getCurrency();
 			}
 			
-			ValuePaperPriceEntry lastPriceEntry = valuePaperPriceEntryDataAccess.getLastPriceEntry(vp.getCode());
-			BigDecimal dayHighPrice = valuePaperPriceEntryDataAccess.getDayHighPrice(vp.getCode());
-			BigDecimal dayLowPrice = valuePaperPriceEntryDataAccess.getDayLowPrice(vp.getCode());
-			Calendar yesterday = Calendar.getInstance();
-			yesterday.roll(Calendar.DAY_OF_YEAR, -1);
-			ValuePaperHistoryEntry historicPriceEntry = valuePaperPriceEntryDataAccess.getHistoricPriceEntry(vp.getCode(), yesterday);
+			BigDecimal lastPrice = null;
+			BigDecimal closingPrice = null;
+			try{
+				ValuePaperPriceEntry lastPriceEntry = valuePaperPriceEntryDataAccess.getLastPriceEntry(vp.getCode());
+				lastPrice = lastPriceEntry.getPrice();
+			}catch(EntityNotFoundException e){ /* ignore */ }
 			
-			results.add(new ValuePaperDto(vp.getName(), vp.getCode(), currency, lastPriceEntry.getPrice(), historicPriceEntry.getClosingPrice(), dayHighPrice, dayLowPrice));
+			try{
+				Calendar yesterday = Calendar.getInstance();
+				yesterday.roll(Calendar.DAY_OF_YEAR, -1);
+				ValuePaperHistoryEntry historicPriceEntry = valuePaperPriceEntryDataAccess.getHistoricPriceEntry(vp.getCode(), yesterday);
+				closingPrice = historicPriceEntry.getClosingPrice();
+			}catch(EntityNotFoundException e) { /* ignore */ }
+			results.add(new ValuePaperDto(vp.getName(), vp.getCode(), currency, lastPrice, closingPrice));
 		}
 		
 		return results;

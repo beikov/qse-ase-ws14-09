@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
     <!--
@@ -7,6 +8,7 @@
     For more on layout aliases, see:
     http://developer.android.com/training/multiscreen/screensizes.html#TaskUseAliasFilters
     -->
-    <item name="portfolio_context_fragment" type="layout">@layout/portfolio_grid</item>
+    <item name="portfolio_context_fragment" type="layout">@layout/grid</item>
+    <item name="valuepapers_layout" type="layout">@layout/grid</item>
 
 </resources>

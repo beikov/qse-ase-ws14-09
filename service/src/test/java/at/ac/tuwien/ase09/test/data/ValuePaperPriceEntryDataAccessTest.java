@@ -392,4 +392,51 @@ public class ValuePaperPriceEntryDataAccessTest extends AbstractContainerTest<Va
 		// Then
 		assertEquals(expectedPrice, actualDayLowPrice.floatValue(), 0.001);
 	}
+	
+	@Test
+	public void testGetHistoricPriceEntry(){
+		// Given
+		Stock s = new Stock();
+		s.setCode("ABC");
+		
+		final float expectedClosingPrice = 32.5f;
+		ValuePaperHistoryEntry historyEntry = new ValuePaperHistoryEntry();
+		Calendar yesterday = Calendar.getInstance();
+		yesterday.add(Calendar.DAY_OF_MONTH, -1);
+		historyEntry.setValuePaper(s);
+		historyEntry.setClosingPrice(new BigDecimal(expectedClosingPrice));
+		historyEntry.setDate(yesterday);
+		
+		dataManager.persist(s);
+		dataManager.persist(historyEntry);
+		em.clear();
+		
+		// When
+		ValuePaperHistoryEntry actualHistoryEntry = valuePaperPriceEntryDataAccess.getHistoricPriceEntry(s.getCode(), yesterday);
+	
+		// Then
+		assertEquals(expectedClosingPrice, actualHistoryEntry.getClosingPrice().floatValue(), 0.001f);
+	}
+	
+	@Test
+	public void testGetHistoricPriceEntry_nonExistent(){
+		// Given
+		Stock s = new Stock();
+		s.setCode("ABC");
+		
+		final float expectedClosingPrice = 32.5f;
+		ValuePaperHistoryEntry historyEntry = new ValuePaperHistoryEntry();
+		Calendar yesterday = Calendar.getInstance();
+		yesterday.add(Calendar.DAY_OF_MONTH, -1);
+		historyEntry.setValuePaper(s);
+		historyEntry.setClosingPrice(new BigDecimal(expectedClosingPrice));
+		historyEntry.setDate(yesterday);
+		
+		dataManager.persist(s);
+		dataManager.persist(historyEntry);
+		em.clear();
+		
+		// Then
+		Assert.verifyException(valuePaperPriceEntryDataAccess, EntityNotFoundException.class).getHistoricPriceEntry(s.getCode(), Calendar.getInstance());
+	}
 }

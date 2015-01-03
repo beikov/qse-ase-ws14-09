@@ -9,14 +9,15 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
+import javax.persistence.metamodel.SingularAttribute;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.ejb.EntityManagerImpl;
 
@@ -101,46 +102,63 @@ public class ValuePaperScreenerAccess {
 	}
 	
 	/*
-	 * Searchmethod used by AndroidApp
+	 * Search method used by the Android app
 	 * 
-	 * @param valuePaper Wertpapier
+	 * @param valuePaperType
+	 * @param template
 	 * 
 	 * @return List of matching value papers
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends ValuePaper> List<T> findByValuePaper(T valuePaper) {
-		if(valuePaper == null){
-			throw new NullPointerException("valuePaper");
+	public List<ValuePaper> findByValuePaper(ValuePaperType valuePaperType, ValuePaper template) {
+		if(template == null){
+			throw new NullPointerException("template");
+		}
+		if(valuePaperType != null && template.getType() != valuePaperType){
+			throw new IllegalArgumentException("If a value paper type is specified, the template must be of this type");
 		}
 
 		Metamodel m = em.getMetamodel();
-		Class<T> clazz = (Class<T>) valuePaper.getClass();
 		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<T> cq = cb.createQuery(clazz);
-		Root<T> valuePaperRoot = cq.from(clazz);
-		EntityType<T> valuePaperMetamodel = m.entity(clazz);
+		CriteriaQuery<ValuePaper> cq = cb.createQuery(ValuePaper.class);
+		
+		Root<? extends ValuePaper> valuePaperRoot;
+		
+		if (valuePaperType == ValuePaperType.STOCK){
+			valuePaperRoot = cq.from(Stock.class);
+		}else{
+			valuePaperRoot = cq.from(ValuePaper.class);
+		}
+		
+		EntityType<ValuePaper> valuePaperMetamodel = m.entity(ValuePaper.class);
 		
 		List<Predicate> disjunctivePredicates = new ArrayList<>();
-		if (valuePaper.getName() != null) {
-			String name = valuePaper.getName().replace('*', '%')
+		if (template.getName() != null) {
+			String name = template.getName().replace('*', '%')
 					.replace('?', '_');
 			
 			disjunctivePredicates.add(cb.like(cb.lower(valuePaperRoot.get(valuePaperMetamodel.getSingularAttribute("name", String.class))), name.toLowerCase()));
 		}
-		if (valuePaper.getCode() != null) {
-			String isin = valuePaper.getCode().replace('*', '%')
+		if (template.getCode() != null) {
+			String isin = template.getCode().replace('*', '%')
 					.replace('?', '_');
 			disjunctivePredicates.add(cb.like(cb.lower(valuePaperRoot.get(valuePaperMetamodel.getSingularAttribute("code", String.class))), isin.toLowerCase()));
 		}
-		if (valuePaper.getType() == ValuePaperType.STOCK){
-			Stock stock = (Stock) valuePaper;
-			if(stock.getTickerSymbol() != null){
+		if (valuePaperType == ValuePaperType.STOCK){
+			Stock stock = (Stock) template;
+			EntityType<Stock> stockMetamodel = m.entity(Stock.class);
+ 			if(stock.getTickerSymbol() != null){
 				String tickerSymbol = stock.getTickerSymbol().replace('*', '%')
 						.replace('?', '_');
-				disjunctivePredicates.add(cb.like(cb.lower(valuePaperRoot.get(valuePaperMetamodel.getSingularAttribute("tickerSymbol", String.class))), tickerSymbol.toLowerCase()));
+				disjunctivePredicates.add(cb.like(cb.lower(valuePaperRoot.get((SingularAttribute<ValuePaper, String>) stockMetamodel.getSingularAttribute("tickerSymbol", String.class))), tickerSymbol.toLowerCase()));
 			}
 		}
 		
+		if(valuePaperType != null){
+			cq.where(cb.equal(valuePaperRoot.type(), valuePaperType.toString()));
+		}
+		
+		cq.select(valuePaperRoot);
 		cq.where(cb.or(disjunctivePredicates.toArray(new Predicate[0])));
 	
 		return em.createQuery(cq).getResultList();

@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -76,7 +77,6 @@ public class PortfolioContextFragment extends Fragment implements AbsListView.On
                         R.layout.portfolio_item, R.id.portfolio_name, portfolios);
                 ((AdapterView<ListAdapter>) mListView).setAdapter(mAdapter);
 
-                // do something interesting
                 progress.setVisibility(View.GONE);
                 break;
             case RestQueryService.STATUS_ERROR:
@@ -175,37 +175,8 @@ public class PortfolioContextFragment extends Fragment implements AbsListView.On
     }
 
     private class PortfolioArrayAdapter extends ArrayAdapter<PortfolioDto>  {
-        private static final String LOG_TAG = "PortfolioArrayAdapter";
-
         private int resource;
         private int fieldId = 0;
-
-        public PortfolioArrayAdapter(Context context, int resource) {
-            super(context, resource);
-            this.resource = resource;
-        }
-
-        public PortfolioArrayAdapter(Context context, int resource, int textViewResourceId) {
-            super(context, resource, textViewResourceId);
-            this.resource = resource;
-            this.fieldId = textViewResourceId;
-        }
-
-        public PortfolioArrayAdapter(Context context, int resource, PortfolioDto[] objects) {
-            super(context, resource, objects);
-            this.resource = resource;
-        }
-
-        public PortfolioArrayAdapter(Context context, int resource, int textViewResourceId, PortfolioDto[] objects) {
-            super(context, resource, textViewResourceId, objects);
-            this.resource = resource;
-            this.fieldId = textViewResourceId;
-        }
-
-        public PortfolioArrayAdapter(Context context, int resource, List<PortfolioDto> objects) {
-            super(context, resource, objects);
-            this.resource = resource;
-        }
 
         public PortfolioArrayAdapter(Context context, int resource, int textViewResourceId, List<PortfolioDto> objects) {
             super(context, resource, textViewResourceId, objects);

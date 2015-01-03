@@ -24,6 +24,7 @@
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>model-common</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
 
