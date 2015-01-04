@@ -19,11 +19,13 @@ import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
 
 import at.ac.tuwien.ase09.context.UserContext;
+import at.ac.tuwien.ase09.data.PortfolioDataAccess;
 import at.ac.tuwien.ase09.data.StockMarketGameDataAccess;
 import at.ac.tuwien.ase09.exception.AppException;
 import at.ac.tuwien.ase09.exception.EntityNotFoundException;
 import at.ac.tuwien.ase09.model.StockMarketGame;
 import at.ac.tuwien.ase09.model.User;
+import at.ac.tuwien.ase09.service.PortfolioService;
 import at.ac.tuwien.ase09.service.StockMarketGameService;
 
 @Named
@@ -36,6 +38,8 @@ public class StockMarketGameSearchBean implements Serializable{
 	private StockMarketGameDataAccess stockMarketGameAccess;
 	@Inject
 	private StockMarketGameService stockMarketGameService;
+	@Inject
+	private PortfolioDataAccess portfolioDataAccess;
 	@Inject
 	private UserContext userContext;
 	
@@ -94,10 +98,17 @@ public class StockMarketGameSearchBean implements Serializable{
     }
     
     public void participateInGame() {
-    	//service.participate(user, game)
-    	stockMarketGameService.participateInGame(selectedGame, user);
-    	FacesMessage message = new FacesMessage("Sie nehmen nun an den Börsenspiel '" + selectedGame.getName() + "' teil");
+    	try {
+    		portfolioDataAccess.getByGameAndUser(selectedGame, user);
+    	} catch(EntityNotFoundException e) {
+    		stockMarketGameService.participateInGame(selectedGame, user);
+        	FacesMessage message = new FacesMessage("Sie nehmen nun an dem Börsenspiel '" + selectedGame.getName() + "' teil");
+            FacesContext.getCurrentInstance().addMessage(null, message);
+            return;
+    	}
+    	FacesMessage message = new FacesMessage("Sie nehmen bereits an dem Börsenspiel '" + selectedGame.getName() + "' teil");
         FacesContext.getCurrentInstance().addMessage(null, message);
+    	
     }
     
 	private void loadStockMarketGames() {
