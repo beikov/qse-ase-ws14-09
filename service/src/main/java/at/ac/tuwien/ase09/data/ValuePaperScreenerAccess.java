@@ -23,6 +23,7 @@ import org.hibernate.ejb.EntityManagerImpl;
 
 import at.ac.tuwien.ase09.filter.AttributeFilter;
 import at.ac.tuwien.ase09.filter.AttributeType;
+import at.ac.tuwien.ase09.model.Fund;
 import at.ac.tuwien.ase09.model.Stock;
 import at.ac.tuwien.ase09.model.ValuePaper;
 import at.ac.tuwien.ase09.model.ValuePaperType;
@@ -40,7 +41,7 @@ public class ValuePaperScreenerAccess {
 	 * @param filters Suchfilter
 	 * @param type Wertpapiertyp
 	 * 
-	 * @return Liste der übereinstimmenden Wertpapiere
+	 * @return Liste der ï¿½bereinstimmenden Wertpapiere
 	 */
 	@SuppressWarnings("unchecked")
 	public List<ValuePaper> findByFilter(List<AttributeFilter> filters, ValuePaperType type)
@@ -93,13 +94,19 @@ public class ValuePaperScreenerAccess {
 	@SuppressWarnings("unchecked")
 	public List<Currency> getUsedCurrencyCodes()
 	{
-		return em.createQuery("SELECT s.currency FROM Stock s Group by s.currency").getResultList();	
+		return em.createQuery("SELECT s.currency FROM Stock s Group by s.currency UNION SELECT f.currency FROM Fund f Group by f.currency").getResultList();	
 	}
 	@SuppressWarnings("unchecked")
 	public List<String> getUsedIndexes()
 	{
 		return em.createQuery("SELECT s.index FROM Stock s Group by s.index").getResultList();	
 	}
+	@SuppressWarnings("unchecked")
+	public List<String> getUsedCountries()
+	{
+		return em.createQuery("SELECT s.country FROM Stock s Group by s.country").getResultList();	
+	}
+	
 	
 	/*
 	 * Search method used by the Android app
@@ -136,7 +143,6 @@ public class ValuePaperScreenerAccess {
 		if (template.getName() != null) {
 			String name = template.getName().replace('*', '%')
 					.replace('?', '_');
-			
 			disjunctivePredicates.add(cb.like(cb.lower(valuePaperRoot.get(valuePaperMetamodel.getSingularAttribute("name", String.class))), name.toLowerCase()));
 		}
 		if (template.getCode() != null) {
