@@ -14,6 +14,10 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.primefaces.event.CloseEvent;
+import org.primefaces.event.SelectEvent;
+import org.primefaces.event.UnselectEvent;
+
 import at.ac.tuwien.ase09.context.UserContext;
 import at.ac.tuwien.ase09.data.StockMarketGameDataAccess;
 import at.ac.tuwien.ase09.exception.AppException;
@@ -36,6 +40,7 @@ public class StockMarketGameSearchBean implements Serializable{
 	
 	private List<StockMarketGame> games;
 	private List<StockMarketGame> filteredGames;
+	private StockMarketGame selectedGame;
 	
 	@PostConstruct
 	public void init(){
@@ -63,7 +68,28 @@ public class StockMarketGameSearchBean implements Serializable{
 		return filteredGames;
 	}
 
-
+	public StockMarketGame getSelectedGame() {
+		return selectedGame;
+	}
+	
+	public void setSelectedGame(StockMarketGame selectedGame) {
+		this.selectedGame = selectedGame;
+	}
+	
+	public void onRowSelect(SelectEvent event) {
+    }
+ 
+    /*public void onRowUnselect(UnselectEvent event) {
+    }*/
+	
+    public void handleClose(CloseEvent event) {
+    	selectedGame = null;
+    }
+    
+    public boolean isAjaxRequest() {
+        return FacesContext.getCurrentInstance().getPartialViewContext().isAjaxRequest();
+    }
+    
 	private void loadStockMarketGames() {
 		try {
 			games = stockMarketGameAccess.getStockMargetGames();

@@ -11,25 +11,41 @@
 	template="/WEB-INF/templates/template.xhtml">
 
 	<ui:define name="body">
-		<h:form id="searchGames">
+		<h:form id="searchGamesForm">
 			
 			<p:growl id="messages" showDetail="true" />
 			
-			<p:dataTable var="game" value="#{stockMarketGameSearchBean.games}" rows="10" paginator="true" 
-			paginatorTemplate=" {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
+			<p:dialog header="Modal Dialog" widgetVar="gameDialog" id="gameDialog" modal="true" height="400">
+				<p:ajax event="close" listener="#{stockMarketGameSearchBean.handleClose}" oncomplete="PF('gamesTable').unselectAllRows()" />
+				<c:if test="#{stockMarketGameSearchBean.ajaxRequest}">
+			        <ui:include src="_game.xhtml">
+			        	<ui:param name="game" value="#{stockMarketGameSearchBean.selectedGame}" />
+			        </ui:include>
+			    </c:if>
+			</p:dialog>   
 			
+			
+        
+			
+			<p:dataTable var="game" widgetVar="gamesTable" value="#{stockMarketGameSearchBean.games}" rows="10" paginator="true" emptyMessage="Keine Börsenspiele gefunden"
+			paginatorTemplate=" {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+			selectionMode="single" selection="#{stockMarketGameSearchBean.selectedGame}" rowKey="#{game.id}">
+				
+				<p:ajax event="rowSelect" listener="#{stockMarketGameSearchBean.onRowSelect}" update=":searchGamesForm:messages :searchGamesForm:gameDialog" oncomplete="PF('gameDialog').show();"/>
+        		<!-- <p:ajax event="rowUnselect" listener="#{stockMarketGameSearchBean.onRowUnselect}" update=":searchGamesForm:messages" /> -->
+					
 				<p:column sortBy="#{game.name}" filterBy="#{game.name}" headerText="Name" footerText="beinhaltet" filterMatchMode="contains">
 		            <h:outputText value="#{game.name}" />
 		        </p:column>
 			    <p:column sortBy="#{game.owner.name}" filterBy="#{game.owner.name}" headerText="Institution" footerText="beinhaltet" filterMatchMode="contains">
 		            <ase:logo logoEntity="#{game}" /><h:outputText value="#{game.owner.name}" style="margin-left: 10px;" />
 		        </p:column>
-		        <p:column headerText="Aktiv von/bis">
+		        <p:column headerText="Aktiv Start-Ende">
 		            <h:outputText value="#{dateUtil.formatCalendar(game.validFrom)}" />
 		            <h:outputText value=" - " />
 		            <h:outputText value="#{dateUtil.formatCalendar(game.validTo)}" />
 		        </p:column>
-		        <p:column headerText="Registrierung von/bis">
+		        <p:column headerText="Registrierung Start-Ende">
 		            <h:outputText value="#{dateUtil.formatCalendar(game.registrationFrom)}" />
 		            <h:outputText value=" - " />
 		            <h:outputText value="#{dateUtil.formatCalendar(game.registrationTo)}" />
