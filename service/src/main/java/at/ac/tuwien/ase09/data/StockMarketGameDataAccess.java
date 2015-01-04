@@ -1,5 +1,7 @@
 package at.ac.tuwien.ase09.data;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -15,6 +17,15 @@ public class StockMarketGameDataAccess {
 
 	@Inject
 	private EntityManager em;
+	
+	
+	public List<StockMarketGame> getStockMargetGames() {
+		try{
+			return em.createQuery("FROM StockMarketGame g JOIN FETCH g.owner", StockMarketGame.class).getResultList();
+		}catch(Exception e){
+			throw new AppException(e);
+		}
+	}
 
 	public  StockMarketGame getStockMarketGameByID(Long id){
 		try{

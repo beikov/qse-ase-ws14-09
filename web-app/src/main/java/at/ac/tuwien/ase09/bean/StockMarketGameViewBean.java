@@ -9,6 +9,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import at.ac.tuwien.ase09.context.UserContext;
 import at.ac.tuwien.ase09.context.WebUserContext;
 import at.ac.tuwien.ase09.data.StockMarketGameDataAccess;
 import at.ac.tuwien.ase09.exception.EntityNotFoundException;
@@ -24,7 +25,7 @@ public class StockMarketGameViewBean implements Serializable{
 	@Inject
 	private StockMarketGameDataAccess stockMarketGameAccess;
 	@Inject
-	private WebUserContext userContext;
+	private UserContext userContext;
 	
 	private Long gameID;
 	private boolean adminLoggedIn;
@@ -34,7 +35,7 @@ public class StockMarketGameViewBean implements Serializable{
 	private Map<String,String> mainGameAttributes=null;
 	
 	public void init(){
-		User user=userContext.getUser();
+		user=userContext.getUser();
 		loadStockMarketGame(gameID);
 		checkAdminLoggedIn();
 		

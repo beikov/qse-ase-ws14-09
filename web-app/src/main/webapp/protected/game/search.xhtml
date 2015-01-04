@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:ase="http://java.sun.com/jsf/composite/portfoliosimcomponents"
+	xmlns:pa="http://java.sun.com/jsf/composite/portfolioVisibility"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="body">
+		<h:form id="searchGames">
+			
+			<p:growl id="messages" showDetail="true" />
+			
+			<p:dataTable var="game" value="#{stockMarketGameSearchBean.games}" rows="10" paginator="true" 
+			paginatorTemplate=" {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
+			
+				<p:column sortBy="#{game.name}" filterBy="#{game.name}" headerText="Name" footerText="beinhaltet" filterMatchMode="contains">
+		            <h:outputText value="#{game.name}" />
+		        </p:column>
+			    <p:column sortBy="#{game.owner.name}" filterBy="#{game.owner.name}" headerText="Institution" footerText="beinhaltet" filterMatchMode="contains">
+		            <ase:logo logoEntity="#{game}" /><h:outputText value="#{game.owner.name}" style="margin-left: 10px;" />
+		        </p:column>
+		        <p:column headerText="Aktiv von/bis">
+		            <h:outputText value="#{dateUtil.formatCalendar(game.validFrom)}" />
+		            <h:outputText value=" - " />
+		            <h:outputText value="#{dateUtil.formatCalendar(game.validTo)}" />
+		        </p:column>
+		        <p:column headerText="Registrierung von/bis">
+		            <h:outputText value="#{dateUtil.formatCalendar(game.registrationFrom)}" />
+		            <h:outputText value=" - " />
+		            <h:outputText value="#{dateUtil.formatCalendar(game.registrationTo)}" />
+		        </p:column>
+			</p:dataTable>
+		</h:form>
+	</ui:define>
+	
+</ui:composition>

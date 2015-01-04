@@ -15,9 +15,10 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 @Entity
-public class StockMarketGame extends BaseEntity<Long> {
+public class StockMarketGame extends BaseEntity<Long> implements Logo {
 	private static final long serialVersionUID = 1L;
 
 	private String name;
@@ -125,6 +126,16 @@ public class StockMarketGame extends BaseEntity<Long> {
 
 	public void setAllowedValuePapers(Set<ValuePaper> allowedValuePapers) {
 		this.allowedValuePapers = allowedValuePapers;
+	}
+
+	@Override
+	@Transient
+	public String getFullyQualifiedClassName() {
+		return "at.ac.tuwien.ase09.model.StockMarketGame";
+	}
+
+	@Override
+	public void setFullyQualifiedClassName(String unused) {
 	}
 	
 }

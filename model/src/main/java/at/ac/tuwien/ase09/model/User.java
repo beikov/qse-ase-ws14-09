@@ -62,17 +62,15 @@ public class User extends BaseEntity<Long> implements Logo {
 	public void setFollowers(Set<User> followers) {
 		this.followers = followers;
 	}
-	
+
 	@Override
 	@Transient
 	public String getFullyQualifiedClassName() {
 		return "at.ac.tuwien.ase09.model.User";
 	}
-	
+
 	@Override
 	public void setFullyQualifiedClassName(String unused) {
-		
 	}
 
-	
 }
