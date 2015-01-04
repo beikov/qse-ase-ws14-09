@@ -144,22 +144,4 @@ public class UserProfileBean implements Serializable {
 	public DashboardModel getPortfolioDashboard() {
 		return portfolioDashboard;
 	}
-	
-	public StreamedContent getImage() {
-        FacesContext context = FacesContext.getCurrentInstance();
-
-        if (context.getCurrentPhaseId() == PhaseId.RENDER_RESPONSE) {
-            // So, we're rendering the HTML. Return a stub StreamedContent so that it will generate right URL.
-            return new DefaultStreamedContent();
-        }
-        else {
-            // So, browser is requesting the image. Return a real StreamedContent with the image bytes.
-			try {
-				return new DefaultStreamedContent(institution.getLogo().getBinaryStream());
-			} catch (SQLException e) {
-				e.printStackTrace();
-				throw new AppException(e.getMessage());
-			}
-        }
-    }
 }
