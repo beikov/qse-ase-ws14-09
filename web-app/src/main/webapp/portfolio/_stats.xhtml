@@ -1,6 +1,7 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:p="http://primefaces.org/ui">
 	
@@ -11,7 +12,9 @@
 				<h:outputText value="#{portfolioViewBean.portfolio.name}" /> -->
 				
 				<h:outputText value="Besitzer:" />
-				<h:outputText value="#{portfolioViewBean.portfolio.owner.username}" />
+				<p:link value="#{portfolioViewBean.portfolio.owner.username}" outcome="/user/profile">
+					<f:param name="user" value="#{portfolioViewBean.portfolio.owner.username}"/>
+				</p:link>
 				
 				<h:outputText value="Erstellt:" />
 				<h:outputText value="#{dateUtil.formatDate( portfolioViewBean.portfolio.created.time )}" />

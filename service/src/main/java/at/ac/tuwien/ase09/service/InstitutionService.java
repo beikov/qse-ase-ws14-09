@@ -4,18 +4,16 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
-import at.ac.tuwien.ase09.model.User;
+import at.ac.tuwien.ase09.model.Institution;
 
 @Stateless
-public class UserService {
+public class InstitutionService {
+	
 	@Inject
 	private EntityManager em;
-	
-	public void saveUser(User user){
-		em.persist(user);
+
+	public void update(Institution institution) {
+		em.merge(institution);
 	}
-	
-	public void updateUser(User user) {
-		em.merge(user);
-	}
+
 }
