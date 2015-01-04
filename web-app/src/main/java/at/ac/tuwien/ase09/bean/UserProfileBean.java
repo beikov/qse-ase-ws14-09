@@ -1,5 +1,6 @@
 package at.ac.tuwien.ase09.bean;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -24,6 +25,7 @@ import at.ac.tuwien.ase09.data.InstitutionDataAccess;
 import at.ac.tuwien.ase09.data.PortfolioDataAccess;
 import at.ac.tuwien.ase09.data.UserDataAccess;
 import at.ac.tuwien.ase09.exception.AppException;
+import at.ac.tuwien.ase09.exception.EntityNotFoundException;
 import at.ac.tuwien.ase09.model.Institution;
 import at.ac.tuwien.ase09.model.Portfolio;
 import at.ac.tuwien.ase09.model.User;
@@ -57,13 +59,13 @@ public class UserProfileBean implements Serializable {
 	 private DashboardModel portfolioDashboard;
 	
 	
-	public void init() {
-		if (username == null) {
-			// no param given
-			return;
+	public void init() throws IOException {
+		try {
+			owner = userDataAccess.loadUserForProfile(username);
+		} catch(EntityNotFoundException e) {
+			FacesContext.getCurrentInstance().getExternalContext().responseSendError(404, "Der Benutzer '" + username + "' wurde nicht gefunden");
+			FacesContext.getCurrentInstance().responseComplete();
 		}
-
-		owner = userDataAccess.loadUserForProfile(username);
 		user = userContext.getUser();
 		
 		institution = institutionDataAccess.getByAdmin(owner.getUsername());
@@ -74,6 +76,14 @@ public class UserProfileBean implements Serializable {
 		followers = new ArrayList<>(owner.getFollowers());
 		portfolios = portfolioDataAccess.getActiveUserPortfolios(owner);
 		createPortfolioDashboard();
+	}
+	
+	public void validateUsername() throws IOException {
+		FacesContext context = FacesContext.getCurrentInstance();
+		if (!context.isPostback() && context.isValidationFailed()) {
+			context.getExternalContext().responseSendError(500, "Fehlerhafter Benutzername");
+			context.responseComplete();
+		}
 	}
 	
 	private void createPortfolioDashboard() {
