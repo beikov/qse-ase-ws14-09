@@ -13,7 +13,7 @@
 	<ui:define name="body">
 		<h:form id="searchGamesForm">
 			
-			<p:growl id="messages" showDetail="true" />
+			<p:growl id="messages" showDetail="false" />
 			
 			<p:dialog header="Modal Dialog" widgetVar="gameDialog" id="gameDialog" modal="true" height="400">
 				<p:ajax event="close" listener="#{stockMarketGameSearchBean.handleClose}" oncomplete="PF('gamesTable').unselectAllRows()" />
@@ -21,6 +21,7 @@
 			        <ui:include src="_game.xhtml">
 			        	<ui:param name="game" value="#{stockMarketGameSearchBean.selectedGame}" />
 			        </ui:include>
+			        <p:commandButton value="Teilnehmen" update=":searchGamesForm:messages" actionListener="#{stockMarketGameSearchBean.participateInGame()}" oncomplete="PF('gameDialog').hide();"/>
 			    </c:if>
 			</p:dialog>   
 			

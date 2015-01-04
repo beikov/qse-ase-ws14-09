@@ -24,6 +24,7 @@ import at.ac.tuwien.ase09.exception.AppException;
 import at.ac.tuwien.ase09.exception.EntityNotFoundException;
 import at.ac.tuwien.ase09.model.StockMarketGame;
 import at.ac.tuwien.ase09.model.User;
+import at.ac.tuwien.ase09.service.StockMarketGameService;
 
 @Named
 @ViewScoped
@@ -33,6 +34,8 @@ public class StockMarketGameSearchBean implements Serializable{
 	
 	@Inject
 	private StockMarketGameDataAccess stockMarketGameAccess;
+	@Inject
+	private StockMarketGameService stockMarketGameService;
 	@Inject
 	private UserContext userContext;
 	
@@ -88,6 +91,13 @@ public class StockMarketGameSearchBean implements Serializable{
     
     public boolean isAjaxRequest() {
         return FacesContext.getCurrentInstance().getPartialViewContext().isAjaxRequest();
+    }
+    
+    public void participateInGame() {
+    	//service.participate(user, game)
+    	stockMarketGameService.participateInGame(selectedGame, user);
+    	FacesMessage message = new FacesMessage("Sie nehmen nun an den Börsenspiel '" + selectedGame.getName() + "' teil");
+        FacesContext.getCurrentInstance().addMessage(null, message);
     }
     
 	private void loadStockMarketGames() {
