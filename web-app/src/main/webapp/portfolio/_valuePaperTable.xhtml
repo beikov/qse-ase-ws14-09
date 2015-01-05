@@ -11,7 +11,8 @@
 	<p:dataTable var="association" value="#{portfolioViewBean.valuePaperList}" rows="5"
                          paginator="true"
                          paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                         rowsPerPageTemplate="5,10,15">
+                         rowsPerPageTemplate="5,10,15"
+                         emptyMessage="Keine Wertpapiere vorhanden">
                          
 		<c:set var="paper" value="#{association.valuePaper}" />
           	

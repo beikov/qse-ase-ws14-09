@@ -16,6 +16,7 @@ import org.keycloak.representations.idm.UserRepresentation;
 
 import at.ac.tuwien.ase09.context.Login;
 import at.ac.tuwien.ase09.data.UserDataAccess;
+import at.ac.tuwien.ase09.exception.EntityNotFoundException;
 import at.ac.tuwien.ase09.keycloak.AdminClient;
 import at.ac.tuwien.ase09.keycloak.UserInfo;
 import at.ac.tuwien.ase09.keycloak.AdminClient.Failure;
@@ -27,25 +28,30 @@ public class UserFilter implements Filter {
 	@Inject
 	@Login
 	private Event<UserInfo> loginEvent;
+
 	@Inject
 	private UserDataAccess userDataAccess;
+
 	@Inject
 	private UserService userService;
-	
+
 	@Override
 	public void destroy() {
 	}
 
 	@Override
-	public void doFilter(ServletRequest request, ServletResponse response,
-			FilterChain chain) throws IOException, ServletException {
+	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+
 		if (request instanceof HttpServletRequest) {
+			
 			HttpServletRequest httpRequest = (HttpServletRequest) request;
 
 			try {
+				
 				UserInfo userInfo = AdminClient.getCurrentUser(httpRequest);
 				
 				if (userInfo != null) {
+					
 					User user = userDataAccess.getUserByUsername(userInfo.getUsername());
 					
 					if (user == null) {
@@ -56,11 +62,11 @@ public class UserFilter implements Filter {
 					userInfo.setUser(user);
 					loginEvent.fire(userInfo);
 				}
+				
 			} catch (Failure e) {
 				throw new ServletException(e);
 			}
 		}
-
 		chain.doFilter(request, response);
 	}
 
@@ -68,3 +74,4 @@ public class UserFilter implements Filter {
 	public void init(FilterConfig arg0) throws ServletException {
 	}
 }
+

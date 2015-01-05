@@ -25,6 +25,9 @@ public class WebUserContext implements UserContext {
 	@RequestScoped
 	@Override
 	public User getUser() {
+		if (userInfo == null) {
+			return new User("Gast");
+		}
 		return userInfo.getUser();
 	}
 

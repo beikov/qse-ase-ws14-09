@@ -83,6 +83,23 @@ public class PortfolioDataAccess {
 		}
 	}
 	
+	public Portfolio getPortfolioByUsernameAndId(String username, Long id) {
+		try {
+			return em.createQuery("FROM Portfolio p "
+					+ "LEFT JOIN FETCH p.valuePapers "
+					+ "LEFT JOIN FETCH p.transactionEntries "
+					+ "LEFT JOIN FETCH p.orders o "
+					+ "LEFT JOIN FETCH o.valuePaper "
+					+ "JOIN FETCH p.owner "
+					+ "LEFT JOIN FETCH p.followers "
+					+ "WHERE p.id = :id AND p.owner.username = :username", Portfolio.class).setParameter("username", username).setParameter("id", id).getSingleResult();
+		} catch(NoResultException e) {
+			throw new EntityNotFoundException(e);
+		} catch(Exception e) {
+			throw new AppException(e);
+		}
+	}
+	
 	public Portfolio getPortfolioByNameForUser(String portfolioName, User user){
 		try{
 			List<Portfolio> results;
