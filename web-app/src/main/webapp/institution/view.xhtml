@@ -1,0 +1,33 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:ase="http://java.sun.com/jsf/composite/portfoliosimcomponents"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="metadata">
+        <f:metadata>
+			<f:viewParam name="institution" value="#{institutionBean.institutionId}" required="#{!facesContext.postback}" />
+			<f:event type="postValidate" listener="#{institutionBean.validateInstitutionParam}" />
+		    <f:viewAction action="#{institutionBean.init}" />
+		</f:metadata>
+    </ui:define>
+	
+	<ui:define name="body">
+		<div class="row" style="margin-bottom: 40px;">
+			<div class="col-md-4">
+				<h2>#{institutionBean.institution.name}</h2>
+			</div>
+			<div class="col-md-8">
+				<ase:logo logoEntity="#{institutionBean.institution}" maxWidth="400px" maxHeight="200px" />
+			</div>
+		</div>
+		<p style="margin-bottom: 30px;">
+			<h:outputText value="#{institutionBean.institution.pageText}" escape="false" />
+		</p>
+	</ui:define>
+	
+</ui:composition>

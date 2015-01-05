@@ -14,22 +14,21 @@
 			}
 		</style>
 	</ui:define>
+	
+	<ui:define name="metadata">
+        <f:metadata>
+			<f:viewParam name="user" value="#{userProfileBean.username}" required="#{!facesContext.postback}" />
+			<f:event type="postValidate" listener="#{userProfileBean.validateUsername}" />
+		    <f:viewAction action="#{userProfileBean.init}" />
+		</f:metadata>
+    </ui:define>
+	
 	<!-- content -->
 	<ui:define name="body">
 		
-		<f:metadata>
-			<f:viewParam name="user" value="#{userProfileBean.username}" required="#{!facesContext.postback}" />
-		    <f:viewAction action="#{userProfileBean.init}" />
-		</f:metadata>
-		
 		<ui:include src="_about.xhtml" />
 		<ui:include src="_followers.xhtml" />
-		
 		<ui:include src="_portfolios.xhtml" />
-		
-		<c:if test="#{userProfileBean.institutionAdmin}">
-			<ui:include src="_institution.xhtml" />
-		</c:if>
 		
 	</ui:define>
 	
