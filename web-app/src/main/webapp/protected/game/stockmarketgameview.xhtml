@@ -12,9 +12,9 @@
 
 		<f:metadata>
 
-			<f:viewParam name="valuePaperCode"
-				value="#{valuePaperViewBean.valuePaperCode}" required="true" />
-			<f:viewAction action="#{valuePaperViewBean.init}" />
+			<f:viewParam name="gameId"
+				value="#{stockMarketGameViewBean.gameID}" required="true" />
+			<f:viewAction action="#{stockMarketGameViewBean.init}" />
 
 		</f:metadata>
 		
@@ -59,7 +59,7 @@
 							minSize="50" maxSize="500" style="border: 0">
 
 							<p:graphicImage value="#{stockMarketGameViewBean.stockMarketGame.logo}" style="max-width:800px;max-height:400px;">
-	    						<f:param name="admin" value="#{stockMarketGameViewBean.stockMarketGame.owner.admin.username}" />
+	    						<f:param name="gameID" value="#{stockMarketGameViewBean.stockMarketGame.id}" />
 	    					</p:graphicImage>
 	    					
 						</p:layoutUnit>

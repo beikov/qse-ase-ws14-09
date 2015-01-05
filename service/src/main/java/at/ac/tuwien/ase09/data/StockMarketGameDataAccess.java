@@ -19,8 +19,8 @@ public class StockMarketGameDataAccess {
 		try{
 
 			return em.createQuery("Select s FROM StockMarketGame s "
-					+ "LEFT JOIN FETCH s.allowedValuePapers"
-					+ "JOIN FETCH s.owner o"
+					+ "LEFT JOIN FETCH s.allowedValuePapers "
+					+ "JOIN FETCH s.owner o "
 					+ "JOIN FETCH o.admin "
 					+ "WHERE s.id = :id", StockMarketGame.class).setParameter("id", id).getSingleResult();
 		}catch(NoResultException e){

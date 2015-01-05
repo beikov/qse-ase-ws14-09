@@ -1,19 +1,27 @@
 package at.ac.tuwien.ase09.bean;
 
 import java.io.Serializable;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
+import javax.faces.context.FacesContext;
+import javax.faces.event.PhaseId;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
+
 import at.ac.tuwien.ase09.context.WebUserContext;
 import at.ac.tuwien.ase09.data.StockMarketGameDataAccess;
+import at.ac.tuwien.ase09.exception.AppException;
 import at.ac.tuwien.ase09.exception.EntityNotFoundException;
+import at.ac.tuwien.ase09.model.Institution;
 import at.ac.tuwien.ase09.model.StockMarketGame;
 import at.ac.tuwien.ase09.model.User;
 import at.ac.tuwien.ase09.model.ValuePaper;
@@ -175,4 +183,30 @@ public class StockMarketGameViewBean implements Serializable{
 			this.mainGameAttributes.put("Kapitalertragssteuer: ", stockMarketGame.getSetting().getCapitalReturnTax()+"%");
 		}
 	}
+	
+	public StreamedContent getImage() {
+        FacesContext context = FacesContext.getCurrentInstance();
+
+        if (context.getCurrentPhaseId() == PhaseId.RENDER_RESPONSE) {
+            return new DefaultStreamedContent();
+        }
+        else {
+        	String gameID = context.getExternalContext().getRequestParameterMap().get("gameID");
+        	StockMarketGame s = stockMarketGameAccess.getStockMarketGameByID(Long.valueOf(gameID));
+        	
+        	if(s.getLogo()!=null)
+        	{
+				try {
+					return new DefaultStreamedContent(s.getLogo().getBinaryStream());
+				} catch (SQLException e) {
+					e.printStackTrace();
+					throw new AppException(e.getMessage());
+				}
+			}
+        	else
+        	{
+        		 return new DefaultStreamedContent();
+        	}
+        }
+    }
 }
