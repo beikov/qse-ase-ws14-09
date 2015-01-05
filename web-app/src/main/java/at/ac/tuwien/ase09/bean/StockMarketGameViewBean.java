@@ -47,7 +47,7 @@ public class StockMarketGameViewBean implements Serializable{
 	private Set<ValuePaper> allowedPapers=null;
 	
 	public void init(){
-		User user=userContext.getUser();
+		user=userContext.getUser();
 		loadStockMarketGame(gameID);
 		checkAdminLoggedIn();
 		
@@ -55,7 +55,10 @@ public class StockMarketGameViewBean implements Serializable{
 		{
 			loadGameAttributes();
 		}
-		
+		for(String value:mainGameAttributes.values())
+		{
+			System.out.println(value);
+		}
 	}
 	
 	
@@ -112,6 +115,7 @@ public class StockMarketGameViewBean implements Serializable{
 	private void checkAdminLoggedIn() {
 		if(stockMarketGame!=null)
 			adminLoggedIn=user.equals(stockMarketGame.getOwner().getAdmin());
+
 		
 	}
 	private void loadStockMarketGame(Long gameID) {
@@ -167,15 +171,15 @@ public class StockMarketGameViewBean implements Serializable{
 		}
 
 		if(stockMarketGame.getSetting().getStartCapital() != null){
-			this.mainGameAttributes.put("Startkapital: ", stockMarketGame.getSetting().getStartCapital()+""+stockMarketGame.getSetting().getStartCapital().getCurrency().getSymbol());
+			this.mainGameAttributes.put("Startkapital: ", stockMarketGame.getSetting().getStartCapital()+"");
 		}
 		
 		if(stockMarketGame.getSetting().getPortfolioFee() != null){
-			this.mainGameAttributes.put("Portfoliospesen: ", stockMarketGame.getSetting().getPortfolioFee()+""+stockMarketGame.getSetting().getPortfolioFee().getCurrency().getSymbol());
+			this.mainGameAttributes.put("Portfoliospesen: ", stockMarketGame.getSetting().getPortfolioFee()+"");
 		}
 		
 		if(stockMarketGame.getSetting().getOrderFee() != null){
-			this.mainGameAttributes.put("Orderspesen: ", stockMarketGame.getSetting().getOrderFee()+""+stockMarketGame.getSetting().getOrderFee().getCurrency().getSymbol());
+			this.mainGameAttributes.put("Orderspesen: ", stockMarketGame.getSetting().getOrderFee()+"");
 		}
 		
 		if(stockMarketGame.getSetting().getCapitalReturnTax()!=null)
@@ -192,7 +196,7 @@ public class StockMarketGameViewBean implements Serializable{
         }
         else {
         	String gameID = context.getExternalContext().getRequestParameterMap().get("gameID");
-        	StockMarketGame s = stockMarketGameAccess.getStockMarketGameByID(Long.valueOf(gameID));
+        	StockMarketGame s = stockMarketGameAccess.getStockMarketGameByID(Long.parseLong(gameID));
         	
         	if(s.getLogo()!=null)
         	{
