@@ -2,12 +2,10 @@ package at.ac.tuwien.ase09.bean;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.faces.context.FacesContext;
-import javax.faces.event.PhaseId;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -16,17 +14,11 @@ import org.primefaces.model.DashboardColumn;
 import org.primefaces.model.DashboardModel;
 import org.primefaces.model.DefaultDashboardColumn;
 import org.primefaces.model.DefaultDashboardModel;
-import org.primefaces.model.DefaultStreamedContent;
-import org.primefaces.model.StreamedContent;
 
 import at.ac.tuwien.ase09.context.UserContext;
-import at.ac.tuwien.ase09.context.WebUserContext;
-import at.ac.tuwien.ase09.data.InstitutionDataAccess;
 import at.ac.tuwien.ase09.data.PortfolioDataAccess;
 import at.ac.tuwien.ase09.data.UserDataAccess;
-import at.ac.tuwien.ase09.exception.AppException;
 import at.ac.tuwien.ase09.exception.EntityNotFoundException;
-import at.ac.tuwien.ase09.model.Institution;
 import at.ac.tuwien.ase09.model.Portfolio;
 import at.ac.tuwien.ase09.model.User;
 
@@ -45,14 +37,9 @@ public class UserProfileBean implements Serializable {
 	@Inject
 	private UserContext userContext;
 	
-	@Inject
-	private InstitutionDataAccess institutionDataAccess;
-	
 	private String username;
 	private User owner;
 	private User user;
-	private boolean institutionAdmin;
-	private Institution institution;
 	private List<User> followers;
 	private List<Portfolio> portfolios;
 	
@@ -67,12 +54,7 @@ public class UserProfileBean implements Serializable {
 			FacesContext.getCurrentInstance().responseComplete();
 		}
 		user = userContext.getUser();
-		
-		institution = institutionDataAccess.getByAdmin(owner.getUsername());
-		if (institution != null) {
-			institutionAdmin = true;
-		}
-		
+	
 		followers = new ArrayList<>(owner.getFollowers());
 		portfolios = portfolioDataAccess.getActiveUserPortfolios(owner);
 		createPortfolioDashboard();
@@ -133,14 +115,6 @@ public class UserProfileBean implements Serializable {
 	
 	public boolean isProfileOwner() {
 		return user.getId() == owner.getId(); 
-	}
-	
-	public boolean isInstitutionAdmin() {
-		return institutionAdmin;
-	}
-	
-	public Institution getInstitution() {
-		return institution;
 	}
 	
 	public List<User> getFollowers() {

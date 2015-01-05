@@ -32,12 +32,6 @@
 				</div>
 			</p:fieldset>
 			
-			<c:if test="#{userProfileSettingsBean.institutionAdmin}">
-				<p:fieldset legend="Institutionseinstellungen">
-					<ui:include src="_institutionSettings.xhtml" />
-				</p:fieldset>
-			</c:if>
-			
 			<p:commandButton value="Änderungen speichern" update="@form" action="#{userProfileSettingsBean.saveChanges()}" />
 		</h:form>
 	</ui:define>
