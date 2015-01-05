@@ -32,13 +32,13 @@
 				<p:ajax event="rowSelect" listener="#{stockMarketGameSearchBean.onRowSelect}" update=":searchGamesForm:messages :searchGamesForm:gameDialog" oncomplete="PF('gameDialog').show();"/>
         		<!-- <p:ajax event="rowUnselect" listener="#{stockMarketGameSearchBean.onRowUnselect}" update=":searchGamesForm:messages" /> -->
 					
-				<p:column sortBy="#{game.name}" filterBy="#{game.name}" headerText="Name" footerText="beinhaltet" filterMatchMode="contains">
+				<p:column sortBy="#{game.name}" filterBy="#{game.name}" headerText="Name" filterMatchMode="contains">
 		            <h:outputText value="#{game.name}" />
 		        </p:column>
-		        <p:column sortBy="#{game.text}" filterBy="#{game.text}" headerText="Text" footerText="beinhaltet" filterMatchMode="contains">
+		        <p:column sortBy="#{game.text}" filterBy="#{game.text}" headerText="Text" filterMatchMode="contains">
 		            <h:outputText value="#{game.text}" />
 		        </p:column>
-			    <p:column sortBy="#{game.owner.name}" filterBy="#{game.owner.name}" headerText="Institution" footerText="beinhaltet" filterMatchMode="contains">
+			    <p:column sortBy="#{game.owner.name}" filterBy="#{game.owner.name}" headerText="Institution" filterMatchMode="contains">
 		            <ase:logo logoEntity="#{game}" />
 		            <p:link value="#{game.owner.name}" outcome="/institution/view">
 		            	<f:param name="institution" value="#{game.owner.id}" />
