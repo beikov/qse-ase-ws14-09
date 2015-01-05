@@ -25,9 +25,6 @@
 			    </c:if>
 			</p:dialog>   
 			
-			
-        
-			
 			<p:dataTable var="game" widgetVar="gamesTable" value="#{stockMarketGameSearchBean.games}" rows="10" paginator="true" emptyMessage="Keine Börsenspiele gefunden"
 			paginatorTemplate=" {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 			selectionMode="single" selection="#{stockMarketGameSearchBean.selectedGame}" rowKey="#{game.id}">
@@ -42,7 +39,10 @@
 		            <h:outputText value="#{game.text}" />
 		        </p:column>
 			    <p:column sortBy="#{game.owner.name}" filterBy="#{game.owner.name}" headerText="Institution" footerText="beinhaltet" filterMatchMode="contains">
-		            <ase:logo logoEntity="#{game}" /><h:outputText value="#{game.owner.name}" style="margin-left: 10px;" />
+		            <ase:logo logoEntity="#{game}" />
+		            <p:link value="#{game.owner.name}" outcome="/institution/view">
+		            	<f:param name="institution" value="#{game.owner.id}" />
+		            </p:link>	
 		        </p:column>
 		        <p:column headerText="Beginn">
 		            <h:outputText value="#{dateUtil.formatCalendar(game.validFrom)}" />
