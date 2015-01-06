@@ -1,5 +1,6 @@
 package at.ac.tuwien.ase09.bean;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ import at.ac.tuwien.ase09.context.UserContext;
 import at.ac.tuwien.ase09.context.WebUserContext;
 import at.ac.tuwien.ase09.data.PortfolioDataAccess;
 import at.ac.tuwien.ase09.data.ValuePaperPriceEntryDataAccess;
+import at.ac.tuwien.ase09.exception.AppException;
 import at.ac.tuwien.ase09.exception.EntityNotFoundException;
 import at.ac.tuwien.ase09.model.AnalystOpinion;
 import at.ac.tuwien.ase09.model.Money;
@@ -90,12 +92,26 @@ public class PortfolioViewBean implements Serializable {
 	private LineChartModel portfolioChart;
 	
 	
-    public void init() {
+	public void validateParam() throws IOException {
+		FacesContext context = FacesContext.getCurrentInstance();
+		if (!context.isPostback() && context.isValidationFailed()) {
+			context.getExternalContext().responseSendError(500, "Fehlerhafte Portfolio-Id");
+			context.responseComplete();
+		}
+	}
+	
+    public void init() throws IOException {
     	user = userContext.getUser();
-    	loadPortfolio(portfolioId);
-    	if (portfolio == null) {
-    		return;
-    	}
+    	try {
+    		portfolio = portfolioDataAccess.getPortfolioById(portfolioId);
+		} catch(EntityNotFoundException e) {
+			FacesContext.getCurrentInstance().getExternalContext().responseSendError(404, "Kein Portfolio mit der Id '"+ portfolioId +"' gefunden");
+			FacesContext.getCurrentInstance().responseComplete();
+		} catch(AppException e) {
+			FacesContext.getCurrentInstance().getExternalContext().responseSendError(500, "Fehler beim Laden des Portfolios");
+			FacesContext.getCurrentInstance().responseComplete();
+		}
+    	
     	owner = portfolio.getOwner();
         createPieModels();
         createPortfolioChart();
@@ -271,17 +287,6 @@ public class PortfolioViewBean implements Serializable {
 			return false;
 		}
 		return setting;
-	}
-	
-	private void loadPortfolio(Long portfolioId) {
-		if (portfolioId == null) {
-			// no param
-			return;
-		}
-		try {
-			portfolio = portfolioDataAccess.getPortfolioById(portfolioId);
-		} catch (EntityNotFoundException e) {
-		}
 	}
 	
 	private void createPieModels() {
