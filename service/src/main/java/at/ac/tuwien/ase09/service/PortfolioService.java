@@ -20,5 +20,9 @@ public class PortfolioService {
 		em.persist(portfolio);
 		return portfolio;
 	}
+
+	public void removePortfolio(Portfolio portfolio) {
+		em.remove(em.contains(portfolio) ? portfolio : em.merge(portfolio));
+	}
 	
 }

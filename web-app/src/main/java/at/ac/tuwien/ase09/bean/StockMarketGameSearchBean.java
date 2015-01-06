@@ -23,6 +23,7 @@ import at.ac.tuwien.ase09.data.PortfolioDataAccess;
 import at.ac.tuwien.ase09.data.StockMarketGameDataAccess;
 import at.ac.tuwien.ase09.exception.AppException;
 import at.ac.tuwien.ase09.exception.EntityNotFoundException;
+import at.ac.tuwien.ase09.model.Portfolio;
 import at.ac.tuwien.ase09.model.StockMarketGame;
 import at.ac.tuwien.ase09.model.User;
 import at.ac.tuwien.ase09.service.PortfolioService;
@@ -41,6 +42,8 @@ public class StockMarketGameSearchBean implements Serializable{
 	@Inject
 	private PortfolioDataAccess portfolioDataAccess;
 	@Inject
+	private PortfolioService portfolioService;
+	@Inject
 	private UserContext userContext;
 	
 	private User user;
@@ -55,13 +58,21 @@ public class StockMarketGameSearchBean implements Serializable{
 		loadStockMarketGames();
 	}
 	
+	public boolean isParticipatingInGame(StockMarketGame game) {
+		if (game == null) {
+			return false;
+		}
+		try {
+			portfolioDataAccess.getByGameAndUser(game, user);
+			return true;
+		} catch(EntityNotFoundException e) {
+			return false;
+		}
+	}
 	
-	
-
 	public User getUser() {
 		return user;
 	}
-
 
 	public void setUser(User user) {
 		this.user = user;
@@ -86,8 +97,8 @@ public class StockMarketGameSearchBean implements Serializable{
 	public void onRowSelect(SelectEvent event) {
     }
  
-    /*public void onRowUnselect(UnselectEvent event) {
-    }*/
+    public void onRowUnselect(UnselectEvent event) {
+    }
 	
     public void handleClose(CloseEvent event) {
     	selectedGame = null;
@@ -109,6 +120,18 @@ public class StockMarketGameSearchBean implements Serializable{
     	FacesMessage message = new FacesMessage("Sie nehmen bereits an dem Börsenspiel '" + selectedGame.getName() + "' teil");
         FacesContext.getCurrentInstance().addMessage(null, message);
     	
+    }
+    
+    public void unsubscribeFromGame() {
+    	Portfolio p;
+    	try {
+    		p = portfolioDataAccess.getByGameAndUser(selectedGame, user);
+    		portfolioService.removePortfolio(p);
+    		FacesMessage message = new FacesMessage("Erfolgreich vom Börsenspiel '" + selectedGame.getName() + "' abgemeldet");
+            FacesContext.getCurrentInstance().addMessage(null, message);
+    		return;
+    	} catch(EntityNotFoundException e) {
+    	}
     }
     
 	private void loadStockMarketGames() {
