@@ -35,9 +35,6 @@ public class NotificationBean {
 
 	@PostConstruct
 	public void init(){
-		for(int i=0;i<10;i++){
-			System.out.println("initializing");
-		}
 		notifications = data.getNotificationsForUser(userContext.getUser());
 	}
 
@@ -57,7 +54,6 @@ public class NotificationBean {
 
 
 	public String getTextForNotification(FollowerAddedNotification notification) {
-		System.out.println("getting text");
 		if(reading){
 			notification.setRead(true);
 			service.setRead(notification);

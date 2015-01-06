@@ -10,31 +10,42 @@
 	xmlns:composite="http://java.sun.com/jsf/composite">
 
 <composite:interface>
-	
+
 </composite:interface>
 
 <composite:implementation>
-	<h:form id="form1" >
-		<p:commandButton id="notificationBtn"  icon="ui-icon-mail-closed" update="notificationTable countTxt" actionListener="#{notificationBean.bla()}" /> <!-- onclick="PF('ovl').loadContents()" -->
+
+	<h:form id="form1">
+		<p:commandButton id="notificationBtn" icon="ui-icon-mail-closed"
+			update="notificationTable countTxt"
+			actionListener="#{notificationBean.bla()}" />
 		<h:outputText id="countTxt" value="#{notificationBean.unreadCount}" />
-		<p:overlayPanel id="notificationPanel" widgetVar="ovl" for="form1:notificationBtn" hideEffect="fade" style="width:500px">
-			 <p:dataTable id="notificationTable" widgetVar="ovlList" var="notifications" value="#{notificationBean.notifications}" scrollable="true" scrollHeight="200" scrollRows="5" liveScroll="true" emptyMessage="Keine Notifikationen verfügbar"  >
-				 <f:attribute name="collectionType" value="java.util.ArrayList" />
-			 	<p:column id="icon" style="width:50px">
-					<p:graphicImage name="/images/notificationicons/#{notifications.type}_#{notifications.read}.gif" />
+		<p:overlayPanel id="notificationPanel" widgetVar="ovl"
+			for="form1:notificationBtn" hideEffect="fade" style="width:500px">
+			<p:dataTable id="notificationTable" widgetVar="ovlList"
+				var="notifications" value="#{notificationBean.notifications}"
+				scrollable="true" scrollHeight="200" scrollRows="5"
+				liveScroll="true" emptyMessage="Keine Notifikationen verfügbar">
+				<f:attribute name="collectionType" value="java.util.ArrayList" />
+				<p:column id="icon" style="width:50px">
+					<p:graphicImage
+						name="/images/notificationicons/#{notifications.type}_#{notifications.read}.gif" />
 				</p:column>
-				<p:column id="messageRead" rendered="#{notifications.read}">
+				<p:column id="message">
+					<p:column id="messageRead" rendered="#{notifications.read}">
 					#{notificationBean.getTextForNotification(notifications)}
-				</p:column>
-				<p:column id="messageNew" rendered="#{!notifications.read}">
-					<b> #{notificationBean.getTextForNotification(notifications)}</b>
+					</p:column>
+					<p:column id="messageNew" rendered="#{!notifications.read}">
+						<b> #{notificationBean.getTextForNotification(notifications)}</b>
+					</p:column>
 				</p:column>
 				<p:column id="created" style="width:75px">
-				<font size="1"> #{notifications.created.time} </font>
+					<font size="1"> #{notifications.created.time} </font>
 				</p:column>
-			 </p:dataTable>
+			</p:dataTable>
 		</p:overlayPanel>
 	</h:form>
+
 </composite:implementation>
 
 </html>

@@ -21,7 +21,7 @@
 				<li><a href="/protected/portfolio/list.xhtml">Portfolios</a></li>
 		        <li><a href="/protected/valuepaperscreener/simplescreener.xhtml">Wertpapiersuche</a></li>
 		        <li><h:link value="Watches" outcome="/protected/watches/watch.xhtml" /></li>
-		   		<c:if test="#{user != null}">	        	
+		   		<c:if test="#{user.username != 'Gast'}">	        	
 		         <li>	<cp:notifications /> </li>
 		   		</c:if>
 		      </ul>
