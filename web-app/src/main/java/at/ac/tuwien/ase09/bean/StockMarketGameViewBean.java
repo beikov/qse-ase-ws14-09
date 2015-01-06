@@ -3,14 +3,19 @@ package at.ac.tuwien.ase09.bean;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseId;
 import javax.faces.view.ViewScoped;
+import javax.faces.view.facelets.FaceletContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -27,7 +32,7 @@ import at.ac.tuwien.ase09.model.User;
 import at.ac.tuwien.ase09.model.ValuePaper;
 
 @Named
-@ViewScoped
+@SessionScoped
 public class StockMarketGameViewBean implements Serializable{
 
 
@@ -44,24 +49,45 @@ public class StockMarketGameViewBean implements Serializable{
 	private StockMarketGame stockMarketGame;
 	
 	private Map<String,String> mainGameAttributes=null;
+	private List<String> attributekeys = null;
 	private Set<ValuePaper> allowedPapers=null;
 	
+	
 	public void init(){
-		user=userContext.getUser();
-		loadStockMarketGame(gameID);
-		checkAdminLoggedIn();
 		
-		if(stockMarketGame!=null)
-		{
-			loadGameAttributes();
-		}
-		for(String value:mainGameAttributes.values())
-		{
-			System.out.println(value);
-		}
+			FaceletContext faceletContext = (FaceletContext) FacesContext
+					.getCurrentInstance().getAttributes()
+					.get(FaceletContext.FACELET_CONTEXT_KEY);
+			gameID = (Long) faceletContext.getAttribute("gameId");
+			// System.out.println(gameID);
+			// gameID=Long.parseLong(gameId);
+
+			user = userContext.getUser();
+			loadStockMarketGame(gameID);
+			checkAdminLoggedIn();
+
+			if (stockMarketGame != null) {
+				loadGameAttributes();
+				attributekeys=new ArrayList<String>();
+				for (String key : mainGameAttributes.keySet()) {
+					attributekeys.add(key);
+				}
+
+			}
+		
 	}
 	
 	
+	public List<String> getAttributekeys() {
+		return attributekeys;
+	}
+
+
+	public void setAttributekeys(List<String> attributekeys) {
+		this.attributekeys = attributekeys;
+	}
+
+
 	public Long getGameID() {
 		return gameID;
 	}
@@ -195,7 +221,7 @@ public class StockMarketGameViewBean implements Serializable{
             return new DefaultStreamedContent();
         }
         else {
-        	String gameID = context.getExternalContext().getRequestParameterMap().get("gameID");
+        	String gameID = context.getExternalContext().getRequestParameterMap().get("gameIDLogo");
         	StockMarketGame s = stockMarketGameAccess.getStockMarketGameByID(Long.parseLong(gameID));
         	
         	if(s.getLogo()!=null)

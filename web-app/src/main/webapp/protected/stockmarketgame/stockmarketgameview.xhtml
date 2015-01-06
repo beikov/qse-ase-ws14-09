@@ -14,108 +14,23 @@
 
 			<f:viewParam name="gameId"
 				value="#{stockMarketGameViewBean.gameID}" required="true" />
-			<f:viewAction action="#{stockMarketGameViewBean.init}" />
+			<!--  <f:viewAction action="#{stockMarketGameViewBean.init}" />-->
 
 		</f:metadata>
 		
-		<h:form id="gameview">
-
-			<h3 style="margin-top: 0">Börsenspielseite</h3>
-
-			<c:choose>
+		<c:choose>
 				<c:when test="#{stockMarketGameViewBean.gameID != null}">
-	
-				
-					<p:layout >
-						
-						<p:layoutUnit position="center" style="border: 0">
-
-							<p:panel id="general" header="Allgemeine Informationen"
-								style="margin-bottom: 20px">
-
-								<p:panelGrid columns="2">
-
-									<c:forEach var="attribute"
-										items="#{stockMarketGameViewBean.mainGameAttributes}">
-										<p:outputLabel value="#{attribute.key}"
-											style="font-weight:bold" />
-										<h:outputLabel value="#{attribute.value}" />
-									</c:forEach>
-
-								</p:panelGrid>
-
-							</p:panel>
-
-							
-							
-							<p:separator />
-
-					<p:panel id="allowedValuePapers" header="Erlaubte Wertpapiere"
-						toggleable="true" collapsed="true">
-
-						<p:dataTable var="valuePaper"
-							value="#{stockMarketGameViewBean.stockMarketGame.allowedValuePapers}"
-							rows="15" paginator="true"
-							paginatorTemplate=" {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
-							<p:column headerText="Name" sortBy="#{valuePaper.name}">
-								<h:outputText value="#{valuePaper.name}" />
-							</p:column>
-							<p:column headerText="Währung">
-								<h:outputText
-									value="#{valuePaper.currency.currencyCode} (#{valuePaper.currency.symbol})"
-									rendered="#{valuePaper.type == 'STOCK' or valuePaper.type == 'FUND'}" />
-							</p:column>
-							<p:column headerText="Land">
-								<h:outputText value="#{valuePaper.country}"
-									rendered="#{valuePaper.type == 'STOCK'}" />
-							</p:column>
-							<p:column headerText="ISIN" sortBy="#{valuePaper.code}">
-								<h:outputText value="#{valuePaper.code}" />
-							</p:column>
-							<p:column headerText="Typ" sortBy="#{valuePaper.type}">
-								<h:outputText value="#{valuePaper.type}" />
-							</p:column>
-							<p:column>
-								<h:button value="Details"
-									outcome="/protected/valuepaper/valuepaperview">
-									
-									<f:param name="valuePaperCode" value="#{valuePaper.code}" />
-								</h:button>
-							</p:column>
-						</p:dataTable>
-					</p:panel>
-
-						</p:layoutUnit>
-						
-						<p:layoutUnit position="east" resizable="true" size="400"
-							minSize="50" maxSize="500" style="border: 0">
-							
-
-							  <p:graphicImage value="#{stockMarketGameViewBean.image}" style="max-width:800px;max-height:400px;"
-							  rendered="#{stockMarketGameViewBean.stockMarketGame.logo != null}">
-	    						<f:param name="gameID" value="#{stockMarketGameViewBean.stockMarketGame.id}" />
-	    					</p:graphicImage>
-	    			 	
-	    			 	<p:panel id="additional" header="Zusätzliche Informationen/Beschreibung"
-								rendered="#{stockMarketGameViewBean.stockMarketGame.text!=null}">
-
-									<p:outputLabel value="#{stockMarketGameViewBean.stockMarketGame.text}" />
-								
-
-							</p:panel>
-						</p:layoutUnit>
-					
-				</p:layout>
-					
-					
-				</c:when>
+					<ui:include src="_game.xhtml">
+ 						<ui:param name="gameId" value="#{stockMarketGameViewBean.gameID}" />
+   					</ui:include>
+   				</c:when>
 
 				<c:otherwise>
 					<h:outputText value="Börsenspiel-ID existiert nicht" />
 				</c:otherwise>
 
-			</c:choose>
-		</h:form>
+		</c:choose>
+
 		
 	</ui:define>
 
