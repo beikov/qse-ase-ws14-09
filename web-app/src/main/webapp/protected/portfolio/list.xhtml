@@ -9,7 +9,7 @@
 
 	<!-- content -->
 	<ui:define name="body">
-		<p:dataTable var="portfolio" value="#{portfolioBean.getUserPortfolios(user)}">
+		<p:dataTable id="portfolioTable" var="portfolio" value="#{portfolioBean.getUserPortfolios()}">
 			<f:facet name="header">
 		        Liste der Portfolios
 		    </f:facet>

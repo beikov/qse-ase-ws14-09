@@ -148,7 +148,7 @@ public class Portfolio extends BaseEntity<Long> {
 	}
 
 	@ManyToMany
-	@JoinTable(name = "user_user", 
+	@JoinTable(name = "user_portfolio", 
 		joinColumns = { @JoinColumn(name = "portfolio_id", referencedColumnName = CustomNamingStrategy.COLUMN_PREFIX + "id") }, 
 		inverseJoinColumns = { @JoinColumn(name = "user_id", referencedColumnName = CustomNamingStrategy.COLUMN_PREFIX + "id") }
 	)

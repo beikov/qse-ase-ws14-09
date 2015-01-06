@@ -1,16 +1,24 @@
 package at.ac.tuwien.ase09.data;
 
+import java.util.ArrayList;
 import java.util.Currency;
 import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import javax.persistence.metamodel.EntityType;
+import javax.persistence.metamodel.Metamodel;
+import javax.persistence.metamodel.SingularAttribute;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.ejb.EntityManagerImpl;
+import org.hibernate.jpa.internal.EntityManagerImpl;
 
 import at.ac.tuwien.ase09.filter.AttributeFilter;
 import at.ac.tuwien.ase09.filter.AttributeType;
@@ -93,60 +101,65 @@ public class ValuePaperScreenerAccess {
 	}
 	
 	/*
-	 * Searchmethod used by AndroidApp
+	 * Search method used by the Android app
 	 * 
-	 * @param valuePaper Wertpapier
-	 * @param isTypeSpecificated Wertpapiertyp ausgewählt
+	 * @param valuePaperType
+	 * @param template
 	 * 
-	 * @return Liste der übereinstimmenden Wertpapiere
+	 * @return List of matching value papers
 	 */
 	@SuppressWarnings("unchecked")
-	public List<ValuePaper> findByValuePaper(ValuePaper valuePaper, Boolean isTypeSecificated) {
-		
-		
-		Criteria crit = null;
-		
-		try{
-			crit=((Session)em.getDelegate()).createCriteria(ValuePaper.class, "valuePaper");
+	public List<ValuePaper> findByValuePaper(ValuePaperType valuePaperType, ValuePaper template) {
+		if(template == null){
+			throw new NullPointerException("template");
 		}
-		catch(ClassCastException e)
-		{
-			crit=((Session)((EntityManagerImpl)em.getDelegate()).getSession()).createCriteria(ValuePaper.class, "valuePaper");
+		if(valuePaperType != null && template.getType() != valuePaperType){
+			throw new IllegalArgumentException("If a value paper type is specified, the template must be of this type");
+		}
+
+		Metamodel m = em.getMetamodel();
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<ValuePaper> cq = cb.createQuery(ValuePaper.class);
+		
+		Root<? extends ValuePaper> valuePaperRoot;
+		
+		if (valuePaperType == ValuePaperType.STOCK){
+			valuePaperRoot = cq.from(Stock.class);
+		}else{
+			valuePaperRoot = cq.from(ValuePaper.class);
 		}
 		
-		if (valuePaper != null) {
-			if (valuePaper.getName() != null && !valuePaper.getName().isEmpty()) {
-				String name = valuePaper.getName().replace('*', '%')
-						.replace('?', '_');
-				crit.add(Restrictions.ilike("valuePaper.name", name));
-			}
-			if (valuePaper.getType() == ValuePaperType.STOCK
-					&& ((Stock) valuePaper).getCurrency() != null) {
-				crit.add(Restrictions.eq("valuePaper.currency",
-						((Stock) valuePaper).getCurrency()));
-			}
-			if (valuePaper.getCode() != null && !valuePaper.getCode().isEmpty()) {
-				String isin = valuePaper.getCode().replace('*', '%')
-						.replace('?', '_');
-				crit.add(Restrictions.ilike("valuePaper.code", isin));
-			}
-			if (valuePaper.getType() == ValuePaperType.STOCK
-					&& ((Stock) valuePaper).getCountry() != null
-					&& !((Stock) valuePaper).getCountry().isEmpty()) {
-				String co = ((Stock) valuePaper).getCountry().replace('*', '%')
-						.replace('?', '_');
-				crit.add(Restrictions.ilike("valuePaper.country", co));
-			}
+		EntityType<ValuePaper> valuePaperMetamodel = m.entity(ValuePaper.class);
 		
-		
+		List<Predicate> disjunctivePredicates = new ArrayList<>();
+		if (template.getName() != null) {
+			String name = template.getName().replace('*', '%')
+					.replace('?', '_');
 			
-			if(isTypeSecificated)
-			{	
-				crit.add(Restrictions.eq("class", valuePaper.getType().toString()));
+			disjunctivePredicates.add(cb.like(cb.lower(valuePaperRoot.get(valuePaperMetamodel.getSingularAttribute("name", String.class))), name.toLowerCase()));
+		}
+		if (template.getCode() != null) {
+			String isin = template.getCode().replace('*', '%')
+					.replace('?', '_');
+			disjunctivePredicates.add(cb.like(cb.lower(valuePaperRoot.get(valuePaperMetamodel.getSingularAttribute("code", String.class))), isin.toLowerCase()));
+		}
+		if (valuePaperType == ValuePaperType.STOCK){
+			Stock stock = (Stock) template;
+			EntityType<Stock> stockMetamodel = m.entity(Stock.class);
+ 			if(stock.getTickerSymbol() != null){
+				String tickerSymbol = stock.getTickerSymbol().replace('*', '%')
+						.replace('?', '_');
+				disjunctivePredicates.add(cb.like(cb.lower(valuePaperRoot.get((SingularAttribute<ValuePaper, String>) stockMetamodel.getSingularAttribute("tickerSymbol", String.class))), tickerSymbol.toLowerCase()));
 			}
 		}
-		return crit.list();
 		
+		if(valuePaperType != null){
+			cq.where(cb.equal(valuePaperRoot.type(), valuePaperType.toString()));
+		}
 		
+		cq.select(valuePaperRoot);
+		cq.where(cb.or(disjunctivePredicates.toArray(new Predicate[0])));
+	
+		return em.createQuery(cq).getResultList();
 	}
 }

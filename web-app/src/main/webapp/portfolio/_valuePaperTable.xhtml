@@ -11,7 +11,8 @@
 	<p:dataTable var="association" value="#{portfolioViewBean.valuePaperList}" rows="5"
                          paginator="true"
                          paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                         rowsPerPageTemplate="5,10,15">
+                         rowsPerPageTemplate="5,10,15"
+                         emptyMessage="Keine Wertpapiere vorhanden">
                          
 		<c:set var="paper" value="#{association.valuePaper}" />
           	
@@ -32,7 +33,7 @@
 	        <h:outputText value="#{payedLong/association.volume}" /> -->
 	    </p:column>
 	    <p:column headerText="Gewinn/Verlust *">
-	        <h:outputText value="#{portfolioViewBean.getProfit(association)}" />
+	        <h:outputText value="#{portfolioViewBean.getProfit(paper.code)}" />
 	    </p:column>
 	    <p:column headerText="Performance *">
 	        <ase:valuePaperPerformance code="#{paper.code}" />

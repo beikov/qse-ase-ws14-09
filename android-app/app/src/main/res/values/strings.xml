@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Portfolio Simulation</string>
+    <string name="menu_portfolio_view">Portfolioansicht</string>
+    <string name="menu_valuepaper_search">Wertpapiersuche</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_logout">Logout</string>
+    <string name="action_portfolio_context">Portfolio wechseln</string>
+    <string name="tab_performance">Performance</string>
+    <string name="tab_transactions">Transaktionen</string>
+    <string name="tab_valuepapers">Wertpapiere</string>
+    <string name="tab_orders">Order</string>
+    <string name="filter_hint">Name, ISIN, Symbol</string>
+    <string name="stock">Aktie</string>
+    <string name="fund">Fond</string>
+    <string name="stockbond">Aktienanleihe</string>
+    <string name="valuePaperTypeLabel">Wertpapiertyp:</string>
+</resources>
