@@ -4,21 +4,30 @@ import static org.junit.Assert.*;
 
 import javax.inject.Inject;
 
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.shrinkwrap.api.Archive;
 import org.junit.Test;
 
 import at.ac.tuwien.ase09.data.UserDataAccess;
+import at.ac.tuwien.ase09.data.ValuePaperDataAccess;
 import at.ac.tuwien.ase09.exception.EntityNotFoundException;
 import at.ac.tuwien.ase09.model.User;
-import at.ac.tuwien.ase09.test.AbstractContainerTest;
+import at.ac.tuwien.ase09.test.AbstractServiceTest;
 import at.ac.tuwien.ase09.test.Assert;
 import at.ac.tuwien.ase09.test.DatabaseAware;
 
 @DatabaseAware
-public class UserDataAccessTest extends AbstractContainerTest<UserDataAccessTest>{
+public class UserDataAccessTest extends AbstractServiceTest<UserDataAccessTest>{
 	private static final long serialVersionUID = 1L;
 
 	@Inject
 	private UserDataAccess userDataAccess;
+	
+	@Deployment
+	public static Archive<?> createDeployment() {
+		return createServiceTestBaseDeployment()
+				.addClass(UserDataAccess.class);
+	}
 	
 	@Test
 	public void testGetUserByUsername(){

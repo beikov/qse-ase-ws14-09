@@ -9,7 +9,6 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.EntityType;
@@ -19,7 +18,7 @@ import javax.persistence.metamodel.SingularAttribute;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.ejb.EntityManagerImpl;
+import org.hibernate.jpa.internal.EntityManagerImpl;
 
 import at.ac.tuwien.ase09.filter.AttributeFilter;
 import at.ac.tuwien.ase09.filter.AttributeType;
