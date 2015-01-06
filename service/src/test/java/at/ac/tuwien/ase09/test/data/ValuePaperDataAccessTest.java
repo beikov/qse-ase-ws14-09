@@ -9,6 +9,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 
 import at.ac.tuwien.ase09.data.ValuePaperDataAccess;
@@ -20,17 +23,22 @@ import at.ac.tuwien.ase09.model.NewsItem;
 import at.ac.tuwien.ase09.model.Stock;
 import at.ac.tuwien.ase09.model.StockBond;
 import at.ac.tuwien.ase09.model.ValuePaper;
-import at.ac.tuwien.ase09.test.AbstractContainerTest;
+import at.ac.tuwien.ase09.test.AbstractServiceTest;
 import at.ac.tuwien.ase09.test.Assert;
 import at.ac.tuwien.ase09.test.DatabaseAware;
 
 @DatabaseAware
-public class ValuePaperDataAccessTest extends AbstractContainerTest<ValuePaperDataAccessTest>{
+public class ValuePaperDataAccessTest extends AbstractServiceTest<ValuePaperDataAccessTest>{
 	private static final long serialVersionUID = 1L;
 
 	@Inject
 	private ValuePaperDataAccess valuePaperDataAccess;
 	
+	@Deployment
+	public static Archive<?> createDeployment() {
+		return createServiceTestBaseDeployment()
+				.addClass(ValuePaperDataAccess.class);
+	}
 	
 	@Test
 	public void testGetValuePaperByCode_nonExistent(){

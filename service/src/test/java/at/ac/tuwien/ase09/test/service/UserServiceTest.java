@@ -7,21 +7,31 @@ import java.util.Arrays;
 
 import javax.inject.Inject;
 
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.shrinkwrap.api.Archive;
 import org.junit.Test;
 
+import at.ac.tuwien.ase09.data.PortfolioDataAccess;
 import at.ac.tuwien.ase09.data.UserDataAccess;
 import at.ac.tuwien.ase09.model.User;
+import at.ac.tuwien.ase09.service.PortfolioService;
 import at.ac.tuwien.ase09.service.UserService;
-import at.ac.tuwien.ase09.test.AbstractContainerTest;
+import at.ac.tuwien.ase09.test.AbstractServiceTest;
 import at.ac.tuwien.ase09.test.Assert;
 import at.ac.tuwien.ase09.test.DatabaseAware;
 
 @DatabaseAware
-public class UserServiceTest extends AbstractContainerTest<UserServiceTest>{
+public class UserServiceTest extends AbstractServiceTest<UserServiceTest>{
 	private static final long serialVersionUID = 1L;
 	
 	@Inject
 	private UserService userService;
+	
+	@Deployment
+	public static Archive<?> createDeployment() {
+		return createServiceTestBaseDeployment()
+				.addClasses(UserService.class);
+	}
 	
 	@Test
 	public void testSaveUser(){

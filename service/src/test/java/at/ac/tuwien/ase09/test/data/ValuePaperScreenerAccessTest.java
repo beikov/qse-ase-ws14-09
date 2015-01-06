@@ -11,11 +11,14 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.shrinkwrap.api.Archive;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import at.ac.tuwien.ase09.data.ValuePaperPriceEntryDataAccess;
 import at.ac.tuwien.ase09.data.ValuePaperScreenerAccess;
 import at.ac.tuwien.ase09.filter.AttributeFilter;
 import at.ac.tuwien.ase09.filter.AttributeType;
@@ -25,18 +28,25 @@ import at.ac.tuwien.ase09.model.Stock;
 import at.ac.tuwien.ase09.model.StockBond;
 import at.ac.tuwien.ase09.model.ValuePaper;
 import at.ac.tuwien.ase09.model.ValuePaperType;
-import at.ac.tuwien.ase09.test.AbstractContainerTest;
+import at.ac.tuwien.ase09.test.AbstractServiceTest;
 import at.ac.tuwien.ase09.test.Assert;
 import at.ac.tuwien.ase09.test.DatabaseAware;
 
 @DatabaseAware
-public class ValuePaperScreenerAccessTest extends AbstractContainerTest<ValuePaperScreenerAccessTest>{
+public class ValuePaperScreenerAccessTest extends AbstractServiceTest<ValuePaperScreenerAccessTest>{
 
 	
 	private static final long serialVersionUID = 1L;
 	
 	@Inject
 	private ValuePaperScreenerAccess valuePaperScreener;
+	
+	@Deployment
+	public static Archive<?> createDeployment() {
+		return createServiceTestBaseDeployment()
+				.addPackage("at.ac.tuwien.ase09.filter")
+				.addClass(ValuePaperScreenerAccess.class);
+	}
 	
 	@Before
 	public void  init()

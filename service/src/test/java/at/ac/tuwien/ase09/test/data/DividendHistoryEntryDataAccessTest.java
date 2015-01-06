@@ -10,11 +10,13 @@ import at.ac.tuwien.ase09.data.AnalystOpinionDataAccess;
 import at.ac.tuwien.ase09.data.DividendHistoryEntryDataAccess;
 import at.ac.tuwien.ase09.data.NewsItemDataAccess;
 import at.ac.tuwien.ase09.exception.EntityNotFoundException;
-import at.ac.tuwien.ase09.test.AbstractContainerTest;
+import at.ac.tuwien.ase09.test.AbstractServiceTest;
 import at.ac.tuwien.ase09.test.Assert;
 
 import javax.inject.Inject;
 
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.shrinkwrap.api.Archive;
 import org.junit.Test;
 
 import at.ac.tuwien.ase09.model.AnalystOpinion;
@@ -22,15 +24,20 @@ import at.ac.tuwien.ase09.model.DividendHistoryEntry;
 import at.ac.tuwien.ase09.model.NewsItem;
 import at.ac.tuwien.ase09.model.Stock;
 import at.ac.tuwien.ase09.test.DatabaseAware;
-import at.ac.tuwien.ase09.test.AbstractContainerTest;
+import at.ac.tuwien.ase09.test.AbstractServiceTest;
 
 @DatabaseAware
-public class DividendHistoryEntryDataAccessTest extends AbstractContainerTest<DividendHistoryEntryDataAccessTest>{
+public class DividendHistoryEntryDataAccessTest extends AbstractServiceTest<DividendHistoryEntryDataAccessTest>{
 	private static final long serialVersionUID = 1L;
 
 	@Inject
 	private DividendHistoryEntryDataAccess dividendHistoryEntryDataAccess;
 
+	@Deployment
+	public static Archive<?> createDeployment() {
+		return createServiceTestBaseDeployment()
+				.addClasses(DividendHistoryEntryDataAccess.class);
+	}
 
 	@Test
 	public void testGetDividendHistoryEntryByValuePaperCode_nonExistentDividends(){

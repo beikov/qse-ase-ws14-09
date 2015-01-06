@@ -50,11 +50,11 @@
 				</h:panelGrid>
 				
 					<h:outputText value="Sichtbarkeit" />
-					<pa:portfolioVisibility visibilitySettings="#{portfolioCreationViewBean.portfolio.visibility}" />
+					<pa:portfolioVisibility id="portfolioVisibility" visibilitySettings="#{portfolioCreationViewBean.portfolio.visibility}" />
 
 				<h:panelGrid columns="2" cellpadding="10" style="width: 40%">
-					<p:commandButton value="Reset" type="reset" />
-					<p:commandButton value="Erstellen"
+					<p:commandButton id="reset" value="Reset" type="reset" />
+					<p:commandButton id="save" value="Erstellen"
 						action="#{portfolioCreationViewBean.create()}" update="createForm"
 						ajax="true" />
 				</h:panelGrid>
