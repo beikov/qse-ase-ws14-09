@@ -7,9 +7,12 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.shrinkwrap.api.Archive;
 import org.junit.Test;
 
 import at.ac.tuwien.ase09.data.TransactionEntryDataAccess;
+import at.ac.tuwien.ase09.data.UserDataAccess;
 import at.ac.tuwien.ase09.exception.AppException;
 import at.ac.tuwien.ase09.model.Portfolio;
 import at.ac.tuwien.ase09.model.Stock;
@@ -18,17 +21,23 @@ import at.ac.tuwien.ase09.model.order.LimitOrder;
 import at.ac.tuwien.ase09.model.order.MarketOrder;
 import at.ac.tuwien.ase09.model.order.Order;
 import at.ac.tuwien.ase09.model.transaction.OrderTransactionEntry;
-import at.ac.tuwien.ase09.test.AbstractContainerTest;
+import at.ac.tuwien.ase09.test.AbstractServiceTest;
 import at.ac.tuwien.ase09.test.Assert;
 import at.ac.tuwien.ase09.test.DatabaseAware;
 
 @DatabaseAware
 public class TransactionEntryDataAccessTest extends
-		AbstractContainerTest<ValuePaperDataAccessTest> {
+		AbstractServiceTest<TransactionEntryDataAccessTest> {
 	private static final long serialVersionUID = 1L;
 
 	@Inject
 	private TransactionEntryDataAccess transactionEntryDataAccess;
+	
+	@Deployment
+	public static Archive<?> createDeployment() {
+		return createServiceTestBaseDeployment()
+				.addClass(TransactionEntryDataAccess.class);
+	}
 	
 	@Test
 	public void testGetOrderTransactionsForValuePaper() {

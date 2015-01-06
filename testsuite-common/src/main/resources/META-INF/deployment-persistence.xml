@@ -1,0 +1,16 @@
+<persistence version="2.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+    <persistence-unit name="PortfolioTestPU" transaction-type="JTA">
+        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+		<jta-data-source>java:jboss/datasources/ASETestDS</jta-data-source>
+		
+		<mapping-file>META-INF/entityClasses.xml</mapping-file>
+    	<properties>
+			<property name="hibernate.show_sql" value="true"/>
+			<property name="hibernate.format_sql" value="false"/>
+			<property name="hibernate.ejb.naming_strategy" value="at.ac.tuwien.ase09.naming.CustomNamingStrategy"/>
+			
+			<!-- Required due to a hibernate bug where the hibernate_sequence is not created on H2 -->
+			<property name="hibernate.id.new_generator_mappings" value="false" />
+		</properties>
+    </persistence-unit>
+</persistence>

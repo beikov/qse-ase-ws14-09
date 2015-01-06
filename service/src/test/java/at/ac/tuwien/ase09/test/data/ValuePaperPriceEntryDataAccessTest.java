@@ -11,8 +11,11 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.shrinkwrap.api.Archive;
 import org.junit.Test;
 
+import at.ac.tuwien.ase09.data.ValuePaperDataAccess;
 import at.ac.tuwien.ase09.data.ValuePaperPriceEntryDataAccess;
 import at.ac.tuwien.ase09.exception.EntityNotFoundException;
 import at.ac.tuwien.ase09.model.Fund;
@@ -22,16 +25,22 @@ import at.ac.tuwien.ase09.model.Stock;
 import at.ac.tuwien.ase09.model.User;
 import at.ac.tuwien.ase09.model.ValuePaperHistoryEntry;
 import at.ac.tuwien.ase09.model.ValuePaperPriceEntry;
-import at.ac.tuwien.ase09.test.AbstractContainerTest;
+import at.ac.tuwien.ase09.test.AbstractServiceTest;
 import at.ac.tuwien.ase09.test.Assert;
 import at.ac.tuwien.ase09.test.DatabaseAware;
 
 @DatabaseAware
-public class ValuePaperPriceEntryDataAccessTest extends AbstractContainerTest<ValuePaperPriceEntryDataAccessTest>{
+public class ValuePaperPriceEntryDataAccessTest extends AbstractServiceTest<ValuePaperPriceEntryDataAccessTest>{
 	private static final long serialVersionUID = 1L;
 
 	@Inject
 	private ValuePaperPriceEntryDataAccess valuePaperPriceEntryDataAccess;
+	
+	@Deployment
+	public static Archive<?> createDeployment() {
+		return createServiceTestBaseDeployment()
+				.addClass(ValuePaperPriceEntryDataAccess.class);
+	}
 	
 	@Test
 	public void testGetLastPriceEntry_nonExistentCode(){
