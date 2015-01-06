@@ -50,7 +50,7 @@ public class InstitutionSettingsBean implements Serializable {
 		}
 	}
 	
-	public void saveUpdates() {
+	public void saveChanges() {
 		try {
 			institutionService.update(institution);
 			FacesMessage message = new FacesMessage("Änderungen erfolgreich gespeichert");

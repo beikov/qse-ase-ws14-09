@@ -23,9 +23,6 @@
 		        <li><a href="/protected/valuepaperscreener/simplescreener.xhtml">Wertpapiersuche</a></li>
 		        <li><h:link value="Watches" outcome="/protected/watches/watch.xhtml" /></li>
 		        <li><h:link value="Börsenspiele" outcome="/protected/game/search.xhtml" /></li>
-		        <!-- c:if check if current user is institutionadmin -->
-		        	<li><h:link value="Institutionseinstellungen" outcome="/protected/institution/institutionSettings.xhtml" /></li>
-		        <!-- </c:if> -->
 		    </ul>
 		    
 		    <ul class="nav navbar-nav navbar-right">
@@ -46,6 +43,9 @@
 							<li>
 								<p:link value="Account-Einstellungen" outcome="/protected/user/profileSettings" />
 							</li>
+							<!-- <c:if test="#{userBean.institutionAdmin}"> -->
+					        	<li><h:link value="Institutions-Einstellungen" outcome="/protected/institution/institutionSettings.xhtml" /></li>
+					        <!-- </c:if> -->
 							<li class="divider"></li>
 							<li>
 								<a href="/auth/realms/portfolio-web/tokens/logout?redirect_uri=/">
