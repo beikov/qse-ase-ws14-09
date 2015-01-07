@@ -19,6 +19,7 @@ public class NotificationService {
 	
 	public void setRead(Notification n){
 		n.setRead(true);
+		n.setPushed(true);
 		em.merge(n);
 	}
 	

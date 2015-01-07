@@ -14,18 +14,24 @@
 </composite:interface>
 
 <composite:implementation>
-
 	<h:form id="form1">
+			<p:growl id="notificationGrowl" showDetail="true" />
+		<p:poll interval="5" listener="#{notificationBean.checkNewNotifications}" update="notificationGrowl countTxt" />
+		
+		
 		<p:commandButton id="notificationBtn" icon="ui-icon-mail-closed"
 			update="notificationTable countTxt"
-			actionListener="#{notificationBean.bla()}" />
+			actionListener="#{notificationBean.read()}" />
 		<h:outputText id="countTxt" value="#{notificationBean.unreadCount}" />
 		<p:overlayPanel id="notificationPanel" widgetVar="ovl"
 			for="form1:notificationBtn" hideEffect="fade" style="width:500px">
 			<p:dataTable id="notificationTable" widgetVar="ovlList"
-				var="notifications" value="#{notificationBean.notifications}"
+				var="notifications" value="#{notificationBean.notifications}" 
 				scrollable="true" scrollHeight="200" scrollRows="5"
-				liveScroll="true" emptyMessage="Keine Notifikationen verfügbar">
+				liveScroll="true" emptyMessage="Keine Notifikationen verfügbar"
+				selection="#{notificationBean.selectedNotification}" selectionMode="single"
+                rowKey="#{notifications.id}">
+				<p:ajax event="rowSelect" listener="#{notificationBean.onRowSelect}" />  
 				<f:attribute name="collectionType" value="java.util.ArrayList" />
 				<p:column id="icon" style="width:50px">
 					<p:graphicImage

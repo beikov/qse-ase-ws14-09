@@ -22,7 +22,7 @@
 		        <li><a href="/protected/valuepaperscreener/simplescreener.xhtml">Wertpapiersuche</a></li>
 		        <li><h:link value="Watches" outcome="/protected/watches/watch.xhtml" /></li>
 		   		<c:if test="#{user.username != 'Gast'}">	        	
-		         <li>	<cp:notifications /> </li>
+		         <li>	<cp:notifications id="notificationComponent"/> </li>
 		   		</c:if>
 		      </ul>
 		</div> <!--/.navbar-collapse -->

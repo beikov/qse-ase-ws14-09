@@ -23,40 +23,31 @@ public class NotificationDataAccess {
 	@Inject
 	private EntityManager em;
 
-	public List<? extends Notification> getNotificationsForUser(User u){
+	public List<? extends Notification> getNotificationsForUser(User user){
 		try{
-			List<Notification> notifications = new ArrayList<Notification>();
-			List<FollowerAddedNotification> fan = em.createQuery("FROM FollowerAddedNotification n WHERE n.user = :user ORDER BY n.created", FollowerAddedNotification.class).setParameter("user", u).getResultList();
-			List<FollowerTransactionAddedNotification> ftan = em.createQuery("FROM FollowerTransactionAddedNotification n WHERE n.user = :user ORDER BY n.created", FollowerTransactionAddedNotification.class).setParameter("user", u).getResultList();
-			List<GameStartedNotification> gsn = em.createQuery("FROM GameStartedNotification n WHERE n.user = :user ORDER BY n.created", GameStartedNotification.class).setParameter("user", u).getResultList();
-			List<WatchTriggeredNotification> wtn = em.createQuery("FROM WatchTriggeredNotification n WHERE n.user = :user ORDER BY n.created", WatchTriggeredNotification.class).setParameter("user", u).getResultList();
-			for (FollowerAddedNotification n : fan) {
-				Hibernate.initialize(n);
-				Hibernate.initialize(n.getFollower());
-				Hibernate.initialize(n.getUser());
+			List<Notification> ret = em.createQuery("FROM Notification n WHERE n.user = :user ORDER BY n.created DESC", Notification.class).setParameter("user", user).getResultList();
+		
+			for (Notification notification : ret) {
+				switch (notification.getType()) {
+				case FOLLOWER_ADDED: 
+					Hibernate.initialize(((FollowerAddedNotification)notification).getFollower());
+					break;
+				case FOLLOWER_TRANSACTION_ADDED:
+					Hibernate.initialize(((FollowerTransactionAddedNotification)notification).getTransactionEntry());
+					break;
+				case GAME_STARTED:
+					Hibernate.initialize(((GameStartedNotification)notification).getGame());
+					break;
+				case WATCH_TRIGGERED: 
+					Hibernate.initialize(((WatchTriggeredNotification)notification).getWatch());
+					break;
+				}
+				Hibernate.initialize(notification);
+				Hibernate.initialize(notification.getCreated());
+				Hibernate.initialize(notification.getUser());
 			}
-			for (FollowerTransactionAddedNotification n : ftan) {
-				Hibernate.initialize(n);
-				Hibernate.initialize(n.getTransactionEntry());
-				Hibernate.initialize(n.getUser());
-			}
-			for (GameStartedNotification n : gsn) {
-				Hibernate.initialize(n);
-				Hibernate.initialize(n.getGame());
-				Hibernate.initialize(n.getUser());
-			}
-			for (WatchTriggeredNotification n : wtn) {
-				Hibernate.initialize(n);
-				Hibernate.initialize(n.getWatch());
-				Hibernate.initialize(n.getUser());
-			}
-			
-			notifications.addAll(fan);
-			notifications.addAll(ftan);
-			notifications.addAll(gsn);
-			notifications.addAll(wtn);
-			
-			return notifications;
+
+			return ret;
 		}catch(Exception e){
 			throw new AppException(e);
 		}
@@ -75,6 +66,41 @@ public class NotificationDataAccess {
 			return  em.createQuery("SELECT count(n) FROM Notification n WHERE n.user = :user AND n.read = false", Long.class).setParameter("user", user).getSingleResult().intValue();
 		}catch(Exception e){
 			throw new AppException(e);
+		}
+	}
+
+	public List<Notification> getUnpushedNotifications(User user) {
+		try{
+			List<Notification> ret = em.createQuery("FROM Notification n WHERE n.user = :user AND n.pushed = false ORDER BY n.created DESC", Notification.class).setParameter("user", user).getResultList();
+			em.createQuery("UPDATE Notification n SET n.pushed = true WHERE n.user = :user AND n.pushed = false").setParameter("user", user).executeUpdate();	
+
+			initialize(ret);
+
+			return ret;
+		}catch(Exception e){
+			throw new AppException(e);
+		}
+	}
+
+	private void initialize(List<Notification> ret) {
+		for (Notification notification : ret) {
+			switch (notification.getType()) {
+			case FOLLOWER_ADDED: 
+				Hibernate.initialize(((FollowerAddedNotification)notification).getFollower());
+				break;
+			case FOLLOWER_TRANSACTION_ADDED:
+				Hibernate.initialize(((FollowerTransactionAddedNotification)notification).getTransactionEntry());
+				break;
+			case GAME_STARTED:
+				Hibernate.initialize(((GameStartedNotification)notification).getGame());
+				break;
+			case WATCH_TRIGGERED: 
+				Hibernate.initialize(((WatchTriggeredNotification)notification).getWatch());
+				break;
+			}
+			Hibernate.initialize(notification);
+			Hibernate.initialize(notification.getCreated());
+			Hibernate.initialize(notification.getUser());
 		}
 	}
 
