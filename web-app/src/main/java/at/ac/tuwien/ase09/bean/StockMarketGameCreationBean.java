@@ -282,6 +282,8 @@ public class StockMarketGameCreationBean implements Serializable {
 			orderFee = stockMarketGame.getSetting().getOrderFee().getValue();
 			portfolioFee = stockMarketGame.getSetting().getPortfolioFee().getValue();
 			capitalReturnTax = stockMarketGame.getSetting().getCapitalReturnTax();
+			
+			allowedValuePapers = stockMarketGame.getAllowedValuePapers();
 		}
 		else{
 
