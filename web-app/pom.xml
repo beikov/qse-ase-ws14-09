@@ -40,7 +40,7 @@
 			<artifactId>rest-impl</artifactId>
 			<type>ejb</type>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.primefaces</groupId>
 			<artifactId>primefaces</artifactId>
@@ -49,7 +49,7 @@
 			<groupId>org.keycloak</groupId>
 			<artifactId>keycloak-wildfly-adapter</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.webjars</groupId>
 			<artifactId>codemirror</artifactId>
@@ -70,8 +70,26 @@
 		
 		<!-- Test -->
 		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>testsuite-common</artifactId>
+		</dependency>
+
+		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 		</dependency>
+
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.arquillian.graphene</groupId>
+			<artifactId>graphene-webdriver</artifactId>
+			<type>pom</type>
+			<version>2.0.3.Final</version>
+		</dependency>
+
 	</dependencies>
 </project>

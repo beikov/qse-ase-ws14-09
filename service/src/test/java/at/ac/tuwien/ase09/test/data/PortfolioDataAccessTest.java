@@ -20,10 +20,16 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.shrinkwrap.api.Archive;
 import org.junit.Before;
 import org.junit.Test;
 
+import at.ac.tuwien.ase09.data.AnalystOpinionDataAccess;
+import at.ac.tuwien.ase09.data.NewsItemDataAccess;
 import at.ac.tuwien.ase09.data.PortfolioDataAccess;
+import at.ac.tuwien.ase09.data.TransactionEntryDataAccess;
+import at.ac.tuwien.ase09.data.ValuePaperPriceEntryDataAccess;
 import at.ac.tuwien.ase09.model.AnalystOpinion;
 import at.ac.tuwien.ase09.model.AnalystRecommendation;
 import at.ac.tuwien.ase09.model.Fund;
@@ -47,11 +53,11 @@ import at.ac.tuwien.ase09.model.order.OrderStatus;
 import at.ac.tuwien.ase09.model.transaction.OrderFeeTransactionEntry;
 import at.ac.tuwien.ase09.model.transaction.OrderTransactionEntry;
 import at.ac.tuwien.ase09.model.transaction.TransactionEntry;
-import at.ac.tuwien.ase09.test.AbstractContainerTest;
+import at.ac.tuwien.ase09.test.AbstractServiceTest;
 import at.ac.tuwien.ase09.test.DatabaseAware;
 
 @DatabaseAware
-public class PortfolioDataAccessTest extends AbstractContainerTest<PortfolioDataAccessTest> {
+public class PortfolioDataAccessTest extends AbstractServiceTest<PortfolioDataAccessTest> {
 	private static final long serialVersionUID = 1L;
 	
 	private SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
@@ -64,6 +70,18 @@ public class PortfolioDataAccessTest extends AbstractContainerTest<PortfolioData
 	
 	@Inject
 	private PortfolioDataAccess portfolioDataAccess;
+	
+	@Deployment
+	public static Archive<?> createDeployment() {
+		return createServiceTestBaseDeployment()
+				.addClasses(
+						PortfolioDataAccess.class,
+						ValuePaperPriceEntryDataAccess.class, 
+						NewsItemDataAccess.class, 
+						AnalystOpinionDataAccess.class,
+						TransactionEntryDataAccess.class
+				);
+	}
 	
 	@Before
 	public void createPortfolio() throws ParseException {

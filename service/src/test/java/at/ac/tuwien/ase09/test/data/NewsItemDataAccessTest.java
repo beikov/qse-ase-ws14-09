@@ -7,21 +7,32 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.shrinkwrap.api.Archive;
 import org.junit.Test;
 
+import at.ac.tuwien.ase09.data.AnalystOpinionDataAccess;
 import at.ac.tuwien.ase09.data.NewsItemDataAccess;
+import at.ac.tuwien.ase09.data.PortfolioDataAccess;
+import at.ac.tuwien.ase09.data.TransactionEntryDataAccess;
+import at.ac.tuwien.ase09.data.ValuePaperPriceEntryDataAccess;
 import at.ac.tuwien.ase09.model.NewsItem;
 import at.ac.tuwien.ase09.model.Stock;
-import at.ac.tuwien.ase09.test.AbstractContainerTest;
+import at.ac.tuwien.ase09.test.AbstractServiceTest;
 import at.ac.tuwien.ase09.test.DatabaseAware;
 
 @DatabaseAware
-public class NewsItemDataAccessTest extends AbstractContainerTest<NewsItemDataAccessTest>{
+public class NewsItemDataAccessTest extends AbstractServiceTest<NewsItemDataAccessTest>{
 	private static final long serialVersionUID = 1L;
 
 	@Inject
 	private NewsItemDataAccess newItemDataAccess;
 
+	@Deployment
+	public static Archive<?> createDeployment() {
+		return createServiceTestBaseDeployment()
+				.addClasses(NewsItemDataAccess.class);
+	}
 
 	@Test
 	public void testGetNewsItemsByValuePaperCode_nonExistentNewsItems(){

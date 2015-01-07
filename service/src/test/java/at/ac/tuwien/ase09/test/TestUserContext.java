@@ -1,12 +1,10 @@
 package at.ac.tuwien.ase09.test;
 
 import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.Alternative;
 
 import at.ac.tuwien.ase09.context.UserContext;
 import at.ac.tuwien.ase09.model.User;
 
-@Alternative
 @RequestScoped
 public class TestUserContext implements UserContext {
 

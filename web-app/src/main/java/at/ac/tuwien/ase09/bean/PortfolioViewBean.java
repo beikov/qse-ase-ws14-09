@@ -220,7 +220,7 @@ public class PortfolioViewBean implements Serializable {
 		return OrderStatus.values();
 	}
 	
-	public void setWebUserContext(WebUserContext webUserContext) {
+	public void setUserContext(UserContext webUserContext) {
 		this.userContext = webUserContext;
 	}
 	
