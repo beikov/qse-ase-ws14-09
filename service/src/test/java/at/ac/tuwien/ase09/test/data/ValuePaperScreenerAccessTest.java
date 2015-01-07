@@ -277,6 +277,15 @@ public class ValuePaperScreenerAccessTest extends AbstractContainerTest<ValuePap
 		
 	}
 	@Test
+	public void testGetCountriesAvailable()
+	{
+		
+		List<String> countries=valuePaperScreener.getUsedCountries();
+		
+		assertEquals(2,countries.size());
+		
+	}
+	@Test
 	public void testCountryFilter_Wildcards()
 	{
 		Stock stockAtx = new Stock();
