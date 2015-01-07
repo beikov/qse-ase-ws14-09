@@ -1,6 +1,10 @@
 package at.ac.tuwien.ase09.parser;
 
 import java.util.BitSet;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.antlr.v4.runtime.ANTLRErrorListener;
 import org.antlr.v4.runtime.ANTLRInputStream;
@@ -41,15 +45,63 @@ import at.ac.tuwien.ase09.parser.PWatchParser.StringLiteralContext;
 import at.ac.tuwien.ase09.parser.PWatchParser.TermExpressionContext;
 import at.ac.tuwien.ase09.parser.PWatchParser.TimestampLiteralContext;
 
-public class PWatchToEPLCompiler extends PWatchBaseVisitor<CharSequence> {
+public class PWatchCompiler extends PWatchBaseVisitor<CharSequence> {
 
-    private final CommonTokenStream tokens;
-
-    public PWatchToEPLCompiler(CommonTokenStream tokens) {
-        this.tokens = tokens;
+	private static final String PRICE_ENTRY_ALIAS = "priceEntry";
+	private static final String STOCK_ALIAS = "stock";
+    private boolean usesPrice = false;
+    private boolean usesOtherAttrs = false;
+    
+    public static String compileJpql(String pwatchExpression) {
+		if (pwatchExpression == null) {
+            throw new NullPointerException("pwatchExpression");
+        }
+        if (pwatchExpression.isEmpty()) {
+            throw new IllegalArgumentException("pwatchExpression");
+        }
+        
+        PWatchLexer lexer = new PWatchLexer(new ANTLRInputStream(pwatchExpression));
+        lexer.removeErrorListeners();
+        lexer.addErrorListener(ERR_LISTENER);
+        CommonTokenStream tokens = new CommonTokenStream(lexer);
+        boolean stringExpressionAllowed = true;
+        PWatchParser parser = new PWatchParser(tokens, stringExpressionAllowed);
+        parser.removeErrorListeners();
+        parser.addErrorListener(ERR_LISTENER);
+        
+        ParserRuleContext ctx = parser.start();
+        
+        PWatchCompiler visitor = new PWatchCompiler();
+        CharSequence result = visitor.visit(ctx);
+        StringBuilder sb = new StringBuilder(result.length() + 100);
+        sb.append("SELECT ");
+    	sb.append(STOCK_ALIAS);
+    	sb.append(" FROM Stock ");
+    	sb.append(STOCK_ALIAS);
+    	sb.append(' ');
+        
+        if (!visitor.usesPrice && ! visitor.usesOtherAttrs) {
+        	throw new IllegalArgumentException("The given expression does not reference any attributes!");
+        }
+        if (visitor.usesPrice) {
+        	sb.append("JOIN ");
+        	sb.append(STOCK_ALIAS);
+        	sb.append(".priceEntries ");
+        	sb.append(PRICE_ENTRY_ALIAS);
+        	sb.append(" ON ");
+        	sb.append(PRICE_ENTRY_ALIAS);
+        	sb.append(".created = (SELECT MAX(e.created) FROM ValuePaperPriceEntry e WHERE e.valuePaper = ");
+        	sb.append(STOCK_ALIAS);
+        	sb.append(") "); 
+        }
+        
+        sb.append("WHERE ");
+        sb.append(result);
+        
+        return sb.toString();
     }
 
-	public static String compile(String pwatchExpression, Long valuePaperId) {
+	public static String compileEpl(String pwatchExpression, Long valuePaperId) {
 		if (pwatchExpression == null) {
             throw new NullPointerException("pwatchExpression");
         }
@@ -71,12 +123,32 @@ public class PWatchToEPLCompiler extends PWatchBaseVisitor<CharSequence> {
         
         ParserRuleContext ctx = parser.start();
         
-        PWatchToEPLCompiler visitor = new PWatchToEPLCompiler(tokens);
+        PWatchCompiler visitor = new PWatchCompiler();
         CharSequence result = visitor.visit(ctx);
         StringBuilder sb = new StringBuilder(result.length() + 100);
-        sb.append("SELECT ");
+        sb.append("SELECT 1 FROM ");
+        
+        if (!visitor.usesPrice && ! visitor.usesOtherAttrs) {
+        	throw new IllegalArgumentException("The given expression does not reference any attributes!");
+        }
+        if (visitor.usesPrice) {
+        	sb.append("ValuePaperPriceEntry(id = ");
+        	sb.append(valuePaperId);
+        	sb.append(").std:lastevent() AS ");
+        	sb.append(PRICE_ENTRY_ALIAS);
+        	sb.append(' ');
+        }
+        if (visitor.usesOtherAttrs) {
+        	sb.append("Stock(id = ");
+        	sb.append(valuePaperId);
+        	sb.append(").std:lastevent() AS ");
+        	sb.append(STOCK_ALIAS);
+        	sb.append(' ');
+        }
+        
+        sb.append("WHERE ");
         sb.append(result);
-        return result.toString();
+        return sb.toString();
 	}
 
     protected static final ANTLRErrorListener ERR_LISTENER = new ANTLRErrorListener() {
@@ -146,12 +218,70 @@ public class PWatchToEPLCompiler extends PWatchBaseVisitor<CharSequence> {
 
 	@Override
 	public CharSequence visitArithmeticAttribute(ArithmeticAttributeContext ctx) {
-		return ctx.getText();
+		return resolveEplAttributePath(ctx.getText());
+	}
+	
+	private static final Map<String, String> attributeMapping = new HashMap<>();
+	
+	static {
+		attributeMapping.put("TRAILING_PE", "trailingPE");
+		attributeMapping.put("FORWARD_PE", "forwardPE");
+		attributeMapping.put("PEG_RATIO", "pEGRatio");
+		attributeMapping.put("ENTERPRISE_VALUE_EBITDA", "enterpriseValueEBITDA");
+		attributeMapping.put("RETURN_ON_ASSETS", "returnonAssets");
+		attributeMapping.put("RETURN_ON_EQUITY", "returnonEquity");
+		attributeMapping.put("NET_INCOME_AVL_TO_COMMON", "netIncomeAvltoCommon");
+		attributeMapping.put("DILUTED_EPS", "dilutedEPS");
+		attributeMapping.put("52_WEEK_CHANGE", "p_52_WeekChange");
+		attributeMapping.put("52_WEEK_HIGH", "p_52_WeekHigh");
+		attributeMapping.put("52_WEEK_LOW", "p_52_WeekLow");
+		attributeMapping.put("50_DAY_MOVING_AVERAGE", "p_50_DayMovingAverage");
+		attributeMapping.put("200_DAY_MOVING_AVERAGE", "p_200_DayMovingAverage");
+		attributeMapping.put("AVG_VOL_3_MONTH", "avgVol_3month");
+		attributeMapping.put("AVG_VOL_10_DAY", "avgVol_10day");
+		attributeMapping.put("FLOAT", "floatVal");
+		attributeMapping.put("PERCENTAGE_HELD_BY_INSIDERS", "percentageHeldbyInsiders");
+		attributeMapping.put("PERCENTAGE_HELD_BY_INSTITUTIONS", "percentageHeldbyInstitutions");
+		attributeMapping.put("SHORT_PERCENTAGE_OF_FLOAT", "shortPercentageofFloat");
+		attributeMapping.put("5_YEAR_AVERAGE_DIVIDEND_YIELD", "p_5YearAverageDividendYield");
+		attributeMapping.put("EX_DIVIDEND_DATE", "ex_DividendDate");
+	}
+	
+	private String resolveEplAttributePath(String attributeName) {
+		String eplAttribute = attributeMapping.get(attributeName);
+		
+		if (eplAttribute == null) {
+			eplAttribute = toCamelCase(attributeName);
+		}
+		
+		if ("price".equals(eplAttribute)) {
+			usesPrice = true;
+			return PRICE_ENTRY_ALIAS + ".price";
+		} else {
+			usesOtherAttrs = true;
+			return STOCK_ALIAS + "." + eplAttribute;
+		}
+	}
+	
+	private static String toCamelCase(String original) {
+		StringBuilder sb = new StringBuilder(original.length());
+		char[] chars = original.toCharArray();
+		
+		for (int i = 0; i < chars.length; i++) {
+			if (chars[i] == '_') {
+				i++;
+				sb.append(Character.toUpperCase(chars[i]));
+			} else {
+				sb.append(Character.toLowerCase(chars[i]));
+			}
+		}
+		
+		return sb.toString();
 	}
 	
 	@Override
 	public CharSequence visitStringAttribute(StringAttributeContext ctx) {
-		return ctx.getText();
+		return resolveEplAttributePath(ctx.getText());
 	}
 
 	@Override
@@ -161,12 +291,57 @@ public class PWatchToEPLCompiler extends PWatchBaseVisitor<CharSequence> {
 
 	@Override
 	public CharSequence visitDateTimeAttribute(DateTimeAttributeContext ctx) {
-		return ctx.getText();
+		return resolveEplAttributePath(ctx.getText());
 	}
+	
+	private static final Pattern timestampLiteralPattern = Pattern.compile("TIMESTAMP\\('(\\d\\d\\d\\d)\\-(\\d\\d)\\-(\\d\\d)(\\s(\\d\\d)\\:(\\d\\d)\\:(\\d\\d)(\\.(\\d\\d\\d))?)?'\\)");
 
 	@Override
 	public CharSequence visitTimestampLiteral(TimestampLiteralContext ctx) {
-		return ctx.getText();
+		Matcher matcher = timestampLiteralPattern.matcher(ctx.getText());
+		if (!matcher.matches()) {
+			ERR_LISTENER.syntaxError(null, null, ctx.start.getLine(), ctx.start.getCharPositionInLine(), "Invalid timestamp literal!", null);
+		}
+		
+		StringBuilder sb = new StringBuilder();
+		sb.append("CURRENT_TIMESTAMP.withDate(");
+		sb.append(trim(matcher.group(1))).append(',');
+		sb.append(trim(matcher.group(2))).append(',');
+		sb.append(trim(matcher.group(3))).append(')');
+		
+		if (matcher.group(4) != null) {
+			sb.append(".withTime(");
+			sb.append(trim(matcher.group(5))).append(',');
+			sb.append(trim(matcher.group(6))).append(',');
+			sb.append(trim(matcher.group(7))).append(',');
+			
+			if (matcher.group(8) != null) {
+				sb.append(trim(matcher.group(9))).append(')');
+			} else {
+				sb.append("0)");
+			}
+		}
+		
+		return sb;
+	}
+	
+	private String trim(String s) {
+		StringBuilder sb = new StringBuilder(s.length());
+		int i = 0;
+		for (; i < s.length(); i++) {
+			if (s.charAt(i) != '0') {
+				break;
+			}
+		}
+		for (; i < s.length(); i++) {
+			sb.append(s.charAt(i));
+		}
+		
+		if (sb.length() == 0) {
+			return "0";
+		}
+		
+		return sb.toString();
 	}
 
 	@Override

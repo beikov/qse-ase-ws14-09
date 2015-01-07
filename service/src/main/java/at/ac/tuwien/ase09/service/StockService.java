@@ -1,6 +1,5 @@
 package at.ac.tuwien.ase09.service;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -16,9 +15,7 @@ import at.ac.tuwien.ase09.event.Added;
 import at.ac.tuwien.ase09.exception.EntityNotFoundException;
 import at.ac.tuwien.ase09.model.DividendHistoryEntry;
 import at.ac.tuwien.ase09.model.Stock;
-import at.ac.tuwien.ase09.model.ValuePaper;
-import at.ac.tuwien.ase09.model.ValuePaperPriceEntry;
-import at.ac.tuwien.ase09.model.event.ValuePaperPriceEntryDTO;
+import at.ac.tuwien.ase09.model.event.StockDTO;
 
 @Stateless
 public class StockService {
@@ -30,21 +27,9 @@ public class StockService {
 
 	@Inject
 	@Added
-	private Event<ValuePaperPriceEntry> priceEntryAdded;
+	private Event<Stock> stockUpdated;
 	@Inject
 	private EventProcessingSingleton epService;
-
-	public void savePriceEntry(ValuePaperPriceEntry pe) {
-		em.persist(pe);
-		priceEntryAdded.fire(pe);
-	}
-
-	public void savePriceEntry(String code, BigDecimal price) {
-		ValuePaperPriceEntry priceEntry = new ValuePaperPriceEntry();
-		priceEntry.setPrice(price);
-		priceEntry.setValuePaper(valuePaperDataAccess.getValuePaperByCode(code, ValuePaper.class));
-		em.persist(priceEntry);
-	}
 
 	public void saveStock(Stock stock) {
 		Stock existingStock = null;
@@ -62,6 +47,8 @@ public class StockService {
 		} else {
 			em.persist(stock);
 		}
+		
+		stockUpdated.fire(stock);
 	}
 
 	public void saveStockDividends(Stock stock, List<DividendHistoryEntry> dividendHistoryEntries) {
@@ -70,8 +57,8 @@ public class StockService {
 		}
 	}
 
-	public void onPriceEntryAdded(@Observes(during = TransactionPhase.AFTER_COMPLETION) @Added ValuePaperPriceEntry pe) {
-		epService.addEvent(new ValuePaperPriceEntryDTO(pe));
+	public void onPriceEntryAdded(@Observes(during = TransactionPhase.AFTER_COMPLETION) @Added Stock pe) {
+		epService.addEvent(new StockDTO(pe));
 	}
 
 }

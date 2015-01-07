@@ -17,8 +17,9 @@ import at.ac.tuwien.ase09.event.Added;
 import at.ac.tuwien.ase09.exception.AppException;
 import at.ac.tuwien.ase09.model.Watch;
 import at.ac.tuwien.ase09.model.event.Constants;
+import at.ac.tuwien.ase09.model.event.StockDTO;
 import at.ac.tuwien.ase09.model.event.ValuePaperPriceEntryDTO;
-import at.ac.tuwien.ase09.parser.PWatchToEPLCompiler;
+import at.ac.tuwien.ase09.parser.PWatchCompiler;
 
 import com.espertech.esper.client.Configuration;
 import com.espertech.esper.client.EPServiceProvider;
@@ -46,6 +47,7 @@ public class EventProcessingSingleton {
 	void init() {
 		Configuration config = new Configuration();
 		config.addEventType(Constants.VALUE_PAPER_PRICE_ENTRY, ValuePaperPriceEntryDTO.class);
+		config.addEventType(Constants.STOCK, StockDTO.class);
 		config.addPlugInSingleRowFunction("SIN", Math.class.getName(), "sin");
 		config.addPlugInSingleRowFunction("COS", Math.class.getName(), "cos");
 		config.addPlugInSingleRowFunction("TAN", Math.class.getName(), "tan");
@@ -71,6 +73,10 @@ public class EventProcessingSingleton {
 		epService.getEPRuntime().sendEvent(event);
 	}
 	
+	public void addEvent(StockDTO event) {
+		epService.getEPRuntime().sendEvent(event);
+	}
+	
 	public void removeWatch(Long watchId) {
 		if (watchId == null) {
 			throw new NullPointerException("watchId");
@@ -90,7 +96,7 @@ public class EventProcessingSingleton {
 			throw new AppException("A watch statement for the id '" + watch.getId() + "' already exists!");
 		}
 		
-		String eplExpression = PWatchToEPLCompiler.compile(watch.getExpression(), watch.getValuePaper().getId());
+		String eplExpression = PWatchCompiler.compileEpl(watch.getExpression(), watch.getValuePaper().getId());
 		EPStatement watchStatement = epService.getEPAdministrator().createEPL(eplExpression);
 		
 		if (statements.putIfAbsent(watch.getId(), watchStatement) != null) {
