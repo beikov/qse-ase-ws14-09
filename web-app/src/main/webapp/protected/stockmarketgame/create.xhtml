@@ -30,61 +30,63 @@
 							<p:growl id="messages" showDetail="true" />
 
 							<div class="row" style="margin-bottom: 15px;">
-								<div class="col-md-6">
+								<div class="col-md-7">
 
 									<p:panel header="Börsenspiel-Einstellungen">
 										<h:panelGrid columns="2" cellpadding="5">
-											<h:outputText value="Börsenspielbezeichnung:"
+											<p:outputLabel for="name" value="Börsenspielbezeichnung:"
 												style="margin-right:5px" />
 											<p:inputText id="name"
 												value="#{stockMarketGameCreationBean.name}" required="true"
-												style="width:335px;margin-bottom:5px">
+												style="width:396px;margin-bottom:5px">
 											</p:inputText>
 
-											<h:outputText value="Beschreibung:" style="margin-right:5px" />
+											<p:outputLabel for="text" value="Beschreibung:"
+												style="margin-right:5px" />
 											<p:inputText id="text"
 												value="#{stockMarketGameCreationBean.text}" required="true"
-												style="width:335px;margin-bottom:5px">
+												style="width:396px;margin-bottom:5px">
 											</p:inputText>
 
-											<h:outputText value="Spiel beginnt am:"
+											<p:outputLabel for="validFrom" value="Spiel beginnt am:"
 												style="margin-right:5px" />
-											<p:inputText id="validFrom"
-												value="#{stockMarketGameCreationBean.validFrom}"
-												required="true" style="width:335px;margin-bottom:5px">
-												<f:convertDateTime pattern="dd.MM.yyyy" timeZone="CET" />
-											</p:inputText>
+											<p:outputPanel style="margin-bottom:5px">
+												<p:calendar id="validFrom"
+													value="#{stockMarketGameCreationBean.validFrom}"
+													required="true" size="53" />
+											</p:outputPanel>
 
-											<h:outputText value="Spiel endet am:"
+											<p:outputLabel for="validTo" value="Spiel endet am:"
 												style="margin-right:5px" />
-											<p:inputText id="validTo"
-												value="#{stockMarketGameCreationBean.validTo}"
-												required="true" style="width:335px;margin-bottom:5px">
-												<f:convertDateTime pattern="dd.MM.yyyy" timeZone="CET" />
-											</p:inputText>
+											<p:outputPanel style="margin-bottom:5px">
+												<p:calendar id="validTo"
+													value="#{stockMarketGameCreationBean.validTo}"
+													required="true" size="53" />
+											</p:outputPanel>
 
-											<h:outputText value="Registrierung beginnt am:"
+											<p:outputLabel for="registrationFrom"
+												value="Registrierung beginnt am:" style="margin-right:5px" />
+											<p:outputPanel style="margin-bottom:5px">
+												<p:calendar id="registrationFrom"
+													value="#{stockMarketGameCreationBean.registrationFrom}"
+													required="true" size="53" />
+											</p:outputPanel>
+
+											<p:outputLabel for="registrationTo"
+												value="Registrierung endet am:" style="margin-right:5px" />
+											<p:outputPanel style="margin-bottom:5px">
+												<p:calendar id="registrationTo"
+													value="#{stockMarketGameCreationBean.registrationTo}"
+													required="true" size="53" />
+											</p:outputPanel>
+
+											<p:outputLabel for="logo" value="Logo:"
 												style="margin-right:5px" />
-											<p:inputText id="registrationFrom"
-												value="#{stockMarketGameCreationBean.registrationFrom}"
-												required="true" style="width:335px;margin-bottom:5px">
-												<f:convertDateTime pattern="dd.MM.yyyy" timeZone="CET" />
-											</p:inputText>
-
-											<h:outputText value="Registrierung endet am:"
-												style="margin-right:5px" />
-											<p:inputText id="registrationTo"
-												value="#{stockMarketGameCreationBean.registrationTo}"
-												required="true" style="width:335px;margin-bottom:5px">
-												<f:convertDateTime pattern="dd.MM.yyyy" timeZone="CET" />
-											</p:inputText>
-
-											<h:outputText value="Logo:" style="margin-right:5px" />
-											<p:fileUpload
+											<p:fileUpload id="logo"
 												fileUploadListener="#{stockMarketGameCreationBean.handleLogoUpload}"
 												mode="advanced" dragDropSupport="false" update="messages"
 												sizeLimit="100000" fileLimit="1"
-												allowTypes="/(\.|\/)(gif|jpe?g|png)$/" style="width:335px" />
+												allowTypes="/(\.|\/)(gif|jpe?g|png)$/" style="width:396px" />
 
 											<!-- <p:graphicImage value="#{stockMarketGameCreationBean.image}"
 										style="max-width:800px;max-height:400px;"
@@ -98,37 +100,37 @@
 
 								</div>
 
-								<div class="col-md-6">
+								<div class="col-md-5">
 
 									<p:panel header="Portfolio-Voreinstellungen">
 
 										<h:panelGrid columns="2" cellpadding="5">
 
-											<h:outputText value="Startkapital(€):"
+											<p:outputLabel for="startCapital" value="Startkapital(€):"
 												style="margin-right:5px" />
 											<p:inputText id="startCapital"
 												value="#{stockMarketGameCreationBean.startCapital}"
 												placeholder="unendlich"
-												style="width:335px;margin-bottom:5px">
+												style="width:220px;margin-bottom:5px">
 											</p:inputText>
 
-											<h:outputText value="Ordergebühr(€):"
+											<p:outputLabel for="orderFee" value="Ordergebühr(€):"
 												style="margin-right:5px" />
 											<p:inputText id="orderFee"
 												value="#{stockMarketGameCreationBean.orderFee}"
-												required="true" style="width:335px;margin-bottom:5px" />
+												required="true" style="width:220px;margin-bottom:5px" />
 
-											<h:outputText value="Portfoliogebühr(€):"
+											<p:outputLabel for="portfolioFee" value="Portfoliogebühr(€):"
 												style="margin-right:5px" />
 											<p:inputText id="portfolioFee"
 												value="#{stockMarketGameCreationBean.portfolioFee}"
-												required="true" style="width:335px;margin-bottom:5px" />
+												required="true" style="width:220px;margin-bottom:5px" />
 
-											<h:outputText value="Kapitalertragssteuer(%):"
-												style="margin-right:5px" />
+											<p:outputLabel for="capitalReturnTax"
+												value="Kapitalertragssteuer(%):" style="margin-right:5px" />
 											<p:inputText id="capitalReturnTax"
 												value="#{stockMarketGameCreationBean.capitalReturnTax}"
-												required="true" style="width:335px" />
+												required="true" style="width:220px" />
 
 										</h:panelGrid>
 
@@ -171,7 +173,7 @@
 
 				<div class="col-md-12">
 
-					<p:panel header="erlaubte Wertpapiere">
+					<p:panel header="Erlaubte Wertpapiere">
 
 						<h:panelGrid columns="4" cellpadding="5">
 
