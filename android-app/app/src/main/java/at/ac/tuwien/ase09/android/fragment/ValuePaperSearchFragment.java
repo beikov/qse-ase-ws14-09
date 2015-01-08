@@ -27,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Locale;
@@ -276,7 +277,7 @@ public class ValuePaperSearchFragment extends Fragment implements AbsListView.On
                 df.setPositivePrefix("+");
 
                 BigDecimal absolutePriceChange = lastPrice.subtract(previousDayPrice);
-                BigDecimal relativePriceChange = absolutePriceChange.divide(previousDayPrice);
+                BigDecimal relativePriceChange = absolutePriceChange.divide(previousDayPrice, RoundingMode.HALF_DOWN);
 
                 relativePriceChangeTextView.setText(df.format(relativePriceChange.floatValue() * 100) + " %");
 
@@ -287,7 +288,7 @@ public class ValuePaperSearchFragment extends Fragment implements AbsListView.On
                 switch(absolutePriceChange.signum()){
                     case -1:    textViewColor = Color.RED;
                                 break;
-                    case  1:    textViewColor = Color.GREEN;
+                    case  1:    textViewColor = Color.rgb(34, 177, 76);
                                 break;
                     default:    textViewColor = Color.BLACK;
                 }
