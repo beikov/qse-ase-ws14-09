@@ -299,6 +299,7 @@ public class PWatchCompiler extends PWatchBaseVisitor<CharSequence> {
 	@Override
 	public CharSequence visitTimestampLiteral(TimestampLiteralContext ctx) {
 		Matcher matcher = timestampLiteralPattern.matcher(ctx.getText());
+		// Since it comes from the parser, it should always match the pattern, but we need the call to matches to access the groups
 		if (!matcher.matches()) {
 			ERR_LISTENER.syntaxError(null, null, ctx.start.getLine(), ctx.start.getCharPositionInLine(), "Invalid timestamp literal!", null);
 		}

@@ -11,6 +11,7 @@ public class PWatchCompilerTest {
 	private static final String PRICE_ENTRY_ALIAS = "priceEntry";
 	private static final String STOCK_ALIAS = "stock";
 	
+	@Test
 	public void testSimplePriceJpql() {
 		String pwatchExpression = "COUNTRY = 'DE' AND PRICE > 100";
 		String actualExpression = PWatchCompiler.compileJpql(pwatchExpression);
@@ -42,6 +43,11 @@ public class PWatchCompilerTest {
 	@Test(expected = NullPointerException.class)
 	public void testNullExpressionEpl() {
 		PWatchCompiler.compileEpl(null, 1L);
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void testNullIdEpl() {
+		PWatchCompiler.compileEpl("", null);
 	}
 
 	@Test(expected = NullPointerException.class)
