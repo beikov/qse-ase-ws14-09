@@ -43,7 +43,9 @@ public class ValuePaperPriceEntry extends BaseEntity<Long> {
 	
 	@PrePersist
 	private void onPrePersist(){
-		created = Calendar.getInstance();
+		if(created == null){
+			created = Calendar.getInstance();
+		}
 	}
 	
 }

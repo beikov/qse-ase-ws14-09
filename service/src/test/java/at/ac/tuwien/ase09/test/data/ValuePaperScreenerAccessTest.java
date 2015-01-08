@@ -5,16 +5,20 @@ import static org.junit.Assert.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Currency;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.shrinkwrap.api.Archive;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import at.ac.tuwien.ase09.data.ValuePaperPriceEntryDataAccess;
 import at.ac.tuwien.ase09.data.ValuePaperScreenerAccess;
 import at.ac.tuwien.ase09.filter.AttributeFilter;
 import at.ac.tuwien.ase09.filter.AttributeType;
@@ -24,17 +28,25 @@ import at.ac.tuwien.ase09.model.Stock;
 import at.ac.tuwien.ase09.model.StockBond;
 import at.ac.tuwien.ase09.model.ValuePaper;
 import at.ac.tuwien.ase09.model.ValuePaperType;
-import at.ac.tuwien.ase09.test.AbstractContainerTest;
+import at.ac.tuwien.ase09.test.AbstractServiceTest;
+import at.ac.tuwien.ase09.test.Assert;
 import at.ac.tuwien.ase09.test.DatabaseAware;
 
 @DatabaseAware
-public class ValuePaperScreenerAccessTest extends AbstractContainerTest<ValuePaperScreenerAccessTest>{
+public class ValuePaperScreenerAccessTest extends AbstractServiceTest<ValuePaperScreenerAccessTest>{
 
 	
 	private static final long serialVersionUID = 1L;
 	
 	@Inject
 	private ValuePaperScreenerAccess valuePaperScreener;
+	
+	@Deployment
+	public static Archive<?> createDeployment() {
+		return createServiceTestBaseDeployment()
+				.addPackage("at.ac.tuwien.ase09.filter")
+				.addClass(ValuePaperScreenerAccess.class);
+	}
 	
 	@Before
 	public void  init()
@@ -560,19 +572,65 @@ public class ValuePaperScreenerAccessTest extends AbstractContainerTest<ValuePap
 		s.setCurrency(Currency.getInstance("EUR"));
 		s.setName("Andritz");
 		
-		List<ValuePaper> valuePapers=valuePaperScreener.findByValuePaper(s, true);
+		List<ValuePaper> valuePapers = valuePaperScreener.findByValuePaper(s.getType(), s);
 		
 		assertEquals(1,valuePapers.size());
 		if(valuePapers.size()>0)
 			assertEquals("Andritz",valuePapers.get(0).getName());
 	}
 	@Test
-	public void testdefaultSearchbyValuePaper()
+	public void testSearchbyValuePaper_stock()
 	{
+		// Given
+		Stock s = new Stock();
+		s.setCode("ABC");
+		s.setTickerSymbol("AAA");
 		
-		List<ValuePaper> valuePapers=valuePaperScreener.findByValuePaper(null, true);
+		dataManager.persist(s);
+		em.clear();
 		
-		assertEquals(6,valuePapers.size());
+		// When
+		Stock template  = new Stock();
+		template.setTickerSymbol("A*");
+		List<ValuePaper> valuePapers = valuePaperScreener.findByValuePaper(template.getType(), template);
+		
+		// Then
+		assertEquals(1,valuePapers.size());
+		assertEquals(s, valuePapers.get(0));
+	}
+	@Test
+	public void testSearchbyValuePaper_noType()
+	{
+		// Given
+		Stock s = new Stock();
+		s.setCode("ABC");
+		
+		Fund f = new Fund();
+		f.setCode("AXY");
+		
+		dataManager.persist(s);
+		dataManager.persist(f);
+		em.clear();
+		
+		// When
+		Stock template = new Stock();
+		template.setCode("A*");
+		List<ValuePaper> valuePapers = valuePaperScreener.findByValuePaper(null, template);
+		
+		// Then
+		assertEquals(2,valuePapers.size());
+		Assert.assertUnorderedEquals(Arrays.asList(new ValuePaper[]{s, f}), valuePapers);
+	}
+	@Test
+	public void testSearchbyValuePaper_templateNull()
+	{
+		Assert.verifyException(valuePaperScreener, NullPointerException.class).findByValuePaper(ValuePaperType.STOCK, null);
+	}
+	@Test
+	public void testSearchbyValuePaper_typeAndTemplateMismatch()
+	{
+		Stock s = new Stock();
+		Assert.verifyException(valuePaperScreener, IllegalArgumentException.class).findByValuePaper(ValuePaperType.FUND, s);
 	}
 	
 }

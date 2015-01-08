@@ -129,7 +129,7 @@ public class PortfolioCreationViewBean implements Serializable{
 		return userContext;
 	}
 
-	public void setUserContext(WebUserContext userContext) {
+	public void setUserContext(UserContext userContext) {
 		this.userContext = userContext;
 	}
 

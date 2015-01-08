@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -31,17 +32,11 @@ public class PortfolioViewFragment extends SlidingTabsBasicFragment implements R
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        /* fragment wird erstellt
-         * fragment ruft serviceintent auf um daten zu laden
-         * serviceintent verwendet den aktuellen portfolio context
-         * wenn portfolio context leer, dann erstellt der serviceintent einen neuen service intent der den initialen portfolio context fetcht
-         *
-         */
         receiver = new RestQueryResultReceiver(new Handler());
         receiver.setReceiver(this);
         final Intent intent = new Intent(Intent.ACTION_SYNC, null, getActivity(), RestQueryService.class);
         intent.putExtra("receiver", receiver);
-        intent.putExtra("command", "query");
+        intent.putExtra("command", RestQueryService.COMMAND_INITIAL_PORTFOLIO);
         getActivity().startService(intent);
 
         return super.onCreateView(inflater, container, savedInstanceState);
@@ -65,7 +60,7 @@ public class PortfolioViewFragment extends SlidingTabsBasicFragment implements R
                 // hide progress
                 break;
             case RestQueryService.STATUS_ERROR:
-                // handle the error;
+                Toast.makeText(getActivity(), resultData.getString(Intent.EXTRA_TEXT), Toast.LENGTH_LONG);
                 break;
         }
     }

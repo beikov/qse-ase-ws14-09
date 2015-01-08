@@ -54,7 +54,7 @@ public class PortfolioViewBean implements Serializable {
 	private ValuePaperPriceEntryDataAccess priceDataAccess;
 	
 	@Inject
-	private WebUserContext userContext;
+	private UserContext userContext;
 	
 	private User user;
 
@@ -198,7 +198,7 @@ public class PortfolioViewBean implements Serializable {
 		return OrderStatus.values();
 	}
 	
-	public void setWebUserContext(WebUserContext webUserContext) {
+	public void setUserContext(UserContext webUserContext) {
 		this.userContext = webUserContext;
 	}
 	

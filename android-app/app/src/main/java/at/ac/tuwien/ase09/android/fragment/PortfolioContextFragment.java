@@ -1,6 +1,7 @@
 package at.ac.tuwien.ase09.android.fragment;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -14,8 +15,11 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +56,8 @@ public class PortfolioContextFragment extends Fragment implements AbsListView.On
      */
     private PortfolioArrayAdapter mAdapter;
 
+    private ProgressBar progress;
+
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
@@ -63,7 +69,7 @@ public class PortfolioContextFragment extends Fragment implements AbsListView.On
     public void onReceiveResult(int resultCode, Bundle resultData) {
         switch (resultCode) {
             case RestQueryService.STATUS_RUNNING:
-                //show progress
+                progress.setVisibility(View.VISIBLE);
                 break;
             case RestQueryService.STATUS_FINISHED:
                 List<PortfolioDto> portfolios = (List<PortfolioDto>) resultData.getSerializable("results");
@@ -71,11 +77,11 @@ public class PortfolioContextFragment extends Fragment implements AbsListView.On
                         R.layout.portfolio_item, R.id.portfolio_name, portfolios);
                 ((AdapterView<ListAdapter>) mListView).setAdapter(mAdapter);
 
-                // do something interesting
-                // hide progress
+                progress.setVisibility(View.GONE);
                 break;
             case RestQueryService.STATUS_ERROR:
-                // handle the error;
+                progress.setVisibility(View.GONE);
+                Toast.makeText(getActivity(), resultData.getString(Intent.EXTRA_TEXT), Toast.LENGTH_LONG);
                 break;
         }
     }
@@ -101,7 +107,9 @@ public class PortfolioContextFragment extends Fragment implements AbsListView.On
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_portfolio, container, false);
+        View view = inflater.inflate(R.layout.portfolio_context_fragment, container, false);
+
+        progress = (ProgressBar) view.findViewById(android.R.id.progress);
 
         // Set the adapter
         mListView = (AbsListView) view.findViewById(android.R.id.list);
@@ -167,37 +175,8 @@ public class PortfolioContextFragment extends Fragment implements AbsListView.On
     }
 
     private class PortfolioArrayAdapter extends ArrayAdapter<PortfolioDto>  {
-        private static final String LOG_TAG = "PortfolioArrayAdapter";
-
         private int resource;
         private int fieldId = 0;
-
-        public PortfolioArrayAdapter(Context context, int resource) {
-            super(context, resource);
-            this.resource = resource;
-        }
-
-        public PortfolioArrayAdapter(Context context, int resource, int textViewResourceId) {
-            super(context, resource, textViewResourceId);
-            this.resource = resource;
-            this.fieldId = textViewResourceId;
-        }
-
-        public PortfolioArrayAdapter(Context context, int resource, PortfolioDto[] objects) {
-            super(context, resource, objects);
-            this.resource = resource;
-        }
-
-        public PortfolioArrayAdapter(Context context, int resource, int textViewResourceId, PortfolioDto[] objects) {
-            super(context, resource, textViewResourceId, objects);
-            this.resource = resource;
-            this.fieldId = textViewResourceId;
-        }
-
-        public PortfolioArrayAdapter(Context context, int resource, List<PortfolioDto> objects) {
-            super(context, resource, objects);
-            this.resource = resource;
-        }
 
         public PortfolioArrayAdapter(Context context, int resource, int textViewResourceId, List<PortfolioDto> objects) {
             super(context, resource, textViewResourceId, objects);

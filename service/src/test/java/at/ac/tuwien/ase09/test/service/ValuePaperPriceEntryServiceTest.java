@@ -8,18 +8,22 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.shrinkwrap.api.Archive;
 import org.junit.Test;
 
+import at.ac.tuwien.ase09.data.ValuePaperDataAccess;
 import at.ac.tuwien.ase09.data.ValuePaperPriceEntryDataAccess;
 import at.ac.tuwien.ase09.model.Stock;
 import at.ac.tuwien.ase09.model.ValuePaperPriceEntry;
+import at.ac.tuwien.ase09.service.UserService;
 import at.ac.tuwien.ase09.service.ValuePaperPriceEntryService;
-import at.ac.tuwien.ase09.test.AbstractContainerTest;
+import at.ac.tuwien.ase09.test.AbstractServiceTest;
 import at.ac.tuwien.ase09.test.Assert;
 import at.ac.tuwien.ase09.test.DatabaseAware;
 
 @DatabaseAware
-public class ValuePaperPriceEntryServiceTest extends AbstractContainerTest<ValuePaperPriceEntryServiceTest>{
+public class ValuePaperPriceEntryServiceTest extends AbstractServiceTest<ValuePaperPriceEntryServiceTest>{
 	private static final long serialVersionUID = 1L;
 
 	@Inject
@@ -27,6 +31,16 @@ public class ValuePaperPriceEntryServiceTest extends AbstractContainerTest<Value
 	
 	@Inject
 	private ValuePaperPriceEntryDataAccess valuePaperPriceDataAccess;
+	
+	@Deployment
+	public static Archive<?> createDeployment() {
+		return createServiceTestBaseDeployment()
+				.addClasses(
+						ValuePaperDataAccess.class,
+						ValuePaperPriceEntryService.class,
+						ValuePaperPriceEntryDataAccess.class
+				);
+	}
 	
 	@Test
 	public void testSavePriceEntry(){

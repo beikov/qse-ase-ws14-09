@@ -8,6 +8,8 @@ import java.util.Currency;
 
 import javax.inject.Inject;
 
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.shrinkwrap.api.Archive;
 import org.junit.Test;
 
 import at.ac.tuwien.ase09.model.Institution;
@@ -16,16 +18,22 @@ import at.ac.tuwien.ase09.model.PortfolioSetting;
 import at.ac.tuwien.ase09.model.StockMarketGame;
 import at.ac.tuwien.ase09.model.User;
 import at.ac.tuwien.ase09.service.StockMarketGameService;
-import at.ac.tuwien.ase09.test.AbstractContainerTest;
+import at.ac.tuwien.ase09.test.AbstractServiceTest;
 import at.ac.tuwien.ase09.test.DatabaseAware;
 
 @DatabaseAware
-public class StockMarketGameServiceTest extends AbstractContainerTest<StockMarketGameServiceTest>{
+public class StockMarketGameServiceTest extends AbstractServiceTest<StockMarketGameServiceTest>{
 
 	private static final long serialVersionUID = 1L;
 
 	@Inject
 	StockMarketGameService stockMarketGameService;
+	
+	@Deployment
+	public static Archive<?> createDeployment() {
+		return createServiceTestBaseDeployment()
+				.addClasses(StockMarketGameService.class);
+	}
 	
 	@Test
 	public void testSaveStockMarketGame(){
