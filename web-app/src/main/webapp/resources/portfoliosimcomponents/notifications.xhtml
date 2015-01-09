@@ -15,14 +15,13 @@
 
 <composite:implementation>
 	<h:form id="form1">
-			<p:growl id="notificationGrowl" showDetail="true" />
-		<p:poll interval="5" listener="#{notificationBean.checkNewNotifications}" update="notificationGrowl countTxt" />
+		<p:growl id="notificationGrowl" showDetail="true" />
+		<p:poll interval="5" listener="#{notificationBean.checkNewNotifications}" update="notificationGrowl  notificationBtn" />
 		
 		
-		<p:commandButton id="notificationBtn" icon="ui-icon-mail-closed"
-			update="notificationTable countTxt"
-			actionListener="#{notificationBean.read()}" />
-		<h:outputText id="countTxt" value="#{notificationBean.unreadCount}" />
+		<p:commandButton id="notificationBtn" icon="ui-icon-mail-closed" type="button"
+			actionListener="#{notificationBean.read()}" value="#{notificationBean.unreadCount}" onclick="PF('ovl').loadContents()"/>
+	
 		<p:overlayPanel id="notificationPanel" widgetVar="ovl"
 			for="form1:notificationBtn" hideEffect="fade" style="width:500px">
 			<p:dataTable id="notificationTable" widgetVar="ovlList"
@@ -51,7 +50,7 @@
 			</p:dataTable>
 			<h:outputText value="Nur neue Notifikationen: " />
 			<p:selectBooleanCheckbox value="#{notificationBean.showOnlyNew}">
-				<p:ajax update="notificationTable" />
+				<p:ajax update="notificationTable notificationBtn" />
 			</p:selectBooleanCheckbox>
 			<p:commandButton value="Alle gelesen" actionListener="#{notificationBean.setAllRead()}" update="notificationTable"/>
 		</p:overlayPanel>
