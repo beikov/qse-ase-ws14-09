@@ -16,21 +16,25 @@
 <composite:implementation>
 	<h:form id="form1">
 		<p:growl id="notificationGrowl" showDetail="true" />
-		<p:poll interval="5" listener="#{notificationBean.checkNewNotifications}" update="notificationGrowl  notificationBtn" />
-		
-		
-		<p:commandButton id="notificationBtn" icon="ui-icon-mail-closed" type="button"
-			actionListener="#{notificationBean.read()}" value="#{notificationBean.unreadCount}" onclick="PF('ovl').loadContents()"/>
-	
+		<p:poll interval="5"
+			listener="#{notificationBean.checkNewNotifications}"
+			update="notificationGrowl  notificationBtn" />
+
+
+		<p:commandButton id="notificationBtn" icon="ui-icon-mail-closed"
+			type="button" value="#{notificationBean.unreadCount}"
+			onclick="PF('ovl').loadContents()" />
+
 		<p:overlayPanel id="notificationPanel" widgetVar="ovl"
 			for="form1:notificationBtn" hideEffect="fade" style="width:500px">
 			<p:dataTable id="notificationTable" widgetVar="ovlList"
-				var="notifications" value="#{notificationBean.notifications}" 
-				scrollable="true" scrollHeight="200" scrollRows="5"
-				liveScroll="true" emptyMessage="Keine Notifikationen verfügbar"
-				selection="#{notificationBean.selectedNotification}" selectionMode="single"
-                rowKey="#{notifications.id}">
-				<p:ajax event="rowSelect" listener="#{notificationBean.onRowSelect}" />  
+				var="notifications" value="#{notificationBean.notifications}"
+				scrollable="true" scrollHeight="230" scrollRows="5"
+				emptyMessage="Keine Notifikationen verfügbar"
+				selection="#{notificationBean.selectedNotification}"
+				selectionMode="single" rowKey="#{notifications.id}">
+				<p:ajax event="rowSelect" listener="#{notificationBean.onRowSelect}"
+					oncomplete="PF('ovl').loadContents()" />
 				<f:attribute name="collectionType" value="java.util.ArrayList" />
 				<p:column id="icon" style="width:50px">
 					<p:graphicImage
@@ -52,7 +56,9 @@
 			<p:selectBooleanCheckbox value="#{notificationBean.showOnlyNew}">
 				<p:ajax update="notificationTable notificationBtn" />
 			</p:selectBooleanCheckbox>
-			<p:commandButton value="Alle gelesen" actionListener="#{notificationBean.setAllRead()}" update="notificationTable"/>
+			<p:commandButton value="Alle gelesen"
+				actionListener="#{notificationBean.setAllRead()}"
+				update="notificationTable" style="float: right;" />
 		</p:overlayPanel>
 	</h:form>
 

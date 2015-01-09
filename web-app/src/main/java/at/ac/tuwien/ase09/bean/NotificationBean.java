@@ -1,13 +1,13 @@
 package at.ac.tuwien.ase09.bean;
 
-import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 
@@ -24,11 +24,11 @@ import at.ac.tuwien.ase09.model.notification.WatchTriggeredNotification;
 import at.ac.tuwien.ase09.service.NotificationService;
 
 @ManagedBean
-@RequestScoped
-public class NotificationBean {
+@SessionScoped
+public class NotificationBean implements Serializable{
 
+	private static final long serialVersionUID = 1L;
 	private List<Notification> notifications;
-	private boolean reading=false;
 	private boolean showOnlyNew=false;
 	private Notification selectedNotification;
 
@@ -44,11 +44,10 @@ public class NotificationBean {
 
 	@PostConstruct
 	public void init(){
-		System.out.println("init");
 		if(!showOnlyNew){
 			notifications = (List<Notification>) data.getNotificationsForUser(userContext.getUser());
 		}else{
-			notifications = new ArrayList<Notification>();
+			notifications = (List<Notification>) data.getUnreadNotificationsForUser(userContext.getUser());
 		}
 	}
 
@@ -68,12 +67,10 @@ public class NotificationBean {
 
 
 	public String getTextForNotification(FollowerAddedNotification notification) {
-		//		updateNotification(notification);
 		return "Benutzer: '"+notification.getFollower().getUsername()+"' folgt Ihnen nun.";
 	}
 
 	public String getTextForNotification(GameStartedNotification notification) {
-		//		updateNotification(notification);
 		return "Das Spiel: '"+notification.getGame().getName()+"' hat begonnen.";
 	}
 
@@ -86,11 +83,11 @@ public class NotificationBean {
 	}
 
 	private void updateNotification(Notification notification){
-		//		if(reading){
-		System.out.println("setting it");
 		notification.setRead(true);
 		service.setRead(notification);
-		//		}
+		if(showOnlyNew){
+			notifications.remove(notification);
+		}
 	}
 
 	public int getUnreadCount(){
@@ -114,10 +111,6 @@ public class NotificationBean {
 			rContext.update("notificationComponent:form1:countTxt");
 		}
 		System.out.println("got new notifications count: "+newNot.size());
-	}
-
-	public void read(){
-		reading=true;
 	}
 
 
