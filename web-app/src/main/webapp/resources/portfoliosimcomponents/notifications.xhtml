@@ -49,6 +49,7 @@
 					<font size="1"> #{notifications.created.time} </font>
 				</p:column>
 			</p:dataTable>
+			<p:commandButton value="Alle gelesen" actionListener="#{notificationBean.setAllRead()}" update="notificationTable"/>
 		</p:overlayPanel>
 	</h:form>
 

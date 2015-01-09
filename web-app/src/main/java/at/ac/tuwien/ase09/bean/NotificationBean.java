@@ -61,12 +61,12 @@ public class NotificationBean {
 
 
 	public String getTextForNotification(FollowerAddedNotification notification) {
-		updateNotification(notification);
+//		updateNotification(notification);
 		return "Benutzer: '"+notification.getFollower().getUsername()+"' folgt Ihnen nun.";
 	}
 
 	public String getTextForNotification(GameStartedNotification notification) {
-		updateNotification(notification);
+//		updateNotification(notification);
 		return "Das Spiel: '"+notification.getGame().getName()+"' hat begonnen.";
 	}
 
@@ -79,10 +79,11 @@ public class NotificationBean {
 	}
 
 	private void updateNotification(Notification notification){
-		if(reading){
+//		if(reading){
+			System.out.println("setting it");
 			notification.setRead(true);
 			service.setRead(notification);
-		}
+//		}
 	}
 
 	public int getUnreadCount(){
@@ -124,12 +125,14 @@ public class NotificationBean {
 	}
 
 	public void onRowSelect(SelectEvent event) {
-		try {
-			FacesContext.getCurrentInstance().getExternalContext().redirect("../"+getNotificationRedirectionUrl(selectedNotification));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		try {
+			updateNotification(selectedNotification);
+			System.out.println("set read");
+//			FacesContext.getCurrentInstance().getExternalContext().redirect("../"+getNotificationRedirectionUrl(selectedNotification));
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	}
 
 	private String getNotificationRedirectionUrl(Notification n){
@@ -141,6 +144,12 @@ public class NotificationBean {
 		default: 
 			//this should never happen
 			throw new RuntimeException("Unsupported NotificationType");
+		}
+	}
+	
+	public void setAllRead(){
+		for(Notification notification : notifications){
+			updateNotification(notification);
 		}
 	}
 
