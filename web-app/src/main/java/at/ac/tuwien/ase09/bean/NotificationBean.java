@@ -1,6 +1,7 @@
 package at.ac.tuwien.ase09.bean;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -28,6 +29,7 @@ public class NotificationBean {
 
 	private List<Notification> notifications;
 	private boolean reading=false;
+	private boolean showOnlyNew=false;
 	private Notification selectedNotification;
 
 	@Inject
@@ -42,7 +44,12 @@ public class NotificationBean {
 
 	@PostConstruct
 	public void init(){
-		notifications = (List<Notification>) data.getNotificationsForUser(userContext.getUser());
+		System.out.println("init");
+		if(!showOnlyNew){
+			notifications = (List<Notification>) data.getNotificationsForUser(userContext.getUser());
+		}else{
+			notifications = new ArrayList<Notification>();
+		}
 	}
 
 
@@ -61,12 +68,12 @@ public class NotificationBean {
 
 
 	public String getTextForNotification(FollowerAddedNotification notification) {
-//		updateNotification(notification);
+		//		updateNotification(notification);
 		return "Benutzer: '"+notification.getFollower().getUsername()+"' folgt Ihnen nun.";
 	}
 
 	public String getTextForNotification(GameStartedNotification notification) {
-//		updateNotification(notification);
+		//		updateNotification(notification);
 		return "Das Spiel: '"+notification.getGame().getName()+"' hat begonnen.";
 	}
 
@@ -79,11 +86,11 @@ public class NotificationBean {
 	}
 
 	private void updateNotification(Notification notification){
-//		if(reading){
-			System.out.println("setting it");
-			notification.setRead(true);
-			service.setRead(notification);
-//		}
+		//		if(reading){
+		System.out.println("setting it");
+		notification.setRead(true);
+		service.setRead(notification);
+		//		}
 	}
 
 	public int getUnreadCount(){
@@ -125,14 +132,14 @@ public class NotificationBean {
 	}
 
 	public void onRowSelect(SelectEvent event) {
-//		try {
-			updateNotification(selectedNotification);
-			System.out.println("set read");
-//			FacesContext.getCurrentInstance().getExternalContext().redirect("../"+getNotificationRedirectionUrl(selectedNotification));
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+		//		try {
+		updateNotification(selectedNotification);
+		System.out.println("set read");
+		//			FacesContext.getCurrentInstance().getExternalContext().redirect("../"+getNotificationRedirectionUrl(selectedNotification));
+		//		} catch (IOException e) {
+		//			// TODO Auto-generated catch block
+		//			e.printStackTrace();
+		//		}
 	}
 
 	private String getNotificationRedirectionUrl(Notification n){
@@ -146,12 +153,31 @@ public class NotificationBean {
 			throw new RuntimeException("Unsupported NotificationType");
 		}
 	}
-	
+
 	public void setAllRead(){
 		for(Notification notification : notifications){
 			updateNotification(notification);
 		}
 	}
+
+
+	public boolean isShowOnlyNew() {
+		return showOnlyNew;
+	}
+
+
+	public void setShowOnlyNew(boolean showOnlyNew) {
+		System.out.println("setting only new: "+showOnlyNew);
+		this.showOnlyNew = showOnlyNew;
+		if(!showOnlyNew){
+			notifications = (List<Notification>) data.getNotificationsForUser(userContext.getUser());
+		}else{
+			notifications = (List<Notification>) data.getUnreadNotificationsForUser(userContext.getUser());
+			System.out.println("now: "+notifications.size());
+		}
+	}
+
+
 
 }
 

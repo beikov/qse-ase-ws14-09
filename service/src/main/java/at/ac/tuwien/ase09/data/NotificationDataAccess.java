@@ -53,9 +53,31 @@ public class NotificationDataAccess {
 		}
 	}
 
-	public List<? extends Notification> getUnreadNotificationsForUser(User u){
+	public List<? extends Notification> getUnreadNotificationsForUser(User user){
 		try{
-			return em.createQuery("FROM Notification n WHERE n.user = :user AND n.read = false ORDER BY n.created", Notification.class).setParameter("user", u).getResultList();
+			List<Notification> ret = em.createQuery("FROM Notification n WHERE n.user = :user AND n.read = false  ORDER BY n.created DESC", Notification.class).setParameter("user", user).getResultList();
+			
+			for (Notification notification : ret) {
+				switch (notification.getType()) {
+				case FOLLOWER_ADDED: 
+					Hibernate.initialize(((FollowerAddedNotification)notification).getFollower());
+					break;
+				case FOLLOWER_TRANSACTION_ADDED:
+					Hibernate.initialize(((FollowerTransactionAddedNotification)notification).getTransactionEntry());
+					break;
+				case GAME_STARTED:
+					Hibernate.initialize(((GameStartedNotification)notification).getGame());
+					break;
+				case WATCH_TRIGGERED: 
+					Hibernate.initialize(((WatchTriggeredNotification)notification).getWatch());
+					break;
+				}
+				Hibernate.initialize(notification);
+				Hibernate.initialize(notification.getCreated());
+				Hibernate.initialize(notification.getUser());
+			}
+
+			return ret;
 		}catch(Exception e){
 			throw new AppException(e);
 		}
