@@ -23,6 +23,7 @@ import javax.sql.rowset.serial.SerialBlob;
 import org.apache.commons.io.IOUtils;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.DualListModel;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
 
@@ -89,33 +90,53 @@ public class StockMarketGameCreationBean implements Serializable {
 	private BigDecimal capitalReturnTax;
 
 	//Allowed ValuePapers-Attributes
-	private List<ValuePaper> selectedAllowedValuePapers = new ArrayList<ValuePaper>();
+	//private List<ValuePaper> selectedAllowedValuePapers = new ArrayList<ValuePaper>();
 	private Set<ValuePaper> allowedValuePapers = new HashSet<>();
 	private ValuePaper searchValuePaper;
 	private ValuePaperType valuePaperType;
 	private Boolean isTypeSpecificated = false;
 	private String valuePaperName, valuePaperCode, valuePaperCountry, valuePaperCurrencyCode, valuePaperIndex;
-	private List<ValuePaper> searchedValuePapers;
+	//private List<ValuePaper> searchedValuePapers;
+
+	private DualListModel<ValuePaper> allowedValuePapersListModel;
+	
+	private List<ValuePaper> allowedValuePapersSource;
+	private List<ValuePaper> allowedValuePapersTarget;
 
 
-	public List<ValuePaper> getSelectedAllowedValuePapers() {
-		return selectedAllowedValuePapers;
+
+	public DualListModel<ValuePaper> getAllowedValuePapersListModel() {
+		return allowedValuePapersListModel;
 	}
-	public void setSelectedAllowedValuePapers(
-			List<ValuePaper> selectedAllowedValuePapers) {
-		this.selectedAllowedValuePapers = selectedAllowedValuePapers;
-	}
-	public String getValuePaperIndex() {
-		return valuePaperIndex;
-	}
-	public void setValuePaperIndex(String valuePaperIndex) {
-		this.valuePaperIndex = valuePaperIndex;
+	public void setAllowedValuePapersListModel(
+			DualListModel<ValuePaper> allowedValuePapersListModel) {
+		this.allowedValuePapersListModel = allowedValuePapersListModel;
 	}
 	public ValuePaper getSearchValuePaper() {
 		return searchValuePaper;
 	}
 	public void setSearchValuePaper(ValuePaper searchValuePaper) {
 		this.searchValuePaper = searchValuePaper;
+	}
+	public List<ValuePaper> getAllowedValuePapersSource() {
+		return allowedValuePapersSource;
+	}
+	public void setAllowedValuePapersSource(
+			List<ValuePaper> allowedValuePapersSource) {
+		this.allowedValuePapersSource = allowedValuePapersSource;
+	}
+	public List<ValuePaper> getAllowedValuePapersTarget() {
+		return allowedValuePapersTarget;
+	}
+	public void setAllowedValuePapersTarget(
+			List<ValuePaper> allowedValuePapersTarget) {
+		this.allowedValuePapersTarget = allowedValuePapersTarget;
+	}
+	public String getValuePaperIndex() {
+		return valuePaperIndex;
+	}
+	public void setValuePaperIndex(String valuePaperIndex) {
+		this.valuePaperIndex = valuePaperIndex;
 	}
 	public ValuePaperType getValuePaperType() {
 		return valuePaperType;
@@ -152,12 +173,6 @@ public class StockMarketGameCreationBean implements Serializable {
 	}
 	public void setValuePaperCurrencyCode(String valuePaperCurrencyCode) {
 		this.valuePaperCurrencyCode = valuePaperCurrencyCode;
-	}
-	public List<ValuePaper> getSearchedValuePapers() {
-		return searchedValuePapers;
-	}
-	public void setSearchedValuePapers(List<ValuePaper> searchedValuePapers) {
-		this.searchedValuePapers = searchedValuePapers;
 	}
 	public Set<ValuePaper> getAllowedValuePapers() {
 		return allowedValuePapers;
@@ -259,7 +274,14 @@ public class StockMarketGameCreationBean implements Serializable {
 
 
 	public void init() {
+		
+		System.out.println("INIT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 
+		allowedValuePapersSource = new ArrayList<ValuePaper>();
+		allowedValuePapersTarget = new ArrayList<ValuePaper>();
+		
+		allowedValuePapersListModel = new DualListModel<ValuePaper>(allowedValuePapersSource, allowedValuePapersTarget);
+		
 		loggedInUser = userContext.getUser();
 
 		if(loggedInUser != null){		
@@ -282,7 +304,7 @@ public class StockMarketGameCreationBean implements Serializable {
 			orderFee = stockMarketGame.getSetting().getOrderFee().getValue();
 			portfolioFee = stockMarketGame.getSetting().getPortfolioFee().getValue();
 			capitalReturnTax = stockMarketGame.getSetting().getCapitalReturnTax();
-			
+
 			allowedValuePapers = stockMarketGame.getAllowedValuePapers();
 		}
 		else{
@@ -360,7 +382,7 @@ public class StockMarketGameCreationBean implements Serializable {
 		stockMarketGame.setValidTo(StockMarketGameCreationBean.dateToCalendar(validTo));
 		stockMarketGame.setRegistrationFrom(StockMarketGameCreationBean.dateToCalendar(registrationFrom));
 		stockMarketGame.setRegistrationTo(StockMarketGameCreationBean.dateToCalendar(registrationTo));
-		
+
 		stockMarketGame.setAllowedValuePapers(allowedValuePapers);
 
 		PortfolioSetting portfolioSetting = new PortfolioSetting();
@@ -481,24 +503,37 @@ public class StockMarketGameCreationBean implements Serializable {
 				FacesContext.getCurrentInstance().addMessage("searchValuePapers:currency", facesMessage);
 			}
 		}
+
+		//searchedValuePapers = valuePaperScreenerDataAccess.findByValuePaper(searchValuePaper, isTypeSpecificated);
+		//		
+		//searchedValuePapers.removeAll(allowedValuePapers);
+		//		
+		//selectedAllowedValuePapers = searchedValuePapers;
+
+		System.out.println("target: " + allowedValuePapersListModel.getTarget().size());
 		
-		searchedValuePapers = valuePaperScreenerDataAccess.findByValuePaper(searchValuePaper, isTypeSpecificated);
+		allowedValuePapersTarget = allowedValuePapersListModel.getTarget();
 		
-		searchedValuePapers.removeAll(allowedValuePapers);
+		allowedValuePapersSource = valuePaperScreenerDataAccess.findByValuePaper(searchValuePaper, isTypeSpecificated);
+
+		allowedValuePapersSource.removeAll(allowedValuePapers);
 		
-		selectedAllowedValuePapers = searchedValuePapers;
+		allowedValuePapersListModel.setSource(allowedValuePapersSource);
+		allowedValuePapersListModel.setTarget(allowedValuePapersTarget);
 		
+		System.out.println("SEARCH!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + allowedValuePapersSource.size());
+		System.out.println("target: " + allowedValuePapersListModel.getTarget().size());
 	}
-	
-	public void addSelectedValuePapersToAllowedValuePapers(){
-		if(!selectedAllowedValuePapers.isEmpty()){
-			allowedValuePapers.addAll(selectedAllowedValuePapers);
-			
-			searchedValuePapers.removeAll(selectedAllowedValuePapers);
-			selectedAllowedValuePapers.clear();
-		}
-	}
-	
+
+//	public void addSelectedValuePapersToAllowedValuePapers(){
+//		if(!selectedAllowedValuePapers.isEmpty()){
+//			allowedValuePapers.addAll(selectedAllowedValuePapers);
+//
+//			searchedValuePapers.removeAll(selectedAllowedValuePapers);
+//			selectedAllowedValuePapers.clear();
+//		}
+//	}
+
 	public void resetAllowedValuePapers(){
 		allowedValuePapers.clear();
 	}

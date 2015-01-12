@@ -241,17 +241,18 @@
 
 						<p:commandButton value="Suche"
 							action="#{stockMarketGameCreationBean.searchValuePapers()}"
-							update="valuePaperTable" ajax="true" style="margin-right:20px" />
+							update="allowedValuePapersPickList" ajax="true"
+							style="margin-right:20px" />
 
 						<p:commandButton value="aktuelle Auswahl hinzufügen"
 							action="#{stockMarketGameCreationBean.addSelectedValuePapersToAllowedValuePapers()}"
-							update="valuePaperTable allowedValuePapersCount" ajax="true"
-							style="margin-right:20px" />
+							update="allowedValuePapersPickList allowedValuePapersCount"
+							ajax="true" style="margin-right:20px" />
 
 						<p:commandButton value="erlaubte Wertpapiere zurücksetzen"
 							action="#{stockMarketGameCreationBean.resetAllowedValuePapers()}"
-							update="valuePaperTable allowedValuePapersCount" ajax="true"
-							style="margin-right:100px" />
+							update="allowedValuePapersPickList allowedValuePapersCount"
+							ajax="true" style="margin-right:100px" />
 
 						<h:outputText id="allowedValuePapersCount"
 							value="#{'Anzahl erlaubter Wertpapiere: '.concat(stockMarketGameCreationBean.allowedValuePapers.size())}" />
@@ -259,7 +260,20 @@
 
 						<p:separator />
 
-						<p:dataTable id="valuePaperTable" var="valuePaper"
+						<p:pickList id="allowedValuePapersPickList"
+							value="#{stockMarketGameCreationBean.allowedValuePapersListModel}"
+							var="vp" itemValue="#{vp}" itemLabel="#{vp.name}"
+							showCheckbox="true" showSourceFilter="true"
+							showTargetFilter="true" filterMatchMode="contains">
+
+							<f:facet name="sourceCaption">Verfügbar</f:facet>
+							<f:facet name="targetCaption">Erlaubt</f:facet>
+
+						</p:pickList>
+
+						<p:messages globalOnly="true" autoUpdate="true" />
+
+						<!-- <p:dataTable id="valuePaperTable" var="valuePaper"
 							value="#{stockMarketGameCreationBean.searchedValuePapers}"
 							rowKey="#{valuePaper.code}"
 							selection="#{stockMarketGameCreationBean.selectedAllowedValuePapers}"
@@ -298,7 +312,7 @@
 								<h:outputText value="#{valuePaper.type}" />
 							</p:column>
 
-						</p:dataTable>
+						</p:dataTable> -->
 
 					</p:panel>
 
