@@ -12,6 +12,12 @@
 			<cc:attribute name="maxHeight" default="100px" />
 		</cc:interface>
 		<cc:implementation>
+			<p:graphicImage value="#{logoBean.logo}" style="max-width: #{cc.attrs.maxWidth}; max-height: #{cc.attrs.maxHeight}" rendered="#{cc.attrs.logoEntity != null and cc.attrs.logoEntity.logo != null}" >
+				<f:param name="entityClass" value="#{cc.attrs.logoEntity.fullyQualifiedClassName}" />
+				<f:param name="entityId" value="#{cc.attrs.logoEntity.id}" />
+			</p:graphicImage>
+			<h:outputText value="default logo" rendered="#{cc.attrs.logoEntity == null or cc.attrs.logoEntity.logo == null}" />
+			<!-- 
 			<c:choose>
 				<c:when test="#{cc.attrs.logoEntity != null and cc.attrs.logoEntity.logo != null}">
 					<p:graphicImage value="#{logoBean.logo}" style="max-width: #{cc.attrs.maxWidth}; max-height: #{cc.attrs.maxHeight}">
@@ -21,5 +27,6 @@
 				</c:when>
 				<c:otherwise>default logo</c:otherwise>
 			</c:choose>
+			 -->
 		</cc:implementation>
 </ui:component>

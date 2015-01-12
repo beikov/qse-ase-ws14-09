@@ -39,21 +39,28 @@
 				
 				<p:accordionPanel value="#{stockMarketGameSearchBean.games}" var="game">
 			        <p:tab title="Spiel - #{game.name}">
+			        	
 			            <h:panelGrid columns="2" cellpadding="5" border="0">
+			            	<f:facet name="header">
+			            		<ase:logo logoEntity="#{game.owner}" maxWidth="300px" />
+			            	</f:facet>
 			                <h:outputText value="Institution:" style="font-weight: bold" />
 			                <h:panelGrid columns="2" cellpadding="5" border="0">
-			                	<ase:logo logoEntity="#{game.owner}" />
-			                	<h:outputText value="#{game.owner.name}" />
+			                	<p:link value="#{game.owner.name}" outcome="/institution/view">
+					            	<f:param name="institution" value="#{game.owner.id}" />
+					            </p:link>
 			                </h:panelGrid>
 			                
-			                <h:outputText value="Start:" style="font-weight: bold" />
+			                <h:outputText value="Spielstart:" style="font-weight: bold" />
 			                <h:outputText value="#{dateUtil.formatCalendar(game.validFrom)}" />
-			                
-			                <p:button value="Details" outcome="view">
-			                	<f:param name="gameId" value="#{game.id}" />
-			                </p:button>
-			                <p:commandButton value="#{stockMarketGameSearchBean.getParticipateButtonText(game)}" update=":searchGamesForm:messages @this" actionListener="#{stockMarketGameSearchBean.participate(game)}" />
 			            </h:panelGrid>
+			            
+			            <p style="margin-top: 10px; margin-bottom: 10px;">#{game.text}</p>
+			            
+			            <p:button value="Details" outcome="view">
+		                	<f:param name="gameId" value="#{game.id}" />
+		                </p:button>
+		                <p:commandButton value="#{stockMarketGameSearchBean.getParticipateButtonText(game)}" update=":searchGamesForm:messages @this" actionListener="#{stockMarketGameSearchBean.participate(game)}" />
 			        </p:tab>
 			    </p:accordionPanel>
 			</p:fieldset>

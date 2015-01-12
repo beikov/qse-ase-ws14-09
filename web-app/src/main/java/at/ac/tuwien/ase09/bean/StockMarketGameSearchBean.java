@@ -143,7 +143,6 @@ public class StockMarketGameSearchBean implements Serializable{
     }*/
     
     public void handleFilterGameKeyEvent() {
-    	filterGameName = filterGameName.toLowerCase();
     	loadStockMarketGames();
     }
     
