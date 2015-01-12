@@ -19,4 +19,8 @@
 	<extension qualifier="webdriver">
 		<property name="browser">chrome</property>
 	</extension>
+	
+	<extension qualifier="graphene">
+		<property name="waitGuiInterval">3</property>
+	</extension>
 </arquillian>

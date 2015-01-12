@@ -5,6 +5,7 @@ package at.ac.tuwien.ase09.test.pageabstraction;
 
 import java.util.List;
 
+import org.jboss.arquillian.graphene.Graphene;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
@@ -21,6 +22,7 @@ import org.openqa.selenium.remote.RemoteWebElement;
  * @date 07.10.2014
  */
 public class NamingContainerAwareWebElement extends RemoteWebElement {
+	private static final int DEFAULT_WAIT_INTERVAL = 1;
 
     private final String namingContainer;
     private final RemoteWebElement webElem;
@@ -38,7 +40,15 @@ public class NamingContainerAwareWebElement extends RemoteWebElement {
         webElem.setParent(parent);
     }
 
-
+    private void defaultWait(){
+    	if(DEFAULT_WAIT_INTERVAL > 0){
+    		try {
+				Thread.sleep(DEFAULT_WAIT_INTERVAL * 1000);
+			} catch (InterruptedException e) {
+				// ignore
+			}
+    	}
+    }
 
     public String getId() {
         return webElem.getId();
@@ -59,24 +69,28 @@ public class NamingContainerAwareWebElement extends RemoteWebElement {
 
 
     public void click() {
+    	defaultWait();
         webElem.click();
     }
 
 
 
     public void submit() {
+    	defaultWait();
         webElem.submit();
     }
 
 
 
     public void sendKeys(CharSequence... keysToSend) {
+    	defaultWait();
         webElem.sendKeys(keysToSend);
     }
 
 
 
     public void clear() {
+    	defaultWait();
         webElem.clear();
     }
 

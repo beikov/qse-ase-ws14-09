@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.jboss.arquillian.container.test.spi.util.ServiceLoader;
 import org.jboss.arquillian.graphene.proxy.GrapheneProxyInstance;
 import org.jboss.arquillian.graphene.spi.findby.ImplementsLocationStrategy;
 import org.jboss.arquillian.graphene.spi.findby.LocationStrategy;
