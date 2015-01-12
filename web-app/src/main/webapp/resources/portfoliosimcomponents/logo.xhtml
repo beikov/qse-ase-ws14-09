@@ -10,6 +10,8 @@
 			<cc:attribute name="logoEntity" required="true" />
 			<cc:attribute name="maxWidth" default="100px" />
 			<cc:attribute name="maxHeight" default="100px" />
+			<cc:attribute name="width" default="50" />
+			<cc:attribute name="height" default="50" />
 		</cc:interface>
 		<cc:implementation>
 			<c:choose>
@@ -19,7 +21,9 @@
 						<f:param name="entityId" value="#{cc.attrs.logoEntity.id}" />
 					</p:graphicImage>
 				</c:when>
-				<c:otherwise>default logo</c:otherwise>
+				<c:otherwise>
+					<p:graphicImage value="/resources/images/Default_Profile_Picture.png" width="#{cc.attrs.width}" height="#{cc.attrs.height}" />
+				</c:otherwise>
 			</c:choose>
 		</cc:implementation>
 </ui:component>

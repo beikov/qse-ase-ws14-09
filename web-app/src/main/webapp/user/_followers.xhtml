@@ -9,7 +9,9 @@
 	<p:fieldset legend="Followers" style="margin-bottom: 20px;">
 		<c:forEach items="#{userProfileBean.followers}" var="follower" >
 	 		<div>
-	 			<ase:logo logoEntity="#{follower}" />
+	 			<span style="margin-right: 15px;">
+	 				<ase:logo logoEntity="#{follower}" />
+	 			</span>
 	 			
 	 			<p:link value="#{follower.username}" outcome="/user/profile" rendered="#{follower.username != portfolioViewBean.user.username}">
 					<f:param name="user" value="#{follower.username}"/>
