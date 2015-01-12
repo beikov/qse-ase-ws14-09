@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Locale;
 
 import at.ac.tuwien.ase09.android.R;
+import at.ac.tuwien.ase09.android.adapater.ValuePaperItemLayoutPopulator;
 import at.ac.tuwien.ase09.android.adapater.ValuePaperTypeAdapter;
 import at.ac.tuwien.ase09.android.service.RestQueryResultReceiver;
 import at.ac.tuwien.ase09.android.service.RestQueryService;
@@ -259,45 +260,7 @@ public class ValuePaperSearchFragment extends Fragment implements AbsListView.On
                 view = convertView;
             }
 
-            nameTextView = (TextView) view.findViewById(R.id.vpName);
-            codeTextView = (TextView) view.findViewById(R.id.vpCode);
-            relativePriceChangeTextView = (TextView) view.findViewById(R.id.vpRelativePriceChange);
-            absolutePriceChangeTextView = (TextView) view.findViewById(R.id.vpAbsolutePriceChange);
-
-            ValuePaperDto valuePaper = getItem(position);
-            nameTextView.setText(valuePaper.getName());
-            codeTextView.setText(valuePaper.getCode());
-            BigDecimal lastPrice = valuePaper.getLastPrice();
-            BigDecimal previousDayPrice = valuePaper.getPreviousDayPrice();
-            if(lastPrice != null && previousDayPrice != null) {
-                DecimalFormat df = new DecimalFormat();
-                df.setMaximumFractionDigits(2);
-                df.setMinimumFractionDigits(0);
-                df.setNegativePrefix("-");
-                df.setPositivePrefix("+");
-
-                BigDecimal absolutePriceChange = lastPrice.subtract(previousDayPrice);
-                BigDecimal relativePriceChange = absolutePriceChange.divide(previousDayPrice, RoundingMode.HALF_DOWN);
-
-                relativePriceChangeTextView.setText(df.format(relativePriceChange.floatValue() * 100) + " %");
-
-                df.setCurrency(valuePaper.getCurrency());
-                absolutePriceChangeTextView.setText(df.format(absolutePriceChange) + " " + valuePaper.getCurrency().getCurrencyCode());
-
-                int textViewColor;
-                switch(absolutePriceChange.signum()){
-                    case -1:    textViewColor = Color.RED;
-                                break;
-                    case  1:    textViewColor = Color.rgb(34, 177, 76);
-                                break;
-                    default:    textViewColor = Color.BLACK;
-                }
-                absolutePriceChangeTextView.setTextColor(textViewColor);
-                relativePriceChangeTextView.setTextColor(textViewColor);
-            }else{
-                relativePriceChangeTextView.setText("");
-                absolutePriceChangeTextView.setText("");
-            }
+            ValuePaperItemLayoutPopulator.populateValuePaperItemView(view, getItem(position));
             return view;
         }
     }

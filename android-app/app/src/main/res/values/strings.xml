@@ -17,4 +17,7 @@
     <string name="fund">Fond</string>
     <string name="stockbond">Aktienanleihe</string>
     <string name="valuePaperTypeLabel">Wertpapiertyp:</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="value_paper">Wertpapier</string>
+
 </resources>

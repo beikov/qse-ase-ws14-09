@@ -1,0 +1,96 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="at.ac.tuwien.ase09.android.fragment.OrderFragment">
+
+    <include android:id="@+id/valuePaperItemView" layout="@layout/valuepaper_item" />
+
+    <LinearLayout
+        android:layout_gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Market Order"
+                android:id="@+id/radioButtonMarketOrder"
+                android:layout_gravity="center" />
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Limit Order"
+                android:id="@+id/radioButtonLimitOrder"
+                android:layout_gravity="center" />
+
+        </RadioGroup>
+
+        <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Gültig von"/>
+
+        <DatePicker
+            android:id="@+id/validityFromPicker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Gültig bis" />
+
+        <DatePicker
+            android:id="@+id/validityToPicker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Stück"/>
+
+        <NumberPicker
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/orderVolumePicker"
+            android:layout_gravity="center" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Geschätzter Kaufpreis"/>
+
+        <TextView
+            android:id="@+id/estimatedOrderPrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="123 EUR"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Ordergebühr"/>
+
+        <TextView
+            android:id="@+id/orderFee"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="45 EUR"/>
+
+    </LinearLayout>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Order bestätigen"
+        android:id="@+id/button2"
+        android:layout_gravity="bottom" />
+
+
+</FrameLayout>

@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 import at.ac.tuwien.ase09.android.fragment.NavigationDrawerFragment;
+import at.ac.tuwien.ase09.android.fragment.OrderFragment;
 import at.ac.tuwien.ase09.android.fragment.PortfolioContextFragment;
 import at.ac.tuwien.ase09.android.fragment.PortfolioViewFragment;
 import at.ac.tuwien.ase09.android.fragment.ValuePaperSearchFragment;
@@ -136,7 +137,7 @@ public class MainActivity extends Activity
 
     @Override
     public void onValuePaperSelected(ValuePaperDto valuePaper) {
-        // TODO: display value paper view for selected value paper
+        getFragmentManager().beginTransaction().replace(R.id.container, OrderFragment.newInstance(valuePaper)).commit();
     }
 
 }
