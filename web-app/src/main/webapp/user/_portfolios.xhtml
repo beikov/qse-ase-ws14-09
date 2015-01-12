@@ -6,16 +6,37 @@
 	xmlns:p="http://primefaces.org/ui">
 	
 	<div class="row">
-		<p:fieldset legend="Portfolios" class="col-md-7 col-md-offset-2">
-			<p:dashboard id="portfolios" model="#{userProfileBean.portfolioDashboard}" rendered="#{userProfileBean.portfolios.size() gt 0}">
+			<h:outputText value="Keine Portfolios vorhanden" rendered="#{userProfileBean.portfolios.size() == 0}" />
+			
+			<p:dataGrid var="portfolio" value="#{userProfileBean.portfolios}" columns="3" layout="grid"
+		        rows="2" paginator="true" id="portfolios"
+		        paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}">
+		 
+		        <f:facet name="header">
+		            Portfolios
+		        </f:facet>
+		 
+		        <p:panel header="#{portfolio.name}" style="text-align:center">
+		            <h:panelGrid columns="2" style="width:100%"> 
+		            	<h:outputText value="Aktuelles Kapital:" />
+		                <h:outputText value="#{portfolio.currentCapital}" />
+		            </h:panelGrid>
+		            <p:link title="Details" outcome="/portfolio/view">
+	                    <h:outputText styleClass="ui-icon ui-icon-search" style="margin:0 auto;" />
+	                    <f:param name="portfolioId" value="#{portfolio.id}" />
+	                </p:link>
+		        </p:panel>
+		    </p:dataGrid>
+		
+			
+			<!-- <p:dashboard id="portfolios" model="#{userProfileBean.portfolioDashboard}" rendered="#{userProfileBean.portfolios.size() gt 0}">
 				<c:forEach items="#{userProfileBean.portfolios}" var="portfolio" >
 					<p:panel id="#{portfolio.name}" header="#{portfolio.name}" rendered="#{portfolio.getVisibility().getPublicVisible() or user.username == portfolio.owner.username}">
 			            <h:outputText value="..." />
 			        </p:panel>
 		        </c:forEach>
-			</p:dashboard>
-			<h:outputText value="Keine Portfolios vorhanden" rendered="#{userProfileBean.portfolios.size() == 0}" />
-		</p:fieldset>
+			</p:dashboard> -->
+			
 	</div>
 	
 </ui:composition>

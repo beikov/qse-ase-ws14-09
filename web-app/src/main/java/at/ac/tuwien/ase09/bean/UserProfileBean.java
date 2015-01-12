@@ -16,6 +16,7 @@ import org.primefaces.model.DefaultDashboardColumn;
 import org.primefaces.model.DefaultDashboardModel;
 
 import at.ac.tuwien.ase09.context.UserContext;
+import at.ac.tuwien.ase09.context.WebUserContext;
 import at.ac.tuwien.ase09.data.PortfolioDataAccess;
 import at.ac.tuwien.ase09.data.UserDataAccess;
 import at.ac.tuwien.ase09.exception.EntityNotFoundException;
@@ -35,7 +36,7 @@ public class UserProfileBean implements Serializable {
 	private UserDataAccess userDataAccess;
 	
 	@Inject
-	private UserContext userContext;
+	private WebUserContext userContext;
 	
 	private String username;
 	private User owner;
@@ -43,7 +44,7 @@ public class UserProfileBean implements Serializable {
 	private List<User> followers;
 	private List<Portfolio> portfolios;
 	
-	 private DashboardModel portfolioDashboard;
+	 //private DashboardModel portfolioDashboard;
 	
 	
 	public void init() throws IOException {
@@ -58,7 +59,7 @@ public class UserProfileBean implements Serializable {
 	
 		followers = new ArrayList<>(owner.getFollowers());
 		portfolios = portfolioDataAccess.getActiveUserPortfolios(owner);
-		createPortfolioDashboard();
+		//createPortfolioDashboard();
 	}
 	
 	public void validateUsername() throws IOException {
@@ -69,7 +70,7 @@ public class UserProfileBean implements Serializable {
 		}
 	}
 	
-	private void createPortfolioDashboard() {
+	/*private void createPortfolioDashboard() {
 		portfolioDashboard = new DefaultDashboardModel();
 		
 		DashboardColumn column1 = new DefaultDashboardColumn();
@@ -96,7 +97,7 @@ public class UserProfileBean implements Serializable {
         portfolioDashboard.addColumn(column1);
         portfolioDashboard.addColumn(column2);
         portfolioDashboard.addColumn(column3);
-	}
+	}*/
 	
 	public void setUsername(String username) {
 		this.username = username;
@@ -126,7 +127,7 @@ public class UserProfileBean implements Serializable {
 		return portfolios;
 	}
 	
-	public DashboardModel getPortfolioDashboard() {
+	/*public DashboardModel getPortfolioDashboard() {
 		return portfolioDashboard;
-	}
+	}*/
 }
