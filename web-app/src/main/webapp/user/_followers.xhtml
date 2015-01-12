@@ -6,22 +6,20 @@
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:ase="http://java.sun.com/jsf/composite/portfoliosimcomponents">
 	
-	<div class="row">
-		<p:fieldset legend="Followers" class="col-md-7 col-md-offset-2" style="margin-bottom: 20px;">
-			<c:forEach items="#{userProfileBean.followers}" var="follower" >
-		 		<div>
-		 			<ase:logo logoEntity="#{follower}" />
-		 			
-		 			<p:link value="#{follower.username}" outcome="/user/profile" rendered="#{follower.username != portfolioViewBean.user.username}">
-						<f:param name="user" value="#{follower.username}"/>
-					</p:link>
-					<p:link value="Ich" outcome="/user/profile" rendered="#{follower.username == portfolioViewBean.user.username}">
-						<f:param name="user" value="#{follower.username}"/>
-					</p:link>
-		 		</div>
-		 	</c:forEach>
-		 </p:fieldset>
-	</div>
+	<p:fieldset legend="Followers" style="margin-bottom: 20px;">
+		<c:forEach items="#{userProfileBean.followers}" var="follower" >
+	 		<div>
+	 			<ase:logo logoEntity="#{follower}" />
+	 			
+	 			<p:link value="#{follower.username}" outcome="/user/profile" rendered="#{follower.username != portfolioViewBean.user.username}">
+					<f:param name="user" value="#{follower.username}"/>
+				</p:link>
+				<p:link value="Ich" outcome="/user/profile" rendered="#{follower.username == portfolioViewBean.user.username}">
+					<f:param name="user" value="#{follower.username}"/>
+				</p:link>
+	 		</div>
+	 	</c:forEach>
+	 </p:fieldset>
 	
 	
 </ui:composition>

@@ -25,10 +25,17 @@
 	
 	<!-- content -->
 	<ui:define name="body">
-		
-		<ui:include src="_about.xhtml" />
-		<ui:include src="_followers.xhtml" />
-		<ui:include src="_portfolios.xhtml" />
+		<div class="row">
+			<div class="col-md-5">
+				<ui:include src="_about.xhtml" />
+			</div>
+			<div class="col-md-7">
+				<ui:include src="_followers.xhtml" />
+			</div>
+		</div>
+		<div class="row">
+			<ui:include src="_portfolios.xhtml" />
+		</div>
 		
 	</ui:define>
 	
