@@ -16,46 +16,53 @@ import at.ac.tuwien.ase09.rest.model.ValuePaperDto;
  */
 public class ValuePaperItemLayoutPopulator {
     public static void populateValuePaperItemView(View view, ValuePaperDto valuePaper){
-        TextView nameTextView;
-        TextView codeTextView;
-        TextView relativePriceChangeTextView;
-        TextView absolutePriceChangeTextView;
-
-        nameTextView = (TextView) view.findViewById(R.id.vpName);
-        codeTextView = (TextView) view.findViewById(R.id.vpCode);
-        relativePriceChangeTextView = (TextView) view.findViewById(R.id.vpRelativePriceChange);
-        absolutePriceChangeTextView = (TextView) view.findViewById(R.id.vpAbsolutePriceChange);
+        TextView nameTextView = (TextView) view.findViewById(R.id.vpName);
+        TextView codeTextView = (TextView) view.findViewById(R.id.vpCode);
+        TextView relativePriceChangeTextView = (TextView) view.findViewById(R.id.vpRelativePriceChange);
+        TextView absolutePriceChangeTextView = (TextView) view.findViewById(R.id.vpAbsolutePriceChange);
+        TextView lastPriceTextView = (TextView) view.findViewById(R.id.vpLastPrice);
 
         nameTextView.setText(valuePaper.getName());
         codeTextView.setText(valuePaper.getCode());
         BigDecimal lastPrice = valuePaper.getLastPrice();
         BigDecimal previousDayPrice = valuePaper.getPreviousDayPrice();
-        if(lastPrice != null && previousDayPrice != null) {
+        if(lastPrice != null) {
             DecimalFormat df = new DecimalFormat();
             df.setMaximumFractionDigits(2);
             df.setMinimumFractionDigits(0);
-            df.setNegativePrefix("-");
-            df.setPositivePrefix("+");
+            lastPriceTextView.setText(df.format(valuePaper.getLastPrice()) + " " + valuePaper.getCurrency().getCurrencyCode());
 
-            BigDecimal absolutePriceChange = lastPrice.subtract(previousDayPrice);
-            BigDecimal relativePriceChange = absolutePriceChange.divide(previousDayPrice, RoundingMode.HALF_DOWN);
+            if(previousDayPrice != null) {
+                df.setNegativePrefix("-");
+                df.setPositivePrefix("+");
 
-            relativePriceChangeTextView.setText(df.format(relativePriceChange.floatValue() * 100) + " %");
+                BigDecimal absolutePriceChange = lastPrice.subtract(previousDayPrice);
+                BigDecimal relativePriceChange = absolutePriceChange.divide(previousDayPrice, RoundingMode.HALF_DOWN);
 
-            df.setCurrency(valuePaper.getCurrency());
-            absolutePriceChangeTextView.setText(df.format(absolutePriceChange) + " " + valuePaper.getCurrency().getCurrencyCode());
+                relativePriceChangeTextView.setText(df.format(relativePriceChange.floatValue() * 100) + " %");
 
-            int textViewColor;
-            switch(absolutePriceChange.signum()){
-                case -1:    textViewColor = Color.RED;
-                    break;
-                case  1:    textViewColor = Color.rgb(34, 177, 76);
-                    break;
-                default:    textViewColor = Color.BLACK;
+                df.setCurrency(valuePaper.getCurrency());
+                absolutePriceChangeTextView.setText(df.format(absolutePriceChange) + " " + valuePaper.getCurrency().getCurrencyCode());
+
+                int textViewColor;
+                switch (absolutePriceChange.signum()) {
+                    case -1:
+                        textViewColor = Color.RED;
+                        break;
+                    case 1:
+                        textViewColor = Color.rgb(34, 177, 76);
+                        break;
+                    default:
+                        textViewColor = Color.BLACK;
+                }
+                absolutePriceChangeTextView.setTextColor(textViewColor);
+                relativePriceChangeTextView.setTextColor(textViewColor);
+            }else{
+                relativePriceChangeTextView.setText("");
+                absolutePriceChangeTextView.setText("");
             }
-            absolutePriceChangeTextView.setTextColor(textViewColor);
-            relativePriceChangeTextView.setTextColor(textViewColor);
-        }else{
+        }else {
+            lastPriceTextView.setText("");
             relativePriceChangeTextView.setText("");
             absolutePriceChangeTextView.setText("");
         }

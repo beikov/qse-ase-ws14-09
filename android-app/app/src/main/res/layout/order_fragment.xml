@@ -12,62 +12,91 @@
         android:orientation="vertical">
         <RadioGroup
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Market Order"
+                android:text="@string/market_order"
                 android:id="@+id/radioButtonMarketOrder"
-                android:layout_gravity="center" />
+                android:checked="true" />
 
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Limit Order"
-                android:id="@+id/radioButtonLimitOrder"
-                android:layout_gravity="center" />
+                android:text="@string/limit_order"
+                android:id="@+id/radioButtonLimitOrder" />
 
         </RadioGroup>
 
         <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Gültig von"/>
+            android:id="@+id/validFromTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/valid_from"/>
 
-        <DatePicker
-            android:id="@+id/validityFromPicker"
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <Button
+                android:id="@+id/validityFromDateButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="currentDate" />
+
+            <Button
+                android:id="@+id/validityFromTimeButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="currentTime" />
+        </LinearLayout>
+
+        <CheckBox
+            android:id="@+id/validToCheckbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/valid_to" />
+
+        <LinearLayout
+            android:id="@+id/validToArea"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <Button
+                android:id="@+id/validityToDateButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="currentDate" />
+
+            <Button
+                android:id="@+id/validityToTimeButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="currentTime" />
+        </LinearLayout>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Gültig bis" />
+            android:text="@string/volume"/>
 
-        <DatePicker
-            android:id="@+id/validityToPicker"
+        <EditText
+            android:id="@+id/orderVolumeInput"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:ems="10"
+            android:text="1" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Stück"/>
-
-        <NumberPicker
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/orderVolumePicker"
-            android:layout_gravity="center" />
+            android:text="@string/estimated_order_value"/>
 
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Geschätzter Kaufpreis"/>
-
-        <TextView
-            android:id="@+id/estimatedOrderPrice"
+            android:id="@+id/estimatedOrderCost"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="123 EUR"/>
@@ -75,7 +104,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Ordergebühr"/>
+            android:text="@string/order_fee"/>
 
         <TextView
             android:id="@+id/orderFee"
@@ -88,9 +117,9 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Order bestätigen"
+        android:text="@string/confirm_order"
         android:id="@+id/button2"
-        android:layout_gravity="bottom" />
+        android:layout_gravity="bottom|right" />
 
 
 </FrameLayout>
