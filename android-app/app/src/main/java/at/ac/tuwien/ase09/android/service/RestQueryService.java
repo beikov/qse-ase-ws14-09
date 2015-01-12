@@ -67,7 +67,7 @@ public class RestQueryService extends IntentService {
     private PortfolioDto getInitialPortfolioContext() {
         Log.i(LOG_TAG, "Query default portfolio context");
         PortfolioResource portfolioResource = WebserviceFactory.getInstance().getPortfolioResource();
-        List<PortfolioDto> portfolios = portfolioResource.getPortfolios(7730l); //TODO: use user id of logged in user
+        List<PortfolioDto> portfolios = portfolioResource.getPortfolios(1L); //TODO: use user id of logged in user
         if (!portfolios.isEmpty()) {
             PortfolioContext.setPortfolio(portfolios.get(0));
         }
@@ -77,7 +77,7 @@ public class RestQueryService extends IntentService {
     private ArrayList<PortfolioDto> getPortfolios() {
         Log.i(LOG_TAG, "Query portfolios");
         PortfolioResource portfolioResource = WebserviceFactory.getInstance().getPortfolioResource();
-        return new ArrayList<PortfolioDto>(portfolioResource.getPortfolios(7730l)); //TODO: use user id of logged in user
+        return new ArrayList<PortfolioDto>(portfolioResource.getPortfolios(1L)); //TODO: use user id of logged in user
     }
 
     private ArrayList<ValuePaperDto> searchValuePapers(String filter, ValuePaperType valuePaperType) {
