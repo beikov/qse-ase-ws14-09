@@ -99,6 +99,15 @@ public class UserProfileBean implements Serializable {
         portfolioDashboard.addColumn(column3);
 	}*/
 	
+	public String getFollowerName(User follower) {
+		String currentUsername = userContext.getUser().getUsername();
+		String followerUsername = follower.getUsername();
+		
+		if (followerUsername.equals(currentUsername))
+			return "Ich";
+		return followerUsername;
+	}
+	
 	public void setUsername(String username) {
 		this.username = username;
 	}

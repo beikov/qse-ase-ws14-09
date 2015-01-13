@@ -8,22 +8,17 @@
 		xmlns:p="http://primefaces.org/ui">
 		<cc:interface>
 			<cc:attribute name="logoEntity" required="true" />
-			<cc:attribute name="maxWidth" default="100px" />
-			<cc:attribute name="maxHeight" default="100px" />
-			<cc:attribute name="width" default="50" />
-			<cc:attribute name="height" default="50" />
+			<cc:attribute name="maxWidth" />
+			<cc:attribute name="maxHeight" />
+			<cc:attribute name="width" />
+			<cc:attribute name="height" />
 		</cc:interface>
 		<cc:implementation>
-			<c:choose>
-				<c:when test="#{cc.attrs.logoEntity != null and cc.attrs.logoEntity.logo != null}">
-					<p:graphicImage value="#{logoBean.logo}" style="max-width: #{cc.attrs.maxWidth}; max-height: #{cc.attrs.maxHeight}">
-						<f:param name="entityClass" value="#{cc.attrs.logoEntity.fullyQualifiedClassName}" />
-						<f:param name="entityId" value="#{cc.attrs.logoEntity.id}" />
-					</p:graphicImage>
-				</c:when>
-				<c:otherwise>
-					<p:graphicImage value="/resources/images/Default_Profile_Picture.png" width="#{cc.attrs.width}" height="#{cc.attrs.height}" />
-				</c:otherwise>
-			</c:choose>
+			<p:graphicImage library="images" name="Default_Profile_Picture.png" style="width: #{cc.attrs.width}; max-width: #{cc.attrs.maxWidth}; height: #{cc.attrs.height}; maxHeight: #{cc.attrs.maxHeight}" rendered="#{cc.attrs.logoEntity == null or cc.attrs.logoEntity.logo == null}" />
+			
+			<p:graphicImage value="#{logoBean.logo}" style="width: #{cc.attrs.width}; height: #{cc.attrs.height}" rendered="#{cc.attrs.logoEntity != null and cc.attrs.logoEntity.logo != null}">
+				<f:param name="entityClass" value="#{cc.attrs.logoEntity.fullyQualifiedClassName}" />
+				<f:param name="entityId" value="#{cc.attrs.logoEntity.id}" />
+			</p:graphicImage>
 		</cc:implementation>
 </ui:component>
