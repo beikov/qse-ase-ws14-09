@@ -10,6 +10,14 @@
 	xmlns:pa="http://java.sun.com/jsf/composite/portfolioVisibility"
 	template="/WEB-INF/templates/template.xhtml">
 
+	<ui:define name="head">
+		<style type="text/css">
+			.participating {
+				font-weight: normal !important;
+			}
+		</style>
+	</ui:define>
+	
 	<ui:define name="body">
 		<h:form id="searchGamesForm">
 			
@@ -38,7 +46,7 @@
 				<h:outputText value="Keine Spiele gefunden" rendered="#{stockMarketGameSearchBean.games.size() == 0}" />
 				
 				<p:accordionPanel value="#{stockMarketGameSearchBean.games}" var="game">
-			        <p:tab title="Spiel - #{game.name}">
+			        <p:tab title="Spiel - #{game.name}" titleStyleClass="#{stockMarketGameSearchBean.isParticipatingInGame(game) ? 'participating' : ''}">
 			        	
 			            <h:panelGrid columns="2" cellpadding="5" border="0">
 			            	<f:facet name="header">
@@ -60,7 +68,7 @@
 			            <p:button value="Details" outcome="view">
 		                	<f:param name="gameId" value="#{game.id}" />
 		                </p:button>
-		                <p:commandButton value="#{stockMarketGameSearchBean.getParticipateButtonText(game)}" update=":searchGamesForm:messages @this" actionListener="#{stockMarketGameSearchBean.participate(game)}" />
+		                <p:commandButton value="#{stockMarketGameSearchBean.getParticipateButtonText(game)}" update=":searchGamesForm:messages :searchGamesForm:games" actionListener="#{stockMarketGameSearchBean.participate(game)}" />
 			        </p:tab>
 			    </p:accordionPanel>
 			</p:fieldset>
