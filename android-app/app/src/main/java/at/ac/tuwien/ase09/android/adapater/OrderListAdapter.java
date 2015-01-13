@@ -59,9 +59,6 @@ public class OrderListAdapter extends BaseAdapter implements OnClickListener {
         convertView.setOnClickListener(this);
         OrderDto order = orders.get(pos);
 
-        holder.name.setText(order.getName());
-
-
         return convertView;
     }
     @Override

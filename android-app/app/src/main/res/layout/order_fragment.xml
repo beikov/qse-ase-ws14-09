@@ -3,14 +3,27 @@
     android:layout_height="match_parent"
     tools:context="at.ac.tuwien.ase09.android.fragment.OrderFragment">
 
-    <include android:id="@+id/valuePaperItemView" layout="@layout/valuepaper_item" />
+
 
     <LinearLayout
-        android:layout_gravity="center"
+        android:layout_gravity="top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+        <include android:id="@+id/valuePaperItemView" layout="@layout/valuepaper_item" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/order_type"/>
+
+        <Spinner
+            android:id="@+id/orderActionSpinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
         <RadioGroup
+            android:id="@+id/orderTypeRadioGroup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -115,11 +128,10 @@
     </LinearLayout>
 
     <Button
+        android:id="@+id/confirmOrderButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/confirm_order"
-        android:id="@+id/button2"
         android:layout_gravity="bottom|right" />
-
 
 </FrameLayout>

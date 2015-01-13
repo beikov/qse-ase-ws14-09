@@ -27,5 +27,8 @@
     <string name="estimated_order_value">Geschätzter Orderwert</string>
     <string name="order_fee">Ordergebühr</string>
     <string name="confirm_order">Order bestätigen</string>
+    <string name="order_type">Ordertyp</string>
+    <string name="sell">Verkauf</string>
+    <string name="buy">Kauf</string>
 
 </resources>

@@ -7,6 +7,7 @@ import java.util.Currency;
 public class ValuePaperDto implements Serializable {
 	private static final long serialVersionUID = -9184479286835690280L;
 
+	private long id;
 	private String name;
 	private String code;
 	private Currency currency;
@@ -15,14 +16,23 @@ public class ValuePaperDto implements Serializable {
 	
 	public ValuePaperDto(){ }
 	
-	public ValuePaperDto(String name, String code, Currency currency,
+	public ValuePaperDto(long id, String name, String code, Currency currency,
 			BigDecimal lastPrice, BigDecimal previousDayPrice) {
 		super();
+		this.id = id; 
 		this.name = name;
 		this.code = code;
 		this.currency = currency;
 		this.lastPrice = lastPrice;
 		this.previousDayPrice = previousDayPrice;
+	}
+	
+	public long getId(){
+		return id;
+	}
+	
+	public void setId(long id) {
+		this.id = id;
 	}
 
 	public String getName() {

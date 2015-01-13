@@ -3,18 +3,11 @@ package at.ac.tuwien.ase09.android.activity;
 import android.app.Activity;
 
 import android.app.ActionBar;
-import android.app.Fragment;
 import android.app.FragmentManager;
-import android.content.Intent;
 import android.content.res.AssetManager;
 import android.os.Bundle;
-import android.os.Handler;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
 
 import java.io.IOException;
@@ -25,8 +18,6 @@ import at.ac.tuwien.ase09.android.fragment.OrderFragment;
 import at.ac.tuwien.ase09.android.fragment.PortfolioContextFragment;
 import at.ac.tuwien.ase09.android.fragment.PortfolioViewFragment;
 import at.ac.tuwien.ase09.android.fragment.ValuePaperSearchFragment;
-import at.ac.tuwien.ase09.android.service.RestQueryResultReceiver;
-import at.ac.tuwien.ase09.android.service.RestQueryService;
 import at.ac.tuwien.ase09.android.singleton.PortfolioContext;
 import at.ac.tuwien.ase09.android.singleton.WebserviceFactory;
 import at.ac.tuwien.ase09.android.R;

@@ -7,10 +7,10 @@ import android.os.ResultReceiver;
 /**
  * Created by Moritz on 12.12.2014.
  */
-public class RestQueryResultReceiver extends ResultReceiver {
+public class RestResultReceiver extends ResultReceiver {
     private Receiver receiver;
 
-    public RestQueryResultReceiver(Handler handler) {
+    public RestResultReceiver(Handler handler) {
         super(handler);
     }
 

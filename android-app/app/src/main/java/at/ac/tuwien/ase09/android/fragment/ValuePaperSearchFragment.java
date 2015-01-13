@@ -4,17 +4,13 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -26,17 +22,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
 import java.util.List;
-import java.util.Locale;
 
 import at.ac.tuwien.ase09.android.R;
 import at.ac.tuwien.ase09.android.adapater.ValuePaperItemLayoutPopulator;
 import at.ac.tuwien.ase09.android.adapater.ValuePaperTypeAdapter;
-import at.ac.tuwien.ase09.android.service.RestQueryResultReceiver;
-import at.ac.tuwien.ase09.android.service.RestQueryService;
+import at.ac.tuwien.ase09.android.service.RestResultReceiver;
+import at.ac.tuwien.ase09.android.service.RestService;
 import at.ac.tuwien.ase09.model.ValuePaperType;
 import at.ac.tuwien.ase09.rest.model.ValuePaperDto;
 
@@ -49,7 +41,7 @@ import at.ac.tuwien.ase09.rest.model.ValuePaperDto;
  * Activities containing this fragment MUST implement the {@link ValuePaperSelectionListener}
  * interface.
  */
-public class ValuePaperSearchFragment extends Fragment implements AbsListView.OnItemClickListener, RestQueryResultReceiver.Receiver, TextWatcher {
+public class ValuePaperSearchFragment extends Fragment implements AbsListView.OnItemClickListener, RestResultReceiver.Receiver, TextWatcher {
 
     private ValuePaperSelectionListener mListener;
 
@@ -57,10 +49,6 @@ public class ValuePaperSearchFragment extends Fragment implements AbsListView.On
      * The fragment's ListView/GridView.
      */
     private AbsListView mListView;
-
-    private RestQueryResultReceiver receiver;
-
-    private Intent restQueryIntent;
 
     /**
      * The Adapter which will be used to populate the ListView/GridView with
@@ -111,7 +99,7 @@ public class ValuePaperSearchFragment extends Fragment implements AbsListView.On
         filterEditText.addTextChangedListener(this);
 
         valuePaperTypeSpinner = (Spinner) view.findViewById(R.id.valuePaperTypeSpinner);
-        // Create an ArrayAdapter using the string array and a default spinner layout
+        // Create an ArrayAdapter using a default spinner layout
         final ValuePaperTypeAdapter valuePaperTypeAdapter = new ValuePaperTypeAdapter(getActivity(), android.R.layout.simple_spinner_item);
         // Specify the layout to use when the list of choices appears
         valuePaperTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -161,13 +149,13 @@ public class ValuePaperSearchFragment extends Fragment implements AbsListView.On
         ((AdapterView<ListAdapter>) mListView).setAdapter(null);
         if(searchFilter != null && searchFilter.length() > 1) {
             final String effectiveFilter = "*" + searchFilter + "*";
-            receiver = new RestQueryResultReceiver(new Handler());
+            RestResultReceiver receiver = new RestResultReceiver(new Handler());
             receiver.setReceiver(this);
-            restQueryIntent = new Intent(Intent.ACTION_SYNC, null, getActivity(), RestQueryService.class);
-            restQueryIntent.putExtra(RestQueryService.COMMAND_SEARCH_VALUE_PAPERS_ARG_TYPE, selectedValuePaperType);
-            restQueryIntent.putExtra(RestQueryService.COMMAND_SEARCH_VALUE_PAPERS_ARG_FILTER, effectiveFilter);
+            Intent restQueryIntent = new Intent(Intent.ACTION_SYNC, null, getActivity(), RestService.class);
+            restQueryIntent.putExtra(RestService.COMMAND_SEARCH_VALUE_PAPERS_ARG_TYPE, selectedValuePaperType);
+            restQueryIntent.putExtra(RestService.COMMAND_SEARCH_VALUE_PAPERS_ARG_FILTER, effectiveFilter);
             restQueryIntent.putExtra("receiver", receiver);
-            restQueryIntent.putExtra("command", RestQueryService.COMMAND_SEARCH_VALUE_PAPERS);
+            restQueryIntent.putExtra("command", RestService.COMMAND_SEARCH_VALUE_PAPERS);
             getActivity().startService(restQueryIntent);
         }
     }
@@ -180,17 +168,17 @@ public class ValuePaperSearchFragment extends Fragment implements AbsListView.On
     @Override
     public void onReceiveResult(int resultCode, Bundle resultData) {
         switch (resultCode) {
-            case RestQueryService.STATUS_RUNNING:
+            case RestService.STATUS_RUNNING:
                 progressBar.setVisibility(View.VISIBLE);
                 break;
-            case RestQueryService.STATUS_FINISHED:
+            case RestService.STATUS_FINISHED:
                 List<ValuePaperDto> valuePapers = (List<ValuePaperDto>) resultData.getSerializable("results");
                 mAdapter = new ValuePaperArrayAdapter(getActivity(), valuePapers);
                 ((AdapterView<ListAdapter>) mListView).setAdapter(mAdapter);
 
                 progressBar.setVisibility(View.GONE);
                 break;
-            case RestQueryService.STATUS_ERROR:
+            case RestService.STATUS_ERROR:
                 progressBar.setVisibility(View.GONE);
                 Toast.makeText(getActivity(), resultData.getString(Intent.EXTRA_TEXT), Toast.LENGTH_LONG);
                 break;
