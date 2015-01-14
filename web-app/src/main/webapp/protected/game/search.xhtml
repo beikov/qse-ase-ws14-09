@@ -45,7 +45,7 @@
 			<p:fieldset id="games" legend="Gefundene Spiele" style="margin-bottom:20px">
 				<h:outputText value="Keine Spiele gefunden" rendered="#{stockMarketGameSearchBean.games.size() == 0}" />
 				
-				<p:accordionPanel value="#{stockMarketGameSearchBean.games}" var="game">
+				<p:accordionPanel value="#{stockMarketGameSearchBean.games}" var="game" activeIndex="">
 			        <p:tab title="Spiel - #{game.name}" titleStyleClass="#{stockMarketGameSearchBean.isParticipatingInGame(game) ? 'participating' : ''}">
 			        	
 			            <h:panelGrid columns="2" cellpadding="5" border="0">
