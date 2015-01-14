@@ -17,17 +17,16 @@
     </ui:define>
 	
 	<ui:define name="body">
-		<div class="row" style="margin-bottom: 40px;">
-			<div class="col-md-4">
+		<div class="row">
+			<div class="col-md-8 col-md-offset-2">
+				<ase:logo logoEntity="#{institutionBean.institution}" width="100%" />
 				<h2>#{institutionBean.institution.name}</h2>
-			</div>
-			<div class="col-md-8">
-				<ase:logo logoEntity="#{institutionBean.institution}" width="500px" />
+				<p style="margin-top: 40px;">
+					<h:outputText value="#{institutionBean.institution.pageText}" escape="false" />
+				</p>
 			</div>
 		</div>
-		<p style="margin-bottom: 30px;">
-			<h:outputText value="#{institutionBean.institution.pageText}" escape="false" />
-		</p>
+		
 	</ui:define>
 	
 </ui:composition>
