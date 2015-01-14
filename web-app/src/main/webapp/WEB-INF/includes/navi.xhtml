@@ -36,7 +36,7 @@
 		          		</c:when>
 		          		<c:otherwise>
 		          			<li>
-				          		<a href="/user/profile.xhtml?user=#{user.username}"><ase:logo logoEntity="#{user}" /> #{user.username}</a>
+				          		<ase:userLogoLink user="#{user}" />
 							</li>
 							<li class="divider"></li>
 							<li>

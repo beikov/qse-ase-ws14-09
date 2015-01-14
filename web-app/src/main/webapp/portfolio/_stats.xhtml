@@ -13,11 +13,7 @@
 				<h:outputText value="#{portfolioViewBean.portfolio.name}" /> -->
 				
 				<h:outputText value="Besitzer:" />
-				<p:link outcome="/user/profile">
-					<ase:logo logoEntity="#{portfolioViewBean.portfolio.owner}" width="50px" height="50px" />
-					<h:outputText value="#{portfolioViewBean.portfolio.owner.username}" />
-					<f:param name="user" value="#{portfolioViewBean.portfolio.owner.username}"/>
-				</p:link>
+				<ase:userLogoLink user="#{portfolioViewBean.portfolio.owner}" />
 				
 				<h:outputText value="Erstellt:" />
 				<h:outputText value="#{dateUtil.formatDate( portfolioViewBean.portfolio.created.time )}" />
