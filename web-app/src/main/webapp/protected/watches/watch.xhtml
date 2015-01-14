@@ -22,6 +22,16 @@
 			</p:tab>
 			
 			<p:tab title="Erweitert">
+				<h:panelGrid columns="2" cellpadding="10">		
+					<p:outputLabel for="stock" value="Wähle Aktie: " style="padding: 10px;"/>
+					<p:selectOneMenu id="stock" value="#{watchBean.stock}" style="width:200px"
+						converter="#{stockConverter}"
+						required="true" requiredMessage="Bitte auswählen!">
+						<f:selectItem itemLabel="Bitte auswählen" itemValue="#{null}" />
+						<f:selectItems value="#{stockItems}"/>
+					</p:selectOneMenu>
+				</h:panelGrid>
+				
 				<h:inputTextarea id="watch-editor" value="#{watchBean.watchExpression}" />
 			</p:tab>
 		</p:tabView>

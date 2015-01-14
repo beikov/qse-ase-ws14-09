@@ -2,6 +2,7 @@ package at.ac.tuwien.ase09.keycloak;
 
 import java.io.Serializable;
 
+import at.ac.tuwien.ase09.model.Portfolio;
 import at.ac.tuwien.ase09.model.User;
 
 public class UserInfo implements Serializable {
@@ -9,6 +10,7 @@ public class UserInfo implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private User user;
+	private Portfolio context;
 //	private final UserRepresentation userRepresentation;
 	private final String username;
 	private final String firstName;
@@ -41,6 +43,14 @@ public class UserInfo implements Serializable {
 	
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	public Portfolio getContext() {
+		return context;
+	}
+
+	public void setContext(Portfolio context) {
+		this.context = context;
 	}
 
 //	public UserRepresentation getUserRepresentation() {

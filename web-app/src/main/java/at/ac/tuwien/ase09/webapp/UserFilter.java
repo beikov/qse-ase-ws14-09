@@ -15,6 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.keycloak.representations.idm.UserRepresentation;
 
 import at.ac.tuwien.ase09.context.Login;
+import at.ac.tuwien.ase09.context.PortfolioContext;
+import at.ac.tuwien.ase09.data.PortfolioDataAccess;
 import at.ac.tuwien.ase09.data.UserDataAccess;
 import at.ac.tuwien.ase09.keycloak.AdminClient;
 import at.ac.tuwien.ase09.keycloak.UserInfo;
@@ -28,7 +30,11 @@ public class UserFilter implements Filter {
 	@Login
 	private Event<UserInfo> loginEvent;
 	@Inject
+	private PortfolioContext portfolioContext;
+	@Inject
 	private UserDataAccess userDataAccess;
+	@Inject
+	private PortfolioDataAccess portfolioDataAccess;
 	@Inject
 	private UserService userService;
 	
@@ -54,6 +60,7 @@ public class UserFilter implements Filter {
 					}
 					
 					userInfo.setUser(user);
+					userInfo.setContext(portfolioDataAccess.getPortfolioById(portfolioContext.getContextId()));
 					loginEvent.fire(userInfo);
 				}
 			} catch (Failure e) {
