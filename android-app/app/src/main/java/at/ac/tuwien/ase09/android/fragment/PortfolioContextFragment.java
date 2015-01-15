@@ -1,10 +1,8 @@
 package at.ac.tuwien.ase09.android.fragment;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.os.Handler;
@@ -15,19 +13,17 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import at.ac.tuwien.ase09.android.R;
 
-import at.ac.tuwien.ase09.android.service.RestQueryResultReceiver;
-import at.ac.tuwien.ase09.android.service.RestQueryService;
+import at.ac.tuwien.ase09.android.service.RestResultReceiver;
+import at.ac.tuwien.ase09.android.service.RestService;
 import at.ac.tuwien.ase09.android.singleton.PortfolioContext;
 import at.ac.tuwien.ase09.rest.model.PortfolioDto;
 
@@ -40,7 +36,7 @@ import at.ac.tuwien.ase09.rest.model.PortfolioDto;
  * Activities containing this fragment MUST implement the {@link at.ac.tuwien.ase09.android.fragment.PortfolioContextFragment.PortfolioContextChangeListener}
  * interface.
  */
-public class PortfolioContextFragment extends Fragment implements AbsListView.OnItemClickListener, RestQueryResultReceiver.Receiver {
+public class PortfolioContextFragment extends Fragment implements AbsListView.OnItemClickListener, RestResultReceiver.Receiver {
 
     private PortfolioContextChangeListener mListener;
 
@@ -49,7 +45,7 @@ public class PortfolioContextFragment extends Fragment implements AbsListView.On
      */
     private AbsListView mListView;
 
-    private RestQueryResultReceiver receiver;
+    private RestResultReceiver receiver;
     /**
      * The Adapter which will be used to populate the ListView/GridView with
      * Views.
@@ -68,10 +64,10 @@ public class PortfolioContextFragment extends Fragment implements AbsListView.On
     @Override
     public void onReceiveResult(int resultCode, Bundle resultData) {
         switch (resultCode) {
-            case RestQueryService.STATUS_RUNNING:
+            case RestService.STATUS_RUNNING:
                 progress.setVisibility(View.VISIBLE);
                 break;
-            case RestQueryService.STATUS_FINISHED:
+            case RestService.STATUS_FINISHED:
                 List<PortfolioDto> portfolios = (List<PortfolioDto>) resultData.getSerializable("results");
                 mAdapter = new PortfolioArrayAdapter(getActivity(),
                         R.layout.portfolio_item, R.id.portfolio_name, portfolios);
@@ -79,9 +75,9 @@ public class PortfolioContextFragment extends Fragment implements AbsListView.On
 
                 progress.setVisibility(View.GONE);
                 break;
-            case RestQueryService.STATUS_ERROR:
+            case RestService.STATUS_ERROR:
                 progress.setVisibility(View.GONE);
-                Toast.makeText(getActivity(), resultData.getString(Intent.EXTRA_TEXT), Toast.LENGTH_LONG);
+                Toast.makeText(getActivity(), resultData.getString(Intent.EXTRA_TEXT), Toast.LENGTH_LONG).show();
                 break;
         }
     }
@@ -96,11 +92,11 @@ public class PortfolioContextFragment extends Fragment implements AbsListView.On
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        receiver = new RestQueryResultReceiver(new Handler());
+        receiver = new RestResultReceiver(new Handler());
         receiver.setReceiver(this);
-        final Intent intent = new Intent(Intent.ACTION_SYNC, null, getActivity(), RestQueryService.class);
+        final Intent intent = new Intent(Intent.ACTION_SYNC, null, getActivity(), RestService.class);
         intent.putExtra("receiver", receiver);
-        intent.putExtra("command", RestQueryService.COMMAND_PORTFOLIOS);
+        intent.putExtra("command", RestService.COMMAND_PORTFOLIOS);
         getActivity().startService(intent);
     }
 

@@ -12,6 +12,7 @@ import org.jboss.resteasy.client.core.executors.ApacheHttpClient4Executor;
 import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
 
+import at.ac.tuwien.ase09.rest.OrderResource;
 import at.ac.tuwien.ase09.rest.PortfolioResource;
 import at.ac.tuwien.ase09.rest.ValuePaperResource;
 
@@ -58,6 +59,10 @@ public class WebserviceFactory {
 
     public ValuePaperResource getValuePaperResource(){
         return getResource(ValuePaperResource.class);
+    }
+
+    public OrderResource getOrderResource(){
+        return getResource(OrderResource.class);
     }
 
     public static WebserviceFactory getInstance(){

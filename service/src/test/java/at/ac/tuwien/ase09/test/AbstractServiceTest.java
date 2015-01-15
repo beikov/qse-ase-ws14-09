@@ -18,8 +18,6 @@ public abstract class AbstractServiceTest<T extends AbstractServiceTest<T>> exte
     private static final long serialVersionUID = -7248288932170947951L;
 
     @Inject
-    protected TestUserContext userContext;
-    @Inject
     protected DataManager dataManager;
     @Inject
     protected EntityManager em;
@@ -30,7 +28,6 @@ public abstract class AbstractServiceTest<T extends AbstractServiceTest<T>> exte
     			.addPackage("at.ac.tuwien.ase09.test")
     			.addClass(AbstractContainerTest.class)
     			.addClass(UserContext.class)
-    			.addClass(AbstractServiceTest.class)
-    			.addClass(TestUserContext.class);
+    			.addClass(AbstractServiceTest.class);
     }
 }

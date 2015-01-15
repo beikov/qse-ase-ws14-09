@@ -73,7 +73,7 @@ public class ValuePaperResourceImpl implements ValuePaperResource{
 				ValuePaperHistoryEntry historicPriceEntry = valuePaperPriceEntryDataAccess.getHistoricPriceEntry(vp.getCode(), yesterday);
 				closingPrice = historicPriceEntry.getClosingPrice();
 			}catch(EntityNotFoundException e) { /* ignore */ }
-			results.add(new ValuePaperDto(vp.getName(), vp.getCode(), currency, lastPrice, closingPrice));
+			results.add(new ValuePaperDto(vp.getId(), vp.getName(), vp.getCode(), currency, lastPrice, closingPrice));
 		}
 		
 		return results;

@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -17,26 +16,26 @@ import java.util.ArrayList;
 import at.ac.tuwien.ase09.android.R;
 import at.ac.tuwien.ase09.android.adapater.OrderListAdapter;
 import at.ac.tuwien.ase09.android.adapater.TransactionListAdapter;
-import at.ac.tuwien.ase09.android.service.RestQueryResultReceiver;
-import at.ac.tuwien.ase09.android.service.RestQueryService;
+import at.ac.tuwien.ase09.android.service.RestResultReceiver;
+import at.ac.tuwien.ase09.android.service.RestService;
 import at.ac.tuwien.ase09.rest.model.OrderDto;
 import at.ac.tuwien.ase09.rest.model.TransactionDto;
 
 /**
  * Created by Moritz on 11.12.2014.
  */
-public class PortfolioViewFragment extends SlidingTabsBasicFragment implements RestQueryResultReceiver.Receiver {
+public class PortfolioViewFragment extends SlidingTabsBasicFragment implements RestResultReceiver.Receiver {
     private static final String LOG_TAG = "PortfolioViewFragment";
 
-    private RestQueryResultReceiver receiver;
+    private RestResultReceiver receiver;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        receiver = new RestQueryResultReceiver(new Handler());
+        receiver = new RestResultReceiver(new Handler());
         receiver.setReceiver(this);
-        final Intent intent = new Intent(Intent.ACTION_SYNC, null, getActivity(), RestQueryService.class);
+        final Intent intent = new Intent(Intent.ACTION_SYNC, null, getActivity(), RestService.class);
         intent.putExtra("receiver", receiver);
-        intent.putExtra("command", RestQueryService.COMMAND_INITIAL_PORTFOLIO);
+        intent.putExtra("command", RestService.COMMAND_INITIAL_PORTFOLIO);
         getActivity().startService(intent);
 
         return super.onCreateView(inflater, container, savedInstanceState);
@@ -51,16 +50,16 @@ public class PortfolioViewFragment extends SlidingTabsBasicFragment implements R
     @Override
     public void onReceiveResult(int resultCode, Bundle resultData) {
         switch (resultCode) {
-            case RestQueryService.STATUS_RUNNING:
+            case RestService.STATUS_RUNNING:
                 //show progress
                 break;
-            case RestQueryService.STATUS_FINISHED:
+            case RestService.STATUS_FINISHED:
 //                List results = resultData.getParcelableList("results");
                 // do something interesting
                 // hide progress
                 break;
-            case RestQueryService.STATUS_ERROR:
-                Toast.makeText(getActivity(), resultData.getString(Intent.EXTRA_TEXT), Toast.LENGTH_LONG);
+            case RestService.STATUS_ERROR:
+                Toast.makeText(getActivity(), resultData.getString(Intent.EXTRA_TEXT), Toast.LENGTH_LONG).show();
                 break;
         }
     }

@@ -9,6 +9,6 @@
     http://developer.android.com/training/multiscreen/screensizes.html#TaskUseAliasFilters
     -->
     <item name="portfolio_context_fragment" type="layout">@layout/grid</item>
-    <item name="valuepapers_layout" type="layout">@layout/grid</item>
+    <item name="valuepapers_layout" type="layout">@layout/list</item>
 
 </resources>

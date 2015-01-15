@@ -1,5 +1,7 @@
 package at.ac.tuwien.ase09.model.order;
 
+import java.math.BigDecimal;
+
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
@@ -15,8 +17,8 @@ import at.ac.tuwien.ase09.model.Money;
 public class LimitOrder extends Order {
 	private static final long serialVersionUID = 1L;
 
-	private Money limit;
-	private Money stopLimit;
+	private BigDecimal limit;
+	private BigDecimal stopLimit;
 	
 	@Override
 	@Transient
@@ -24,30 +26,20 @@ public class LimitOrder extends Order {
 		return OrderType.LIMIT;
 	}
 
-	@Embedded
-	@AttributeOverrides({
-		@AttributeOverride(name = "currency", column = @Column(name="limit_currency")),
-		@AttributeOverride(name = "value", column = @Column(name="limit_value"))
-	})
-	public Money getLimit() {
+	public BigDecimal getLimit() {
 		return limit;
 	}
 
-	public void setLimit(Money limit) {
-		this.limit= limit;
+	public void setLimit(BigDecimal limit) {
+		this.limit = limit;
 	}
-	
-	@Embedded
-	@AttributeOverrides({
-		@AttributeOverride(name = "currency", column = @Column(name="stopLimit_currency")),
-		@AttributeOverride(name = "value", column = @Column(name="stopLimit_value"))
-	})
-	public Money getStopLimit() {
+
+	public BigDecimal getStopLimit() {
 		return stopLimit;
 	}
 
-	public void setStopLimit(Money stopLimit) {
+	public void setStopLimit(BigDecimal stopLimit) {
 		this.stopLimit = stopLimit;
 	}
-	
+
 }

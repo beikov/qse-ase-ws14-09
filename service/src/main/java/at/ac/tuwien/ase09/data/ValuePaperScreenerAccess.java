@@ -24,6 +24,7 @@ import at.ac.tuwien.ase09.filter.AttributeFilter;
 import at.ac.tuwien.ase09.filter.AttributeType;
 import at.ac.tuwien.ase09.model.Fund;
 import at.ac.tuwien.ase09.model.Stock;
+import at.ac.tuwien.ase09.model.StockBond;
 import at.ac.tuwien.ase09.model.ValuePaper;
 import at.ac.tuwien.ase09.model.ValuePaperType;
 
@@ -129,11 +130,13 @@ public class ValuePaperScreenerAccess {
 		
 		Root<? extends ValuePaper> valuePaperRoot;
 		
-		if (valuePaperType == ValuePaperType.STOCK){
-			valuePaperRoot = cq.from(Stock.class);
+		Class<? extends ValuePaper> concreteClass = null;
+		if(valuePaperType != null){
+			concreteClass = getClassForValuePaperType(valuePaperType);
 		}else{
-			valuePaperRoot = cq.from(ValuePaper.class);
+			concreteClass = ValuePaper.class;
 		}
+		valuePaperRoot = cq.from(concreteClass);
 		
 		EntityType<ValuePaper> valuePaperMetamodel = m.entity(ValuePaper.class);
 		
@@ -159,14 +162,18 @@ public class ValuePaperScreenerAccess {
 			}
 		}
 		
-		if(valuePaperType != null){
-			cq.where(cb.equal(valuePaperRoot.type(), valuePaperType.toString()));
-		}
-		
-		cq.select(valuePaperRoot);
 		cq.where(cb.or(disjunctivePredicates.toArray(new Predicate[0])));
-	
+		cq.select(valuePaperRoot);
 		return em.createQuery(cq).getResultList();
+	}
+	
+	private Class<? extends ValuePaper> getClassForValuePaperType(ValuePaperType type){
+		switch(type){
+			case FUND: return Fund.class;
+			case STOCK: return Stock.class;
+			case BOND: return StockBond.class;
+			default: throw new IllegalStateException("Unknown value paper type [" + type + "]");
+		}
 	}
 	
 	

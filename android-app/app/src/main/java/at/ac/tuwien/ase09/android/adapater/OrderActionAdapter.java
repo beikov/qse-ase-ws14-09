@@ -2,29 +2,27 @@ package at.ac.tuwien.ase09.android.adapater;
 
 import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-
 import at.ac.tuwien.ase09.android.R;
 import at.ac.tuwien.ase09.model.ValuePaperType;
-import at.ac.tuwien.ase09.rest.ValuePaperResource;
+import at.ac.tuwien.ase09.model.order.OrderAction;
+import at.ac.tuwien.ase09.model.order.OrderType;
 
 /**
  * Created by Moritz on 02.01.2015.
  */
-public class ValuePaperTypeAdapter extends ArrayAdapter<ValuePaperType> {
+public class OrderActionAdapter extends ArrayAdapter<OrderAction> {
 
     private final Context context;
     private final int layoutId;
     private int dropDownLayoutId;
 
-    public ValuePaperTypeAdapter(Context context, int resource) {
-        super(context, resource, ValuePaperType.values());
+    public OrderActionAdapter(Context context, int resource) {
+        super(context, resource, OrderAction.values());
         this.context = context;
         this.layoutId = resource;
     }
@@ -48,13 +46,12 @@ public class ValuePaperTypeAdapter extends ArrayAdapter<ValuePaperType> {
             textView = (TextView) convertView;
         }
 
-        switch(ValuePaperType.values()[position]){
+        switch(OrderAction.values()[position]){
             // STOCK
-            case STOCK: textView.setText(context.getString(R.string.stock));
+            case BUY: textView.setText(context.getString(R.string.buy));
                 break;
-            case FUND: textView.setText(context.getString(R.string.fund));
-                break;
-            case BOND: textView.setText(context.getString(R.string.stockbond));
+            case SELL:
+                textView.setText(context.getString(R.string.sell));
                 break;
         }
 
