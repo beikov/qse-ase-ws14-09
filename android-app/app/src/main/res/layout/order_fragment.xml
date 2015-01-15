@@ -1,137 +1,185 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="at.ac.tuwien.ase09.android.fragment.OrderFragment">
 
-
-
     <LinearLayout
-        android:layout_gravity="top"
-        android:layout_width="match_parent"
+        android:id="@+id/buttons"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <include android:id="@+id/valuePaperItemView" layout="@layout/valuepaper_item" />
-
-        <TextView
+        android:gravity="center"
+        android:layout_alignParentBottom="true">
+        <Button
+            android:id="@+id/confirmOrderButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/order_type"/>
-
-        <Spinner
-            android:id="@+id/orderActionSpinner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <RadioGroup
-            android:id="@+id/orderTypeRadioGroup"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/market_order"
-                android:id="@+id/radioButtonMarketOrder"
-                android:checked="true" />
-
-            <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/limit_order"
-                android:id="@+id/radioButtonLimitOrder" />
-
-        </RadioGroup>
-
-        <TextView
-            android:id="@+id/validFromTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/valid_from"/>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <Button
-                android:id="@+id/validityFromDateButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="currentDate" />
-
-            <Button
-                android:id="@+id/validityFromTimeButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="currentTime" />
-        </LinearLayout>
-
-        <CheckBox
-            android:id="@+id/validToCheckbox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/valid_to" />
-
-        <LinearLayout
-            android:id="@+id/validToArea"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <Button
-                android:id="@+id/validityToDateButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="currentDate" />
-
-            <Button
-                android:id="@+id/validityToTimeButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="currentTime" />
-        </LinearLayout>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/volume"/>
-
-        <EditText
-            android:id="@+id/orderVolumeInput"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:inputType="number"
-            android:ems="10"
-            android:text="1" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/estimated_order_value"/>
-
-        <TextView
-            android:id="@+id/estimatedOrderCost"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="123 EUR"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/order_fee"/>
-
-        <TextView
-            android:id="@+id/orderFee"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="45 EUR"/>
-
+            android:text="@string/confirm_order"
+            android:background="@android:drawable/btn_default" />
     </LinearLayout>
 
-    <Button
-        android:id="@+id/confirmOrderButton"
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@id/buttons">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <include
+                android:id="@+id/valuePaperItemView"
+                layout="@layout/valuepaper_item" />
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/darker_gray" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="8dp"
+                android:text="@string/order_type" />
+
+            <Spinner
+                android:id="@+id/orderActionSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <RadioGroup
+                android:id="@+id/orderTypeRadioGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/radioButtonMarketOrder"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="@string/market_order" />
+
+                <RadioButton
+                    android:id="@+id/radioButtonLimitOrder"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/limit_order" />
+
+            </RadioGroup>
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/darker_gray" />
+
+            <TextView
+                android:id="@+id/validFromTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="8dp"
+                android:text="@string/valid_from" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/validityFromDateButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="currentDate" />
+
+                <Button
+                    android:id="@+id/validityFromTimeButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="currentTime" />
+            </LinearLayout>
+
+            <CheckBox
+                android:id="@+id/validToCheckbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/valid_to" />
+
+            <LinearLayout
+                android:id="@+id/validToArea"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/validityToDateButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="currentDate" />
+
+                <Button
+                    android:id="@+id/validityToTimeButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="currentTime" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/darker_gray" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="8dp"
+                android:text="@string/volume" />
+
+            <EditText
+                android:id="@+id/orderVolumeInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="number"
+                android:text="1" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="8dp"
+                android:text="@string/estimated_order_value" />
+
+            <TextView
+                android:id="@+id/estimatedOrderCost"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="8dp"
+                android:text="123 EUR" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="8dp"
+                android:text="@string/order_fee" />
+
+            <TextView
+                android:id="@+id/orderFee"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="8dp"
+                android:text="45 EUR" />
+
+        </LinearLayout>
+    </ScrollView>
+
+
+    <ProgressBar
+        android:id="@android:id/progress"
+        style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/confirm_order"
-        android:layout_gravity="bottom|right" />
+        android:layout_gravity="center_vertical|center_horizontal"
+        android:visibility="gone" />
 
-</FrameLayout>
+
+</RelativeLayout>

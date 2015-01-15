@@ -22,6 +22,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -71,6 +72,7 @@ public class OrderFragment extends Fragment implements TimePickerDialog.OnTimeSe
     private EditText volumeEditText;
     private RadioGroup orderTypeRadioGroup;
     private CheckBox validToCheckbox;
+    private ProgressBar progressBar;
 
     /**
      * Use this factory method to create a new instance of
@@ -186,6 +188,8 @@ public class OrderFragment extends Fragment implements TimePickerDialog.OnTimeSe
         Button confirmOrderButton = (Button) orderFragmentView.findViewById(R.id.confirmOrderButton);
         confirmOrderButton.setOnClickListener(this);
 
+        progressBar = (ProgressBar) orderFragmentView.findViewById(android.R.id.progress);
+
         View valuePaperItemView = orderFragmentView.findViewById(R.id.valuePaperItemView);
         ValuePaperItemLayoutPopulator.populateValuePaperItemView(valuePaperItemView, valuePaper);
         return orderFragmentView;
@@ -272,14 +276,14 @@ public class OrderFragment extends Fragment implements TimePickerDialog.OnTimeSe
     public void onReceiveResult(int resultCode, Bundle resultData) {
         switch (resultCode) {
             case RestService.STATUS_RUNNING:
-//                progressBar.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.VISIBLE);
                 break;
             case RestService.STATUS_FINISHED:
                 //TODO: redirect to previous fragment or to portfolio view order tab
-//                progressBar.setVisibility(View.GONE);
+                progressBar.setVisibility(View.GONE);
                 break;
             case RestService.STATUS_ERROR:
-//                progressBar.setVisibility(View.GONE);
+                progressBar.setVisibility(View.GONE);
                 Toast.makeText(getActivity(), resultData.getString(Intent.EXTRA_TEXT), Toast.LENGTH_LONG);
                 break;
         }
