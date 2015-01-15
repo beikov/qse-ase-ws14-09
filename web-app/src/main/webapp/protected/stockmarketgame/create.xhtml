@@ -139,7 +139,7 @@
 											<p:commandButton value="Reset" type="reset" />
 											<p:commandButton value="Erstellen"
 												action="#{stockMarketGameCreationBean.createStockMarketGame()}"
-												update="stockmarketgame_create" ajax="true" />
+												update=":allowed_ValuePapers:allowedValuePapersPickList stockmarketgame_create" ajax="true"/>
 										</h:panelGrid>
 
 									</p:panel>
@@ -244,19 +244,9 @@
 							update="allowedValuePapersPickList" ajax="true"
 							style="margin-right:20px" />
 
-						<p:commandButton value="aktuelle Auswahl hinzufügen"
-							action="#{stockMarketGameCreationBean.addSelectedValuePapersToAllowedValuePapers()}"
-							update="allowedValuePapersPickList allowedValuePapersCount"
-							ajax="true" style="margin-right:20px" />
-
-						<p:commandButton value="erlaubte Wertpapiere zurücksetzen"
-							action="#{stockMarketGameCreationBean.resetAllowedValuePapers()}"
-							update="allowedValuePapersPickList allowedValuePapersCount"
-							ajax="true" style="margin-right:100px" />
-
-						<h:outputText id="allowedValuePapersCount"
-							value="#{'Anzahl erlaubter Wertpapiere: '.concat(stockMarketGameCreationBean.allowedValuePapers.size())}" />
-
+						<!-- <h:outputText id="allowedValuePapersCount"
+							value="#{'Anzahl erlaubter Wertpapiere: '.concat(stockMarketGameCreationBean.allowedValuePapersTarget.size())}" />
+						 -->
 
 						<p:separator />
 
@@ -264,55 +254,15 @@
 							value="#{stockMarketGameCreationBean.allowedValuePapersListModel}"
 							var="vp" itemValue="#{vp}" itemLabel="#{vp.name}"
 							showCheckbox="true" showSourceFilter="true"
-							showTargetFilter="true" filterMatchMode="contains">
+							showTargetFilter="true" filterMatchMode="contains"
+							converter="valuePaperPickListConverter">
 
 							<f:facet name="sourceCaption">Verfügbar</f:facet>
 							<f:facet name="targetCaption">Erlaubt</f:facet>
 
 						</p:pickList>
 
-						<p:messages globalOnly="true" autoUpdate="true" />
-
-						<!-- <p:dataTable id="valuePaperTable" var="valuePaper"
-							value="#{stockMarketGameCreationBean.searchedValuePapers}"
-							rowKey="#{valuePaper.code}"
-							selection="#{stockMarketGameCreationBean.selectedAllowedValuePapers}"
-							rows="10" paginator="true"
-							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}">
-
-							<p:column selectionMode="multiple"
-								style="width:50px;text-align:center" />
-
-							<p:column headerText="Name" sortBy="#{valuePaper.name}">
-								<h:outputText value="#{valuePaper.name}" />
-							</p:column>
-
-							<p:column headerText="Währung"
-								sortBy="#{valuePaper.currency.currencyCode}">
-								<h:outputText
-									value="#{valuePaper.currency.currencyCode} (#{valuePaper.currency.symbol})"
-									rendered="#{valuePaper.type == 'STOCK' or valuePaper.type == 'FUND'}" />
-							</p:column>
-
-							<p:column headerText="Land" sortBy="#{valuePaper.country}">
-								<h:outputText value="#{valuePaper.country}"
-									rendered="#{valuePaper.type == 'STOCK'}" />
-							</p:column>
-
-							<p:column headerText="Index" sortBy="#{valuePaper.index}">
-								<h:outputText value="#{valuePaper.index}"
-									rendered="#{valuePaper.type == 'STOCK'}" />
-							</p:column>
-
-							<p:column headerText="Code" sortBy="#{valuePaper.code}">
-								<h:outputText value="#{valuePaper.code}" />
-							</p:column>
-
-							<p:column headerText="Typ" sortBy="#{valuePaper.type}">
-								<h:outputText value="#{valuePaper.type}" />
-							</p:column>
-
-						</p:dataTable> -->
+						<!-- <p:messages globalOnly="true" autoUpdate="true" />  -->
 
 					</p:panel>
 

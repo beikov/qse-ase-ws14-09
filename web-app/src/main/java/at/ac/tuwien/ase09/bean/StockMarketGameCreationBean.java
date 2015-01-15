@@ -8,6 +8,7 @@ import java.util.Calendar;
 import java.util.Currency;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -91,7 +92,7 @@ public class StockMarketGameCreationBean implements Serializable {
 
 	//Allowed ValuePapers-Attributes
 	//private List<ValuePaper> selectedAllowedValuePapers = new ArrayList<ValuePaper>();
-	private Set<ValuePaper> allowedValuePapers = new HashSet<>();
+	//private Set<ValuePaper> allowedValuePapers = new HashSet<>();
 	private ValuePaper searchValuePaper;
 	private ValuePaperType valuePaperType;
 	private Boolean isTypeSpecificated = false;
@@ -102,7 +103,6 @@ public class StockMarketGameCreationBean implements Serializable {
 	
 	private List<ValuePaper> allowedValuePapersSource;
 	private List<ValuePaper> allowedValuePapersTarget;
-
 
 
 	public DualListModel<ValuePaper> getAllowedValuePapersListModel() {
@@ -173,12 +173,6 @@ public class StockMarketGameCreationBean implements Serializable {
 	}
 	public void setValuePaperCurrencyCode(String valuePaperCurrencyCode) {
 		this.valuePaperCurrencyCode = valuePaperCurrencyCode;
-	}
-	public Set<ValuePaper> getAllowedValuePapers() {
-		return allowedValuePapers;
-	}
-	public void setAllowedValuePapers(Set<ValuePaper> allowedValuePapers) {
-		this.allowedValuePapers = allowedValuePapers;
 	}
 	public Long getStockMarketGameId() {
 		return stockMarketGameId;
@@ -274,8 +268,6 @@ public class StockMarketGameCreationBean implements Serializable {
 
 
 	public void init() {
-		
-		System.out.println("INIT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 
 		allowedValuePapersSource = new ArrayList<ValuePaper>();
 		allowedValuePapersTarget = new ArrayList<ValuePaper>();
@@ -305,7 +297,8 @@ public class StockMarketGameCreationBean implements Serializable {
 			portfolioFee = stockMarketGame.getSetting().getPortfolioFee().getValue();
 			capitalReturnTax = stockMarketGame.getSetting().getCapitalReturnTax();
 
-			allowedValuePapers = stockMarketGame.getAllowedValuePapers();
+			//allowedValuePapers = stockMarketGame.getAllowedValuePapers();
+			allowedValuePapersListModel.setTarget(new ArrayList<ValuePaper>(stockMarketGame.getAllowedValuePapers()));
 		}
 		else{
 
@@ -383,7 +376,7 @@ public class StockMarketGameCreationBean implements Serializable {
 		stockMarketGame.setRegistrationFrom(StockMarketGameCreationBean.dateToCalendar(registrationFrom));
 		stockMarketGame.setRegistrationTo(StockMarketGameCreationBean.dateToCalendar(registrationTo));
 
-		stockMarketGame.setAllowedValuePapers(allowedValuePapers);
+		stockMarketGame.setAllowedValuePapers(new LinkedHashSet<ValuePaper>(allowedValuePapersTarget));
 
 		PortfolioSetting portfolioSetting = new PortfolioSetting();
 
@@ -420,7 +413,6 @@ public class StockMarketGameCreationBean implements Serializable {
 			byte[] uploadedLogo = IOUtils.toByteArray(logoFile.getInputstream());
 			Blob newLogo = new SerialBlob(uploadedLogo);
 
-			//stockMarketGame.setLogo(newLogo);
 			logo = newLogo;
 
 			FacesMessage message = new FacesMessage("Logo: " + logoFile.getFileName() + " erfolgreich hochgeladen");
@@ -503,39 +495,16 @@ public class StockMarketGameCreationBean implements Serializable {
 				FacesContext.getCurrentInstance().addMessage("searchValuePapers:currency", facesMessage);
 			}
 		}
-
-		//searchedValuePapers = valuePaperScreenerDataAccess.findByValuePaper(searchValuePaper, isTypeSpecificated);
-		//		
-		//searchedValuePapers.removeAll(allowedValuePapers);
-		//		
-		//selectedAllowedValuePapers = searchedValuePapers;
-
-		System.out.println("target: " + allowedValuePapersListModel.getTarget().size());
 		
 		allowedValuePapersTarget = allowedValuePapersListModel.getTarget();
 		
 		allowedValuePapersSource = valuePaperScreenerDataAccess.findByValuePaper(searchValuePaper, isTypeSpecificated);
 
-		allowedValuePapersSource.removeAll(allowedValuePapers);
+		//allowedValuePapersSource.removeAll(allowedValuePapers);
+		allowedValuePapersSource.removeAll(allowedValuePapersTarget);
 		
 		allowedValuePapersListModel.setSource(allowedValuePapersSource);
 		allowedValuePapersListModel.setTarget(allowedValuePapersTarget);
-		
-		System.out.println("SEARCH!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + allowedValuePapersSource.size());
-		System.out.println("target: " + allowedValuePapersListModel.getTarget().size());
-	}
-
-//	public void addSelectedValuePapersToAllowedValuePapers(){
-//		if(!selectedAllowedValuePapers.isEmpty()){
-//			allowedValuePapers.addAll(selectedAllowedValuePapers);
-//
-//			searchedValuePapers.removeAll(selectedAllowedValuePapers);
-//			selectedAllowedValuePapers.clear();
-//		}
-//	}
-
-	public void resetAllowedValuePapers(){
-		allowedValuePapers.clear();
 	}
 
 	public static Calendar dateToCalendar(Date date){ 
