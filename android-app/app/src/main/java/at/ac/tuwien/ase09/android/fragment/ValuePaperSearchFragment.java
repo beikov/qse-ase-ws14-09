@@ -180,7 +180,7 @@ public class ValuePaperSearchFragment extends Fragment implements AbsListView.On
                 break;
             case RestService.STATUS_ERROR:
                 progressBar.setVisibility(View.GONE);
-                Toast.makeText(getActivity(), resultData.getString(Intent.EXTRA_TEXT), Toast.LENGTH_LONG);
+                Toast.makeText(getActivity(), resultData.getString(Intent.EXTRA_TEXT), Toast.LENGTH_LONG).show();
                 break;
         }
     }

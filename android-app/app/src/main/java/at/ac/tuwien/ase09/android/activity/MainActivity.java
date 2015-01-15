@@ -4,17 +4,18 @@ import android.app.Activity;
 
 import android.app.ActionBar;
 import android.app.FragmentManager;
+import android.content.Intent;
 import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v4.widget.DrawerLayout;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.Properties;
 
 import at.ac.tuwien.ase09.android.fragment.NavigationDrawerFragment;
-import at.ac.tuwien.ase09.android.fragment.OrderFragment;
 import at.ac.tuwien.ase09.android.fragment.PortfolioContextFragment;
 import at.ac.tuwien.ase09.android.fragment.PortfolioViewFragment;
 import at.ac.tuwien.ase09.android.fragment.ValuePaperSearchFragment;
@@ -28,6 +29,8 @@ import at.ac.tuwien.ase09.rest.model.ValuePaperDto;
 public class MainActivity extends Activity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks, PortfolioContextFragment.PortfolioContextChangeListener, ValuePaperSearchFragment.ValuePaperSelectionListener {
     private static final String LOG_TAG = "MainActivity";
+
+    private static final int REQUEST_CREATE_ORDER = 1;
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -46,7 +49,6 @@ public class MainActivity extends Activity
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getFragmentManager().findFragmentById(R.id.navigation_drawer);
-        //mTitle = getTitle();
 
         // Set up the drawer.
         mNavigationDrawerFragment.setUp(
@@ -105,6 +107,14 @@ public class MainActivity extends Activity
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == REQUEST_CREATE_ORDER && resultCode == RESULT_OK){
+            Toast.makeText(this, data.getStringExtra(OrderActivity.RESULT_MESSAGE), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -128,7 +138,9 @@ public class MainActivity extends Activity
 
     @Override
     public void onValuePaperSelected(ValuePaperDto valuePaper) {
-        getFragmentManager().beginTransaction().replace(R.id.container, OrderFragment.newInstance(valuePaper)).commit();
+        Intent intent = new Intent(this, OrderActivity.class);
+        intent.putExtra(OrderActivity.ARG_VALUE_PAPER, valuePaper);
+        startActivityForResult(intent, REQUEST_CREATE_ORDER);
     }
 
 }

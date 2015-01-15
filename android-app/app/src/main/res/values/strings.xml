@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="app_name">Portfolio Simulation</string>
     <string name="menu_portfolio_view">Portfolioansicht</string>
     <string name="menu_valuepaper_search">Wertpapiersuche</string>
@@ -30,5 +29,10 @@
     <string name="order_type">Ordertyp</string>
     <string name="sell">Verkauf</string>
     <string name="buy">Kauf</string>
+    <string name="order_creation">Ordererstellung</string>
+    <string name="create_order_success_message">%1$s-Order für %2$s erstellt</string>
+    <string name="limit">Limit</string>
+    <string name="stopLimit">Stop Limit</string>
+    <string name="required_message">%1$s ist erforderlich</string>
 
 </resources>

@@ -1,21 +1,17 @@
-package at.ac.tuwien.ase09.android.fragment;
+package at.ac.tuwien.ase09.android.activity;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.app.Fragment;
 import android.app.TimePickerDialog;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -43,21 +39,12 @@ import at.ac.tuwien.ase09.model.order.OrderAction;
 import at.ac.tuwien.ase09.model.order.OrderType;
 import at.ac.tuwien.ase09.rest.model.ValuePaperDto;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link OrderFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link OrderFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class OrderFragment extends Fragment implements TimePickerDialog.OnTimeSetListener, DatePickerDialog.OnDateSetListener, TextWatcher, View.OnClickListener, RestResultReceiver.Receiver {
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_VALUE_PAPER = "VALUE_PAPER";
+public class OrderActivity extends Activity implements TimePickerDialog.OnTimeSetListener, DatePickerDialog.OnDateSetListener, TextWatcher, View.OnClickListener, RestResultReceiver.Receiver {
+    // the activity parameters
+    public static final String ARG_VALUE_PAPER = "VALUE_PAPER";
+    public static final String RESULT_MESSAGE = "at.ac.tuwien.ase09.android.activity.RESULT_MESSAGE";
 
     private ValuePaperDto valuePaper;
-
-    private OnFragmentInteractionListener mListener;
 
     private OrderAction selectedOrderAction;
     private Calendar validFrom = Calendar.getInstance();
@@ -73,38 +60,24 @@ public class OrderFragment extends Fragment implements TimePickerDialog.OnTimeSe
     private RadioGroup orderTypeRadioGroup;
     private CheckBox validToCheckbox;
     private ProgressBar progressBar;
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param valuePaper Parameter 1.
-     * @return A new instance of fragment OrderFragment.
-     */
-    public static OrderFragment newInstance(ValuePaperDto valuePaper) {
-        OrderFragment fragment = new OrderFragment();
-        Bundle args = new Bundle();
-        args.putSerializable(ARG_VALUE_PAPER, valuePaper);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    private TextView limitTextView;
+    private EditText limitEditText;
+    private TextView stopLimitTextView;
+    private EditText stopLimitEditText;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            valuePaper = (ValuePaperDto) getArguments().getSerializable(ARG_VALUE_PAPER);
-        }
+        valuePaper =  (ValuePaperDto) getIntent().getSerializableExtra(ARG_VALUE_PAPER);
+        initializeView();
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public void initializeView() {
         // Inflate the layout for this fragment
-        View orderFragmentView = inflater.inflate(R.layout.order_fragment, container, false);
+        setContentView(R.layout.order_activity);
 
-        Button validityFromTimeButton = (Button) orderFragmentView.findViewById(R.id.validityFromTimeButton);
-        validityFromTimeButton.setText(DateFormat.getTimeFormat(getActivity()).format(validFrom.getTime()));
+        Button validityFromTimeButton = (Button) this.findViewById(R.id.validityFromTimeButton);
+        validityFromTimeButton.setText(DateFormat.getTimeFormat(this).format(validFrom.getTime()));
         validityFromTimeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -112,8 +85,8 @@ public class OrderFragment extends Fragment implements TimePickerDialog.OnTimeSe
             }
         });
 
-        Button validityFromDateButton = (Button) orderFragmentView.findViewById(R.id.validityFromDateButton);
-        validityFromDateButton.setText(DateFormat.getDateFormat(getActivity()).format(validFrom.getTime()));
+        Button validityFromDateButton = (Button) this.findViewById(R.id.validityFromDateButton);
+        validityFromDateButton.setText(DateFormat.getDateFormat(this).format(validFrom.getTime()));
         validityFromDateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -121,8 +94,8 @@ public class OrderFragment extends Fragment implements TimePickerDialog.OnTimeSe
             }
         });
 
-        Button validityToTimeButton = (Button) orderFragmentView.findViewById(R.id.validityToTimeButton);
-        validityToTimeButton.setText(DateFormat.getTimeFormat(getActivity()).format(validTo.getTime()));
+        Button validityToTimeButton = (Button) this.findViewById(R.id.validityToTimeButton);
+        validityToTimeButton.setText(DateFormat.getTimeFormat(this).format(validTo.getTime()));
         validityToTimeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -130,8 +103,8 @@ public class OrderFragment extends Fragment implements TimePickerDialog.OnTimeSe
             }
         });
 
-        Button validityToDateButton = (Button) orderFragmentView.findViewById(R.id.validityToDateButton);
-        validityToDateButton.setText(DateFormat.getDateFormat(getActivity()).format(validTo.getTime()));
+        Button validityToDateButton = (Button) this.findViewById(R.id.validityToDateButton);
+        validityToDateButton.setText(DateFormat.getDateFormat(this).format(validTo.getTime()));
         validityToDateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -139,18 +112,18 @@ public class OrderFragment extends Fragment implements TimePickerDialog.OnTimeSe
             }
         });
 
-        estimatedOrderCostTextView = (TextView) orderFragmentView.findViewById(R.id.estimatedOrderCost);
+        estimatedOrderCostTextView = (TextView) this.findViewById(R.id.estimatedOrderCost);
 
-        volumeEditText = (EditText) orderFragmentView.findViewById(R.id.orderVolumeInput);
+        volumeEditText = (EditText) this.findViewById(R.id.orderVolumeInput);
         volumeEditText.addTextChangedListener(this);
 
         afterTextChanged(volumeEditText.getEditableText());
 
-        final View validToArea = orderFragmentView.findViewById(R.id.validToArea);
+        final View validToArea = this.findViewById(R.id.validToArea);
         validToArea.setVisibility(View.GONE);
 
-        validToCheckbox = (CheckBox) orderFragmentView.findViewById(R.id.validToCheckbox);
-        TextView validFromTextView = (TextView) orderFragmentView.findViewById(R.id.validFromTextView);
+        validToCheckbox = (CheckBox) this.findViewById(R.id.validToCheckbox);
+        TextView validFromTextView = (TextView) this.findViewById(R.id.validFromTextView);
         validToCheckbox.setTextColor(validFromTextView.getTextColors().getDefaultColor());
         validToCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -163,12 +136,24 @@ public class OrderFragment extends Fragment implements TimePickerDialog.OnTimeSe
             }
         });
 
-        orderTypeRadioGroup = (RadioGroup) orderFragmentView.findViewById(R.id.orderTypeRadioGroup);
+        orderTypeRadioGroup = (RadioGroup) this.findViewById(R.id.orderTypeRadioGroup);
+        orderTypeRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                OrderType checkedOrderType = getOrderTypeForRadioButtonId(checkedId);
+                switch (checkedOrderType) {
+                    case LIMIT:     setLimitOrderUIElementsVisibility(View.VISIBLE);
+                                    break;
+                    case MARKET:    setLimitOrderUIElementsVisibility(View.GONE);
+                                    break;
+                }
+            }
+        });
 
         // set up order type spinner
-        Spinner orderActionSpinner = (Spinner) orderFragmentView.findViewById(R.id.orderActionSpinner);
+        Spinner orderActionSpinner = (Spinner) this.findViewById(R.id.orderActionSpinner);
         // Create an ArrayAdapter using a default spinner layout
-        final OrderActionAdapter orderActionAdapter = new OrderActionAdapter(getActivity(), android.R.layout.simple_spinner_item);
+        final OrderActionAdapter orderActionAdapter = new OrderActionAdapter(this, android.R.layout.simple_spinner_item);
         // Specify the layout to use when the list of choices appears
         orderActionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
@@ -185,61 +170,50 @@ public class OrderFragment extends Fragment implements TimePickerDialog.OnTimeSe
             }
         });
 
-        Button confirmOrderButton = (Button) orderFragmentView.findViewById(R.id.confirmOrderButton);
+        limitTextView = (TextView) findViewById(R.id.limitTextView);
+        limitEditText = (EditText) findViewById(R.id.limitInput);
+        stopLimitTextView = (TextView) findViewById(R.id.stopLimitTextView);
+        stopLimitEditText = (EditText) findViewById(R.id.stopLimitInput);
+
+        setLimitOrderUIElementsVisibility(View.GONE);
+        limitEditText.setText("");
+        stopLimitEditText.setText("");
+
+        Button confirmOrderButton = (Button) this.findViewById(R.id.confirmOrderButton);
         confirmOrderButton.setOnClickListener(this);
 
-        progressBar = (ProgressBar) orderFragmentView.findViewById(android.R.id.progress);
+        progressBar = (ProgressBar) this.findViewById(android.R.id.progress);
 
-        View valuePaperItemView = orderFragmentView.findViewById(R.id.valuePaperItemView);
+        View valuePaperItemView = this.findViewById(R.id.valuePaperItemView);
         ValuePaperItemLayoutPopulator.populateValuePaperItemView(valuePaperItemView, valuePaper);
-        return orderFragmentView;
+    }
+
+    private void setLimitOrderUIElementsVisibility(int visibility){
+        limitTextView.setVisibility(visibility);
+        limitEditText.setVisibility(visibility);
+        stopLimitTextView.setVisibility(visibility);
+        stopLimitEditText.setVisibility(visibility);
     }
 
     public void showTimePickerDialog(Button button, Calendar targetCal) {
         DialogFragment newFragment = new TimePickerFragment();
-        newFragment.setTargetFragment(this, 0);
         timePickerTarget = button;
         target = targetCal;
-        newFragment.show(getActivity().getFragmentManager(), "timePicker");
+        newFragment.show(this.getFragmentManager(), "timePicker");
     }
 
     public void showDatePickerDialog(Button button, Calendar targetCal) {
         DialogFragment newFragment = new DatePickerFragment();
-        newFragment.setTargetFragment(this, 0);
         datePickerTarget = button;
         target = targetCal;
-        newFragment.show(getActivity().getFragmentManager(), "datePicker");
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-//        try {
-//            mListener = (OnFragmentInteractionListener) activity;
-//        } catch (ClassCastException e) {
-//            throw new ClassCastException(activity.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
+        newFragment.show(this.getFragmentManager(), "datePicker");
     }
 
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
         target.set(Calendar.HOUR_OF_DAY, hourOfDay);
         target.set(Calendar.MINUTE, minute);
-        timePickerTarget.setText(DateFormat.getTimeFormat(getActivity()).format(target.getTime()));
+        timePickerTarget.setText(DateFormat.getTimeFormat(this).format(target.getTime()));
     }
 
     @Override
@@ -247,7 +221,7 @@ public class OrderFragment extends Fragment implements TimePickerDialog.OnTimeSe
         target.set(Calendar.YEAR, year);
         target.set(Calendar.MONTH, monthOfYear);
         target.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-        datePickerTarget.setText(DateFormat.getDateFormat(getActivity()).format(target.getTime()));
+        datePickerTarget.setText(DateFormat.getDateFormat(this).format(target.getTime()));
     }
 
     @Override
@@ -280,31 +254,63 @@ public class OrderFragment extends Fragment implements TimePickerDialog.OnTimeSe
                 break;
             case RestService.STATUS_FINISHED:
                 //TODO: redirect to previous fragment or to portfolio view order tab
+                Intent result = new Intent();
+                String orderActionString;
+                switch(selectedOrderAction){
+                    case BUY:   orderActionString = getString(R.string.buy);
+                                break;
+                    case SELL:  orderActionString = getString(R.string.sell);
+                                break;
+                    default:    throw new IllegalStateException("Unknown order action [" + selectedOrderAction + "]");
+                }
+                result.putExtra(RESULT_MESSAGE, getString(R.string.create_order_success_message, orderActionString, valuePaper.getName()));
+                setResult(RESULT_OK, result);
                 progressBar.setVisibility(View.GONE);
+                finish();
                 break;
             case RestService.STATUS_ERROR:
                 progressBar.setVisibility(View.GONE);
-                Toast.makeText(getActivity(), resultData.getString(Intent.EXTRA_TEXT), Toast.LENGTH_LONG);
+                Toast.makeText(this, resultData.getString(Intent.EXTRA_TEXT), Toast.LENGTH_LONG).show();
                 break;
         }
+    }
+
+    private OrderType getOrderTypeForRadioButtonId(int radioButtonId){
+        switch(orderTypeRadioGroup.getCheckedRadioButtonId()){
+            case R.id.radioButtonLimitOrder:    return OrderType.LIMIT;
+            case R.id.radioButtonMarketOrder:   return OrderType.MARKET;
+            default: throw new IllegalStateException("Unknown radio button id [" + orderTypeRadioGroup.getCheckedRadioButtonId() + "]");
+        }
+    }
+
+    private boolean validateInput(OrderType orderType){
+        if(orderType == OrderType.LIMIT) {
+            if(limitEditText.getText().length() <= 0){
+                Toast.makeText(this, getString(R.string.required_message, "Limit"), Toast.LENGTH_LONG).show();
+                return false;
+            } else if(stopLimitEditText.getText().length() <= 0){
+                Toast.makeText(this, getString(R.string.required_message, "Stop Limit"), Toast.LENGTH_LONG).show();
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
     public void onClick(View v) {
         RestResultReceiver receiver = new RestResultReceiver(new Handler());
         receiver.setReceiver(this);
-        Intent restQueryIntent = new Intent(Intent.ACTION_SYNC, null, getActivity(), RestService.class);
+        Intent restQueryIntent = new Intent(Intent.ACTION_SYNC, null, this, RestService.class);
 
         Calendar validFrom = Calendar.getInstance();
 
-        OrderType orderType;
-        switch(orderTypeRadioGroup.getCheckedRadioButtonId()){
-            case R.id.radioButtonLimitOrder:    orderType = OrderType.LIMIT;
-                                                break;
-            case R.id.radioButtonMarketOrder:   orderType = OrderType.MARKET;
-                                                break;
-            default: throw new IllegalStateException("Unknown radio button id [" + orderTypeRadioGroup.getCheckedRadioButtonId() + "]");
+        OrderType orderType = getOrderTypeForRadioButtonId(orderTypeRadioGroup.getCheckedRadioButtonId());
+
+        // validate
+        if(!validateInput(orderType)){
+            return;
         }
+
         restQueryIntent.putExtra(RestService.COMMAND_CREATE_ORDER_TYPE_ARG, orderType);
         restQueryIntent.putExtra(RestService.COMMAND_CREATE_ORDER_ACTION_ARG, selectedOrderAction);
         restQueryIntent.putExtra(RestService.COMMAND_CREATE_ORDER_VALID_FROM_ARG, validFrom);
@@ -319,27 +325,14 @@ public class OrderFragment extends Fragment implements TimePickerDialog.OnTimeSe
 
         restQueryIntent.putExtra("receiver", receiver);
         restQueryIntent.putExtra("command", RestService.COMMAND_CREATE_ORDER);
-                getActivity().startService(restQueryIntent);
+                this.startService(restQueryIntent);
         // create order and call REST api
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        public void onFragmentInteraction(Uri uri);
     }
 
     public static class TimePickerFragment extends DialogFragment
             implements TimePickerDialog.OnTimeSetListener {
+
+        private TimePickerDialog.OnTimeSetListener listener;
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -353,12 +346,20 @@ public class OrderFragment extends Fragment implements TimePickerDialog.OnTimeSe
                     DateFormat.is24HourFormat(getActivity()));
         }
 
+        @Override
+        public void onAttach(Activity activity) {
+            super.onAttach(activity);
+            listener = (TimePickerDialog.OnTimeSetListener) activity;
+        }
+
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-            ((TimePickerDialog.OnTimeSetListener) getTargetFragment()).onTimeSet(view, hourOfDay, minute);
+            listener.onTimeSet(view, hourOfDay, minute);
         }
     }
 
     public static class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
+
+        private DatePickerDialog.OnDateSetListener listener;
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -375,8 +376,14 @@ public class OrderFragment extends Fragment implements TimePickerDialog.OnTimeSe
         }
 
         @Override
+        public void onAttach(Activity activity) {
+            super.onAttach(activity);
+            listener = (DatePickerDialog.OnDateSetListener) activity;
+        }
+
+        @Override
         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-            ((DatePickerDialog.OnDateSetListener) getTargetFragment()).onDateSet(view, year, monthOfYear, dayOfMonth);
+            listener.onDateSet(view, year, monthOfYear, dayOfMonth);
         }
     }
 

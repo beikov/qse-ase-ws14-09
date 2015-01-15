@@ -20,6 +20,17 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".activity.OrderActivity"
+            android:label="@string/order_creation"
+            android:parentActivityName=".activity.OrderActivity"
+            android:windowSoftInputMode="stateHidden">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="at.ac.tuwien.ase09.android.activity.MainActivity" />
+        </activity>
+
+
         <service android:enabled="true" android:name=".service.RestService"></service>
     </application>
 

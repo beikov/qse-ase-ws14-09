@@ -77,7 +77,7 @@ public class PortfolioContextFragment extends Fragment implements AbsListView.On
                 break;
             case RestService.STATUS_ERROR:
                 progress.setVisibility(View.GONE);
-                Toast.makeText(getActivity(), resultData.getString(Intent.EXTRA_TEXT), Toast.LENGTH_LONG);
+                Toast.makeText(getActivity(), resultData.getString(Intent.EXTRA_TEXT), Toast.LENGTH_LONG).show();
                 break;
         }
     }

@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="at.ac.tuwien.ase09.android.fragment.OrderFragment">
+    tools:context="at.ac.tuwien.ase09.android.activity.OrderActivity">
 
     <LinearLayout
         android:id="@+id/buttons"
@@ -17,6 +17,15 @@
             android:text="@string/confirm_order"
             android:background="@android:drawable/btn_default" />
     </LinearLayout>
+
+    <ProgressBar
+        android:id="@android:id/progress"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
+        android:visibility="gone" />
 
     <ScrollView
         android:layout_width="fill_parent"
@@ -68,6 +77,36 @@
                     android:text="@string/limit_order" />
 
             </RadioGroup>
+
+            <TextView
+                android:id="@+id/limitTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="8dp"
+                android:text="@string/limit" />
+
+            <EditText
+                android:id="@+id/limitInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="numberDecimal"
+                android:text="12.5" />
+
+            <TextView
+                android:id="@+id/stopLimitTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="8dp"
+                android:text="@string/stopLimit" />
+
+            <EditText
+                android:id="@+id/stopLimitInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="numberDecimal"
+                android:text="14.5" />
 
             <View
                 android:layout_width="fill_parent"
@@ -171,15 +210,5 @@
 
         </LinearLayout>
     </ScrollView>
-
-
-    <ProgressBar
-        android:id="@android:id/progress"
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical|center_horizontal"
-        android:visibility="gone" />
-
 
 </RelativeLayout>

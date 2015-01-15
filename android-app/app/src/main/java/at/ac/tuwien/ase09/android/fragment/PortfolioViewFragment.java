@@ -59,7 +59,7 @@ public class PortfolioViewFragment extends SlidingTabsBasicFragment implements R
                 // hide progress
                 break;
             case RestService.STATUS_ERROR:
-                Toast.makeText(getActivity(), resultData.getString(Intent.EXTRA_TEXT), Toast.LENGTH_LONG);
+                Toast.makeText(getActivity(), resultData.getString(Intent.EXTRA_TEXT), Toast.LENGTH_LONG).show();
                 break;
         }
     }
