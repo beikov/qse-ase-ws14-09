@@ -14,23 +14,216 @@
 
 			<f:viewParam name="gameId"
 				value="#{stockMarketGameViewBean.gameID}" required="true" />
-			<!--  <f:viewAction action="#{stockMarketGameViewBean.init}" />-->
+			<f:viewAction action="#{stockMarketGameViewBean.init}" />
 
 		</f:metadata>
+		<h:form id="gameview">
+			<c:choose>
+				<c:when test="#{stockMarketGameViewBean.stockMarketGame != null}">
 		
-		<c:choose>
-				<c:when test="#{stockMarketGameViewBean.gameID != null}">
-					<ui:include src="_game.xhtml">
- 						<ui:param name="gameId" value="#{stockMarketGameViewBean.gameID}" />
-   					</ui:include>
-   				</c:when>
+				<h3 style="margin-top: 0">Börsenspielseite</h3>
+				<div class="row">
+					<div class="col-md-8">
+						<p:panel id="general" header="Allgemeine Informationen"
+								style="margin-bottom: 20px">
+								<div class="row">
+									<div class="col-md-5">
+										<p:outputLabel value="Bezeichnung: "
+												rendered="#{stockMarketGameViewBean.stockMarketGame.name!=null}"
+												style="font-weight:bold; margin: 5px;" />
+									</div>
+									<div class="col-md-5">
+										<p:outputLabel value="#{stockMarketGameViewBean.stockMarketGame.name}"
+												rendered="#{stockMarketGameViewBean.stockMarketGame.name!=null}"
+												style="font-weight:bold; margin: 5px;" />
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-5">
+										<p:outputLabel value="Ersteller: "
+												rendered="#{stockMarketGameViewBean.stockMarketGame.owner.name!=null}"
+												style="font-weight:bold; margin: 5px;" />
+									</div>
+									<div class="col-md-5">
+										<p:outputLabel value="#{stockMarketGameViewBean.stockMarketGame.owner.name}"
+												rendered="#{stockMarketGameViewBean.stockMarketGame.owner.name!=null}"
+												style="font-weight:bold; margin: 5px;" />
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-5">
+										<p:outputLabel value="Anmeldestart: "
+												rendered="#{stockMarketGameViewBean.stockMarketGame.registrationFrom!=null}"
+												style="font-weight:bold; margin: 5px;" />
+									</div>
+									<div class="col-md-5">
+										<p:outputLabel value="#{stockMarketGameViewBean.stockMarketGame.registrationFrom.time}"
+												rendered="#{stockMarketGameViewBean.stockMarketGame.registrationFrom!=null}"
+												style="font-weight:bold; margin: 5px;" >
+												<f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
+										</p:outputLabel>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-5">
+										<p:outputLabel value="Anmeldeende: "
+												rendered="#{stockMarketGameViewBean.stockMarketGame.registrationTo!=null}"
+												style="font-weight:bold; margin: 5px;" />
+									</div>
+									<div class="col-md-5">
+										<p:outputLabel value="#{stockMarketGameViewBean.stockMarketGame.registrationTo.time}"
+												rendered="#{stockMarketGameViewBean.stockMarketGame.registrationTo!=null}"
+												style="font-weight:bold; margin: 5px;" >
+												<f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
+										</p:outputLabel>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-5">
+										<p:outputLabel value="Startdatum: "
+												rendered="#{stockMarketGameViewBean.stockMarketGame.validFrom!=null}"
+												style="font-weight:bold; margin: 5px;" />
+									</div>
+									<div class="col-md-5">
+										<p:outputLabel value="#{stockMarketGameViewBean.stockMarketGame.validFrom.time}"
+												rendered="#{stockMarketGameViewBean.stockMarketGame.validFrom!=null}"
+												style="font-weight:bold; margin: 5px;" >
+												<f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
+										</p:outputLabel>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-5">
+										<p:outputLabel value="Enddatum: "
+												rendered="#{stockMarketGameViewBean.stockMarketGame.validTo!=null}"
+												style="font-weight:bold; margin: 5px;" />
+									</div>
+									<div class="col-md-5">
+										<p:outputLabel value="#{stockMarketGameViewBean.stockMarketGame.validTo.time}"
+												rendered="#{stockMarketGameViewBean.stockMarketGame.validTo!=null}"
+												style="font-weight:bold; margin: 5px;" >
+												<f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
+										</p:outputLabel>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-5">
+										<p:outputLabel value="Startkapital: "
+												rendered="#{stockMarketGameViewBean.stockMarketGame.setting.startCapital!=null}"
+												style="font-weight:bold; margin: 5px;" />
+									</div>
+									<div class="col-md-5">
+										<p:outputLabel value="#{stockMarketGameViewBean.stockMarketGame.setting.startCapital}"
+												rendered="#{stockMarketGameViewBean.stockMarketGame.setting.startCapital!=null}"
+												style="font-weight:bold; margin: 5px;" />
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-5">
+										<p:outputLabel value="Portfoliospesen: "
+												rendered="#{stockMarketGameViewBean.stockMarketGame.setting.portfolioFee!=null}"
+												style="font-weight:bold; margin: 5px;" />
+									</div>
+									<div class="col-md-5">
+										<p:outputLabel value="#{stockMarketGameViewBean.stockMarketGame.setting.portfolioFee}"
+												rendered="#{stockMarketGameViewBean.stockMarketGame.setting.portfolioFee!=null}"
+												style="font-weight:bold; margin: 5px;" />
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-5">
+										<p:outputLabel value="Orderspesen: "
+												rendered="#{stockMarketGameViewBean.stockMarketGame.setting.orderFee!=null}"
+												style="font-weight:bold; margin: 5px;" />
+									</div>
+									<div class="col-md-5">
+										<p:outputLabel value="#{stockMarketGameViewBean.stockMarketGame.setting.orderFee}"
+												rendered="#{stockMarketGameViewBean.stockMarketGame.setting.orderFee!=null}"
+												style="font-weight:bold; margin: 5px;" />
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-5">
+										<p:outputLabel value="Kapitalertragssteuer: "
+												rendered="#{stockMarketGameViewBean.stockMarketGame.setting.capitalReturnTax!=null}"
+												style="font-weight:bold; margin: 5px;" />
+									</div>
+									<div class="col-md-5">
+										<p:outputLabel value="#{stockMarketGameViewBean.stockMarketGame.setting.capitalReturnTax}%"
+												rendered="#{stockMarketGameViewBean.stockMarketGame.setting.capitalReturnTax!=null}"
+												style="font-weight:bold; margin: 5px;" />
+									</div>
+								</div>	
+							 </p:panel>
+					<p:separator />
+				 <p:accordionPanel activeIndex="-1">
+					<p:tab id="allowedValuePapers" title="Erlaubte Wertpapiere" >
 
-				<c:otherwise>
-					<h:outputText value="Börsenspiel-ID existiert nicht" />
-				</c:otherwise>
+						<p:dataTable var="valuePaper"
+							value="#{stockMarketGameViewBean.stockMarketGame.allowedValuePapers}"
+							rows="15" paginator="true"
+							paginatorTemplate=" {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
+							<p:column headerText="Name" sortBy="#{valuePaper.name}">
+								<h:outputText value="#{valuePaper.name}" />
+							</p:column>
+							<p:column headerText="Währung">
+								<h:outputText
+									value="#{valuePaper.currency.currencyCode} (#{valuePaper.currency.symbol})"
+									rendered="#{valuePaper.type == 'STOCK' or valuePaper.type == 'FUND'}" />
+							</p:column>
+							<p:column headerText="Land">
+								<h:outputText value="#{valuePaper.country}"
+									rendered="#{valuePaper.type == 'STOCK'}" />
+							</p:column>
+							<p:column headerText="ISIN" sortBy="#{valuePaper.code}">
+								<h:outputText value="#{valuePaper.code}" />
+							</p:column>
+							<p:column headerText="Typ" sortBy="#{valuePaper.type}">
+								<h:outputText value="#{valuePaper.type}" />
+							</p:column>
+							<p:column>
+								<h:button value="Details"
+									outcome="/protected/valuepaper/valuepaperview">
+									
+									<f:param name="valuePaperCode" value="#{valuePaper.code}" />
+								</h:button>
+							</p:column>
+						</p:dataTable>
+					</p:tab>
+				</p:accordionPanel>
+				</div>
+						
+				<div class="col-md-4">
+							
+						<center>
+							  <p:graphicImage value="#{stockMarketGameViewBean.image}" style="max-width:800px;max-height:400px;"
+							  rendered="#{stockMarketGameViewBean.stockMarketGame.logo != null}">
+	    						<f:param name="gameIDLogo" value="#{stockMarketGameViewBean.stockMarketGame.id}" />
+	    					</p:graphicImage>
+	    			 	</center>
+	    			 	<p:panel id="additional" 
+								rendered="#{stockMarketGameViewBean.stockMarketGame.text!=null}" style="margin-top:20px" >
+							<p:outputLabel value="#{stockMarketGameViewBean.stockMarketGame.text}" />
+						</p:panel>
+						
+						<center>
+							<p:button value="Bearbeiten" outcome="/protected/stockmarketgame/create" icon="ui-icon-pencil"
+							style="margin-top:20px" rendered="#{stockMarketGameViewBean.adminLoggedIn == true}">
+								<f:param name="stockMarketGameId" value="#{stockMarketGameViewBean.gameID}" />
+							</p:button>
+						</center>
+						
+				</div>
+			</div>
+		
+   			</c:when>
+
+			<c:otherwise>
+				<h:outputText value="Börsenspiel-ID existiert nicht" />
+			</c:otherwise>
 
 		</c:choose>
-
+	</h:form>
 		
 	</ui:define>
 
