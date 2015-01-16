@@ -31,6 +31,9 @@ public class ValuePaperResourceImpl implements ValuePaperResource{
 	@Inject
 	private ValuePaperPriceEntryDataAccess valuePaperPriceEntryDataAccess;
 	
+	/**
+	 * TODO: deliver only such value papers that are allowed for the current portfolio
+	 */
 	@Override
 	public List<ValuePaperDto> getValuePapers(String filter,
 			ValuePaperType valuePaperType) {

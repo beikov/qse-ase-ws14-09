@@ -319,9 +319,12 @@ public class OrderActivity extends Activity implements TimePickerDialog.OnTimeSe
         }
         restQueryIntent.putExtra(RestService.COMMAND_CREATE_ORDER_PORTFOLIO_ARG, PortfolioContext.getPortfolio().getId());
         restQueryIntent.putExtra(RestService.COMMAND_CREATE_ORDER_VALUE_PAPER_ARG, valuePaper.getId());
-        // TODO: set stopLimit and limit for LimitOrders
-
         restQueryIntent.putExtra(RestService.COMMAND_CREATE_ORDER_VOLUME_ARG, Integer.valueOf(volumeEditText.getText().toString()));
+
+        if(orderType == OrderType.LIMIT) {
+            restQueryIntent.putExtra(RestService.COMMAND_CREATE_ORDER_LIMIT_ARG, new BigDecimal(limitEditText.getText().toString()));
+            restQueryIntent.putExtra(RestService.COMMAND_CREATE_ORDER_STOP_LIMIT_ARG, new BigDecimal(stopLimitEditText.getText().toString()));
+        }
 
         restQueryIntent.putExtra("receiver", receiver);
         restQueryIntent.putExtra("command", RestService.COMMAND_CREATE_ORDER);
