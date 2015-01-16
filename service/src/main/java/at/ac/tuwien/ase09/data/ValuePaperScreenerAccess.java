@@ -41,7 +41,7 @@ public class ValuePaperScreenerAccess {
 	 * @param filters Suchfilter
 	 * @param type Wertpapiertyp
 	 * 
-	 * @return Liste der übereinstimmenden Wertpapiere
+	 * @return Liste der ï¿½bereinstimmenden Wertpapiere
 	 */
 	@SuppressWarnings("unchecked")
 	public List<ValuePaper> findByFilter(List<AttributeFilter> filters, ValuePaperType type)

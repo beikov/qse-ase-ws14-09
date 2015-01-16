@@ -56,10 +56,8 @@ public class Institution extends BaseEntity<Long> implements Logo {
 	public String getFullyQualifiedClassName() {
 		return "at.ac.tuwien.ase09.model.Institution";
 	}
-	
+
 	@Override
 	public void setFullyQualifiedClassName(String unused) {
 	}
-	
-	
 }

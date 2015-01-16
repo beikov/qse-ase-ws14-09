@@ -53,7 +53,6 @@ public class UserProfileBean implements Serializable {
 		} catch(EntityNotFoundException e) {
 			FacesContext.getCurrentInstance().getExternalContext().responseSendError(404, "Der Benutzer '" + username + "' wurde nicht gefunden");
 			FacesContext.getCurrentInstance().responseComplete();
-			return;
 		}
 		user = userContext.getUser();
 	

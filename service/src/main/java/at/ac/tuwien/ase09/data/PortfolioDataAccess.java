@@ -25,6 +25,7 @@ import at.ac.tuwien.ase09.model.NewsItem;
 import at.ac.tuwien.ase09.model.Portfolio;
 import at.ac.tuwien.ase09.model.PortfolioValuePaper;
 import at.ac.tuwien.ase09.model.Stock;
+import at.ac.tuwien.ase09.model.StockMarketGame;
 import at.ac.tuwien.ase09.model.User;
 import at.ac.tuwien.ase09.model.ValuePaper;
 import at.ac.tuwien.ase09.model.ValuePaperHistoryEntry;
@@ -114,6 +115,21 @@ public class PortfolioDataAccess {
 			throw new AppException(e);
 		}
 	}
+	
+	public Portfolio getByGameAndUser(StockMarketGame game, User user) {
+		try {
+			return em.createQuery("FROM Portfolio p "
+					+ "LEFT JOIN FETCH p.game "
+					+ "JOIN FETCH p.owner "
+					+ "WHERE p.game.id = :gameId AND p.owner.id = :ownerId", Portfolio.class).setParameter("gameId", game.getId()).setParameter("ownerId", user.getId()).getSingleResult();
+		} catch(NoResultException e) {
+			throw new EntityNotFoundException(e);
+		} catch(Exception e) {
+			throw new AppException(e);
+		}
+	}
+	
+	
 	
 	public Map<ValuePaperType, Integer> getValuePaperTypeCountMap(Portfolio portfolio) {
 		Map<ValuePaperType, Integer> valuePaperTypeCounterMap = new HashMap<ValuePaperType, Integer>();

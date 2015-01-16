@@ -107,11 +107,9 @@ public class PortfolioViewBean implements Serializable {
 		} catch(EntityNotFoundException e) {
 			FacesContext.getCurrentInstance().getExternalContext().responseSendError(404, "Kein Portfolio mit der Id '"+ portfolioId +"' gefunden");
 			FacesContext.getCurrentInstance().responseComplete();
-			return;
 		} catch(AppException e) {
 			FacesContext.getCurrentInstance().getExternalContext().responseSendError(500, "Fehler beim Laden des Portfolios");
 			FacesContext.getCurrentInstance().responseComplete();
-			return;
 		}
     	
     	owner = portfolio.getOwner();

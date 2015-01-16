@@ -7,7 +7,6 @@ import javax.persistence.NoResultException;
 import at.ac.tuwien.ase09.exception.AppException;
 import at.ac.tuwien.ase09.exception.EntityNotFoundException;
 import at.ac.tuwien.ase09.model.Institution;
-import at.ac.tuwien.ase09.model.User;
 
 @Stateless
 public class InstitutionDataAccess {

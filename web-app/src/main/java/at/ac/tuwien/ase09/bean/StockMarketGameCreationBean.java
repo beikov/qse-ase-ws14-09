@@ -340,19 +340,19 @@ public class StockMarketGameCreationBean implements Serializable {
 		if( startCapital == null){
 			startCapital = new BigDecimal(0);
 		}else if( startCapital.compareTo(new BigDecimal(0)) == -1 ){
-			FacesMessage facesMessage = new FacesMessage("Fehler: Startkapital muss größer als 0 sein!");
+			FacesMessage facesMessage = new FacesMessage("Fehler: Startkapital muss grï¿½ï¿½er als 0 sein!");
 			FacesContext.getCurrentInstance().addMessage("createForm:startCapital", facesMessage);
 			return;
 		}
 
 		if( orderFee.compareTo(new BigDecimal(0)) == -1){
-			FacesMessage facesMessage = new FacesMessage("Fehler: Ordergebühr muss größer gleich 0  sein!");
+			FacesMessage facesMessage = new FacesMessage("Fehler: Ordergebï¿½hr muss grï¿½ï¿½er gleich 0  sein!");
 			FacesContext.getCurrentInstance().addMessage("createForm:orderFee", facesMessage);
 			return;
 		}
 
 		if( portfolioFee.compareTo(new BigDecimal(0)) == -1){
-			FacesMessage facesMessage = new FacesMessage("Fehler: Portfoliogebühr muss größer gleich 0  sein!");
+			FacesMessage facesMessage = new FacesMessage("Fehler: Portfoliogebï¿½hr muss grï¿½ï¿½er gleich 0  sein!");
 			FacesContext.getCurrentInstance().addMessage("createForm:portfolioFee", facesMessage);
 			return;
 		}
@@ -391,14 +391,14 @@ public class StockMarketGameCreationBean implements Serializable {
 
 			stockMarketGameService.saveStockMarketGame(stockMarketGame);
 
-			FacesMessage message = new FacesMessage("Börsenspiel erfolgreich gespeichert");
+			FacesMessage message = new FacesMessage("Bï¿½rsenspiel erfolgreich gespeichert");
 			FacesContext.getCurrentInstance().addMessage(null, message);
 
 			//FacesContext.getCurrentInstance().getExternalContext().redirect("list.xhtml");
 		}
 		catch (Exception e) {
 
-			FacesMessage message = new FacesMessage("Fehler beim Speichern des Börsenspieles");
+			FacesMessage message = new FacesMessage("Fehler beim Speichern des Bï¿½rsenspieles");
 			FacesContext.getCurrentInstance().addMessage(null, message);
 
 			e.printStackTrace();
@@ -496,7 +496,13 @@ public class StockMarketGameCreationBean implements Serializable {
 			}
 		}
 		
+//<<<<<<< HEAD
 		allowedValuePapersTarget = allowedValuePapersListModel.getTarget();
+/*=======
+		searchedValuePapers = valuePaperScreenerDataAccess.findByValuePaper(searchValuePaper.getType(), searchValuePaper);
+		
+		searchedValuePapers.removeAll(allowedValuePapers);
+>>>>>>> stockmarketgame_search*/
 		
 		allowedValuePapersSource = valuePaperScreenerDataAccess.findByValuePaper(searchValuePaper, isTypeSpecificated);
 

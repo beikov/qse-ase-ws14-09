@@ -73,7 +73,6 @@
 			<groupId>${project.groupId}</groupId>
 			<artifactId>testsuite-common</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>

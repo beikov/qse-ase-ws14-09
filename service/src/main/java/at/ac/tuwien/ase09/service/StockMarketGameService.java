@@ -4,7 +4,9 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
+import at.ac.tuwien.ase09.model.Portfolio;
 import at.ac.tuwien.ase09.model.StockMarketGame;
+import at.ac.tuwien.ase09.model.User;
 
 @Stateless
 public class StockMarketGameService {
@@ -20,6 +22,20 @@ public class StockMarketGameService {
 		}
 		em.persist(stockMarketGame);
 		return stockMarketGame;	
+	}
+
+	public void participateInGame(StockMarketGame game, User user) {
+		// check if already done
+		
+		Portfolio p = new Portfolio();
+		p.setName(game.getName() + "_Portfolio");
+		p.setCreated(game.getValidFrom());
+		p.setCurrentCapital(game.getSetting().getStartCapital());
+		p.setGame(game);
+		p.setOwner(user);
+		p.setSetting(game.getSetting());
+		
+		em.persist(p);
 	}
 	
 }
