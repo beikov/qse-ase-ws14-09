@@ -13,6 +13,11 @@
 		<h:messages errorStyle="color:red" />
 		<p:growl id="growl" life="3000"/>
 		
+		<p:dialog id="visibilityDialog" header="Sichtbarkeitseinstellungen" widgetVar="visibilityDialog" modal="true" >
+		    <pa:portfolioVisibility visibilitySettings="#{portfolioViewBean.portfolio.visibility}" />
+		    <p:commandButton value="Speichern" actionListener="#{portfolioViewBean.changeVisibility()}" process=":portfolioViewForm:visibilityDialog"  update=":portfolioViewForm:growl" icon="ui-icon-disk" oncomplete="PF('visibilityDialog').hide();"></p:commandButton>
+		</p:dialog>
+		
 		<p:dialog header="News Info" widgetVar="newsDialog" modal="false" id="newsDialog"
 			showEffect="blind" hideEffect="blind" resizable="false" width="50%"
 			height="400px">
@@ -68,28 +73,27 @@
 			</p:outputPanel>
 		</p:dialog>
 		
-		<div class="row" style="margin-bottom: 25px;">
-			<h3 style="display: inline-block;"><h:outputText value="Portfolio: " /><h:outputText value="#{portfolioViewBean.portfolio.name}" /></h3>
-			<p:commandButton value="Folgen" style="margin-left: 20px;" />
-		</div>
 	
-		<c:if test="#{portfolioViewBean.isStatisticsVisible()}">
-			<div class="row" style="margin-bottom: 15px;">
-				<div class="col-md-8">
-					<p:panel id="stats">
-						<f:facet name="header">
-							<h:outputText value="Übersicht" />
-						</f:facet>
+		
+		<div class="row" style="margin-bottom: 15px;">
+			<div class="col-md-8">
+				<p:panel id="stats">
+					<f:facet name="header">
+						<h:outputText value="Portfolio: " /><h:outputText value="#{portfolioViewBean.portfolio.name}" />
+						<p:commandButton value="Folgen" style="margin-left: 20px;" rendered="#{!portfolioViewBean.portfolioOwner}" />
+						<p:commandButton type="button" onclick="PF('visibilityDialog').show();" icon="ui-icon-gear" style="float:right;" rendered="#{portfolioViewBean.portfolioOwner}" />
+					</f:facet>
+					<c:if test="#{portfolioViewBean.isStatisticsVisible()}">
 						<ui:include src="_stats.xhtml" />
-					</p:panel>
-				</div>
-	 				<div class="col-md-4">
-	 					<p:panel id="follower" header="Follower">
-						<ui:include src="_followerList.xhtml" />
-					</p:panel>
-	 				</div>
+					</c:if>
+				</p:panel>
 			</div>
-		</c:if>
+			<c:if test="#{portfolioViewBean.isStatisticsVisible()}">
+ 				<div class="col-md-4">
+					<ui:include src="_followerList.xhtml" />
+ 				</div>
+			</c:if>
+		</div>
 		
 		<div class="row" style="margin-bottom: 15px;">
 			<div class="col-md-12">

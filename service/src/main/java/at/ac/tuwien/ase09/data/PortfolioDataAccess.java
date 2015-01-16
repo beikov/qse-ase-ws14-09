@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -299,5 +300,25 @@ public class PortfolioDataAccess {
 		double latestPrice = priceDataAccess.getLastPriceEntry(pvp.getValuePaper().getCode()).getPrice().doubleValue();
 		
 		return latestPrice*volume - payed;
+	}
+
+	public List<Portfolio> getActiveUserPortfolios(User user) {
+		try{
+			List<Portfolio> portfolios = em.createQuery("FROM Portfolio p LEFT JOIN FETCH p.game JOIN FETCH p.owner WHERE p.owner = :user", Portfolio.class).setParameter("user", user).getResultList();
+			List<Portfolio> result = new ArrayList<>();
+			for (Portfolio p : portfolios) {
+				if (p.getGame() == null) {
+					result.add(p);
+					continue;
+				}
+				Calendar now = Calendar.getInstance();
+				if (p.getGame().getValidTo().after(now)) {
+					result.add(p);
+				}
+			}
+			return result;
+		}catch(Exception e){
+			throw new AppException(e);
+		}
 	}
 }

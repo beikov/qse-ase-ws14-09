@@ -117,11 +117,12 @@
 		<filter-name>UserFilter</filter-name>
 		<filter-class>at.ac.tuwien.ase09.webapp.UserFilter</filter-class>
 	</filter>
+
 	<filter>
 		<filter-name>PrimeFaces FileUpload Filter</filter-name>
 		<filter-class>org.primefaces.webapp.filter.FileUploadFilter</filter-class>
 	</filter>
-	
+
     <!--
             MAPPINGS
     -->
@@ -144,7 +145,7 @@
     <filter-mapping>
 		<filter-name>PrimeFaces FileUpload Filter</filter-name>
 		<servlet-name>Faces Servlet</servlet-name>
-	</filter-mapping>   
+	</filter-mapping>
     
     <!-- 
     		Security Constraints

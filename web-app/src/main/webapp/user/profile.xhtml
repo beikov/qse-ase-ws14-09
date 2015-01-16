@@ -1,0 +1,33 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="metadata">
+        <f:metadata>
+			<f:viewParam name="user" value="#{userProfileBean.username}" required="#{!facesContext.postback}" />
+			<f:event type="postValidate" listener="#{userProfileBean.validateUsername}" />
+		    <f:viewAction action="#{userProfileBean.init}" />
+		</f:metadata>
+    </ui:define>
+	
+	<ui:define name="body">
+		<div class="row" style="margin-bottom: 25px;">
+			<div class="col-md-8">
+				<ui:include src="_about.xhtml" />
+			</div>
+			<div class="col-md-4">
+				<ui:include src="_followers.xhtml" />
+			</div>
+		</div>
+		<div class="row">
+			<ui:include src="_portfolios.xhtml" />
+		</div>
+		
+	</ui:define>
+	
+</ui:composition>

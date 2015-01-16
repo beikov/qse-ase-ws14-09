@@ -1,5 +1,6 @@
 package at.ac.tuwien.ase09.bean;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ import at.ac.tuwien.ase09.context.UserContext;
 import at.ac.tuwien.ase09.context.WebUserContext;
 import at.ac.tuwien.ase09.data.PortfolioDataAccess;
 import at.ac.tuwien.ase09.data.ValuePaperPriceEntryDataAccess;
+import at.ac.tuwien.ase09.exception.AppException;
 import at.ac.tuwien.ase09.exception.EntityNotFoundException;
 import at.ac.tuwien.ase09.model.AnalystOpinion;
 import at.ac.tuwien.ase09.model.Money;
@@ -56,6 +58,7 @@ public class PortfolioViewBean implements Serializable {
 	@Inject
 	private UserContext userContext;
 	
+	private User owner;
 	private User user;
 
 	private List<User> followers;
@@ -89,12 +92,29 @@ public class PortfolioViewBean implements Serializable {
 	private LineChartModel portfolioChart;
 	
 	
-    public void init() {
+	public void validateParam() throws IOException {
+		FacesContext context = FacesContext.getCurrentInstance();
+		if (!context.isPostback() && context.isValidationFailed()) {
+			context.getExternalContext().responseSendError(500, "Fehlerhafte Portfolio-Id");
+			context.responseComplete();
+		}
+	}
+	
+    public void init() throws IOException {
     	user = userContext.getUser();
-    	loadPortfolio(portfolioId);
-    	if (portfolio == null) {
-    		return;
-    	}
+    	try {
+    		portfolio = portfolioDataAccess.getPortfolioById(portfolioId);
+		} catch(EntityNotFoundException e) {
+			FacesContext.getCurrentInstance().getExternalContext().responseSendError(404, "Kein Portfolio mit der Id '"+ portfolioId +"' gefunden");
+			FacesContext.getCurrentInstance().responseComplete();
+			return;
+		} catch(AppException e) {
+			FacesContext.getCurrentInstance().getExternalContext().responseSendError(500, "Fehler beim Laden des Portfolios");
+			FacesContext.getCurrentInstance().responseComplete();
+			return;
+		}
+    	
+    	owner = portfolio.getOwner();
         createPieModels();
         createPortfolioChart();
         followers = new LinkedList<User>(portfolio.getFollowers());
@@ -123,6 +143,10 @@ public class PortfolioViewBean implements Serializable {
         
         boolean valuePapersVisible = portfolio.getVisibility().getValuePaperListVisible();
 		this.valuePapersVisible = checkVisibilitySetting(valuePapersVisible);
+    }
+    
+    public User getUser() {
+    	return user;
     }
     
     public Portfolio getPortfolio() {
@@ -216,11 +240,13 @@ public class PortfolioViewBean implements Serializable {
 	}
 	
 	public boolean isHidden() {
+		if (isPortfolioOwner())
+			return false;
 		return !portfolio.getVisibility().getPublicVisible();
 	}
 	
 	public boolean isChangeButtonVisible() {
-		return isOwner();
+		return isPortfolioOwner();
 	}
 	
 	public boolean isValuePapersVisible() {
@@ -251,33 +277,18 @@ public class PortfolioViewBean implements Serializable {
 		return checkVisibilitySetting(portfolio.getVisibility().getAnalystOpinionsVisible());
 	}
 	
-	public boolean isOwner() {
-		User current = userContext.getUser();
-		if (current == null) {
-			return false;
-		}
-		return portfolio.getOwner().getUsername().equals(current.getUsername());
+	public boolean isPortfolioOwner() {
+		return owner.getId() == user.getId();
 	}
 	
 	private boolean checkVisibilitySetting(boolean setting) {
-		if (!isOwner()) {
-			if (!portfolio.getVisibility().getPublicVisible()) {
-				return false;
-			}
-			return setting;
+		if (isPortfolioOwner()) {
+			return true;
 		}
-		return true;
-	}
-	
-	private void loadPortfolio(Long portfolioId) {
-		try {
-			if (user != null) {
-				portfolio = portfolioDataAccess.getPortfolioByUsernameAndId(user.getUsername(), portfolioId);
-			} else {
-				portfolio = portfolioDataAccess.getPortfolioById(portfolioId);
-			}
-		} catch (EntityNotFoundException e) {
+		if (!portfolio.getVisibility().getPublicVisible()) {
+			return false;
 		}
+		return setting;
 	}
 	
 	private void createPieModels() {

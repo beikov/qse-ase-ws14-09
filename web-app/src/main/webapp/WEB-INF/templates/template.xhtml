@@ -7,12 +7,14 @@
         xmlns:f="http://java.sun.com/jsf/core"
         contentType="text/html"
         encoding="UTF-8">
-        
+    
+    <ui:insert name="metadata" />
+    
     <h:head>
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 		<title><ui:insert name="title">Übersicht</ui:insert> - Portfolioverwaltung</title>
-		<h:outputStylesheet library="bootstrap/css" name="bootstrap.min.css" />
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" />
         <ui:insert name="head"/>
     </h:head>
     
@@ -22,10 +24,8 @@
     	<div class="container">
         	<ui:insert name="body"/>
     	</div>
-        
-        <h:outputScript library="bootstrap" name="js/bootstrap.min.js" />
+    	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js" />
     </h:body>
-    
 </f:view>
 </html>
 

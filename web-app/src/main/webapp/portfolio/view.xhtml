@@ -10,18 +10,20 @@
 	xmlns:pa="http://java.sun.com/jsf/composite/portfolioVisibility"
 	template="/WEB-INF/templates/template.xhtml">
 
-	<!-- content -->
-	<ui:define name="body">
-	
-		<f:metadata>
-			<f:viewParam name="portfolioId" value="#{portfolioViewBean.portfolioId}" required="#{!facesContext.postback}" />
+	<ui:define name="metadata">
+        <f:metadata>
+        	<f:viewParam name="portfolioId" value="#{portfolioViewBean.portfolioId}" required="#{!facesContext.postback}" />
+			<f:event type="postValidate" listener="#{portfolioViewBean.validateParam}" />
 		    <f:viewAction action="#{portfolioViewBean.init}" />
 		</f:metadata>
+    </ui:define>
+	
+	<ui:define name="body">
 		
 		<c:choose>
 			<c:when test="#{portfolioViewBean.isHidden()}"><ui:include src="_hidden.xhtml" /></c:when>
 			<c:otherwise><ui:include src="_portfolio.xhtml" /></c:otherwise>
 		</c:choose>
 		
-	</ui:define><!-- content -->
+	</ui:define>
 </ui:composition>
