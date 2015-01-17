@@ -33,6 +33,7 @@ import at.ac.tuwien.ase09.data.InstitutionDataAccess;
 import at.ac.tuwien.ase09.data.StockMarketGameDataAccess;
 import at.ac.tuwien.ase09.data.ValuePaperScreenerAccess;
 import at.ac.tuwien.ase09.exception.AppException;
+import at.ac.tuwien.ase09.exception.EntityNotFoundException;
 import at.ac.tuwien.ase09.model.Fund;
 import at.ac.tuwien.ase09.model.Institution;
 import at.ac.tuwien.ase09.model.Money;
@@ -100,7 +101,7 @@ public class StockMarketGameCreationBean implements Serializable {
 	//private List<ValuePaper> searchedValuePapers;
 
 	private DualListModel<ValuePaper> allowedValuePapersListModel;
-	
+
 	private List<ValuePaper> allowedValuePapersSource;
 	private List<ValuePaper> allowedValuePapersTarget;
 
@@ -271,13 +272,16 @@ public class StockMarketGameCreationBean implements Serializable {
 
 		allowedValuePapersSource = new ArrayList<ValuePaper>();
 		allowedValuePapersTarget = new ArrayList<ValuePaper>();
-		
+
 		allowedValuePapersListModel = new DualListModel<ValuePaper>(allowedValuePapersSource, allowedValuePapersTarget);
-		
+
 		loggedInUser = userContext.getUser();
 
-		if(loggedInUser != null){		
-			userInstitution = institutionDataAccess.getByAdmin(loggedInUser.getUsername());
+		if(loggedInUser != null){
+			try{
+				userInstitution = institutionDataAccess.getByAdmin(loggedInUser.getUsername());
+			}
+			catch(EntityNotFoundException e){}
 		}
 
 		loadStockMarketGame();
@@ -317,7 +321,10 @@ public class StockMarketGameCreationBean implements Serializable {
 
 	public void loadStockMarketGame(){
 		if(stockMarketGameId != null){
-			stockMarketGame = stockMarketGameDataAccess.getStockMarketGameByID(stockMarketGameId);
+			try{
+				stockMarketGame = stockMarketGameDataAccess.getStockMarketGameByID(stockMarketGameId);
+			}
+			catch(EntityNotFoundException e){}
 		}
 	}
 
@@ -340,19 +347,19 @@ public class StockMarketGameCreationBean implements Serializable {
 		if( startCapital == null){
 			startCapital = new BigDecimal(0);
 		}else if( startCapital.compareTo(new BigDecimal(0)) == -1 ){
-			FacesMessage facesMessage = new FacesMessage("Fehler: Startkapital muss grï¿½ï¿½er als 0 sein!");
+			FacesMessage facesMessage = new FacesMessage("Fehler: Startkapital muss größer als 0 sein!");
 			FacesContext.getCurrentInstance().addMessage("createForm:startCapital", facesMessage);
 			return;
 		}
 
 		if( orderFee.compareTo(new BigDecimal(0)) == -1){
-			FacesMessage facesMessage = new FacesMessage("Fehler: Ordergebï¿½hr muss grï¿½ï¿½er gleich 0  sein!");
+			FacesMessage facesMessage = new FacesMessage("Fehler: Ordergebühr muss größer gleich 0  sein!");
 			FacesContext.getCurrentInstance().addMessage("createForm:orderFee", facesMessage);
 			return;
 		}
 
 		if( portfolioFee.compareTo(new BigDecimal(0)) == -1){
-			FacesMessage facesMessage = new FacesMessage("Fehler: Portfoliogebï¿½hr muss grï¿½ï¿½er gleich 0  sein!");
+			FacesMessage facesMessage = new FacesMessage("Fehler: Portfoliogebü½hr muss größer gleich 0  sein!");
 			FacesContext.getCurrentInstance().addMessage("createForm:portfolioFee", facesMessage);
 			return;
 		}
@@ -391,14 +398,14 @@ public class StockMarketGameCreationBean implements Serializable {
 
 			stockMarketGameService.saveStockMarketGame(stockMarketGame);
 
-			FacesMessage message = new FacesMessage("Bï¿½rsenspiel erfolgreich gespeichert");
+			FacesMessage message = new FacesMessage("Börsenspiel erfolgreich gespeichert");
 			FacesContext.getCurrentInstance().addMessage(null, message);
 
-			//FacesContext.getCurrentInstance().getExternalContext().redirect("list.xhtml");
+			FacesContext.getCurrentInstance().getExternalContext().redirect("stockmarketgameview.xhtml?gameId="+stockMarketGame.getId());
 		}
 		catch (Exception e) {
 
-			FacesMessage message = new FacesMessage("Fehler beim Speichern des Bï¿½rsenspieles");
+			FacesMessage message = new FacesMessage("Fehler beim Speichern des Börsenspieles");
 			FacesContext.getCurrentInstance().addMessage(null, message);
 
 			e.printStackTrace();
@@ -495,20 +502,20 @@ public class StockMarketGameCreationBean implements Serializable {
 				FacesContext.getCurrentInstance().addMessage("searchValuePapers:currency", facesMessage);
 			}
 		}
-		
-//<<<<<<< HEAD
+
+		//<<<<<<< HEAD
 		allowedValuePapersTarget = allowedValuePapersListModel.getTarget();
-/*=======
+		/*=======
 		searchedValuePapers = valuePaperScreenerDataAccess.findByValuePaper(searchValuePaper.getType(), searchValuePaper);
-		
+
 		searchedValuePapers.removeAll(allowedValuePapers);
 >>>>>>> stockmarketgame_search*/
-		
+
 		allowedValuePapersSource = valuePaperScreenerDataAccess.findByValuePaper(searchValuePaper, isTypeSpecificated);
 
 		//allowedValuePapersSource.removeAll(allowedValuePapers);
 		allowedValuePapersSource.removeAll(allowedValuePapersTarget);
-		
+
 		allowedValuePapersListModel.setSource(allowedValuePapersSource);
 		allowedValuePapersListModel.setTarget(allowedValuePapersTarget);
 	}
