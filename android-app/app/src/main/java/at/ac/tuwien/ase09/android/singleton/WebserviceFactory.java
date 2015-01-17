@@ -14,6 +14,7 @@ import org.jboss.resteasy.spi.ResteasyProviderFactory;
 
 import at.ac.tuwien.ase09.rest.OrderResource;
 import at.ac.tuwien.ase09.rest.PortfolioResource;
+import at.ac.tuwien.ase09.rest.UserResource;
 import at.ac.tuwien.ase09.rest.ValuePaperResource;
 
 /**
@@ -63,6 +64,10 @@ public class WebserviceFactory {
 
     public OrderResource getOrderResource(){
         return getResource(OrderResource.class);
+    }
+
+    public UserResource getUserResource(){
+        return getResource(UserResource.class);
     }
 
     public static WebserviceFactory getInstance(){

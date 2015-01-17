@@ -30,8 +30,8 @@ import java.text.DecimalFormat;
 import java.util.Calendar;
 
 import at.ac.tuwien.ase09.android.R;
+import at.ac.tuwien.ase09.android.adapater.LayoutPopulator;
 import at.ac.tuwien.ase09.android.adapater.OrderActionAdapter;
-import at.ac.tuwien.ase09.android.adapater.ValuePaperItemLayoutPopulator;
 import at.ac.tuwien.ase09.android.service.RestResultReceiver;
 import at.ac.tuwien.ase09.android.service.RestService;
 import at.ac.tuwien.ase09.android.singleton.PortfolioContext;
@@ -51,6 +51,8 @@ public class OrderActivity extends Activity implements TimePickerDialog.OnTimeSe
     private Calendar validTo = Calendar.getInstance();
     // points either to validFrom or validTo - used to set values in listener
     private Calendar target;
+
+    private RestResultReceiver receiver;
 
     /* UI Elements */
     private Button timePickerTarget;
@@ -75,6 +77,9 @@ public class OrderActivity extends Activity implements TimePickerDialog.OnTimeSe
     public void initializeView() {
         // Inflate the layout for this fragment
         setContentView(R.layout.order_activity);
+
+        receiver = new RestResultReceiver(new Handler());
+        receiver.setReceiver(this);
 
         Button validityFromTimeButton = (Button) this.findViewById(R.id.validityFromTimeButton);
         validityFromTimeButton.setText(DateFormat.getTimeFormat(this).format(validFrom.getTime()));
@@ -185,7 +190,13 @@ public class OrderActivity extends Activity implements TimePickerDialog.OnTimeSe
         progressBar = (ProgressBar) this.findViewById(android.R.id.progress);
 
         View valuePaperItemView = this.findViewById(R.id.valuePaperItemView);
-        ValuePaperItemLayoutPopulator.populateValuePaperItemView(valuePaperItemView, valuePaper);
+        LayoutPopulator.populateValuePaperItemView(valuePaperItemView, valuePaper);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        receiver.setReceiver(null);
     }
 
     private void setLimitOrderUIElementsVisibility(int visibility){
@@ -298,8 +309,6 @@ public class OrderActivity extends Activity implements TimePickerDialog.OnTimeSe
 
     @Override
     public void onClick(View v) {
-        RestResultReceiver receiver = new RestResultReceiver(new Handler());
-        receiver.setReceiver(this);
         Intent restQueryIntent = new Intent(Intent.ACTION_SYNC, null, this, RestService.class);
 
         Calendar validFrom = Calendar.getInstance();

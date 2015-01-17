@@ -17,4 +17,5 @@ public interface ValuePaperResource {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<ValuePaperDto> getValuePapers (@QueryParam("filter") String filter, @QueryParam("type") ValuePaperType valuePaperType);
+	
 }

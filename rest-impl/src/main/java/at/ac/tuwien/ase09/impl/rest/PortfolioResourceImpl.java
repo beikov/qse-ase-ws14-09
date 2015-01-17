@@ -1,30 +1,33 @@
 package at.ac.tuwien.ase09.impl.rest;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import at.ac.tuwien.ase09.data.PortfolioDataAccess;
-import at.ac.tuwien.ase09.model.Portfolio;
-import at.ac.tuwien.ase09.model.User;
+import at.ac.tuwien.ase09.data.ValuePaperDataAccess;
+import at.ac.tuwien.ase09.model.PortfolioValuePaper;
 import at.ac.tuwien.ase09.rest.PortfolioResource;
-import at.ac.tuwien.ase09.rest.model.MoneyDto;
-import at.ac.tuwien.ase09.rest.model.PortfolioDto;
+import at.ac.tuwien.ase09.rest.model.PortfolioValuePaperDto;
 
 @Stateless
-public class PortfolioResourceImpl implements PortfolioResource {
-	
+public class PortfolioResourceImpl extends AbstractResource implements PortfolioResource {
+
 	@Inject
-	private PortfolioDataAccess portfolioDataAccess;
-	
+	private ValuePaperDataAccess valuePaperDataAcess;
 	@Override
-	public List<PortfolioDto> getPortfolios(Long userId) {
-		User user = new User();
-		user.setId(userId);
-		List<Portfolio> portfolios = portfolioDataAccess.getPortfoliosByUser(user);
-		List<PortfolioDto> portfolioDtos =  portfolios.stream().map(portfolio -> new PortfolioDto(portfolio.getId(), portfolio.getName(), new MoneyDto(portfolio.getCurrentCapital().getValue(), portfolio.getCurrentCapital().getCurrency()))).collect(Collectors.toList());
-		return portfolioDtos;
+	public List<PortfolioValuePaperDto> getValuePapers(long portfolioId) {
+		List<PortfolioValuePaper> valuePapers = valuePaperDataAcess.getValuePapersForPortfolio(portfolioId);
+		List<PortfolioValuePaperDto> results = new ArrayList<>();
+//		for(ValuePaper vp : valuePapers){
+//			results.add(createFromEntity(vp));
+//		}
+		
+		//TODO: correct
+		
+		return results;
 	}
+	
+	
 }

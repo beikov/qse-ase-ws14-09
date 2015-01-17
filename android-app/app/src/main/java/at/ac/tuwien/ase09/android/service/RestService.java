@@ -20,6 +20,7 @@ import at.ac.tuwien.ase09.model.order.OrderAction;
 import at.ac.tuwien.ase09.model.order.OrderType;
 import at.ac.tuwien.ase09.rest.OrderResource;
 import at.ac.tuwien.ase09.rest.PortfolioResource;
+import at.ac.tuwien.ase09.rest.UserResource;
 import at.ac.tuwien.ase09.rest.ValuePaperResource;
 import at.ac.tuwien.ase09.rest.model.OrderDto;
 import at.ac.tuwien.ase09.rest.model.PortfolioDto;
@@ -35,15 +36,15 @@ public class RestService extends IntentService {
     public static final int STATUS_FINISHED = 2;
     public static final int STATUS_ERROR = 3;
 
-    public static final String COMMAND_PORTFOLIOS = "PORTFOLIOS";
+    public static final int COMMAND_PORTFOLIOS = 0;
 
-    public static final String COMMAND_INITIAL_PORTFOLIO = "INITIAL_PORTFOLIOS";
+    public static final int COMMAND_INITIAL_PORTFOLIO = 1;
 
-    public static final String COMMAND_SEARCH_VALUE_PAPERS = "SEARCH_VALUE_PAPERS";
+    public static final int COMMAND_SEARCH_VALUE_PAPERS = 2;
     public static final String COMMAND_SEARCH_VALUE_PAPERS_ARG_FILTER = "FILTER";
     public static final String COMMAND_SEARCH_VALUE_PAPERS_ARG_TYPE = "VALUE_PAPER_TYPE";
 
-    public static final String COMMAND_CREATE_ORDER = "CREATE_ORDER";
+    public static final int COMMAND_CREATE_ORDER = 3;
     public static final String COMMAND_CREATE_ORDER_TYPE_ARG = "ORDER_TYPE";
     public static final String COMMAND_CREATE_ORDER_ACTION_ARG = "ORDER_ACTION";
     public static final String COMMAND_CREATE_ORDER_VALID_FROM_ARG = "VALID_FROM";
@@ -54,37 +55,55 @@ public class RestService extends IntentService {
     public static final String COMMAND_CREATE_ORDER_STOP_LIMIT_ARG = "STOP_LIMIT";
     public static final String COMMAND_CREATE_ORDER_LIMIT_ARG = "LIMIT";
 
+    public static final int COMMAND_PORTFOLIO_VALUE_PAPERS = 4;
+    public static final String COMMAND_PORTFOLIO_VALUE_PAPERS_ID_ARG = "PORTFOLIO_ID";
+
     public RestService() {
         super(LOG_TAG);
     }
 
     protected void onHandleIntent(Intent intent) {
         final ResultReceiver receiver = intent.getParcelableExtra("receiver");
-        final String command = intent.getStringExtra("command");
+        final int command = intent.getIntExtra("command", -1);
         Bundle b = new Bundle();
+        b.putInt("command", command);
 
         try {
-            if (command.equals(COMMAND_PORTFOLIOS)) {
-                receiver.send(STATUS_RUNNING, Bundle.EMPTY);
-                b.putSerializable("results", getPortfolios());
-                receiver.send(STATUS_FINISHED, b);
-            } else if (command.equals(COMMAND_INITIAL_PORTFOLIO)) {
-                receiver.send(STATUS_RUNNING, Bundle.EMPTY);
-                b.putSerializable("results", getInitialPortfolioContext());
-                receiver.send(STATUS_FINISHED, b);
-            } else if (command.equals(COMMAND_SEARCH_VALUE_PAPERS)) {
-                receiver.send(STATUS_RUNNING, Bundle.EMPTY);
-                b.putSerializable("results", searchValuePapers(intent.getStringExtra(COMMAND_SEARCH_VALUE_PAPERS_ARG_FILTER), (ValuePaperType) intent.getSerializableExtra(COMMAND_SEARCH_VALUE_PAPERS_ARG_TYPE)));
-                receiver.send(STATUS_FINISHED, b);
-            } else if(command.equals(COMMAND_CREATE_ORDER)){
-                receiver.send(STATUS_RUNNING, Bundle.EMPTY);
-                int responseStatus = createOrder(intent);
-                if(responseStatus != Response.Status.CREATED.getStatusCode()){
-                    b.putString(Intent.EXTRA_TEXT, "Order creation failed - status " + responseStatus);
+            switch (command){
+                case COMMAND_PORTFOLIOS:
+                    receiver.send(STATUS_RUNNING, b);
+                    b.putSerializable("results", getPortfolios());
+                    receiver.send(STATUS_FINISHED, b);
+                    break;
+                case COMMAND_INITIAL_PORTFOLIO:
+                    receiver.send(STATUS_RUNNING, b);
+                    b.putSerializable("results", getInitialPortfolioContext());
+                    receiver.send(STATUS_FINISHED, b);
+                    break;
+                case COMMAND_SEARCH_VALUE_PAPERS:
+                    receiver.send(STATUS_RUNNING, b);
+                    b.putSerializable("results", searchValuePapers(intent.getStringExtra(COMMAND_SEARCH_VALUE_PAPERS_ARG_FILTER), (ValuePaperType) intent.getSerializableExtra(COMMAND_SEARCH_VALUE_PAPERS_ARG_TYPE)));
+                    receiver.send(STATUS_FINISHED, b);
+                    break;
+                case COMMAND_CREATE_ORDER:
+                    receiver.send(STATUS_RUNNING, b);
+                    int responseStatus = createOrder(intent);
+                    if(responseStatus != Response.Status.CREATED.getStatusCode()){
+                        b.putString(Intent.EXTRA_TEXT, "Order creation failed - status " + responseStatus);
+                        receiver.send(STATUS_ERROR, b);
+                    }else {
+                        receiver.send(STATUS_FINISHED, null);
+                    }
+                    break;
+                case COMMAND_PORTFOLIO_VALUE_PAPERS:
+                    receiver.send(STATUS_RUNNING, b);
+                    b.putSerializable("results", getValuePapersForPortfolio(intent));
+                    receiver.send(STATUS_FINISHED, b);
+                    break;
+                default:
+                    b.putString(Intent.EXTRA_TEXT, "Unknown command code [" + command + "]");
                     receiver.send(STATUS_ERROR, b);
-                }else {
-                    receiver.send(STATUS_FINISHED, null);
-                }
+                    Log.e(LOG_TAG, "Command unknown: " + command);
             }
         } catch (Exception e) {
             b.putString(Intent.EXTRA_TEXT, e.toString());
@@ -95,8 +114,8 @@ public class RestService extends IntentService {
 
     private PortfolioDto getInitialPortfolioContext() {
         Log.i(LOG_TAG, "Query default portfolio context");
-        PortfolioResource portfolioResource = WebserviceFactory.getInstance().getPortfolioResource();
-        List<PortfolioDto> portfolios = portfolioResource.getPortfolios(1L); //TODO: use user id of logged in user
+        UserResource userResource = WebserviceFactory.getInstance().getUserResource();
+        List<PortfolioDto> portfolios = userResource.getPortfolios(1L); //TODO: use user id of logged in user
         if (!portfolios.isEmpty()) {
             PortfolioContext.setPortfolio(portfolios.get(0));
         }
@@ -105,14 +124,24 @@ public class RestService extends IntentService {
 
     private ArrayList<PortfolioDto> getPortfolios() {
         Log.i(LOG_TAG, "Query portfolios");
-        PortfolioResource portfolioResource = WebserviceFactory.getInstance().getPortfolioResource();
-        return new ArrayList<PortfolioDto>(portfolioResource.getPortfolios(1L)); //TODO: use user id of logged in user
+        UserResource userResource = WebserviceFactory.getInstance().getUserResource();
+        return new ArrayList<PortfolioDto>(userResource.getPortfolios(1L)); //TODO: use user id of logged in user
     }
 
     private ArrayList<ValuePaperDto> searchValuePapers(String filter, ValuePaperType valuePaperType) {
         Log.i(LOG_TAG, "Query value papers by filter");
         ValuePaperResource valuePaperResource = WebserviceFactory.getInstance().getValuePaperResource();
         return new ArrayList<ValuePaperDto>(valuePaperResource.getValuePapers(filter, valuePaperType));
+    }
+
+    private ArrayList<ValuePaperDto> getValuePapersForPortfolio(Intent intent){
+        if(!intent.hasExtra(COMMAND_PORTFOLIO_VALUE_PAPERS_ID_ARG)){
+            throw new IllegalArgumentException(COMMAND_PORTFOLIO_VALUE_PAPERS_ID_ARG + " missing");
+        }
+        long portfolioId = intent.getLongExtra(COMMAND_PORTFOLIO_VALUE_PAPERS_ID_ARG, -1);
+        Log.i(LOG_TAG, "Query value papers for portfolio id " + portfolioId);
+        PortfolioResource portfolioResource = WebserviceFactory.getInstance().getPortfolioResource();
+        return new ArrayList<ValuePaperDto>(portfolioResource.getValuePapers(portfolioId));
     }
 
     private int createOrder(Intent intent){

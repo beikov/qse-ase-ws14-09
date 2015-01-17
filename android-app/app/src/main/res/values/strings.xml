@@ -34,5 +34,11 @@
     <string name="limit">Limit</string>
     <string name="stopLimit">Stop Limit</string>
     <string name="required_message">%1$s ist erforderlich</string>
+    <string name="portfolio">Portfolio</string>
+    <string name="value_papers">Wertpapiere</string>
+    <string name="costValue">Einstandswert</string>
+    <string name="currentValue">Aktueller Wert</string>
+    <string name="remaining_cash">Cash verbleibend</string>
+    <string name="price">Kurs</string>
 
 </resources>

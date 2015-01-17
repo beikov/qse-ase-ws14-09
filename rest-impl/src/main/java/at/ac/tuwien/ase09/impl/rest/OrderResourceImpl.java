@@ -13,7 +13,7 @@ import at.ac.tuwien.ase09.rest.model.OrderDto;
 import at.ac.tuwien.ase09.service.OrderService;
 
 @Stateless
-public class OrderResourceImpl implements OrderResource {
+public class OrderResourceImpl extends AbstractResource implements OrderResource {
 	@Inject
 	private OrderService orderService;
 	

@@ -1,5 +1,7 @@
 package at.ac.tuwien.ase09.model;
 
+import java.math.BigDecimal;
+
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -16,7 +18,7 @@ public class PortfolioValuePaper extends BaseEntity<Long> {
 	private Portfolio portfolio;
 	
 	private ValuePaper valuePaper;
-
+	
 
 	public int getVolume() {
 		return volume;
@@ -45,4 +47,5 @@ public class PortfolioValuePaper extends BaseEntity<Long> {
 	public void setValuePaper(ValuePaper valuePaper) {
 		this.valuePaper = valuePaper;
 	}
+
 }

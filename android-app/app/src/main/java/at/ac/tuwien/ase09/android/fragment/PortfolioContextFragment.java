@@ -89,18 +89,6 @@ public class PortfolioContextFragment extends Fragment implements AbsListView.On
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        receiver = new RestResultReceiver(new Handler());
-        receiver.setReceiver(this);
-        final Intent intent = new Intent(Intent.ACTION_SYNC, null, getActivity(), RestService.class);
-        intent.putExtra("receiver", receiver);
-        intent.putExtra("command", RestService.COMMAND_PORTFOLIOS);
-        getActivity().startService(intent);
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.portfolio_context_fragment, container, false);
@@ -112,6 +100,13 @@ public class PortfolioContextFragment extends Fragment implements AbsListView.On
 
         // Set OnItemClickListener so we can be notified on item clicks
         mListView.setOnItemClickListener(this);
+
+        receiver = new RestResultReceiver(new Handler());
+        receiver.setReceiver(this);
+        final Intent intent = new Intent(Intent.ACTION_SYNC, null, getActivity(), RestService.class);
+        intent.putExtra("receiver", receiver);
+        intent.putExtra("command", RestService.COMMAND_PORTFOLIOS);
+        getActivity().startService(intent);
 
         return view;
     }

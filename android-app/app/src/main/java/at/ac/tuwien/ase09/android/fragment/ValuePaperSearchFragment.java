@@ -2,7 +2,6 @@ package at.ac.tuwien.ase09.android.fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ListAdapter;
@@ -25,8 +23,9 @@ import android.widget.Toast;
 import java.util.List;
 
 import at.ac.tuwien.ase09.android.R;
-import at.ac.tuwien.ase09.android.adapater.ValuePaperItemLayoutPopulator;
+import at.ac.tuwien.ase09.android.adapater.ValuePaperArrayAdapter;
 import at.ac.tuwien.ase09.android.adapater.ValuePaperTypeAdapter;
+import at.ac.tuwien.ase09.android.listener.ValuePaperSelectionListener;
 import at.ac.tuwien.ase09.android.service.RestResultReceiver;
 import at.ac.tuwien.ase09.android.service.RestService;
 import at.ac.tuwien.ase09.model.ValuePaperType;
@@ -66,6 +65,8 @@ public class ValuePaperSearchFragment extends Fragment implements AbsListView.On
 
     private ProgressBar progressBar;
 
+    private RestResultReceiver receiver;
+
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
@@ -82,6 +83,9 @@ public class ValuePaperSearchFragment extends Fragment implements AbsListView.On
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.valuepapersearch_fragment, container, false);
+
+        receiver = new RestResultReceiver(new Handler());
+        receiver.setReceiver(this);
 
         FrameLayout searchResultPlaceholder = (FrameLayout) view.findViewById(R.id.searchResults);
         View searchResultView = inflater.inflate(R.layout.valuepapers_layout, searchResultPlaceholder);
@@ -136,6 +140,12 @@ public class ValuePaperSearchFragment extends Fragment implements AbsListView.On
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        receiver.setReceiver(null);
+    }
+
+    @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
         // do nothing
     }
@@ -149,8 +159,6 @@ public class ValuePaperSearchFragment extends Fragment implements AbsListView.On
         ((AdapterView<ListAdapter>) mListView).setAdapter(null);
         if(searchFilter != null && searchFilter.length() > 1) {
             final String effectiveFilter = "*" + searchFilter + "*";
-            RestResultReceiver receiver = new RestResultReceiver(new Handler());
-            receiver.setReceiver(this);
             Intent restQueryIntent = new Intent(Intent.ACTION_SYNC, null, getActivity(), RestService.class);
             restQueryIntent.putExtra(RestService.COMMAND_SEARCH_VALUE_PAPERS_ARG_TYPE, selectedValuePaperType);
             restQueryIntent.putExtra(RestService.COMMAND_SEARCH_VALUE_PAPERS_ARG_FILTER, effectiveFilter);
@@ -173,7 +181,7 @@ public class ValuePaperSearchFragment extends Fragment implements AbsListView.On
                 break;
             case RestService.STATUS_FINISHED:
                 List<ValuePaperDto> valuePapers = (List<ValuePaperDto>) resultData.getSerializable("results");
-                mAdapter = new ValuePaperArrayAdapter(getActivity(), valuePapers);
+                mAdapter = new ValuePaperArrayAdapter(getActivity(), valuePapers, getActivity());
                 ((AdapterView<ListAdapter>) mListView).setAdapter(mAdapter);
 
                 progressBar.setVisibility(View.GONE);
@@ -211,45 +219,6 @@ public class ValuePaperSearchFragment extends Fragment implements AbsListView.On
 
         if (emptyView instanceof TextView) {
             ((TextView) emptyView).setText(emptyText);
-        }
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface ValuePaperSelectionListener {
-        public void onValuePaperSelected(ValuePaperDto valuePaper);
-    }
-
-    private class ValuePaperArrayAdapter extends ArrayAdapter<ValuePaperDto>  {
-
-        public ValuePaperArrayAdapter(Context context, List<ValuePaperDto> objects) {
-            super(context, 0, 0, objects);
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            View view;
-            TextView nameTextView;
-            TextView codeTextView;
-            TextView relativePriceChangeTextView;
-            TextView absolutePriceChangeTextView;
-
-            if (convertView == null) {
-                view = getActivity().getLayoutInflater().inflate(R.layout.valuepaper_item, parent, false);
-            } else {
-                view = convertView;
-            }
-
-            ValuePaperItemLayoutPopulator.populateValuePaperItemView(view, getItem(position));
-            return view;
         }
     }
 

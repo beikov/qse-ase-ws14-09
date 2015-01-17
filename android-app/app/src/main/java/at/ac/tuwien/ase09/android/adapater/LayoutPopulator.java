@@ -14,7 +14,7 @@ import at.ac.tuwien.ase09.rest.model.ValuePaperDto;
 /**
  * Created by Moritz on 12.01.2015.
  */
-public class ValuePaperItemLayoutPopulator {
+public class LayoutPopulator {
     public static void populateValuePaperItemView(View view, ValuePaperDto valuePaper){
         TextView nameTextView = (TextView) view.findViewById(R.id.vpName);
         TextView codeTextView = (TextView) view.findViewById(R.id.vpCode);
@@ -66,5 +66,15 @@ public class ValuePaperItemLayoutPopulator {
             relativePriceChangeTextView.setText("");
             absolutePriceChangeTextView.setText("");
         }
+    }
+
+    public static void populatePortfolioValuePaperItemView(View view, PortfolioValuePaperDto valuePaper){
+        TextView nameTextView = (TextView) view.findViewById(R.id.vpName);
+        TextView volumeTextView = (TextView) view.findViewById(R.id.vpVolume);
+        TextView lastPriceTextView = (TextView) view.findViewById(R.id.vpLastPrice);
+        TextView relativePriceChangeTextView = (TextView) view.findViewById(R.id.vpRelativePriceChange);
+        TextView buyPriceTextView = (TextView) view.findViewById(R.id.vpBuyPrice);
+        TextView buyPriceChangeTextView = (TextView) view.findViewById(R.id.vpBuyPriceChange);
+
     }
 }

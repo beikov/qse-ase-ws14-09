@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="8dp">
+
+    <TextView
+        android:id="@+id/vpName"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:lines="1"
+        android:text="Raiffeisen Bank International" />
+
+    <TextView
+        android:id="@+id/vpVolume"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/vpName"
+        android:layout_alignStart="@id/vpName"
+        android:layout_below="@id/vpName"
+        android:layout_marginLeft="30dp"
+        android:layout_marginStart="30dp"
+        android:textSize="12sp"
+        android:text="x 10"/>
+
+    <TextView
+        android:id="@+id/vpLastPriceLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/vpName"
+        android:layout_toRightOf="@id/vpName"
+        android:layout_toEndOf="@id/vpName"
+        android:layout_marginLeft="5dp"
+        android:layout_marginStart="5dp"
+        android:text="@string/price"/>
+
+    <TextView
+        android:id="@+id/vpLastPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/vpLastPriceLabel"
+        android:layout_toRightOf="@id/vpName"
+        android:layout_toEndOf="@id/vpName"
+        android:layout_marginLeft="5dp"
+        android:layout_marginStart="5dp"
+        android:text="13,60 EUR"/>
+
+    <TextView
+        android:id="@+id/vpRelativePriceChange"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/vpLastPrice"
+        android:layout_toRightOf="@id/vpName"
+        android:layout_toEndOf="@id/vpName"
+        android:layout_marginLeft="5dp"
+        android:layout_marginStart="5dp"
+        android:textSize="12sp"
+        android:text="+ 4,5%" />
+
+    <TextView
+        android:id="@+id/vpBuyPriceLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/vpLastPrice"
+        android:layout_toEndOf="@id/vpLastPrice"
+        android:layout_marginLeft="30dp"
+        android:layout_marginStart="5dp"
+        android:text="@string/buy"/>
+
+    <TextView
+        android:id="@+id/vpBuyPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/vpBuyPriceLabel"
+        android:layout_toRightOf="@id/vpLastPrice"
+        android:layout_toEndOf="@id/vpLastPrice"
+        android:layout_marginLeft="30dp"
+        android:layout_marginStart="5dp"
+        android:text="12,60 EUR"/>
+
+    <TextView
+        android:id="@+id/vpBuyPriceChange"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/vpBuyPrice"
+        android:layout_toRightOf="@id/vpLastPrice"
+        android:layout_toEndOf="@id/vpLastPrice"
+        android:layout_marginLeft="30dp"
+        android:layout_marginStart="5dp"
+        android:textSize="12sp"
+        android:text="+ 4,5%" />
+</RelativeLayout>

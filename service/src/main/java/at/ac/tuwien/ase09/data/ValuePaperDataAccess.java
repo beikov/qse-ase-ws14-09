@@ -14,6 +14,8 @@ import at.ac.tuwien.ase09.exception.EntityNotFoundException;
 import at.ac.tuwien.ase09.model.AnalystOpinion;
 import at.ac.tuwien.ase09.model.DividendHistoryEntry;
 import at.ac.tuwien.ase09.model.NewsItem;
+import at.ac.tuwien.ase09.model.Portfolio;
+import at.ac.tuwien.ase09.model.PortfolioValuePaper;
 import at.ac.tuwien.ase09.model.Stock;
 import at.ac.tuwien.ase09.model.StockBond;
 import at.ac.tuwien.ase09.model.ValuePaper;
@@ -104,6 +106,16 @@ public class ValuePaperDataAccess {
 			throw new EntityNotFoundException();
 		}else{
 			return entries.get(0);
+		}
+	}
+	
+	public List<PortfolioValuePaper> getValuePapersForPortfolio(long portfolioId){
+		try{
+			return em.createQuery("SELECT pvp FROM PortfolioValuePaper pvp JOIN FETCH pvp.valuePaper WHERE pvp.portfolio = :portfolioId", PortfolioValuePaper.class)
+				.setParameter("portfolioId", em.getReference(Portfolio.class, portfolioId))
+				.getResultList();
+		} catch(Exception e){
+			throw new AppException(e);
 		}
 	}
 }

@@ -6,13 +6,19 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
 
+import at.ac.tuwien.ase09.model.ValuePaperType;
 import at.ac.tuwien.ase09.rest.model.PortfolioDto;
+import at.ac.tuwien.ase09.rest.model.PortfolioValuePaperDto;
+import at.ac.tuwien.ase09.rest.model.ValuePaperDto;
 
 @Path("/portfolios")
 public interface PortfolioResource {
+	
 	@GET
-	@Path("/{userId}")
-	@Produces("application/json")
-	public List<PortfolioDto> getPortfolios (@PathParam("userId") Long userId);
+	@Path("/{portfolioId}/valuePapers")
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<PortfolioValuePaperDto> getValuePapers(@PathParam("portfolioId") long portfolioId);
 }

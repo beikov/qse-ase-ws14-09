@@ -19,6 +19,7 @@ import at.ac.tuwien.ase09.android.fragment.NavigationDrawerFragment;
 import at.ac.tuwien.ase09.android.fragment.PortfolioContextFragment;
 import at.ac.tuwien.ase09.android.fragment.PortfolioViewFragment;
 import at.ac.tuwien.ase09.android.fragment.ValuePaperSearchFragment;
+import at.ac.tuwien.ase09.android.listener.ValuePaperSelectionListener;
 import at.ac.tuwien.ase09.android.singleton.PortfolioContext;
 import at.ac.tuwien.ase09.android.singleton.WebserviceFactory;
 import at.ac.tuwien.ase09.android.R;
@@ -27,7 +28,7 @@ import at.ac.tuwien.ase09.rest.model.ValuePaperDto;
 
 
 public class MainActivity extends Activity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks, PortfolioContextFragment.PortfolioContextChangeListener, ValuePaperSearchFragment.ValuePaperSelectionListener {
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks, PortfolioContextFragment.PortfolioContextChangeListener, ValuePaperSelectionListener {
     private static final String LOG_TAG = "MainActivity";
 
     private static final int REQUEST_CREATE_ORDER = 1;
