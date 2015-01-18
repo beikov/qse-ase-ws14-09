@@ -42,6 +42,10 @@ public abstract class TransactionEntry extends BaseEntity<Long> {
 		this.portfolio = portfolio;
 	}
 
+	/**
+	 * 
+	 * @return value that is negative if value was deducted from the user's account and positive if value was added to the user's account
+	 */
 	@Embedded
 	public Money getValue() {
 		return value;
@@ -59,6 +63,4 @@ public abstract class TransactionEntry extends BaseEntity<Long> {
 	public void setCreated(Calendar created) {
 		this.created = created;
 	}
-	
-	
 }

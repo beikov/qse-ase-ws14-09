@@ -2,9 +2,11 @@ package at.ac.tuwien.ase09.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Currency;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
@@ -25,6 +27,7 @@ public class Money implements Serializable {
 		this.currency = currency;
 	}
 
+	@Column(nullable=false)
 	public BigDecimal getValue() {
 		return value;
 	}
@@ -75,7 +78,7 @@ public class Money implements Serializable {
 	
 	@Override
 	public String toString() {
-		NumberFormat frmt = NumberFormat.getCurrencyInstance();
-		return frmt.format(value);
+		DecimalFormat frmt = new DecimalFormat();
+		return frmt.format(value) + " " + (currency == null ? "EUR" : currency.getCurrencyCode());
 	}
 }

@@ -15,7 +15,8 @@ public class UserService {
 		em.persist(user);
 	}
 	
-	public void updateUser(User user) {
-		em.merge(user);
-	}
+    public void updateUser(User user) {
+        em.merge(user);
+    }
+
 }

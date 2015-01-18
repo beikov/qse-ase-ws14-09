@@ -9,6 +9,7 @@ import javax.inject.Named;
 import at.ac.tuwien.ase09.context.Login;
 import at.ac.tuwien.ase09.context.UserContext;
 import at.ac.tuwien.ase09.keycloak.UserInfo;
+import at.ac.tuwien.ase09.model.Portfolio;
 import at.ac.tuwien.ase09.model.User;
 
 @SessionScoped
@@ -30,6 +31,15 @@ private static final long serialVersionUID = 1L;
 			return new User("Gast");
 		}
 		return userInfo.getUser();
+	}
+
+	@Override
+	public Portfolio getContext() {
+		if (userInfo == null) {
+			return null;
+		}
+
+		return userInfo.getContext();
 	}
 
 }

@@ -20,7 +20,26 @@
 	<ui:define name="body">
 
 		<h:form id="stockmarketgame_ranking">
-			
+
+			<p:growl id="messages" />
+
+			<p:panel header="Börsenspiel-Rangliste">
+				<h:panelGrid columns="2" cellpadding="5">
+					<p:outputLabel for="name" value="Börsenspielbezeichnung:"
+						style="margin-right:5px" />
+					<h:outputText id="name"
+						value="#{stockMarketGameRankingBean.stockMarketGame.name}">
+					</h:outputText>
+				</h:panelGrid>
+				
+				<p:dataTable>
+				
+					
+				
+				</p:dataTable>
+				
+			</p:panel>
+
 		</h:form>
 
 	</ui:define>
