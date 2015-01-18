@@ -69,6 +69,14 @@ public class PortfolioDataAccess {
 		}
 	}
 	
+	public List<Portfolio> getPortfoliosByStockMarketGame(StockMarketGame stockMarketGameId) {
+		try{
+			return em.createQuery("FROM Portfolio p JOIN p.game smg WHERE smg.id = :smg", Portfolio.class).setParameter("smg", stockMarketGameId).getResultList();
+		}catch(Exception e){
+			throw new AppException(e);
+		}
+	}
+	
 	public BigDecimal getCostValueForPortfolio(long portfolioId) {
 		try{
 			Portfolio portfolio = em.getReference(Portfolio.class, portfolioId);
