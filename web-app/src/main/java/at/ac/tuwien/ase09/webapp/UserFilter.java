@@ -61,7 +61,11 @@ public class UserFilter implements Filter {
 						userService.saveUser(user);
 					}
 					userInfo.setUser(user);
-					userInfo.setContext(portfolioDataAccess.getPortfolioById(portfolioContext.getContextId()));
+					
+					if (portfolioContext.getContextId() != null) {
+						userInfo.setContext(portfolioDataAccess.getPortfolioById(portfolioContext.getContextId()));
+					}
+					
 					loginEvent.fire(userInfo);
 				}
 			} catch (Failure e) {
