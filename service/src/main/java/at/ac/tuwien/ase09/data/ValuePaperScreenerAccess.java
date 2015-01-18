@@ -236,4 +236,8 @@ public class ValuePaperScreenerAccess {
 		return crit.list();
 		
 	}
+	@SuppressWarnings("unchecked")
+	public List<ValuePaper> findByExpression(String expression){
+		return em.createQuery(expression).getResultList();
+	}
 }
