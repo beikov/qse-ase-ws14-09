@@ -8,11 +8,11 @@
 		xmlns:p="http://primefaces.org/ui">
 		
 		<cc:interface>
-			<cc:attribute name="code" type="java.lang.String" required="true" />
+			<cc:attribute name="pvp" required="true" />
 		</cc:interface>
 		
 		<cc:implementation>
-			<c:set var="change" value="#{portfolioViewBean.getChange(cc.attrs.code)}" />
+			<c:set var="change" value="#{portfolioViewBean.getChange(cc.attrs.pvp)}" />
 			<h:outputText value="#{change}" rendered="#{change lt 0}" style="color:red;">
 				<f:convertNumber pattern="#0.00" />
 			</h:outputText>

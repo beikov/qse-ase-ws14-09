@@ -34,6 +34,7 @@ import at.ac.tuwien.ase09.model.NewsItem;
 import at.ac.tuwien.ase09.model.Portfolio;
 import at.ac.tuwien.ase09.model.PortfolioValuePaper;
 import at.ac.tuwien.ase09.model.User;
+import at.ac.tuwien.ase09.model.ValuePaper;
 import at.ac.tuwien.ase09.model.ValuePaperType;
 import at.ac.tuwien.ase09.model.order.Order;
 import at.ac.tuwien.ase09.model.order.OrderStatus;
@@ -56,7 +57,7 @@ public class PortfolioViewBean implements Serializable {
 	private ValuePaperPriceEntryDataAccess priceDataAccess;
 	
 	@Inject
-	private UserContext userContext;
+	private WebUserContext userContext;
 	
 	private User owner;
 	private User user;
@@ -77,14 +78,11 @@ public class PortfolioViewBean implements Serializable {
 	
 	private Portfolio portfolio;
 	
-	private boolean valuePapersVisible;
-	
-	
 	private List<Order> filteredOrders;
 	
-	private Map<String,Money> totalPayedMap = new HashMap<>();
-	private Map<String,Money> profitMap = new HashMap<>();
-	private Map<String, Double> changeMap = new HashMap<>();
+	//private Map<String,Money> totalPayedMap = new HashMap<>();
+	//private Map<String,Money> profitMap = new HashMap<>();
+	//private Map<String, Double> changeMap = new HashMap<>();
 	
 	
 	private PieChartModel valuePaperTypePie;
@@ -107,9 +105,11 @@ public class PortfolioViewBean implements Serializable {
 		} catch(EntityNotFoundException e) {
 			FacesContext.getCurrentInstance().getExternalContext().responseSendError(404, "Kein Portfolio mit der Id '"+ portfolioId +"' gefunden");
 			FacesContext.getCurrentInstance().responseComplete();
+			return;
 		} catch(AppException e) {
 			FacesContext.getCurrentInstance().getExternalContext().responseSendError(500, "Fehler beim Laden des Portfolios");
 			FacesContext.getCurrentInstance().responseComplete();
+			return;
 		}
     	
     	owner = portfolio.getOwner();
@@ -122,25 +122,23 @@ public class PortfolioViewBean implements Serializable {
         news = portfolioDataAccess.getNewsForPortfolio(portfolio);
         opinions = portfolioDataAccess.getAnalystOpinionsForPortfolio(portfolio);
         
-        for (PortfolioValuePaper pvp : portfolio.getValuePapers()) {
+        /*for (PortfolioValuePaper pvp : portfolio.getValuePapers()) {
         	String code = pvp.getValuePaper().getCode();
         	Money payed = new Money();
         	Money profit = new Money();
         	Double change;
         	
         	payed.setCurrency(portfolio.getCurrentCapital().getCurrency());
-        	payed.setValue(portfolioDataAccess.getTotalPayedForValuePaper(code));
+        	//payed.setValue(portfolioDataAccess.getTotalPayedForPortfolioValuePaper(pvp));
+        	payed.setValue(pvp.getBuyPrice());
         	profit.setCurrency(payed.getCurrency());
         	profit.setValue(new BigDecimal(portfolioDataAccess.getProfit(pvp)));
         	change = portfolioDataAccess.getChange(pvp);
         	
-        	totalPayedMap.put(code, payed);
+        	//totalPayedMap.put(code, payed);
         	profitMap.put(code, profit);
         	changeMap.put(code, change);
-        }
-        
-        boolean valuePapersVisible = portfolio.getVisibility().getValuePaperListVisible();
-		this.valuePapersVisible = checkVisibilitySetting(valuePapersVisible);
+        }*/
     }
     
     public User getUser() {
@@ -208,20 +206,20 @@ public class PortfolioViewBean implements Serializable {
 		return money;
 	}*/
 	
-	public Money getTotalPayed(String code) {
+	/*public Money getTotalPayed(String code) {
 		return totalPayedMap.get(code);
-	}
+	}*/
 	
-	public Money getProfit(String code) {
-		return profitMap.get(code);
+	public Money getProfit(PortfolioValuePaper pvp) {
+		Money profit = new Money();
+		profit.setCurrency(portfolio.getCurrentCapital().getCurrency());
+    	profit.setValue(new BigDecimal(portfolioDataAccess.getProfit(pvp)));
+		
+		return profit;
 	}
 	
 	public Object[] getOrderStates() {
 		return OrderStatus.values();
-	}
-	
-	public void setUserContext(UserContext webUserContext) {
-		this.userContext = webUserContext;
 	}
 	
 	public void setFilteredOrders(List<Order> filteredOrders) {
@@ -233,8 +231,8 @@ public class PortfolioViewBean implements Serializable {
 		return filteredOrders;
 	}
 	
-	public double getChange(String code) {
-		return changeMap.get(code);
+	public double getChange(PortfolioValuePaper pvp) {
+    	return portfolioDataAccess.getChange(pvp);
 	}
 	
 	public boolean isHidden() {
@@ -248,7 +246,7 @@ public class PortfolioViewBean implements Serializable {
 	}
 	
 	public boolean isValuePapersVisible() {
-		return valuePapersVisible;
+		return checkVisibilitySetting(portfolio.getVisibility().getValuePaperListVisible());
 	}
 	
 	public boolean isStatisticsVisible() {

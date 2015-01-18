@@ -81,11 +81,32 @@ public class PortfolioDataAccess {
 		} catch(NoResultException e) {
 			throw new EntityNotFoundException(e);
 		} catch(Exception e) {
+			e.printStackTrace();
 			throw new AppException(e);
 		}
 	}
 	
-	public Portfolio getPortfolioByUsernameAndId(String username, Long id) {
+	public List<Portfolio> getActiveUserPortfolios(User user) {
+		try{
+			List<Portfolio> portfolios = em.createQuery("FROM Portfolio p LEFT JOIN FETCH p.game JOIN FETCH p.owner WHERE p.owner = :user", Portfolio.class).setParameter("user", user).getResultList();
+			List<Portfolio> result = new ArrayList<>();
+			for (Portfolio p : portfolios) {
+				if (p.getGame() == null) {
+					result.add(p);
+					continue;
+				}
+				Calendar now = Calendar.getInstance();
+				if (p.getGame().getValidTo().after(now)) {
+					result.add(p);
+				}
+			}
+			return result;
+		}catch(Exception e){
+			throw new AppException(e);
+		}
+	}
+	
+	/*public Portfolio getPortfolioByUsernameAndId(String username, Long id) {
 		try {
 			return em.createQuery("FROM Portfolio p "
 					+ "LEFT JOIN FETCH p.valuePapers "
@@ -100,7 +121,7 @@ public class PortfolioDataAccess {
 		} catch(Exception e) {
 			throw new AppException(e);
 		}
-	}
+	}*/
 	
 	public Portfolio getPortfolioByNameForUser(String portfolioName, User user){
 		try{
@@ -165,16 +186,16 @@ public class PortfolioDataAccess {
 		return getPortfolioByNameForUser(portfolioName, user) != null;
 	}
 
-	public BigDecimal getTotalPayedForValuePaper(String code) {
+	/*public BigDecimal getTotalPayedForPortfolioValuePaper(PortfolioValuePaper pvp) {
 		
-		List<OrderTransactionEntry> orderTransactions = transactionDataAccess.getOrderTransactionsForValuePaper(code);
+		List<OrderTransactionEntry> orderTransactions = transactionDataAccess.getOrderTransactionsForPortfolioValuePaper(pvp);
 		
 		BigDecimal payed = new BigDecimal(0);
 		for (OrderTransactionEntry ot : orderTransactions) {
 			payed = payed.add(ot.getValue().getValue());
 		}
 		return payed;
-	}
+	}*/
 
 	public Map<String, BigDecimal> getPortfolioChartEntries(Portfolio portfolio) {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
@@ -185,29 +206,27 @@ public class PortfolioDataAccess {
 		Map<String, BigDecimal> pointResult = new HashMap<>();
 		
 		for (TransactionEntry transaction : portfolio.getTransactionEntries()) {
+			if (transaction.getType() == TransactionType.ORDER) {
+				continue;
+			}
+			
 			BigDecimal change;
 			BigDecimal payedForTransaction = transaction.getValue().getValue();
-			
-        	if (transaction.getType() == TransactionType.ORDER) {
-        		continue;
-        	} else {
-	        	String transactionDate = format.format(transaction.getCreated().getTime());
-	        	
-	        	if (transaction.getType() == TransactionType.PAYOUT) {
-	        		payedForTransaction = payedForTransaction.negate();
-	        	}
-	        	if (changeCarryMap.containsKey(transactionDate)) {
-	    			BigDecimal old = changeCarryMap.get(transactionDate);
-	    			change = old.subtract(payedForTransaction);
-	    			
-	    		} else {
-	    			change = payedForTransaction.negate();
-	    		}
-	        	changeCarry = changeCarry.add(change);
-	        	//changeMap.put(transactionDate, change);
-	        	changeCarryMap.put(transactionDate, changeCarry);
-	        	pointResult.put(transactionDate, startCapital.add(changeCarry));
+        	String transactionDate = format.format(transaction.getCreated().getTime());
+        	
+        	if (transaction.getType() == TransactionType.PAYOUT) {
+        		payedForTransaction = payedForTransaction.negate();
         	}
+        	if (changeCarryMap.containsKey(transactionDate)) {
+    			BigDecimal old = changeCarryMap.get(transactionDate);
+    			change = old.subtract(payedForTransaction);
+    		} else {
+    			change = payedForTransaction.negate();
+    		}
+        	changeCarry = changeCarry.add(change);
+        	//changeMap.put(transactionDate, change);
+        	changeCarryMap.put(transactionDate, changeCarry);
+        	pointResult.put(transactionDate, startCapital.add(changeCarry));
         }
 		
 		for (TransactionEntry transaction : portfolio.getTransactionEntries()) {
@@ -302,8 +321,8 @@ public class PortfolioDataAccess {
 	}
 
 	public double getChange(PortfolioValuePaper pvp) {
-		
-		double payed = getTotalPayedForValuePaper(pvp.getValuePaper().getCode()).doubleValue();
+		//double payed = getTotalPayedForPortfolioValuePaper(pvp).doubleValue();
+		double payed = pvp.getBuyPrice().doubleValue();
 		int volume = pvp.getVolume();
 		double latestPrice = priceDataAccess.getLastPriceEntry(pvp.getValuePaper().getCode()).getPrice().doubleValue();
 		
@@ -311,30 +330,12 @@ public class PortfolioDataAccess {
 	}
 	
 	public double getProfit(PortfolioValuePaper pvp) {
-		double payed = getTotalPayedForValuePaper(pvp.getValuePaper().getCode()).doubleValue();
+		//double payed = getTotalPayedForPortfolioValuePaper(pvp).doubleValue();
+		double payed = pvp.getBuyPrice().doubleValue();
 		int volume = pvp.getVolume();
 		double latestPrice = priceDataAccess.getLastPriceEntry(pvp.getValuePaper().getCode()).getPrice().doubleValue();
 		
 		return latestPrice*volume - payed;
 	}
 
-	public List<Portfolio> getActiveUserPortfolios(User user) {
-		try{
-			List<Portfolio> portfolios = em.createQuery("FROM Portfolio p LEFT JOIN FETCH p.game JOIN FETCH p.owner WHERE p.owner = :user", Portfolio.class).setParameter("user", user).getResultList();
-			List<Portfolio> result = new ArrayList<>();
-			for (Portfolio p : portfolios) {
-				if (p.getGame() == null) {
-					result.add(p);
-					continue;
-				}
-				Calendar now = Calendar.getInstance();
-				if (p.getGame().getValidTo().after(now)) {
-					result.add(p);
-				}
-			}
-			return result;
-		}catch(Exception e){
-			throw new AppException(e);
-		}
-	}
 }

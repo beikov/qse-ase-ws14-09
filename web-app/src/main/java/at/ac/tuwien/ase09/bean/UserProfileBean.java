@@ -19,6 +19,7 @@ import at.ac.tuwien.ase09.context.UserContext;
 import at.ac.tuwien.ase09.context.WebUserContext;
 import at.ac.tuwien.ase09.data.PortfolioDataAccess;
 import at.ac.tuwien.ase09.data.UserDataAccess;
+import at.ac.tuwien.ase09.exception.AppException;
 import at.ac.tuwien.ase09.exception.EntityNotFoundException;
 import at.ac.tuwien.ase09.model.Portfolio;
 import at.ac.tuwien.ase09.model.User;
@@ -53,6 +54,12 @@ public class UserProfileBean implements Serializable {
 		} catch(EntityNotFoundException e) {
 			FacesContext.getCurrentInstance().getExternalContext().responseSendError(404, "Der Benutzer '" + username + "' wurde nicht gefunden");
 			FacesContext.getCurrentInstance().responseComplete();
+			return;
+		} catch(AppException e) {
+			e.printStackTrace();
+			FacesContext.getCurrentInstance().getExternalContext().responseSendError(500, "Fehler beim Laden des Benutzerprofils");
+			FacesContext.getCurrentInstance().responseComplete();
+			return;
 		}
 		user = userContext.getUser();
 	

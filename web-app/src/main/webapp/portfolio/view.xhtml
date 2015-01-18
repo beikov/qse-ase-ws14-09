@@ -10,6 +10,14 @@
 	xmlns:pa="http://java.sun.com/jsf/composite/portfolioVisibility"
 	template="/WEB-INF/templates/template.xhtml">
 
+	<ui:define name="head">
+		<style type="text/css">
+			.ui-icon.inline { 
+				display:inline-block;
+			}​
+		</style>
+	</ui:define>
+
 	<ui:define name="metadata">
         <f:metadata>
         	<f:viewParam name="portfolioId" value="#{portfolioViewBean.portfolioId}" required="#{!facesContext.postback}" />

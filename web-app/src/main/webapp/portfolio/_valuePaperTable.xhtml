@@ -8,55 +8,56 @@
 	
 	<strong><h:outputText value="* Beträge exklusive Gebühren, etc." /></strong>
 	
-	<p:dataTable var="association" value="#{portfolioViewBean.valuePaperList}" rows="5"
+	<p:dataTable var="pvp" value="#{portfolioViewBean.valuePaperList}" rows="5"
                          paginator="true"
                          paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                          rowsPerPageTemplate="5,10,15"
                          emptyMessage="Keine Wertpapiere vorhanden">
-                         
-		<c:set var="paper" value="#{association.valuePaper}" />
           	
-	    <p:column headerText="Name" sortBy="#{paper.name}" width="250">
-	        <h:outputText value="#{paper.name}"></h:outputText>
+	    <p:column headerText="Name" sortBy="#{pvp.valuePaper.name}" width="250">
+	        <h:outputText value="#{pvp.valuePaper.name}"></h:outputText>
 	    </p:column>
-	    <p:column headerText="Typ" sortBy="#{paper.type}">
-	        <h:outputText value="#{paper.type}" />
+	    <p:column headerText="Typ" sortBy="#{pvp.valuePaper.type}">
+	        <h:outputText value="#{pvp.valuePaper.type}" />
 	    </p:column>
-	    <p:column headerText="Stück" sortBy="#{association.volume}" width="90">
-	        <h:outputText value="#{association.volume}"></h:outputText>
+	    <p:column headerText="Stück" sortBy="#{pvp.volume}" width="90">
+	        <h:outputText value="#{pvp.volume}"></h:outputText>
 	    </p:column>
 	    <p:column headerText="Einstandswert *">
-	    	<c:set var="payed" value="#{portfolioViewBean.getTotalPayed(paper.code)}" />
-	        <h:outputText value="#{payed}" />
-	    	<!-- <c:set var="payedLong" value="#{portfolioViewBean.getTotalPayed(paper.code).value.longValue()}" />
+	        <h:outputText value="#{pvp.buyPrice}" />
+	    	<!-- <c:set var="payedLong" value="#{portfolioViewBean.getTotalPayed(pvp.valuePaper.code).value.longValue()}" />
 	        <h:outputText value="#{portfolioViewBean.portfolio.currentCapital.currency.symbol}" />
-	        <h:outputText value="#{payedLong/association.volume}" /> -->
+	        <h:outputText value="#{payedLong/pvp.volume}" /> -->
 	    </p:column>
 	    <p:column headerText="Gewinn/Verlust *">
-	        <h:outputText value="#{portfolioViewBean.getProfit(paper.code)}" />
+	        <h:outputText value="#{portfolioViewBean.getProfit(pvp)}" />
 	    </p:column>
 	    <p:column headerText="Performance *">
-	        <ase:valuePaperPerformance code="#{paper.code}" />
+	        <ase:valuePaperPerformance pvp="#{pvp}" />
 	    </p:column>
 	    
-	    <p:column width="140">
+	    <p:column width="180">
 	    	<p:button id="btn-details" icon="ui-icon-search" outcome="/protected/valuepaper/valuepaperview">
-	    		<f:param name="valuePaperCode" value="#{paper.code}" />
+	    		<f:param name="valuePaperCode" value="#{pvp.valuePaper.code}" />
 	    	</p:button>
 	    	<p:tooltip for="btn-details" value="Details" />
 	    	
-	    	<p:button id="btn-buy" icon="ui-icon-cart" outcome="/protected/valuepaper/valuepaperview">
-	    		<f:param name="valuePaperCode" value="#{paper.code}" />
-	    	</p:button>
+	    	<p:link id="btn-buy" outcome="/protected/valuepaper/valuepaperview" style="margin-left: 10px; margin-right: 15px;">
+	    		<span class="ui-icon inline ui-icon-cart" />
+	    		<span class="ui-icon inline ui-icon-plus" />
+	    		<f:param name="valuePaperCode" value="#{pvp.valuePaper.code}" />
+	    	</p:link>
 	    	<p:tooltip for="btn-buy" value="Kaufen" />
 	    	
-	    	<p:button id="btn-sell" icon="ui-icon-cart" outcome="/protected/valuepaper/valuepaperview">
-	    		<f:param name="valuePaperCode" value="#{paper.code}" />
-	    	</p:button>
+	    	<p:link id="btn-sell" outcome="/protected/valuepaper/valuepaperview">
+	    		<span class="ui-icon inline ui-icon-cart" />
+	    		<span class="ui-icon inline ui-icon-minus" />
+	    		<f:param name="valuePaperCode" value="#{pvp.valuePaper.code}" />
+	    	</p:link>
 	    	<p:tooltip for="btn-sell" value="Verkaufen" />
 	    	
-	    	<!-- <a href="/valuepaper/valuepaperview.xhtml?valuePaperCode=#{paper.code}" class="btn btn-default btn-md"><span class="glyphicon glyphicon-search" aria-hidden="true" /></a>
-			<a href="/protected/portfolio/list.xhtml?valuePaperId=#{paper.id}" class="btn btn-default btn-md"><span class="glyphicon glyphicon glyphicon-usd" aria-hidden="true" /></a> -->
+	    	<!-- <a href="/valuepaper/valuepaperview.xhtml?valuePaperCode=#{pvp.valuePaper.code}" class="btn btn-default btn-md"><span class="glyphicon glyphicon-search" aria-hidden="true" /></a>
+			<a href="/protected/portfolio/list.xhtml?valuePaperId=#{pvp.valuePaper.id}" class="btn btn-default btn-md"><span class="glyphicon glyphicon glyphicon-usd" aria-hidden="true" /></a> -->
 		</p:column>
 	</p:dataTable>
 

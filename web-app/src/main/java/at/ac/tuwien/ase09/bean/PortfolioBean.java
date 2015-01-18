@@ -28,11 +28,12 @@ public class PortfolioBean implements Serializable {
 	@Inject
 	private UserContext userContext;
 	
-	public List<Portfolio> getPortfolios() {
+	/*public List<Portfolio> getPortfolios() {
 		return portfolioDataAccess.getPortfolios();
-	}
+	}*/
 
 	public List<Portfolio> getUserPortfolios() {
+		// only for /protected/portfolio/list.xhtml
 		User user = userContext.getUser();
 		return portfolioDataAccess.getPortfoliosByUser(user);
 	}	
