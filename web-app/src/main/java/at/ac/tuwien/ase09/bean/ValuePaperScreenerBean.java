@@ -33,11 +33,20 @@ public class ValuePaperScreenerBean implements Serializable {
 		private List<AttributeFilter> filters=new ArrayList<AttributeFilter>();
 		private List<ValuePaper> searchedValuePapers;
 	
-		
+		private String expression = "(MARKETCAP < 9829 AND ENTERPRISEVALUE > SQRT(REVENUE*3) + 100) OR TOTALCASH < 0";
+
 		@PostConstruct
 		public void init() {
 		}
 		
+		public String getExpression() {
+			return expression;
+		}
+
+		public void setExpression(String expression) {
+			this.expression = expression;
+		}
+
 		public List<AttributeFilter> getFilters() {
 			return filters;
 		}
@@ -115,6 +124,12 @@ public class ValuePaperScreenerBean implements Serializable {
 		{
 			searchedValuePapers=screenerDataAccess.findByFilter(filters, paperType);
 
+		}
+		public void searchAdv(){
+			/**
+			String query=PWatchCompiler.compileJpql(expression);
+			searchedValuePapers=screenerDataAccess.findByExpression(query);
+			*/
 		}
 		
 		
