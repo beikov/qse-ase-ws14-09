@@ -9,7 +9,8 @@
 	<p:dataTable var="news" value="#{portfolioViewBean.newsForValuePapers}" rows="10"
 	             paginator="true"
 	             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-	             rowsPerPageTemplate="5,10,15">
+	             rowsPerPageTemplate="5,10,15"
+	             emptyMessage="Keine Einträge vorhanden">
     
     	<p:column headerText="Datum" sortBy="#{news.created.timeInMillis}" width="150">
 	        <h:outputText value="#{dateUtil.formatCalendar(news.created)}"></h:outputText>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="fill_parent"
+    android:layout_height="fill_parent" android:id="@+id/background">
+    <RelativeLayout android:layout_centerVertical="true"
+        android:paddingLeft="4dp" android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView android:id="@+id/transaction_date_label"
+            android:text="Datum: "
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:textStyle="bold" android:textColor="#777777"
+            android:shadowRadius="0.5"
+            android:shadowDx="0" android:shadowDy="0" android:layout_marginLeft="4dip"></TextView>
+        <TextView android:id="@+id/transaction_date"
+            android:text="Datum Value"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+             android:textColor="#777777"
+             android:shadowRadius="0.5"
+            android:shadowDx="0" android:shadowDy="0" android:layout_toRightOf="@+id/transaction_desc_label"  android:layout_marginLeft="4dip"></TextView>
+
+        <TextView android:id="@+id/transaction_desc_label"
+            android:text="Beschreibung: "
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:textStyle="bold" android:textColor="#777777"
+            android:shadowRadius="0.5"
+            android:shadowDx="0" android:shadowDy="0" android:layout_marginLeft="4dip" android:layout_below="@id/transaction_date_label"></TextView>
+        <TextView android:id="@+id/transaction_desc"
+            android:text="Beschreibung Value"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:textColor="#777777"
+            android:shadowRadius="0.5"
+            android:shadowDx="0" android:shadowDy="0" android:layout_toRightOf="@+id/transaction_desc_label" android:layout_marginLeft="4dip" android:layout_below="@id/transaction_date_label"></TextView>
+
+
+        <TextView android:id="@+id/transaction_type_label"
+            android:text="Typ: "
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:textStyle="bold" android:textColor="#777777"
+            android:shadowRadius="0.5"
+            android:shadowDx="0" android:shadowDy="0" android:layout_marginLeft="4dip" android:layout_below="@id/transaction_desc_label"></TextView>
+        <TextView android:id="@+id/transaction_type"
+            android:text="Typ Value"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:textColor="#777777"
+            android:shadowRadius="0.5"
+            android:shadowDx="0" android:shadowDy="0" android:layout_toRightOf="@+id/transaction_desc_label" android:layout_marginLeft="4dip" android:layout_below="@id/transaction_desc_label"></TextView>
+
+        <TextView android:id="@+id/transaction_value_label"
+            android:text="Wert: "
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:textStyle="bold" android:textColor="#777777"
+            android:shadowRadius="0.5"
+            android:shadowDx="0" android:shadowDy="0" android:layout_marginLeft="4dip" android:layout_below="@id/transaction_type_label"></TextView>
+        <TextView android:id="@+id/transaction_value"
+            android:text="Wert Value"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:textColor="#777777"
+            android:shadowRadius="0.5"
+            android:shadowDx="0" android:shadowDy="0" android:layout_toRightOf="@+id/transaction_desc_label" android:layout_marginLeft="4dip" android:layout_below="@id/transaction_type_label"></TextView>
+
+
+
+    </RelativeLayout>
+
+</RelativeLayout>

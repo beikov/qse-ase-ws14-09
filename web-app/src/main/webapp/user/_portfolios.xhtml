@@ -1,0 +1,40 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+	
+	<div>
+		<p:dataGrid var="portfolio" value="#{userProfileBean.portfolios}" columns="3" layout="grid"
+	        rows="2" paginator="true" id="portfolios" emptyMessage="Keine Portfolios vorhanden"
+	        paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}">
+	 
+	        <f:facet name="header">
+	            Portfolios
+	        </f:facet>
+	 
+	        <p:panel header="#{portfolio.name}" style="text-align:center" rendered="#{portfolio.getVisibility().getPublicVisible() or user.username == portfolio.owner.username}">
+	            <h:panelGrid columns="2" style="width:100%"> 
+	            	<h:outputText value="Aktuelles Kapital:" />
+	                <h:outputText value="#{portfolio.currentCapital}" />
+	            </h:panelGrid>
+	            <p:link title="Details" outcome="/portfolio/view">
+                    <h:outputText styleClass="ui-icon ui-icon-search" style="margin:0 auto;" />
+                    <f:param name="portfolioId" value="#{portfolio.id}" />
+                </p:link>
+	        </p:panel>
+	    </p:dataGrid>
+	
+		
+		<!-- <p:dashboard id="portfolios" model="#{userProfileBean.portfolioDashboard}" rendered="#{userProfileBean.portfolios.size() gt 0}">
+			<c:forEach items="#{userProfileBean.portfolios}" var="portfolio" >
+				<p:panel id="#{portfolio.name}" header="#{portfolio.name}" rendered="#{portfolio.getVisibility().getPublicVisible() or user.username == portfolio.owner.username}">
+		            <h:outputText value="..." />
+		        </p:panel>
+	        </c:forEach>
+		</p:dashboard> -->
+			
+	</div>
+	
+</ui:composition>

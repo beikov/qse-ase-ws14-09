@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="8dp"
+            android:paddingLeft="8dp"
+            android:text="@string/portfolio"/>
+
+        <TextView
+            android:id="@+id/portfolio_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="8dp"
+            android:text="Portfolio1"/>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/costValueLabelTextView"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:paddingLeft="8dp"
+                android:text="@string/costValue"/>
+
+            <TextView
+                android:id="@+id/costValueTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="8dp"
+                android:layout_below="@id/costValueLabelTextView"
+                android:text="150 EUR" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/costValueLabelTextView"
+                android:paddingLeft="8dp"
+                android:text="@string/currentValue"/>
+
+            <TextView
+                android:id="@+id/currentValueTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/costValueLabelTextView"
+                android:layout_below="@id/costValueLabelTextView"
+                android:paddingLeft="8dp"
+                android:text="160 EUR" />
+
+            <TextView
+                android:id="@+id/relativeCurrentValueChangeTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/costValueLabelTextView"
+                android:layout_below="@id/currentValueTextView"
+                android:paddingLeft="8dp"
+                android:textSize="12sp"
+                android:text="+ 5%" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/cashLabelTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="8dp"
+            android:text="@string/remaining_cash" />
+
+        <TextView
+            android:id="@+id/cashTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="8dp"
+            android:text="160 EUR" />
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="8dp"
+            android:text="@string/value_papers"/>
+
+        <FrameLayout
+            android:id="@+id/valuePaperListContainer"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+    <ProgressBar
+        android:id="@android:id/progress"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
+        android:visibility="gone" />
+
+</RelativeLayout>

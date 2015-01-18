@@ -10,6 +10,7 @@ import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -105,6 +106,13 @@ public abstract class Order extends BaseEntity<Long> {
 
 	public void setValuePaper(ValuePaper valuePaper) {
 		this.valuePaper = valuePaper;
+	}
+	
+	@PrePersist
+	private void onPrePersist(){
+		if(created == null){
+			created = Calendar.getInstance();
+		}
 	}
 	
 }

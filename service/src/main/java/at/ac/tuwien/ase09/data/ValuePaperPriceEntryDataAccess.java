@@ -1,8 +1,9 @@
 package at.ac.tuwien.ase09.data;
 
+import java.math.BigDecimal;
+import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Set;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -24,16 +25,15 @@ public class ValuePaperPriceEntryDataAccess {
 	public ValuePaperPriceEntry getLastPriceEntry(String code){
 		List<ValuePaperPriceEntry> priceEntryList = null;
 		try{
-			priceEntryList = em.createQuery("SELECT price FROM ValuePaperPriceEntry price JOIN price.valuePaper vp WHERE vp.code=:code ORDER BY price.created DESC", ValuePaperPriceEntry.class)
+			return em.createQuery("SELECT price FROM ValuePaperPriceEntry price JOIN price.valuePaper vp WHERE vp.code=:code ORDER BY price.created DESC", ValuePaperPriceEntry.class)
 				.setParameter("code", code)
-				.getResultList();
+				.setMaxResults(1)
+				.getSingleResult();
+		}catch(NoResultException e){
+			throw new EntityNotFoundException(e);
 		}catch(Exception e){
 			throw new AppException(e);
 		}
-		if(priceEntryList.isEmpty()){
-			throw new EntityNotFoundException();
-		}
-		return priceEntryList.get(0);
 	}
 	
 	public List<Calendar> getHistoricPriceEntryDates(String code) {
@@ -83,6 +83,53 @@ public class ValuePaperPriceEntryDataAccess {
 					+ "ORDER BY pe.date";
 			return em.createQuery(query, ValuePaperHistoryEntry.class).setParameter("id", id).getResultList();
 		} catch(Exception e) {
+			throw new AppException(e);
+		}
+	}
+	
+	public BigDecimal getDayHighPrice(String code){
+		Calendar dayStart = Calendar.getInstance();
+		dayStart.set(Calendar.MILLISECOND, dayStart.getMinimum(Calendar.MILLISECOND));
+		dayStart.set(Calendar.SECOND, dayStart.getMinimum(Calendar.SECOND));
+		dayStart.set(Calendar.MINUTE, dayStart.getMinimum(Calendar.MINUTE));
+		dayStart.set(Calendar.HOUR, dayStart.getMinimum(Calendar.HOUR));
+		try{
+			return em.createQuery("SELECT MAX(pe.price) FROM ValuePaperPriceEntry pe JOIN pe.valuePaper vp WHERE vp.code = :code AND pe.created >= :dayStart", BigDecimal.class)
+				.setParameter("dayStart", dayStart)
+				.setParameter("code", code)
+				.getSingleResult();
+		}catch(NoResultException e){
+			throw new EntityNotFoundException(e);
+		}catch(Exception e){
+			throw new AppException(e);
+		}
+	}
+	
+	public BigDecimal getDayLowPrice(String code){
+		Calendar dayStart = Calendar.getInstance();
+		dayStart.set(Calendar.MILLISECOND, dayStart.getMinimum(Calendar.MILLISECOND));
+		dayStart.set(Calendar.SECOND, dayStart.getMinimum(Calendar.SECOND));
+		dayStart.set(Calendar.MINUTE, dayStart.getMinimum(Calendar.MINUTE));
+		dayStart.set(Calendar.HOUR, dayStart.getMinimum(Calendar.HOUR));
+		try{
+			return em.createQuery("SELECT MIN(pe.price) FROM ValuePaperPriceEntry pe JOIN pe.valuePaper vp WHERE vp.code = :code AND pe.created >= :dayStart", BigDecimal.class)
+				.setParameter("dayStart", dayStart)
+				.setParameter("code", code)
+				.getSingleResult();
+		}catch(Exception e){
+			throw new AppException(e);
+		}
+	}
+	
+	public ValuePaperHistoryEntry getHistoricPriceEntry(String code, Calendar date){
+		try{
+			return em.createQuery("SELECT pe FROM ValuePaperHistoryEntry pe JOIN pe.valuePaper vp WHERE vp.code = :code AND pe.date = :date", ValuePaperHistoryEntry.class)
+				.setParameter("date", date)
+				.setParameter("code", code)
+				.getSingleResult();
+		}catch(NoResultException e){
+			throw new EntityNotFoundException(e);
+		}catch(Exception e){
 			throw new AppException(e);
 		}
 	}

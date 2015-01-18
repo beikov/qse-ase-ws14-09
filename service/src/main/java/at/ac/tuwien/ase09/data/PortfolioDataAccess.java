@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -24,6 +25,7 @@ import at.ac.tuwien.ase09.model.NewsItem;
 import at.ac.tuwien.ase09.model.Portfolio;
 import at.ac.tuwien.ase09.model.PortfolioValuePaper;
 import at.ac.tuwien.ase09.model.Stock;
+import at.ac.tuwien.ase09.model.StockMarketGame;
 import at.ac.tuwien.ase09.model.User;
 import at.ac.tuwien.ase09.model.ValuePaper;
 import at.ac.tuwien.ase09.model.ValuePaperHistoryEntry;
@@ -58,9 +60,38 @@ public class PortfolioDataAccess {
 		}
 	}
 	
-	public List<Portfolio> getPortfoliosByUser(User user) {
+	public List<Portfolio> getPortfoliosByUser(long userId) {
 		try{
-			return em.createQuery("FROM Portfolio p WHERE p.owner = :user", Portfolio.class).setParameter("user", user).getResultList();
+			User user = em.getReference(User.class, userId);
+			return em.createQuery("FROM Portfolio p LEFT JOIN FETCH p.valuePapers WHERE p.owner = :user", Portfolio.class).setParameter("user", user).getResultList();
+		}catch(Exception e){
+			throw new AppException(e);
+		}
+	}
+	
+	public List<Portfolio> getPortfoliosByStockMarketGame(StockMarketGame stockMarketGameId) {
+		try{
+			return em.createQuery("FROM Portfolio p JOIN p.game smg WHERE smg.id = :smg", Portfolio.class).setParameter("smg", stockMarketGameId).getResultList();
+		}catch(Exception e){
+			throw new AppException(e);
+		}
+	}
+	
+	public BigDecimal getCostValueForPortfolio(long portfolioId) {
+		try{
+			Portfolio portfolio = em.getReference(Portfolio.class, portfolioId);
+			return em.createQuery("SELECT SUM(pvp.buyPrice * pvp.volume) FROM PortfolioValuePaper pvp WHERE pvp.portfolio=:portfolio", BigDecimal.class).setParameter("portfolio", portfolio).getSingleResult();
+		}catch(NoResultException e){
+			throw new EntityNotFoundException(e);
+		}catch(Exception e){
+			throw new AppException(e);
+		}
+	}
+	
+	public BigDecimal getCurrentValueForPortfolio(long portfolioId) {
+		try{
+			Portfolio portfolio = em.getReference(Portfolio.class, portfolioId);
+			return em.createQuery("SELECT SUM(pe.price * pvp.volume) FROM PortfolioValuePaper pvp, ValuePaperPriceEntry pe WHERE pvp.valuePaper = pe.valuePaper AND pvp.portfolio = :portfolio AND pe.created >= ALL(SELECT pe2.created FROM ValuePaperPriceEntry pe2 WHERE pe2.valuePaper = pe.valuePaper)", BigDecimal.class).setParameter("portfolio", portfolio).getSingleResult();
 		}catch(Exception e){
 			throw new AppException(e);
 		}
@@ -83,6 +114,23 @@ public class PortfolioDataAccess {
 		}
 	}
 	
+	public Portfolio getPortfolioByUsernameAndId(String username, Long id) {
+		try {
+			return em.createQuery("FROM Portfolio p "
+					+ "LEFT JOIN FETCH p.valuePapers "
+					+ "LEFT JOIN FETCH p.transactionEntries "
+					+ "LEFT JOIN FETCH p.orders o "
+					+ "LEFT JOIN FETCH o.valuePaper "
+					+ "JOIN FETCH p.owner "
+					+ "LEFT JOIN FETCH p.followers "
+					+ "WHERE p.id = :id AND p.owner.username = :username", Portfolio.class).setParameter("username", username).setParameter("id", id).getSingleResult();
+		} catch(NoResultException e) {
+			throw new EntityNotFoundException(e);
+		} catch(Exception e) {
+			throw new AppException(e);
+		}
+	}
+	
 	public Portfolio getPortfolioByNameForUser(String portfolioName, User user){
 		try{
 			List<Portfolio> results;
@@ -96,6 +144,21 @@ public class PortfolioDataAccess {
 			throw new AppException(e);
 		}
 	}
+	
+	public Portfolio getByGameAndUser(StockMarketGame game, User user) {
+		try {
+			return em.createQuery("FROM Portfolio p "
+					+ "LEFT JOIN FETCH p.game "
+					+ "JOIN FETCH p.owner "
+					+ "WHERE p.game.id = :gameId AND p.owner.id = :ownerId", Portfolio.class).setParameter("gameId", game.getId()).setParameter("ownerId", user.getId()).getSingleResult();
+		} catch(NoResultException e) {
+			throw new EntityNotFoundException(e);
+		} catch(Exception e) {
+			throw new AppException(e);
+		}
+	}
+	
+	
 	
 	public Map<ValuePaperType, Integer> getValuePaperTypeCountMap(Portfolio portfolio) {
 		Map<ValuePaperType, Integer> valuePaperTypeCounterMap = new HashMap<ValuePaperType, Integer>();
@@ -282,5 +345,25 @@ public class PortfolioDataAccess {
 		double latestPrice = priceDataAccess.getLastPriceEntry(pvp.getValuePaper().getCode()).getPrice().doubleValue();
 		
 		return latestPrice*volume - payed;
+	}
+
+	public List<Portfolio> getActiveUserPortfolios(User user) {
+		try{
+			List<Portfolio> portfolios = em.createQuery("FROM Portfolio p LEFT JOIN FETCH p.game JOIN FETCH p.owner WHERE p.owner = :user", Portfolio.class).setParameter("user", user).getResultList();
+			List<Portfolio> result = new ArrayList<>();
+			for (Portfolio p : portfolios) {
+				if (p.getGame() == null) {
+					result.add(p);
+					continue;
+				}
+				Calendar now = Calendar.getInstance();
+				if (p.getGame().getValidTo().after(now)) {
+					result.add(p);
+				}
+			}
+			return result;
+		}catch(Exception e){
+			throw new AppException(e);
+		}
 	}
 }

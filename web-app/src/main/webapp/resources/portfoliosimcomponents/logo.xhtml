@@ -1,0 +1,24 @@
+<ui:component xmlns="http://www.w3.org/1999/xhtml"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:cc="http://java.sun.com/jsf/composite"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:c="http://java.sun.com/jsp/jstl/core"
+		xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+		xmlns:p="http://primefaces.org/ui">
+		<cc:interface>
+			<cc:attribute name="logoEntity" required="true" />
+			<cc:attribute name="maxWidth" />
+			<cc:attribute name="maxHeight" />
+			<cc:attribute name="width" />
+			<cc:attribute name="height" />
+		</cc:interface>
+		<cc:implementation>
+			<p:graphicImage library="images" name="Default_Profile_Picture.png" style="width: #{cc.attrs.width}; max-width: #{cc.attrs.maxWidth}; height: #{cc.attrs.height}; maxHeight: #{cc.attrs.maxHeight}" rendered="#{cc.attrs.logoEntity == null or cc.attrs.logoEntity.logo == null}" />
+			
+			<p:graphicImage value="#{logoBean.logo}" style="width: #{cc.attrs.width}; max-width: #{cc.attrs.maxWidth}; height: #{cc.attrs.height}; maxHeight: #{cc.attrs.maxHeight}" rendered="#{cc.attrs.logoEntity != null and cc.attrs.logoEntity.logo != null}">
+				<f:param name="entityClass" value="#{cc.attrs.logoEntity.fullyQualifiedClassName}" />
+				<f:param name="entityId" value="#{cc.attrs.logoEntity.id}" />
+			</p:graphicImage>
+		</cc:implementation>
+</ui:component>

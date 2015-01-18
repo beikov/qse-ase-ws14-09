@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="8dp">
+
+    <TextView
+        android:id="@+id/vpName"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:lines="1"
+        android:text="Raiffeisen Bank International" />
+
+    <TextView
+        android:id="@+id/vpCode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/vpName"
+        android:layout_below="@id/vpName"
+        android:textSize="12sp"
+        android:text="Code"/>
+
+    <TextView
+        android:id="@+id/vpLastPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/vpName"
+        android:layout_toRightOf="@id/vpName"
+        android:layout_marginLeft="5dp"
+        android:text="13,60 EUR"/>
+    
+    <TextView
+        android:id="@+id/vpAbsolutePriceChange"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/vpName"
+        android:layout_toRightOf="@id/vpLastPrice"
+        android:layout_marginLeft="20dp"
+        android:text="+ 3,60 EUR"/>
+
+    <TextView
+        android:id="@+id/vpRelativePriceChange"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/vpName"
+        android:layout_toRightOf="@id/vpLastPrice"
+        android:layout_marginLeft="20dp"
+        android:textSize="12sp"
+        android:text="+ 4,5%" />
+</RelativeLayout>

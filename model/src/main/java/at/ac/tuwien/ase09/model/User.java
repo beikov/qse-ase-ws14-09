@@ -1,5 +1,6 @@
 package at.ac.tuwien.ase09.model;
 
+import java.sql.Blob;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -8,18 +9,21 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import at.ac.tuwien.ase09.naming.CustomNamingStrategy;
 
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(name = "unique_username", columnNames = "c_username"))
-public class User extends BaseEntity<Long> {
+public class User extends BaseEntity<Long> implements Logo {
 
 	private static final long serialVersionUID = 1L;
 	
 	private String username;
+	private Blob logo;
 	// email? country?
+	
 	private Set<User> followers = new HashSet<>();
 
 	public User() {
@@ -37,6 +41,14 @@ public class User extends BaseEntity<Long> {
 	public void setUsername(String username) {
 		this.username = username;
 	}
+	
+	public Blob getLogo() {
+		return logo;
+	}
+
+	public void setLogo(Blob logo) {
+		this.logo = logo;
+	}
 
 	@ManyToMany
 	@JoinTable(name="user_user", 
@@ -50,5 +62,15 @@ public class User extends BaseEntity<Long> {
 	public void setFollowers(Set<User> followers) {
 		this.followers = followers;
 	}
-	
+
+	@Override
+	@Transient
+	public String getFullyQualifiedClassName() {
+		return "at.ac.tuwien.ase09.model.User";
+	}
+
+	@Override
+	public void setFullyQualifiedClassName(String unused) {
+	}
+
 }

@@ -7,10 +7,13 @@ import java.util.Calendar;
 import java.util.List;
 
 import at.ac.tuwien.ase09.data.AnalystOpinionDataAccess;
-import at.ac.tuwien.ase09.test.AbstractContainerTest;
+import at.ac.tuwien.ase09.data.DividendHistoryEntryDataAccess;
+import at.ac.tuwien.ase09.test.AbstractServiceTest;
 
 import javax.inject.Inject;
 
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.shrinkwrap.api.Archive;
 import org.junit.Test;
 
 import at.ac.tuwien.ase09.model.AnalystOpinion;
@@ -18,13 +21,18 @@ import at.ac.tuwien.ase09.model.Stock;
 import at.ac.tuwien.ase09.test.DatabaseAware;
 
 @DatabaseAware
-public class AnalystOpinionDataAccessTest extends AbstractContainerTest<AnalystOpinionDataAccessTest>{
+public class AnalystOpinionDataAccessTest extends AbstractServiceTest<AnalystOpinionDataAccessTest>{
 	private static final long serialVersionUID = 1L;
 
 	@Inject
 	private AnalystOpinionDataAccess analystOpinionDataAccess;
 
-
+	@Deployment
+	public static Archive<?> createDeployment() {
+		return createServiceTestBaseDeployment()
+				.addClasses(AnalystOpinionDataAccess.class);
+	}
+	
 	@Test
 	public void testGetAnalystOpinionsByValuePaperCode_nonExistentAnalystOpinions(){
 		// Given

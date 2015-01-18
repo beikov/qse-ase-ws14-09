@@ -19,12 +19,13 @@
 	<dependencies>
 
 		<dependency>
-			<groupId>org.apache.openejb</groupId>
+			<groupId>javax</groupId>
 			<artifactId>javaee-api</artifactId>
 		</dependency>
+		
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>model</artifactId>
+			<artifactId>service-common</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
@@ -42,7 +43,7 @@
 
 		<dependency>
 			<groupId>com.blazebit</groupId>
-			<artifactId>blaze-ee-utils</artifactId>
+			<artifactId>blaze-common-utils</artifactId>
 		</dependency>
 		
 		<dependency>
@@ -54,35 +55,35 @@
 		<!-- Test -->
 
 		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>testsuite-common</artifactId>
+		</dependency>
+
+		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 		</dependency>
+
 		<dependency>
-			<groupId>org.apache.deltaspike.cdictrl</groupId>
-			<artifactId>deltaspike-cdictrl-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.deltaspike.cdictrl</groupId>
-			<artifactId>deltaspike-cdictrl-openejb</artifactId>
+			<groupId>org.jboss.arquillian.extension</groupId>
+			<artifactId>arquillian-jacoco</artifactId>
 		</dependency>
 
 		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
+			<groupId>org.jacoco</groupId>
+			<artifactId>org.jacoco.core</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>commons-fileupload</groupId>
+			<artifactId>commons-fileupload</artifactId>
+			<version>1.3.1</version>
 		</dependency>
 
 		<dependency>
-			<groupId>org.apache.openejb</groupId>
-			<artifactId>openejb-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-entitymanager</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>com.googlecode.catch-exception</groupId>
-			<artifactId>catch-exception</artifactId>
+		    <groupId>commons-io</groupId>
+		    <artifactId>commons-io</artifactId>
+		    <version>2.4</version>
 		</dependency>
 
 	</dependencies>

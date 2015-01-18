@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Portfolio Simulation</string>
+    <string name="menu_portfolio_view">Portfolioansicht</string>
+    <string name="menu_valuepaper_search">Wertpapiersuche</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_logout">Logout</string>
+    <string name="action_portfolio_context">Portfolio wechseln</string>
+    <string name="tab_performance">Performance</string>
+    <string name="tab_transactions">Transaktionen</string>
+    <string name="tab_valuepapers">Wertpapiere</string>
+    <string name="tab_orders">Order</string>
+    <string name="filter_hint">Name, ISIN, Symbol</string>
+    <string name="stock">Aktie</string>
+    <string name="fund">Fond</string>
+    <string name="stockbond">Aktienanleihe</string>
+    <string name="valuePaperTypeLabel">Wertpapiertyp:</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="value_paper">Wertpapier</string>
+    <string name="valid_to">Gültig bis</string>
+    <string name="valid_from">Gültig von</string>
+    <string name="market_order">Market Order</string>
+    <string name="limit_order">Limit Order</string>
+    <string name="volume">Stück</string>
+    <string name="estimated_order_value">Geschätzter Orderwert</string>
+    <string name="order_fee">Ordergebühr</string>
+    <string name="confirm_order">Order bestätigen</string>
+    <string name="order_type">Ordertyp</string>
+    <string name="sell">Verkauf</string>
+    <string name="buy">Kauf</string>
+    <string name="order_creation">Ordererstellung</string>
+    <string name="create_order_success_message">%1$s-Order für %2$s erstellt</string>
+    <string name="limit">Limit</string>
+    <string name="stopLimit">Stop Limit</string>
+    <string name="required_message">%1$s ist erforderlich</string>
+    <string name="portfolio">Portfolio</string>
+    <string name="value_papers">Wertpapiere</string>
+    <string name="costValue">Einstandswert</string>
+    <string name="currentValue">Aktueller Wert</string>
+    <string name="remaining_cash">Cash verbleibend</string>
+    <string name="price">Kurs</string>
+
+</resources>

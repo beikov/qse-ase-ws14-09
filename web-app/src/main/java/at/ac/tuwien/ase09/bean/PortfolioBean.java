@@ -1,12 +1,15 @@
 package at.ac.tuwien.ase09.bean;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import at.ac.tuwien.ase09.context.UserContext;
+import at.ac.tuwien.ase09.context.WebUserContext;
 import at.ac.tuwien.ase09.data.PortfolioDataAccess;
 import at.ac.tuwien.ase09.model.Portfolio;
 import at.ac.tuwien.ase09.model.User;
@@ -20,12 +23,24 @@ public class PortfolioBean implements Serializable {
 	@Inject
 	private PortfolioDataAccess portfolioDataAccess;
 	
+	private List<Portfolio> portfolios;
+
+	@Inject
+	private UserContext userContext;
+	
 	public List<Portfolio> getPortfolios() {
 		return portfolioDataAccess.getPortfolios();
 	}
 
-	public List<Portfolio> getUserPortfolios(User user) {
-		return portfolioDataAccess.getPortfoliosByUser(user);
+	public List<Portfolio> getUserPortfolios() {
+		User user = userContext.getUser();
+		return portfolioDataAccess.getPortfoliosByUser(user.getId());
 	}	
 	
+	public List<Portfolio> getActiveUserPortfolios(User user) {
+		if (portfolios == null) {
+			portfolios = portfolioDataAccess.getActiveUserPortfolios(user);
+		}
+		return portfolios;
+	}
 }

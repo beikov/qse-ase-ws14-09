@@ -1,0 +1,42 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ase="http://java.sun.com/jsf/composite/portfoliosimcomponents">
+	
+		<p:dataList value="#{userProfileBean.followers}" var="follower" type="unordered" itemType="none" 
+			paginator="true" rows="10" styleClass="paginated"
+			emptyMessage="Keine Benutzer folgen diesem Benutzer."
+			itemStyleClass="media">
+			
+			<f:facet name="header">
+	            Followers <span class="badge">#{userProfileBean.followers.size()}</span>
+	        </f:facet>
+			
+			<ase:userLogoLink user="#{follower}" />
+	    </p:dataList>
+	
+		
+		<!-- <c:forEach items="#{userProfileBean.followers}" var="follower">
+ 			<c:choose>
+ 				<c:when test="#{follower.username != user.username}">
+ 					<c:set var="followerName" value="#{follower.username}" />
+ 				</c:when>
+ 				<c:otherwise>
+ 					<c:set var="followerName" value="Ich" />
+ 				</c:otherwise>
+ 			</c:choose>
+ 			
+	 		<div style="display: inline-block; margin-right: 20px;">
+	 			<h:link outcome="/user/profile">
+	 				<ase:logo logoEntity="#{follower}" />
+	 				<h:outputText value="#{followerName}" style="margin-left: 5px;" />
+					<f:param name="user" value="#{follower.username}"/>
+				</h:link>
+	 		</div>
+	 	</c:forEach> -->
+	
+	
+</ui:composition>

@@ -1,19 +1,21 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:p="http://primefaces.org/ui">
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ase="http://java.sun.com/jsf/composite/portfoliosimcomponents">
 	
-	<c:choose>
-		<c:when test="#{ portfolioViewBean.followerList.size() lt 9 }">
-			<p:dataList value="#{portfolioViewBean.getFollowerList()}" var="follower" type="unordered" itemType="none" emptyMessage="Keine Follower">
-        		<h:outputText value="#{follower.username}" />
-    		</p:dataList>
-		</c:when>
-		<c:otherwise>
-			<p:dataList value="#{portfolioViewBean.getFollowerList()}" var="follower" type="unordered" itemType="none" paginator="true" rows="8" styleClass="paginated">
-        		<h:outputText value="#{follower.username}" />
-    		</p:dataList>
-		</c:otherwise>
-	</c:choose>
+	<p:dataList value="#{portfolioViewBean.getFollowerList()}" var="follower" type="unordered" itemType="none" 
+		paginator="true" rows="5" styleClass="paginated"
+		emptyMessage="Keine Benutzer folgen dieses Portfolio."
+		itemStyleClass="media">
+		
+		<f:facet name="header">
+            Followers <span class="badge">#{portfolioViewBean.getFollowerList().size()}</span>
+        </f:facet>
+		
+		<ase:userLogoLink user="#{follower}" />
+    </p:dataList>
+	
 </ui:composition>

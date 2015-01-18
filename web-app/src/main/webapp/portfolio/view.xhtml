@@ -10,151 +10,20 @@
 	xmlns:pa="http://java.sun.com/jsf/composite/portfolioVisibility"
 	template="/WEB-INF/templates/template.xhtml">
 
-	<!-- content -->
-	<ui:define name="body">
-	
-		<f:metadata>
-			<f:viewParam name="portfolioId" value="#{portfolioViewBean.portfolioId}" required="#{!facesContext.postback}" />
+	<ui:define name="metadata">
+        <f:metadata>
+        	<f:viewParam name="portfolioId" value="#{portfolioViewBean.portfolioId}" required="#{!facesContext.postback}" />
+			<f:event type="postValidate" listener="#{portfolioViewBean.validateParam}" />
 		    <f:viewAction action="#{portfolioViewBean.init}" />
 		</f:metadata>
+    </ui:define>
+	
+	<ui:define name="body">
 		
+		<c:choose>
+			<c:when test="#{portfolioViewBean.isHidden()}"><ui:include src="_hidden.xhtml" /></c:when>
+			<c:otherwise><ui:include src="_portfolio.xhtml" /></c:otherwise>
+		</c:choose>
 		
-		
-		
-		<h:form id="portfolioViewForm">
-			<h:messages errorStyle="color:red" />
-			<p:growl id="growl" life="3000"/>
-		
-			<p:dialog id="visibilityDialog" header="Sichtbarkeitseinstellungen" widgetVar="visibilityDialog" modal="true" >
-			    <pa:portfolioVisibility visibilitySettings="#{portfolioViewBean.portfolio.visibility}" />
-			    <p:commandButton value="Speichern" actionListener="#{portfolioViewBean.changeVisibility()}" process=":portfolioViewForm:visibilityDialog"  update=":portfolioViewForm:growl" icon="ui-icon-disk" oncomplete="PF('visibilityDialog').hide();"></p:commandButton>
-			</p:dialog>
-			
-			
-			<p:dialog header="News Info" widgetVar="newsDialog" modal="false" id="newsDialog"
-				showEffect="blind" hideEffect="blind" resizable="false" width="50%"
-				height="400px">
-		
-				<p:outputPanel id="newsDetail">
-					<h:panelGrid columns="1" border="0" style="text-align: justify">
-						<h:outputText
-							value="#{valuePaperViewBean.selectedNewsItem.created.time}"
-							style="font-size:10px">
-							<f:convertDateTime pattern="dd.MM.yyyy" timeZone="CET" />
-						</h:outputText>
-						<br />
-						<h:outputText value="#{valuePaperViewBean.selectedNewsItem.title}"
-							style="font-weight:bold" />
-						<br />
-						<h:outputText value="#{valuePaperViewBean.selectedNewsItem.text}" />
-						<br />
-						<h:outputText
-							value="Quelle: #{valuePaperViewBean.selectedNewsItem.source}"
-							style="font-size:10px" />
-					</h:panelGrid>
-				</p:outputPanel>
-			</p:dialog>
-			
-			
-			<p:dialog header="Analystenmeinung"
-				widgetVar="analystOpinionDialog" id="analystOpinionDialog" modal="false"
-				showEffect="blind" hideEffect="blind" resizable="false"
-				width="50%" height="400px">
-				<p:outputPanel id="analystOpinionDetail" style="text-align:left">
-					<h:panelGrid columns="1" border="0" style="text-align: justify">
-						<h:outputText
-							value="#{valuePaperViewBean.selectedAnalystOpinion.created.time}"
-							style="font-size:10px">
-							<f:convertDateTime pattern="dd.MM.yyyy" timeZone="CET"/>
-						</h:outputText>
-						<br />
-						<h:outputText
-							value="Empfehlung: #{valuePaperViewBean.selectedAnalystOpinion.recommendation}"
-							style="font-weight:bold" />
-						<br />
-						<h:outputText
-							value="Kursziel: #{valuePaperViewBean.selectedAnalystOpinion.targetPrice.value} #{valuePaperViewBean.selectedAnalystOpinion.targetPrice.currency}"
-							style="font-weight:bold" />
-						<br />
-						<h:outputText
-							value="#{valuePaperViewBean.selectedAnalystOpinion.text}" />
-						<br />
-						<h:outputText
-							value="Quelle: #{valuePaperViewBean.selectedAnalystOpinion.source}"
-							style="font-size:10px" />
-					</h:panelGrid>
-				</p:outputPanel>
-			</p:dialog>
-			
-			
-		
-			<div class="row" style="margin-bottom: 15px;">
-				<div class="col-md-8">
-					<p:panel id="stats">
-						<f:facet name="header">
-							<h:outputText value="Übersicht" />
-							<p:commandButton type="button" onclick="PF('visibilityDialog').show();" icon="ui-icon-gear" style="float:right;"/>
-						</f:facet>
-						
-						
-						<ui:include src="_stats.xhtml" />
-					</p:panel>
-				</div>
-  				<div class="col-md-4">
-  					<p:panel id="follower" header="Follower">
-						<ui:include src="_followerList.xhtml" />
-					</p:panel>
-  				</div>
-			</div>
-			
-			<div class="row" style="margin-bottom: 15px;">
-				<div class="col-md-12">
-					<p:tabView>
-						<!-- <p:tab rendered="#{portfolioViewBean.isVisible('valuePapers')}"> -->
-						<p:tab>
-							<f:facet name="title">
-				               	<h:outputText value="Einzeltitel"/>
-				               	<!-- <p:selectBooleanCheckbox value="#{portfolioViewBean.portfolio.visibility.valuePaperListVisible}">
-				            		<p:ajax update=":portfolioViewForm:msg" listener="#{portfolioViewBean.changeVisibility()}" />
-				        		</p:selectBooleanCheckbox> -->
-				            </f:facet>
-				            <ui:include src="_valuePaperTable.xhtml" />
-				        </p:tab>
-				        <p:tab title="Charts">
-				        		<div class="row">
-				        			<div class="col-md-6">
-				        				<p:chart type="pie" model="#{portfolioViewBean.valuePaperTypePie}" rendered="#{portfolioViewBean.valuePaperTypePie != null}" />
-				        			</div>
-				        			<div class="col-md-6">
-				        				<p:chart type="pie" model="#{portfolioViewBean.valuePaperCountryPie}" rendered="#{portfolioViewBean.valuePaperCountryPie != null}" />
-				        			</div>
-				        		</div>
-				        </p:tab>
-				        <p:tab title="Orders">
-				        	<ui:include src="_orderTable.xhtml" />
-				        </p:tab>
-				        <p:tab title="Transaktionen">
-				            <ui:include src="_transactionTable.xhtml" />
-				        </p:tab>
-				        
-				        <p:tab title="News">
-				            <ui:include src="_news.xhtml" />
-				        </p:tab>
-				        
-				        <p:tab title="Meinungen">
-				            <ui:include src="_analystOpinions.xhtml" />
-				        </p:tab>
-			    	</p:tabView>
-				</div>
-			</div>
-			
-			<div class="row">
-				<div class="col-md-12">
-					<p:chart type="line" model="#{portfolioViewBean.portfolioChart}" style="height:400px;"/>
-				</div>
-			</div>
-			
-		</h:form>
-		
-	</ui:define><!-- content -->
+	</ui:define>
 </ui:composition>
