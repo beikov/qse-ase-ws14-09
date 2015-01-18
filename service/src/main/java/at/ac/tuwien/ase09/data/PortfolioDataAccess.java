@@ -60,9 +60,30 @@ public class PortfolioDataAccess {
 		}
 	}
 	
-	public List<Portfolio> getPortfoliosByUser(User user) {
+	public List<Portfolio> getPortfoliosByUser(long userId) {
 		try{
-			return em.createQuery("FROM Portfolio p WHERE p.owner = :user", Portfolio.class).setParameter("user", user).getResultList();
+			User user = em.getReference(User.class, userId);
+			return em.createQuery("FROM Portfolio p LEFT JOIN FETCH p.valuePapers WHERE p.owner = :user", Portfolio.class).setParameter("user", user).getResultList();
+		}catch(Exception e){
+			throw new AppException(e);
+		}
+	}
+	
+	public BigDecimal getCostValueForPortfolio(long portfolioId) {
+		try{
+			Portfolio portfolio = em.getReference(Portfolio.class, portfolioId);
+			return em.createQuery("SELECT SUM(pvp.buyPrice * pvp.volume) FROM PortfolioValuePaper pvp WHERE pvp.portfolio=:portfolio", BigDecimal.class).setParameter("portfolio", portfolio).getSingleResult();
+		}catch(NoResultException e){
+			throw new EntityNotFoundException(e);
+		}catch(Exception e){
+			throw new AppException(e);
+		}
+	}
+	
+	public BigDecimal getCurrentValueForPortfolio(long portfolioId) {
+		try{
+			Portfolio portfolio = em.getReference(Portfolio.class, portfolioId);
+			return em.createQuery("SELECT SUM(pe.price * pvp.volume) FROM PortfolioValuePaper pvp, ValuePaperPriceEntry pe WHERE pvp.valuePaper = pe.valuePaper AND pvp.portfolio = :portfolio AND pe.created >= ALL(SELECT pe2.created FROM ValuePaperPriceEntry pe2 WHERE pe2.valuePaper = pe.valuePaper)", BigDecimal.class).setParameter("portfolio", portfolio).getSingleResult();
 		}catch(Exception e){
 			throw new AppException(e);
 		}

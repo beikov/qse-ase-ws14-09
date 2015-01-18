@@ -1,5 +1,6 @@
 package at.ac.tuwien.ase09.test.data;
 
+import static at.ac.tuwien.ase09.test.Assert.verifyException;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -10,11 +11,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Currency;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -30,6 +29,7 @@ import at.ac.tuwien.ase09.data.NewsItemDataAccess;
 import at.ac.tuwien.ase09.data.PortfolioDataAccess;
 import at.ac.tuwien.ase09.data.TransactionEntryDataAccess;
 import at.ac.tuwien.ase09.data.ValuePaperPriceEntryDataAccess;
+import at.ac.tuwien.ase09.exception.EntityNotFoundException;
 import at.ac.tuwien.ase09.model.AnalystOpinion;
 import at.ac.tuwien.ase09.model.AnalystRecommendation;
 import at.ac.tuwien.ase09.model.Fund;
@@ -39,7 +39,6 @@ import at.ac.tuwien.ase09.model.Portfolio;
 import at.ac.tuwien.ase09.model.PortfolioSetting;
 import at.ac.tuwien.ase09.model.PortfolioValuePaper;
 import at.ac.tuwien.ase09.model.Stock;
-import at.ac.tuwien.ase09.model.StockBond;
 import at.ac.tuwien.ase09.model.User;
 import at.ac.tuwien.ase09.model.ValuePaper;
 import at.ac.tuwien.ase09.model.ValuePaperHistoryEntry;
@@ -562,4 +561,88 @@ public class PortfolioDataAccessTest extends AbstractServiceTest<PortfolioDataAc
 		assertEquals(null, portfolioDataAccess.getPortfolioByNameForUser(null, null));
 	}	
 	
+	@Test
+	public void testGetCurrentValueForPortfolio_nonExistent(){
+		verifyException(portfolioDataAccess, EntityNotFoundException.class).getCostValueForPortfolio(3);
+	}
+	
+	@Test
+	public void testGetCurrentValueForPortfolio(){
+		// Given
+		// create value papers
+		final BigDecimal dummyBuyPrice = new BigDecimal("0");
+		final BigDecimal expectedCurrentValue = new BigDecimal("625");
+		
+		Stock s1 = new Stock();
+		s1.setCode("1");
+		Stock s2 = new Stock();
+		s2.setCode("2");
+		Fund f1 = new Fund();
+		f1.setCode("3");
+		
+		// create prices for value papers
+		ValuePaperPriceEntry s1P1 = new ValuePaperPriceEntry();
+		s1P1.setValuePaper(s1);
+		s1P1.setPrice(new BigDecimal("20"));
+		ValuePaperPriceEntry s1P2 = new ValuePaperPriceEntry();
+		s1P2.setValuePaper(s1);
+		s1P2.setPrice(new BigDecimal("21"));
+		
+		ValuePaperPriceEntry s2P1 = new ValuePaperPriceEntry();
+		s2P1.setValuePaper(s2);
+		s2P1.setPrice(new BigDecimal("19"));
+		ValuePaperPriceEntry s2P2 = new ValuePaperPriceEntry();
+		s2P2.setValuePaper(s2);
+		s2P2.setPrice(new BigDecimal("18"));
+
+		ValuePaperPriceEntry f1P1 = new ValuePaperPriceEntry();
+		f1P1.setValuePaper(f1);
+		f1P1.setPrice(new BigDecimal("23"));
+		
+		// create portfolio
+		User u = new User();
+		Portfolio p = new Portfolio();
+		p.setOwner(u);
+		
+		// add value papers to portfolio
+		PortfolioValuePaper pvp1 = new PortfolioValuePaper();
+		pvp1.setPortfolio(p);
+		pvp1.setValuePaper(s1);
+		pvp1.setVolume(10);
+		pvp1.setBuyPrice(dummyBuyPrice);
+		
+		PortfolioValuePaper pvp2 = new PortfolioValuePaper();
+		pvp2.setPortfolio(p);
+		pvp2.setValuePaper(s2);
+		pvp2.setVolume(9);
+		pvp2.setBuyPrice(dummyBuyPrice);
+		
+		PortfolioValuePaper pvp3 = new PortfolioValuePaper();
+		pvp3.setPortfolio(p);
+		pvp3.setValuePaper(f1);
+		pvp3.setVolume(11);
+		pvp3.setBuyPrice(dummyBuyPrice);
+		
+		dataManager.persist(s1);
+		dataManager.persist(s2);
+		dataManager.persist(f1);
+		dataManager.persist(s1P1);
+		dataManager.persist(s1P2);
+		dataManager.persist(s2P1);
+		dataManager.persist(s2P2);
+		dataManager.persist(f1P1);
+		dataManager.persist(u);
+		dataManager.persist(p);
+		dataManager.persist(pvp1);
+		dataManager.persist(pvp2);
+		dataManager.persist(pvp3);
+		
+		em.clear();
+		
+		// When
+		BigDecimal actualCurrentValue = portfolioDataAccess.getCurrentValueForPortfolio(p.getId());
+		
+		// Then
+		assertEquals(expectedCurrentValue.floatValue(), actualCurrentValue.floatValue(), 0.001f);
+	}
 }

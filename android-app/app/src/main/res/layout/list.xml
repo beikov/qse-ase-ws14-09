@@ -5,7 +5,7 @@
     tools:context="at.ac.tuwien.ase09.android.fragment.PortfolioContextFragment">
 
     <ListView android:id="@android:id/list" android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content" />
 
     <ProgressBar
         android:id="@android:id/progress"
