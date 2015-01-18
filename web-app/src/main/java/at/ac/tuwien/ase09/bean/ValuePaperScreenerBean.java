@@ -17,6 +17,7 @@ import at.ac.tuwien.ase09.filter.AttributeType;
 import at.ac.tuwien.ase09.filter.OperatorType;
 import at.ac.tuwien.ase09.model.ValuePaper;
 import at.ac.tuwien.ase09.model.ValuePaperType;
+import at.ac.tuwien.ase09.parser.PWatchCompiler;
 
 @Named
 @SessionScoped
@@ -33,7 +34,7 @@ public class ValuePaperScreenerBean implements Serializable {
 		private List<AttributeFilter> filters=new ArrayList<AttributeFilter>();
 		private List<ValuePaper> searchedValuePapers;
 	
-		private String expression = "(MARKETCAP < 9829 AND ENTERPRISEVALUE > SQRT(REVENUE*3) + 100) OR TOTALCASH < 0";
+		private String expression = "PRICE > 100";
 
 		@PostConstruct
 		public void init() {
@@ -126,10 +127,10 @@ public class ValuePaperScreenerBean implements Serializable {
 
 		}
 		public void searchAdv(){
-			/**
+			
 			String query=PWatchCompiler.compileJpql(expression);
 			searchedValuePapers=screenerDataAccess.findByExpression(query);
-			*/
+			
 		}
 		
 		
