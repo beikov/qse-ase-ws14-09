@@ -7,6 +7,7 @@ import java.math.RoundingMode;
 import java.util.Currency;
 
 import javax.ejb.Stateless;
+import javax.enterprise.context.Dependent;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.ws.rs.client.Client;
@@ -47,7 +48,7 @@ public class CurrencyConversionService {
 			InputStream inputStream = response.readEntity(InputStream.class);
 			JsonObject json = Json.createReader(inputStream).readObject();
 			JsonObject rate = json.getJsonObject("query").getJsonObject("results").getJsonObject("rate");
-			return new BigDecimal(rate.getJsonString("Rate").getString());
+			return new BigDecimal(rate.getJsonString("Rate").getString(), new MathContext(5));
 			
 		}else{
 			throw new AppException("Bad response code: " + response.getStatus());

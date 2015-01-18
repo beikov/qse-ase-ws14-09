@@ -42,7 +42,7 @@ import at.ac.tuwien.ase09.rest.model.ValuePaperDto;
 public class OrderActivity extends Activity implements TimePickerDialog.OnTimeSetListener, DatePickerDialog.OnDateSetListener, TextWatcher, View.OnClickListener, RestResultReceiver.Receiver {
     // the activity parameters
     public static final String ARG_VALUE_PAPER = "VALUE_PAPER";
-    public static final String RESULT_MESSAGE = "at.ac.tuwien.ase09.android.activity.RESULT_MESSAGE";
+    public static final String RESULT_MESSAGE = "at.ac.tuwien.ase09.android.activity.OrderActivity.RESULT_MESSAGE";
 
     private ValuePaperDto valuePaper;
 

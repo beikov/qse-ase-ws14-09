@@ -15,7 +15,10 @@ import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStage;
 import org.junit.runner.RunWith;
 
+import at.ac.tuwien.ase09.currency.CurrencyConversionService;
 import at.ac.tuwien.ase09.naming.CustomNamingStrategy;
+import at.ac.tuwien.ase09.test.currency.CurrencyConversionHolder;
+import at.ac.tuwien.ase09.test.currency.TestCurrencyConversionService;
 import at.ac.tuwien.ase09.test.persistence.DataManager;
 import at.ac.tuwien.ase09.test.persistence.H2TcpServerStarter;
 import at.ac.tuwien.ase09.test.persistence.TestEntityManagerProducer;
@@ -29,7 +32,7 @@ public abstract class AbstractContainerTest<T extends AbstractContainerTest<T>> 
     	
     	return ShrinkWrap.create(WebArchive.class)
 			.addAsWebInfResource("test-jboss-deployment-structure.xml", "jboss-deployment-structure.xml")
-			.addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
+			.addAsWebInfResource("META-INF/beans.xml", "beans.xml")
 			
 			/* persistence */
 			.addAsWebInfResource("h2-ds.xml")
@@ -40,6 +43,11 @@ public abstract class AbstractContainerTest<T extends AbstractContainerTest<T>> 
 			.addClass(TestEntityManagerProducer.class)
 			.addClass(H2TcpServerStarter.class)
 			.addClass(DataManager.class)
+			
+			/* currency */
+			.addClass(CurrencyConversionService.class)
+			.addClass(TestCurrencyConversionService.class)
+			.addClass(CurrencyConversionHolder.class)
 			
 			/* exceptions */
 			.addPackage("at.ac.tuwien.ase09.exception")

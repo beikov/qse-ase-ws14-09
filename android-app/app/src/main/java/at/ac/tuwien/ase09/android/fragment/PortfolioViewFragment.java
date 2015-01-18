@@ -17,6 +17,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.Currency;
 import java.util.List;
@@ -37,6 +39,8 @@ import at.ac.tuwien.ase09.rest.model.PortfolioValuePaperDto;
 public class PortfolioViewFragment extends Fragment implements RestResultReceiver.Receiver, AbsListView.OnItemClickListener {
     private static final String LOG_TAG = "PortfolioViewFragment";
 
+    public static final String ARG_PORTFOLIO = "at.ac.tuwien.ase09.android.fragment.PortfolioViewFragment.PORTFOLIO";
+
     private RestResultReceiver receiver;
 
     private ArrayAdapter<PortfolioValuePaperDto> valuePaperListAdapter;
@@ -47,8 +51,17 @@ public class PortfolioViewFragment extends Fragment implements RestResultReceive
     private TextView costValueTextView;
     private TextView currentValueTextView;
     private TextView relativeCurrentValueChangeTextView;
+    private TextView remainingCapitalTextView;
 
     private ValuePaperSelectionListener valuePaperSelectionListener;
+
+    public static PortfolioViewFragment createInstance(PortfolioDto portfolio){
+        PortfolioViewFragment portfolioViewFragment = new PortfolioViewFragment();
+        Bundle args = new Bundle();
+        args.putSerializable(ARG_PORTFOLIO, portfolio);
+        portfolioViewFragment.setArguments(args);
+        return portfolioViewFragment;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -59,6 +72,7 @@ public class PortfolioViewFragment extends Fragment implements RestResultReceive
         costValueTextView = (TextView) view.findViewById(R.id.costValueTextView);
         currentValueTextView = (TextView) view.findViewById(R.id.currentValueTextView);
         relativeCurrentValueChangeTextView = (TextView) view.findViewById(R.id.relativeCurrentValueChangeTextView);
+        remainingCapitalTextView = (TextView) view.findViewById(R.id.remainingCapitalTextView);
 
         FrameLayout valuePaperListContainer = (FrameLayout) view.findViewById(R.id.valuePaperListContainer);
         View portfolioValuePapersView = getActivity().getLayoutInflater().inflate(R.layout.valuepapers_layout, valuePaperListContainer);
@@ -67,12 +81,21 @@ public class PortfolioViewFragment extends Fragment implements RestResultReceive
         ((AdapterView<ListAdapter>) valuePaperListView).setAdapter(valuePaperListAdapter);
         valuePaperListView.setOnItemClickListener(this);
 
+        resetViewContent();
+
         receiver = new RestResultReceiver(new Handler());
         receiver.setReceiver(this);
-        final Intent intent = new Intent(Intent.ACTION_SYNC, null, getActivity(), RestService.class);
-        intent.putExtra("receiver", receiver);
-        intent.putExtra("command", RestService.COMMAND_INITIAL_PORTFOLIO);
-        getActivity().startService(intent);
+
+        PortfolioDto portfolio;
+        if(savedInstanceState != null && (portfolio = (PortfolioDto) savedInstanceState.getSerializable(ARG_PORTFOLIO)) != null){
+            showPortfolio(portfolio);
+            loadValuePapers(portfolio);
+        } else {
+            final Intent intent = new Intent(Intent.ACTION_SYNC, null, getActivity(), RestService.class);
+            intent.putExtra("receiver", receiver);
+            intent.putExtra("command", RestService.COMMAND_INITIAL_PORTFOLIO);
+            getActivity().startService(intent);
+        }
 
         return view;
     }
@@ -80,13 +103,27 @@ public class PortfolioViewFragment extends Fragment implements RestResultReceive
     private void showPortfolio(PortfolioDto portfolio){
         portfolioNameTextView.setText(portfolio.getName());
         Currency currency = portfolio.getCurrency();
-        DecimalFormat moneyFormat = new DecimalFormat();
-        costValueTextView.setText(LayoutPopulator.getMoneyFormat(currency).format(portfolio.getCostValue()) + " " + currency.getCurrencyCode());
+        DecimalFormat moneyFormat = LayoutPopulator.getMoneyFormat(currency);
+        costValueTextView.setText(moneyFormat.format(portfolio.getCostValue()) + " " + currency.getCurrencyCode());
+        currentValueTextView.setText(moneyFormat.format(portfolio.getCurrentValue()) + " " + currency.getCurrencyCode());
+        BigDecimal relativeCurrentValueChange = portfolio.getCurrentValue().divide(portfolio.getCostValue(), RoundingMode.HALF_DOWN).subtract(new BigDecimal(1));
+        relativeCurrentValueChangeTextView.setText(LayoutPopulator.getPercentFormat().format(relativeCurrentValueChange.floatValue() * 100) + " %");
+        LayoutPopulator.setColorBySignum(relativeCurrentValueChangeTextView, relativeCurrentValueChange.signum());
+        remainingCapitalTextView.setText(moneyFormat.format(portfolio.getCurrentCapital()) + " " + currency.getCurrencyCode());
     }
 
     private void showPortfolioValuePapers(List<PortfolioValuePaperDto> valuePapers){
         valuePaperListAdapter = new PortfolioValuePaperArrayAdapter(getActivity(), valuePapers, getActivity());
-        ((AdapterView<ListAdapter>) valuePaperListView).setAdapter(valuePaperListAdapter);
+        valuePaperListView.setAdapter(valuePaperListAdapter);
+    }
+
+    private void resetViewContent(){
+        portfolioNameTextView.setText("");
+        costValueTextView.setText("");
+        currentValueTextView.setText("");
+        relativeCurrentValueChangeTextView.setText("");
+        remainingCapitalTextView.setText("");
+        valuePaperListView.setAdapter(null);
     }
 
     @Override
@@ -115,6 +152,14 @@ public class PortfolioViewFragment extends Fragment implements RestResultReceive
         }
     }
 
+    private void loadValuePapers(PortfolioDto portfolio){
+        final Intent intent = new Intent(Intent.ACTION_SYNC, null, getActivity(), RestService.class);
+        intent.putExtra("receiver", receiver);
+        intent.putExtra("command", RestService.COMMAND_PORTFOLIO_VALUE_PAPERS);
+        intent.putExtra(RestService.COMMAND_PORTFOLIO_VALUE_PAPERS_ID_ARG, portfolio.getId());
+        getActivity().startService(intent);
+    }
+
     public void onInitialPortfolioResult(int resultCode, Bundle resultData){
         switch (resultCode) {
             case RestService.STATUS_RUNNING:
@@ -123,16 +168,12 @@ public class PortfolioViewFragment extends Fragment implements RestResultReceive
             case RestService.STATUS_FINISHED:
                 PortfolioDto portfolio = PortfolioContext.getPortfolio();
                 showPortfolio(portfolio);
-
-                final Intent intent = new Intent(Intent.ACTION_SYNC, null, getActivity(), RestService.class);
-                intent.putExtra("receiver", receiver);
-                intent.putExtra("command", RestService.COMMAND_PORTFOLIO_VALUE_PAPERS);
-                intent.putExtra(RestService.COMMAND_PORTFOLIO_VALUE_PAPERS_ID_ARG, portfolio.getId());
-                getActivity().startService(intent);
+                loadValuePapers(portfolio);
 
                 progressBar.setVisibility(View.GONE);
                 break;
             case RestService.STATUS_ERROR:
+                resetViewContent();
                 progressBar.setVisibility(View.GONE);
                 Toast.makeText(getActivity(), resultData.getString(Intent.EXTRA_TEXT), Toast.LENGTH_LONG).show();
                 break;
