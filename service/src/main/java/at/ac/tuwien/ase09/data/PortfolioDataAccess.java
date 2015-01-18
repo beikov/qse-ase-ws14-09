@@ -89,6 +89,18 @@ public class PortfolioDataAccess {
 		}
 	}
 	
+	public BigDecimal getPortfolioPerformance(long portfolioId) {
+		try{
+			BigDecimal old = getCostValueForPortfolio(portfolioId);
+			BigDecimal cur = getCurrentValueForPortfolio(portfolioId);
+			return cur.subtract(old).multiply(new BigDecimal(100)).divide(old);
+		}catch(NoResultException e){
+			throw new EntityNotFoundException(e);
+		}catch(Exception e){
+			throw new AppException(e);
+		}
+	}
+	
 	public Portfolio getPortfolioById(Long id) {
 		try {
 			return em.createQuery("FROM Portfolio p "
@@ -343,8 +355,8 @@ public class PortfolioDataAccess {
 
 	public double getChange(PortfolioValuePaper pvp) {
 		//double payed = getTotalPayedForPortfolioValuePaper(pvp).doubleValue();
-		double payed = pvp.getBuyPrice().doubleValue();
 		int volume = pvp.getVolume();
+		double payed = pvp.getBuyPrice().doubleValue()*volume;
 		double latestPrice = priceDataAccess.getLastPriceEntry(pvp.getValuePaper().getCode()).getPrice().doubleValue();
 		
 		return (latestPrice*volume - payed) * 100 / payed;
@@ -352,8 +364,8 @@ public class PortfolioDataAccess {
 	
 	public double getProfit(PortfolioValuePaper pvp) {
 		//double payed = getTotalPayedForPortfolioValuePaper(pvp).doubleValue();
-		double payed = pvp.getBuyPrice().doubleValue();
 		int volume = pvp.getVolume();
+		double payed = pvp.getBuyPrice().doubleValue()*volume;
 		double latestPrice = priceDataAccess.getLastPriceEntry(pvp.getValuePaper().getCode()).getPrice().doubleValue();
 		
 		return latestPrice*volume - payed;

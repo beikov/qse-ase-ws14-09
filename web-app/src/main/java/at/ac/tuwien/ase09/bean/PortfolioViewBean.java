@@ -89,7 +89,6 @@ public class PortfolioViewBean implements Serializable {
 	private PieChartModel valuePaperCountryPie;
 	private LineChartModel portfolioChart;
 	
-	
 	public void validateParam() throws IOException {
 		FacesContext context = FacesContext.getCurrentInstance();
 		if (!context.isPostback() && context.isValidationFailed()) {
@@ -230,6 +229,19 @@ public class PortfolioViewBean implements Serializable {
 	public List<Order> getFilteredOrders() {
 		return filteredOrders;
 	}
+	
+	public double getCostValueForPortfolio() {
+		return portfolioDataAccess.getCostValueForPortfolio(portfolioId).doubleValue();
+	}
+	
+	public double getCurrentValueForPortfolio() {
+		return portfolioDataAccess.getCurrentValueForPortfolio(portfolioId).doubleValue();
+	}
+	
+	public double getPortfolioPerformance() {
+		return portfolioDataAccess.getPortfolioPerformance(portfolioId).doubleValue();
+	}
+	
 	
 	public double getChange(PortfolioValuePaper pvp) {
     	return portfolioDataAccess.getChange(pvp);

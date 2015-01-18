@@ -36,28 +36,33 @@
 	        <ase:valuePaperPerformance pvp="#{pvp}" />
 	    </p:column>
 	    
-	    <p:column width="180">
-	    	<p:button id="btn-details" icon="ui-icon-search" outcome="/protected/valuepaper/valuepaperview">
-	    		<f:param name="valuePaperCode" value="#{pvp.valuePaper.code}" />
-	    	</p:button>
-	    	<p:tooltip for="btn-details" value="Details" />
-	    	
-	    	<p:link id="btn-buy" outcome="/protected/valuepaper/valuepaperview" style="margin-left: 10px; margin-right: 15px;">
-	    		<span class="ui-icon inline ui-icon-cart" />
-	    		<span class="ui-icon inline ui-icon-plus" />
-	    		<f:param name="valuePaperCode" value="#{pvp.valuePaper.code}" />
-	    	</p:link>
-	    	<p:tooltip for="btn-buy" value="Kaufen" />
-	    	
-	    	<p:link id="btn-sell" outcome="/protected/valuepaper/valuepaperview">
-	    		<span class="ui-icon inline ui-icon-cart" />
-	    		<span class="ui-icon inline ui-icon-minus" />
-	    		<f:param name="valuePaperCode" value="#{pvp.valuePaper.code}" />
-	    	</p:link>
-	    	<p:tooltip for="btn-sell" value="Verkaufen" />
-	    	
-	    	<!-- <a href="/valuepaper/valuepaperview.xhtml?valuePaperCode=#{pvp.valuePaper.code}" class="btn btn-default btn-md"><span class="glyphicon glyphicon-search" aria-hidden="true" /></a>
-			<a href="/protected/portfolio/list.xhtml?valuePaperId=#{pvp.valuePaper.id}" class="btn btn-default btn-md"><span class="glyphicon glyphicon glyphicon-usd" aria-hidden="true" /></a> -->
+	    <p:column width="180" styleClass="links">
+	    	<div>
+		    	<p:link id="btn-details" outcome="/protected/valuepaper/valuepaperview">
+		    		<span class="ui-icon ui-icon-search" />
+		    		<f:param name="valuePaperCode" value="#{pvp.valuePaper.code}" />
+		    	</p:link>
+		    	<p:tooltip for="btn-details" value="Details" />
+		    </div>
+		    <div>	
+		    	<p:link id="btn-buy" outcome="/protected/valuepaper/valuepaperview">
+		    		<span class="ui-icon inline ui-icon-cart" />
+		    		<span class="ui-icon inline ui-icon-plus" />
+		    		<f:param name="valuePaperCode" value="#{pvp.valuePaper.code}" />
+		    	</p:link>
+		    	<p:tooltip for="btn-buy" value="Kaufen" />
+		    </div>
+		    <div>
+		    	<p:link id="btn-sell" outcome="/protected/valuepaper/valuepaperview">
+		    		<span class="ui-icon inline ui-icon-cart" />
+		    		<span class="ui-icon inline ui-icon-minus" />
+		    		<f:param name="valuePaperCode" value="#{pvp.valuePaper.code}" />
+		    	</p:link>
+		    	<p:tooltip for="btn-sell" value="Verkaufen" />
+	    	</div>
+		    	
+		    	<!-- <a href="/valuepaper/valuepaperview.xhtml?valuePaperCode=#{pvp.valuePaper.code}" class="btn btn-default btn-md"><span class="glyphicon glyphicon-search" aria-hidden="true" /></a>
+				<a href="/protected/portfolio/list.xhtml?valuePaperId=#{pvp.valuePaper.id}" class="btn btn-default btn-md"><span class="glyphicon glyphicon glyphicon-usd" aria-hidden="true" /></a> -->
 		</p:column>
 	</p:dataTable>
 
