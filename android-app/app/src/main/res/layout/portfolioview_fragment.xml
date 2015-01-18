@@ -37,6 +37,7 @@
                 android:text="@string/costValue"/>
 
             <TextView
+                android:id="@+id/costValueTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingLeft="8dp"
@@ -60,6 +61,7 @@
                 android:text="160 EUR" />
 
             <TextView
+                android:id="@+id/relativeCurrentValueChangeTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@id/costValueLabelTextView"

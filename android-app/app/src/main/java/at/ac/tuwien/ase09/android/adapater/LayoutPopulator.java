@@ -30,22 +30,19 @@ public class LayoutPopulator {
         BigDecimal lastPrice = valuePaper.getLastPrice();
         BigDecimal previousDayPrice = valuePaper.getPreviousDayPrice();
         if(lastPrice != null) {
-            DecimalFormat df = new DecimalFormat();
-            df.setMaximumFractionDigits(2);
-            df.setMinimumFractionDigits(0);
-            lastPriceTextView.setText(df.format(valuePaper.getLastPrice()) + " " + valuePaper.getCurrency().getCurrencyCode());
+            DecimalFormat moneyDf = LayoutPopulator.getMoneyFormat(valuePaper.getCurrency());
+            DecimalFormat moneyChangeDf = LayoutPopulator.getMoneyChangeFormat(valuePaper.getCurrency());
+            DecimalFormat percentDf = LayoutPopulator.getPercentFormat();
+
+            lastPriceTextView.setText(moneyDf.format(valuePaper.getLastPrice()) + " " + valuePaper.getCurrency().getCurrencyCode());
 
             if(previousDayPrice != null) {
-                df.setNegativePrefix("-");
-                df.setPositivePrefix("+");
-
                 BigDecimal absolutePriceChange = lastPrice.subtract(previousDayPrice);
                 BigDecimal relativePriceChange = absolutePriceChange.divide(previousDayPrice, RoundingMode.HALF_DOWN);
 
-                relativePriceChangeTextView.setText(df.format(relativePriceChange.floatValue() * 100) + " %");
+                relativePriceChangeTextView.setText(percentDf.format(relativePriceChange.floatValue() * 100) + " %");
 
-                df.setCurrency(valuePaper.getCurrency());
-                absolutePriceChangeTextView.setText(df.format(absolutePriceChange) + " " + valuePaper.getCurrency().getCurrencyCode());
+                absolutePriceChangeTextView.setText(moneyChangeDf.format(absolutePriceChange) + " " + valuePaper.getCurrency().getCurrencyCode());
 
                 setColorBySignum(absolutePriceChangeTextView, absolutePriceChange.signum());
                 setColorBySignum(relativePriceChangeTextView, absolutePriceChange.signum());
@@ -77,16 +74,8 @@ public class LayoutPopulator {
 
         Currency currency = portfolioValuePaper.getValuePaperDto().getCurrency();
 
-        DecimalFormat moneyDf = new DecimalFormat();
-        moneyDf.setMaximumFractionDigits(2);
-        moneyDf.setMinimumFractionDigits(0);
-        moneyDf.setCurrency(currency);
-
-        DecimalFormat percentDf = new DecimalFormat();
-        percentDf.setMaximumFractionDigits(2);
-        percentDf.setMinimumFractionDigits(0);
-        percentDf.setNegativePrefix("-");
-        percentDf.setPositivePrefix("+");
+        DecimalFormat moneyDf = LayoutPopulator.getMoneyFormat(currency);
+        DecimalFormat percentDf = LayoutPopulator.getPercentFormat();
 
         buyPriceTextView.setText(moneyDf.format(portfolioValuePaper.getBuyPrice().floatValue()) + " " + getCurrencySymbol(currency));
 
@@ -129,5 +118,29 @@ public class LayoutPopulator {
 
     private static String getCurrencySymbol(Currency currency){
         return (currency.getCurrencyCode() == null) ? "%" : currency.getCurrencyCode();
+    }
+
+    public static DecimalFormat getMoneyFormat(Currency currency){
+        DecimalFormat moneyDf = new DecimalFormat();
+        moneyDf.setMaximumFractionDigits(2);
+        moneyDf.setMinimumFractionDigits(0);
+        moneyDf.setCurrency(currency);
+        return moneyDf;
+    }
+
+    public static DecimalFormat getMoneyChangeFormat(Currency currency){
+        DecimalFormat moneyDf = LayoutPopulator.getMoneyFormat(currency);
+        moneyDf.setNegativePrefix("-");
+        moneyDf.setPositivePrefix("+");
+        return moneyDf;
+    }
+
+    public static DecimalFormat getPercentFormat(){
+        DecimalFormat percentDf = new DecimalFormat();
+        percentDf.setMaximumFractionDigits(2);
+        percentDf.setMinimumFractionDigits(0);
+        percentDf.setNegativePrefix("-");
+        percentDf.setPositivePrefix("+");
+        return percentDf;
     }
 }

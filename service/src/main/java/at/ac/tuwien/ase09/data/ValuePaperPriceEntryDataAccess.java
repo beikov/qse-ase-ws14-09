@@ -25,16 +25,15 @@ public class ValuePaperPriceEntryDataAccess {
 	public ValuePaperPriceEntry getLastPriceEntry(String code){
 		List<ValuePaperPriceEntry> priceEntryList = null;
 		try{
-			priceEntryList = em.createQuery("SELECT price FROM ValuePaperPriceEntry price JOIN price.valuePaper vp WHERE vp.code=:code ORDER BY price.created DESC", ValuePaperPriceEntry.class)
+			return em.createQuery("SELECT price FROM ValuePaperPriceEntry price JOIN price.valuePaper vp WHERE vp.code=:code ORDER BY price.created DESC", ValuePaperPriceEntry.class)
 				.setParameter("code", code)
-				.getResultList();
+				.setMaxResults(1)
+				.getSingleResult();
+		}catch(NoResultException e){
+			throw new EntityNotFoundException(e);
 		}catch(Exception e){
 			throw new AppException(e);
 		}
-		if(priceEntryList.isEmpty()){
-			throw new EntityNotFoundException();
-		}
-		return priceEntryList.get(0);
 	}
 	
 	public List<Calendar> getHistoricPriceEntryDates(String code) {

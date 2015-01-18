@@ -17,18 +17,19 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.DecimalFormat;
+import java.util.Currency;
 import java.util.List;
 
 import at.ac.tuwien.ase09.android.R;
+import at.ac.tuwien.ase09.android.adapater.LayoutPopulator;
 import at.ac.tuwien.ase09.android.adapater.PortfolioValuePaperArrayAdapter;
-import at.ac.tuwien.ase09.android.adapater.ValuePaperArrayAdapter;
 import at.ac.tuwien.ase09.android.listener.ValuePaperSelectionListener;
 import at.ac.tuwien.ase09.android.service.RestResultReceiver;
 import at.ac.tuwien.ase09.android.service.RestService;
 import at.ac.tuwien.ase09.android.singleton.PortfolioContext;
 import at.ac.tuwien.ase09.rest.model.PortfolioDto;
 import at.ac.tuwien.ase09.rest.model.PortfolioValuePaperDto;
-import at.ac.tuwien.ase09.rest.model.ValuePaperDto;
 
 /**
  * Created by Moritz on 11.12.2014.
@@ -43,6 +44,9 @@ public class PortfolioViewFragment extends Fragment implements RestResultReceive
     private ProgressBar portfolioValuePapersProgressBar;
     private TextView portfolioNameTextView;
     private AbsListView valuePaperListView;
+    private TextView costValueTextView;
+    private TextView currentValueTextView;
+    private TextView relativeCurrentValueChangeTextView;
 
     private ValuePaperSelectionListener valuePaperSelectionListener;
 
@@ -52,6 +56,9 @@ public class PortfolioViewFragment extends Fragment implements RestResultReceive
         progressBar = (ProgressBar) view.findViewById(android.R.id.progress);
 
         portfolioNameTextView = (TextView) view.findViewById(R.id.portfolio_name);
+        costValueTextView = (TextView) view.findViewById(R.id.costValueTextView);
+        currentValueTextView = (TextView) view.findViewById(R.id.currentValueTextView);
+        relativeCurrentValueChangeTextView = (TextView) view.findViewById(R.id.relativeCurrentValueChangeTextView);
 
         FrameLayout valuePaperListContainer = (FrameLayout) view.findViewById(R.id.valuePaperListContainer);
         View portfolioValuePapersView = getActivity().getLayoutInflater().inflate(R.layout.valuepapers_layout, valuePaperListContainer);
@@ -72,6 +79,9 @@ public class PortfolioViewFragment extends Fragment implements RestResultReceive
 
     private void showPortfolio(PortfolioDto portfolio){
         portfolioNameTextView.setText(portfolio.getName());
+        Currency currency = portfolio.getCurrency();
+        DecimalFormat moneyFormat = new DecimalFormat();
+        costValueTextView.setText(LayoutPopulator.getMoneyFormat(currency).format(portfolio.getCostValue()) + " " + currency.getCurrencyCode());
     }
 
     private void showPortfolioValuePapers(List<PortfolioValuePaperDto> valuePapers){
