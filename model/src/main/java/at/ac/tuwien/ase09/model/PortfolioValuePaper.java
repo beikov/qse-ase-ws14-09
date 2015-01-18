@@ -53,6 +53,7 @@ public class PortfolioValuePaper extends BaseEntity<Long> {
 
 	/**
 	 * Price per value paper unit for which this position was bought.
+	 * This price is in the currency of the portfolio.
 	 */
 	@Column(nullable=false)
 	public BigDecimal getBuyPrice() {

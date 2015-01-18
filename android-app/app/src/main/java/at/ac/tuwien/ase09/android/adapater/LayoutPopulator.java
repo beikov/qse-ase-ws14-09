@@ -101,7 +101,7 @@ public class LayoutPopulator {
         }
     }
 
-    private static void setColorBySignum(TextView textView, int signum){
+    public static void setColorBySignum(TextView textView, int signum){
         int textViewColor;
         switch (signum) {
             case -1:

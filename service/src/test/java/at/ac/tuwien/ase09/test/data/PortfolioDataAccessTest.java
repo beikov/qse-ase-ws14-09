@@ -6,6 +6,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -54,6 +55,8 @@ import at.ac.tuwien.ase09.model.transaction.OrderTransactionEntry;
 import at.ac.tuwien.ase09.model.transaction.TransactionEntry;
 import at.ac.tuwien.ase09.test.AbstractServiceTest;
 import at.ac.tuwien.ase09.test.DatabaseAware;
+import at.ac.tuwien.ase09.test.currency.CurrencyConversionHolder;
+import at.ac.tuwien.ase09.test.currency.TestCurrencyConversionService;
 
 @DatabaseAware
 public class PortfolioDataAccessTest extends AbstractServiceTest<PortfolioDataAccessTest> {
@@ -69,6 +72,9 @@ public class PortfolioDataAccessTest extends AbstractServiceTest<PortfolioDataAc
 	
 	@Inject
 	private PortfolioDataAccess portfolioDataAccess;
+	
+	@Inject
+	private CurrencyConversionHolder currencyConversionHolder;
 	
 	@Deployment
 	public static Archive<?> createDeployment() {
@@ -88,8 +94,9 @@ public class PortfolioDataAccessTest extends AbstractServiceTest<PortfolioDataAc
 		u.setUsername("test_user");
 		dataManager.persist(u);
 		
+		Currency portfolioCurrency = Currency.getInstance("EUR");
 		PortfolioSetting ps = new PortfolioSetting();
-		ps.setStartCapital(new Money(startCapital, Currency.getInstance("EUR")));
+		ps.setStartCapital(new Money(startCapital, portfolioCurrency));
 		
 		Portfolio p = new Portfolio();
 		portfolioCreated.setTime(format.parse("2014-12-01"));
@@ -98,6 +105,7 @@ public class PortfolioDataAccessTest extends AbstractServiceTest<PortfolioDataAc
 		p.setName("test_portfolio");
 		p.setCreated(portfolioCreated);
 		p.setOwner(u);
+		p.setCurrentCapital(new Money(new BigDecimal(0), portfolioCurrency));
 		
 		dataManager.persist(p);
 		em.clear();
@@ -569,39 +577,46 @@ public class PortfolioDataAccessTest extends AbstractServiceTest<PortfolioDataAc
 	@Test
 	public void testGetCurrentValueForPortfolio(){
 		// Given
-		// create value papers
-		final BigDecimal dummyBuyPrice = new BigDecimal("0");
-		final BigDecimal expectedCurrentValue = new BigDecimal("625");
+		// register conversions
+		currencyConversionHolder.addConversion(Currency.getInstance("USD"), Currency.getInstance("EUR"), new BigDecimal(2.55f, new MathContext(5)));
 		
+		// create value papers
+		final BigDecimal dummyBuyPrice = new BigDecimal(0);
+		final BigDecimal expectedCurrentValue = new BigDecimal(1017.15f);
+
 		Stock s1 = new Stock();
 		s1.setCode("1");
+		s1.setCurrency(Currency.getInstance("EUR"));
 		Stock s2 = new Stock();
 		s2.setCode("2");
+		s2.setCurrency(Currency.getInstance("EUR"));
 		Fund f1 = new Fund();
 		f1.setCode("3");
+		f1.setCurrency(Currency.getInstance("USD"));
 		
 		// create prices for value papers
 		ValuePaperPriceEntry s1P1 = new ValuePaperPriceEntry();
 		s1P1.setValuePaper(s1);
-		s1P1.setPrice(new BigDecimal("20"));
+		s1P1.setPrice(new BigDecimal(20));
 		ValuePaperPriceEntry s1P2 = new ValuePaperPriceEntry();
 		s1P2.setValuePaper(s1);
-		s1P2.setPrice(new BigDecimal("21"));
+		s1P2.setPrice(new BigDecimal(21));
 		
 		ValuePaperPriceEntry s2P1 = new ValuePaperPriceEntry();
 		s2P1.setValuePaper(s2);
-		s2P1.setPrice(new BigDecimal("19"));
+		s2P1.setPrice(new BigDecimal(19));
 		ValuePaperPriceEntry s2P2 = new ValuePaperPriceEntry();
 		s2P2.setValuePaper(s2);
-		s2P2.setPrice(new BigDecimal("18"));
+		s2P2.setPrice(new BigDecimal(18));
 
 		ValuePaperPriceEntry f1P1 = new ValuePaperPriceEntry();
 		f1P1.setValuePaper(f1);
-		f1P1.setPrice(new BigDecimal("23"));
+		f1P1.setPrice(new BigDecimal(23));
 		
 		// create portfolio
 		User u = new User();
 		Portfolio p = new Portfolio();
+		p.setCurrentCapital(new Money(new BigDecimal(0), Currency.getInstance("EUR")));
 		p.setOwner(u);
 		
 		// add value papers to portfolio

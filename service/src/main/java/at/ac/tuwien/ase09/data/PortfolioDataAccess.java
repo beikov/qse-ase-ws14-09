@@ -5,22 +5,24 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Currency;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
-import javax.persistence.PersistenceContext;
 
+import at.ac.tuwien.ase09.currency.CurrencyConversionService;
 import at.ac.tuwien.ase09.exception.AppException;
 import at.ac.tuwien.ase09.exception.EntityNotFoundException;
 import at.ac.tuwien.ase09.model.AnalystOpinion;
+import at.ac.tuwien.ase09.model.Fund;
+import at.ac.tuwien.ase09.model.Money;
 import at.ac.tuwien.ase09.model.NewsItem;
 import at.ac.tuwien.ase09.model.Portfolio;
 import at.ac.tuwien.ase09.model.PortfolioValuePaper;
@@ -52,6 +54,9 @@ public class PortfolioDataAccess {
 	@Inject
 	private TransactionEntryDataAccess transactionDataAccess;
 	
+	@Inject
+	private CurrencyConversionService currencyConversionService;
+	
 	public List<Portfolio> getPortfolios() {
 		try{
 			return em.createQuery("FROM Portfolio", Portfolio.class).getResultList();
@@ -63,7 +68,7 @@ public class PortfolioDataAccess {
 	public List<Portfolio> getPortfoliosByUser(long userId) {
 		try{
 			User user = em.getReference(User.class, userId);
-			return em.createQuery("FROM Portfolio p LEFT JOIN FETCH p.valuePapers WHERE p.owner = :user", Portfolio.class).setParameter("user", user).getResultList();
+			return em.createQuery("FROM Portfolio p WHERE p.owner = :user", Portfolio.class).setParameter("user", user).getResultList();
 		}catch(Exception e){
 			throw new AppException(e);
 		}
@@ -94,8 +99,40 @@ public class PortfolioDataAccess {
 	
 	public BigDecimal getCurrentValueForPortfolio(long portfolioId) {
 		try{
-			Portfolio portfolio = em.getReference(Portfolio.class, portfolioId);
-			return em.createQuery("SELECT SUM(pe.price * pvp.volume) FROM PortfolioValuePaper pvp, ValuePaperPriceEntry pe WHERE pvp.valuePaper = pe.valuePaper AND pvp.portfolio = :portfolio AND pe.created >= ALL(SELECT pe2.created FROM ValuePaperPriceEntry pe2 WHERE pe2.valuePaper = pe.valuePaper)", BigDecimal.class).setParameter("portfolio", portfolio).getSingleResult();
+			Portfolio portfolio = em.find(Portfolio.class, portfolioId);
+			List<Object[]> valuePapersAndCurrentPrices = em.createQuery("SELECT vp, pe.price * pvp.volume FROM PortfolioValuePaper pvp, ValuePaperPriceEntry pe JOIN pe.valuePaper vp WHERE pvp.valuePaper = pe.valuePaper AND pvp.portfolio = :portfolio AND vp.class != 'BOND' AND pe.created >= ALL(SELECT pe2.created FROM ValuePaperPriceEntry pe2 WHERE pe2.valuePaper = pe.valuePaper)", Object[].class).setParameter("portfolio", portfolio).getResultList();
+		
+			List<Money> currentPrices = valuePapersAndCurrentPrices.stream().map(valuePaperAndCurrentPrice -> {
+				ValuePaper vp = (ValuePaper) valuePaperAndCurrentPrice[0];
+				Currency currency;
+				if(vp instanceof Stock){
+					currency = ((Stock) vp).getCurrency();
+				}else{
+					currency = ((Fund) vp).getCurrency();
+				}
+				return new Money((BigDecimal) valuePaperAndCurrentPrice[1], currency);
+			}).collect(Collectors.toList());
+			
+			final Currency portfolioCurrency = portfolio.getCurrentCapital().getCurrency();
+			
+			// get currency conversion rates
+			final Map<Currency, BigDecimal> currencyConversions = currentPrices.stream()
+					.map(currentPrice -> currentPrice.getCurrency())
+					.distinct()
+					.filter(currency -> !currency.equals(portfolioCurrency))
+					.collect(Collectors.toMap(currency -> currency, currency -> currencyConversionService.getConversionRate(currency, portfolioCurrency), (oldVal, newVal) -> newVal));
+			
+			// sum up
+			return currentPrices.stream().reduce(new Money(new BigDecimal(0), portfolioCurrency), (sum, money) -> {
+				BigDecimal conversionRate = currencyConversions.get(money.getCurrency());
+				if(conversionRate != null){
+					sum.setValue(sum.getValue().add(money.getValue().multiply(conversionRate)));
+				}else{
+					sum.setValue(sum.getValue().add(money.getValue()));
+				}
+				return sum;
+			}).getValue();
+			
 		}catch(Exception e){
 			throw new AppException(e);
 		}

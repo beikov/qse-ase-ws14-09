@@ -67,19 +67,18 @@
                 android:layout_toRightOf="@id/costValueLabelTextView"
                 android:layout_below="@id/currentValueTextView"
                 android:paddingLeft="8dp"
-                android:textSize="12sp"
                 android:text="+ 5%" />
         </RelativeLayout>
 
         <TextView
-            android:id="@+id/cashLabelTextView"
+            android:id="@+id/remainingCapitalLabelTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingLeft="8dp"
             android:text="@string/remaining_cash" />
 
         <TextView
-            android:id="@+id/cashTextView"
+            android:id="@+id/remainingCapitalTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingLeft="8dp"

@@ -134,7 +134,7 @@ public class MainActivity extends Activity
     @Override
     public void onPortfolioContextChange(PortfolioDto portfolio) {
         PortfolioContext.setPortfolio(portfolio);
-        getFragmentManager().beginTransaction().replace(R.id.container, new PortfolioViewFragment()).commit();
+        getFragmentManager().beginTransaction().replace(R.id.container, PortfolioViewFragment.createInstance(portfolio)).commit();
     }
 
     @Override
