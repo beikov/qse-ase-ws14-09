@@ -9,8 +9,10 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.Asset;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.shrinkwrap.impl.base.asset.AssetUtil;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStage;
 import org.junit.runner.RunWith;
@@ -32,7 +34,7 @@ public abstract class AbstractContainerTest<T extends AbstractContainerTest<T>> 
     	
     	return ShrinkWrap.create(WebArchive.class)
 			.addAsWebInfResource("test-jboss-deployment-structure.xml", "jboss-deployment-structure.xml")
-			.addAsWebInfResource("META-INF/beans.xml", "beans.xml")
+			.addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
 			
 			/* persistence */
 			.addAsWebInfResource("h2-ds.xml")
