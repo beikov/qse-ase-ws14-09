@@ -9,10 +9,12 @@ import javax.inject.Inject;
 import at.ac.tuwien.ase09.data.ValuePaperPriceEntryDataAccess;
 import at.ac.tuwien.ase09.exception.EntityNotFoundException;
 import at.ac.tuwien.ase09.model.Fund;
+import at.ac.tuwien.ase09.model.PortfolioValuePaper;
 import at.ac.tuwien.ase09.model.Stock;
 import at.ac.tuwien.ase09.model.ValuePaper;
 import at.ac.tuwien.ase09.model.ValuePaperHistoryEntry;
 import at.ac.tuwien.ase09.model.ValuePaperPriceEntry;
+import at.ac.tuwien.ase09.rest.model.PortfolioValuePaperDto;
 import at.ac.tuwien.ase09.rest.model.ValuePaperDto;
 
 public class AbstractResource {
@@ -42,5 +44,10 @@ public class AbstractResource {
 			closingPrice = historicPriceEntry.getClosingPrice();
 		}catch(EntityNotFoundException e) { /* ignore */ }
 		return new ValuePaperDto(valuePaper.getId(), valuePaper.getName(), valuePaper.getCode(), currency, lastPrice, closingPrice);
+	}
+	
+	protected PortfolioValuePaperDto createFromEntity(PortfolioValuePaper portfolioValuePaper){
+		ValuePaperDto valuePaperDto = createFromEntity(portfolioValuePaper.getValuePaper());
+		return new PortfolioValuePaperDto(portfolioValuePaper.getId(), valuePaperDto, portfolioValuePaper.getBuyPrice(), portfolioValuePaper.getVolume());
 	}
 }

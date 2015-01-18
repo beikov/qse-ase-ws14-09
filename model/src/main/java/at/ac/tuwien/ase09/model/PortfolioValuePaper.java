@@ -2,6 +2,7 @@ package at.ac.tuwien.ase09.model;
 
 import java.math.BigDecimal;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -13,18 +14,20 @@ public class PortfolioValuePaper extends BaseEntity<Long> {
 
 	private static final long serialVersionUID = 1L;
 	
-	private int volume;
+	private Integer volume;
 	
 	private Portfolio portfolio;
 	
 	private ValuePaper valuePaper;
 	
+	private BigDecimal buyPrice;
 
-	public int getVolume() {
+	@Column(nullable=false)
+	public Integer getVolume() {
 		return volume;
 	}
 
-	public void setVolume(int volume) {
+	public void setVolume(Integer volume) {
 		this.volume = volume;
 	}
 
@@ -46,6 +49,18 @@ public class PortfolioValuePaper extends BaseEntity<Long> {
 
 	public void setValuePaper(ValuePaper valuePaper) {
 		this.valuePaper = valuePaper;
+	}
+
+	/**
+	 * Price per value paper unit for which this position was bought.
+	 */
+	@Column(nullable=false)
+	public BigDecimal getBuyPrice() {
+		return buyPrice;
+	}
+
+	public void setBuyPrice(BigDecimal buyPrice) {
+		this.buyPrice = buyPrice;
 	}
 
 }

@@ -24,6 +24,7 @@ import at.ac.tuwien.ase09.rest.UserResource;
 import at.ac.tuwien.ase09.rest.ValuePaperResource;
 import at.ac.tuwien.ase09.rest.model.OrderDto;
 import at.ac.tuwien.ase09.rest.model.PortfolioDto;
+import at.ac.tuwien.ase09.rest.model.PortfolioValuePaperDto;
 import at.ac.tuwien.ase09.rest.model.ValuePaperDto;
 
 /**
@@ -134,14 +135,14 @@ public class RestService extends IntentService {
         return new ArrayList<ValuePaperDto>(valuePaperResource.getValuePapers(filter, valuePaperType));
     }
 
-    private ArrayList<ValuePaperDto> getValuePapersForPortfolio(Intent intent){
+    private ArrayList<PortfolioValuePaperDto> getValuePapersForPortfolio(Intent intent){
         if(!intent.hasExtra(COMMAND_PORTFOLIO_VALUE_PAPERS_ID_ARG)){
             throw new IllegalArgumentException(COMMAND_PORTFOLIO_VALUE_PAPERS_ID_ARG + " missing");
         }
         long portfolioId = intent.getLongExtra(COMMAND_PORTFOLIO_VALUE_PAPERS_ID_ARG, -1);
         Log.i(LOG_TAG, "Query value papers for portfolio id " + portfolioId);
         PortfolioResource portfolioResource = WebserviceFactory.getInstance().getPortfolioResource();
-        return new ArrayList<ValuePaperDto>(portfolioResource.getValuePapers(portfolioId));
+        return new ArrayList<PortfolioValuePaperDto>(portfolioResource.getValuePapers(portfolioId));
     }
 
     private int createOrder(Intent intent){

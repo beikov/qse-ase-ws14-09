@@ -10,6 +10,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import at.ac.tuwien.ase09.android.R;
+import at.ac.tuwien.ase09.rest.model.PortfolioValuePaperDto;
 import at.ac.tuwien.ase09.rest.model.ValuePaperDto;
 
 /**

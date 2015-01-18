@@ -39,7 +39,7 @@
 
     <TextView
         android:id="@+id/vpLastPrice"
-        android:layout_width="wrap_content"
+        android:layout_width="80dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/vpLastPriceLabel"
         android:layout_toRightOf="@id/vpName"
@@ -82,7 +82,7 @@
         android:text="12,60 EUR"/>
 
     <TextView
-        android:id="@+id/vpBuyPriceChange"
+        android:id="@+id/vpRelativeBuyPriceChange"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/vpBuyPrice"

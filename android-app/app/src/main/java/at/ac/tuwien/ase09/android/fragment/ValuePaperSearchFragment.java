@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ListAdapter;
@@ -53,7 +54,7 @@ public class ValuePaperSearchFragment extends Fragment implements AbsListView.On
      * The Adapter which will be used to populate the ListView/GridView with
      * Views.
      */
-    private ListAdapter mAdapter;
+    private ArrayAdapter<ValuePaperDto> mAdapter;
 
     private EditText filterEditText;
 
@@ -205,7 +206,7 @@ public class ValuePaperSearchFragment extends Fragment implements AbsListView.On
         if (null != mListener) {
             // Notify the active callbacks interface (the activity, if the
             // fragment is attached to one) that an item has been selected.
-            mListener.onValuePaperSelected((ValuePaperDto) mAdapter.getItem(position));
+            mListener.onValuePaperSelected(mAdapter.getItem(position));
         }
     }
 

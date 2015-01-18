@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ListAdapter;
 import android.widget.ProgressBar;
@@ -19,12 +20,14 @@ import android.widget.Toast;
 import java.util.List;
 
 import at.ac.tuwien.ase09.android.R;
+import at.ac.tuwien.ase09.android.adapater.PortfolioValuePaperArrayAdapter;
 import at.ac.tuwien.ase09.android.adapater.ValuePaperArrayAdapter;
 import at.ac.tuwien.ase09.android.listener.ValuePaperSelectionListener;
 import at.ac.tuwien.ase09.android.service.RestResultReceiver;
 import at.ac.tuwien.ase09.android.service.RestService;
 import at.ac.tuwien.ase09.android.singleton.PortfolioContext;
 import at.ac.tuwien.ase09.rest.model.PortfolioDto;
+import at.ac.tuwien.ase09.rest.model.PortfolioValuePaperDto;
 import at.ac.tuwien.ase09.rest.model.ValuePaperDto;
 
 /**
@@ -35,7 +38,7 @@ public class PortfolioViewFragment extends Fragment implements RestResultReceive
 
     private RestResultReceiver receiver;
 
-    private ListAdapter valuePaperListAdapter;
+    private ArrayAdapter<PortfolioValuePaperDto> valuePaperListAdapter;
     private ProgressBar progressBar;
     private ProgressBar portfolioValuePapersProgressBar;
     private TextView portfolioNameTextView;
@@ -71,8 +74,8 @@ public class PortfolioViewFragment extends Fragment implements RestResultReceive
         portfolioNameTextView.setText(portfolio.getName());
     }
 
-    private void showPortfolioValuePapers(List<ValuePaperDto> valuePapers){
-        valuePaperListAdapter = new ValuePaperArrayAdapter(getActivity(), valuePapers, getActivity());
+    private void showPortfolioValuePapers(List<PortfolioValuePaperDto> valuePapers){
+        valuePaperListAdapter = new PortfolioValuePaperArrayAdapter(getActivity(), valuePapers, getActivity());
         ((AdapterView<ListAdapter>) valuePaperListView).setAdapter(valuePaperListAdapter);
     }
 
@@ -98,7 +101,7 @@ public class PortfolioViewFragment extends Fragment implements RestResultReceive
         if (valuePaperSelectionListener != null) {
             // Notify the active callbacks interface (the activity, if the
             // fragment is attached to one) that an item has been selected.
-            valuePaperSelectionListener.onValuePaperSelected((ValuePaperDto) valuePaperListAdapter.getItem(position));
+            valuePaperSelectionListener.onValuePaperSelected(valuePaperListAdapter.getItem(position).getValuePaperDto());
         }
     }
 
@@ -132,7 +135,7 @@ public class PortfolioViewFragment extends Fragment implements RestResultReceive
                 portfolioValuePapersProgressBar.setVisibility(View.VISIBLE);
                 break;
             case RestService.STATUS_FINISHED:
-                showPortfolioValuePapers((List<ValuePaperDto>) resultData.getSerializable("results"));
+                showPortfolioValuePapers((List<PortfolioValuePaperDto>) resultData.getSerializable("results"));
                 portfolioValuePapersProgressBar.setVisibility(View.GONE);
                 break;
             case RestService.STATUS_ERROR:

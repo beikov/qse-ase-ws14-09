@@ -1,6 +1,5 @@
 package at.ac.tuwien.ase09.currency;
 
-import java.io.BufferedReader;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -30,7 +29,7 @@ public class CurrencyConversionService {
 	 * @param target Target currency that the value should be converted to
 	 * @return
 	 */
-	public BigDecimal convertMoney(BigDecimal value, Currency source,
+	public BigDecimal getConversionRate(Currency source,
 			Currency target) {
 		final String sourceCode = source.getCurrencyCode();
 		final String targetCode = target.getCurrencyCode();
@@ -48,11 +47,15 @@ public class CurrencyConversionService {
 			InputStream inputStream = response.readEntity(InputStream.class);
 			JsonObject json = Json.createReader(inputStream).readObject();
 			JsonObject rate = json.getJsonObject("query").getJsonObject("results").getJsonObject("rate");
-			BigDecimal conversionRate = new BigDecimal(rate.getJsonString("Rate").getString());
-			return value.multiply(conversionRate, new MathContext(9, RoundingMode.HALF_DOWN));
+			return new BigDecimal(rate.getJsonString("Rate").getString());
+			
 		}else{
 			throw new AppException("Bad response code: " + response.getStatus());
 		}
+	}
+	
+	public static BigDecimal convert(BigDecimal value, BigDecimal conversionRate){
+		return value.multiply(conversionRate, new MathContext(9, RoundingMode.HALF_DOWN));
 	}
 
 }

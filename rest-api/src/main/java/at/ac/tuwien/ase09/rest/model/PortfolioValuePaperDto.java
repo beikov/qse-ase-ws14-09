@@ -2,64 +2,58 @@ package at.ac.tuwien.ase09.rest.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Currency;
 
 public class PortfolioValuePaperDto implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private long id;
-	private String name;
-	private Currency currency;
-	private BigDecimal lastPrice;
-	private BigDecimal previousDayPrice;
+	private ValuePaperDto valuePaperDto;
 	private BigDecimal buyPrice;
 	private int volume;
 	
 	public PortfolioValuePaperDto() { }
 			
-	public PortfolioValuePaperDto(long id, String name, Currency currency,
-			BigDecimal lastPrice, BigDecimal previousDayPrice,
+	public PortfolioValuePaperDto(long id, ValuePaperDto valuePaperDto,
 			BigDecimal buyPrice, int volume) {
 		super();
 		this.id = id;
-		this.name = name;
-		this.currency = currency;
-		this.lastPrice = lastPrice;
-		this.previousDayPrice = previousDayPrice;
+		this.valuePaperDto = valuePaperDto;
 		this.buyPrice = buyPrice;
 		this.volume = volume;
-	}
-
-	public static long getSerialversionuid() {
-		return serialVersionUID;
 	}
 
 	public long getId() {
 		return id;
 	}
 
-	public String getName() {
-		return name;
+	public void setId(long id) {
+		this.id = id;
 	}
 
-	public Currency getCurrency() {
-		return currency;
+	public ValuePaperDto getValuePaperDto() {
+		return valuePaperDto;
 	}
 
-	public BigDecimal getLastPrice() {
-		return lastPrice;
-	}
-
-	public BigDecimal getPreviousDayPrice() {
-		return previousDayPrice;
+	public void setValuePaperDto(ValuePaperDto valuePaperDto) {
+		this.valuePaperDto = valuePaperDto;
 	}
 
 	public BigDecimal getBuyPrice() {
 		return buyPrice;
 	}
 
+	public void setBuyPrice(BigDecimal buyPrice) {
+		this.buyPrice = buyPrice;
+	}
+
 	public int getVolume() {
 		return volume;
 	}
+
+	public void setVolume(int volume) {
+		this.volume = volume;
+	}
+
+	
 
 }
