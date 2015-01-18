@@ -9,7 +9,7 @@
 			    </properties>
 			</reader>
 			<processor ref="priceProcessor" />
-			<writer ref="priceWriter" />
+			<writer ref="intradayPriceWriter" />
 			
 			<retryable-exception-classes>
 				<include class="java.net.SocketTimeoutException" />

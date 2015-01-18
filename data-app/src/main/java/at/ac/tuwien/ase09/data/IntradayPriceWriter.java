@@ -10,14 +10,13 @@ import at.ac.tuwien.ase09.service.ValuePaperPriceEntryService;
 
 @Dependent
 @Named
-public class IntradayPriceWriter extends AbstractEntityWriter {
+public class IntradayPriceWriter extends AbstractEntityWriter<IntradayPrice> {
 	@Inject
 	private ValuePaperPriceEntryService service;
 
 	@Override
-	protected void persistEntity(Object entity) {
-		IntradayPrice price = (IntradayPrice) entity;
-		service.savePriceEntry(price.getIsin(), price.getPrice());
+	protected void persistEntity(IntradayPrice entity) {
+		service.savePriceEntry(entity.getIsin(), entity.getPrice());
 	}
 
 }

@@ -31,9 +31,9 @@ public class LimitOrder extends Order {
 	}
 
 	public void setLimit(BigDecimal limit) {
-		this.limit = limit;
+		this.limit= limit;
 	}
-
+	
 	public BigDecimal getStopLimit() {
 		return stopLimit;
 	}
@@ -41,5 +41,5 @@ public class LimitOrder extends Order {
 	public void setStopLimit(BigDecimal stopLimit) {
 		this.stopLimit = stopLimit;
 	}
-
+	
 }

@@ -42,6 +42,11 @@
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
+			<artifactId>data-final</artifactId>
+			<type>war</type>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>keycloak-server</artifactId>
 			<type>war</type>
 		</dependency>
@@ -71,6 +76,12 @@
 							<artifactId>web-final</artifactId>
 							<bundleFileName>web-app.war</bundleFileName>
 							<contextRoot>/</contextRoot>
+						</webModule>
+						<webModule>
+							<groupId>${project.groupId}</groupId>
+							<artifactId>data-final</artifactId>
+							<bundleFileName>data-app.war</bundleFileName>
+							<contextRoot>/data</contextRoot>
 						</webModule>
 						<ejbModule>
 							<groupId>${project.groupId}</groupId>

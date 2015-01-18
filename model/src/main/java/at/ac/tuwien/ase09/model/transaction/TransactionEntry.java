@@ -63,6 +63,4 @@ public abstract class TransactionEntry extends BaseEntity<Long> {
 	public void setCreated(Calendar created) {
 		this.created = created;
 	}
-	
-	
 }

@@ -5,40 +5,19 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import at.ac.tuwien.ase09.data.AbstractEntityWriter;
-import at.ac.tuwien.ase09.data.ValuePaperDataAccess;
-import at.ac.tuwien.ase09.exception.EntityNotFoundException;
 import at.ac.tuwien.ase09.model.Fund;
+import at.ac.tuwien.ase09.service.FundService;
 
 @Dependent
 @Named
-public class FundDetailWriter extends AbstractEntityWriter {
-	@Inject
-	private ValuePaperDataAccess valuePaperDataAccess;
+public class FundDetailWriter extends AbstractEntityWriter<Fund> {
 	
+	@Inject
+	private FundService fundService;
+
 	@Override
-	protected void persistEntity(Object entity) {
-		Fund fund = (Fund) entity;
-		Fund existingFund = null;
-		try{
-			existingFund = valuePaperDataAccess.getValuePaperByCode(fund.getCode(), Fund.class);
-			// existingFund is managed
-		}catch(EntityNotFoundException nfe){
-			// ignore
-		}
-		if(existingFund != null){
-			existingFund.setCode(fund.getCode());
-			existingFund.setName(fund.getName());
-			existingFund.setDetailUrl(fund.getDetailUrl());
-			existingFund.setHistoricPricesPageUrl(fund.getHistoricPricesPageUrl());
-			existingFund.setBusinessYearStartDay(fund.getBusinessYearStartDay());
-			existingFund.setBusinessYearStartMonth(fund.getBusinessYearStartMonth());
-			existingFund.setCategory(fund.getCategory());
-			existingFund.setDenomination(fund.getDenomination());
-			existingFund.setDepotBank(fund.getDepotBank());
-			existingFund.setYieldType(fund.getYieldType());
-		}else{
-			em.persist(fund);
-		}
+	protected void persistEntity(Fund entity) {
+		fundService.saveFund(entity);
 	}
 
 }

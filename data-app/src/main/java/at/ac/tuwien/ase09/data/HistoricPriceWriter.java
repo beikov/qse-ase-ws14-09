@@ -8,40 +8,30 @@ import javax.batch.api.chunk.AbstractItemWriter;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.persistence.EntityManager;
-import javax.persistence.FlushModeType;
 
 import at.ac.tuwien.ase09.model.ValuePaperHistoryEntry;
+import at.ac.tuwien.ase09.service.ValuePaperService;
 
 @Dependent
 @Named
 public class HistoricPriceWriter extends AbstractItemWriter {
 	private static final Logger LOG = Logger.getLogger(AbstractEntityWriter.class.getName());
 	@Inject
-	protected EntityManager em;
+	private ValuePaperService valuePaperService;
 	
 	@Override
 	public void open(Serializable checkpoint) throws Exception {
-		if(checkpoint != null){
-			em.clear();
-		}
+//		if(checkpoint != null){
+//			em.clear();
+//		}
 	}
 	
 	@Override
 	public void writeItems(List<Object> items) throws Exception {
-		em.setFlushMode(FlushModeType.COMMIT);
-		int numWrittenItems = 0;
 		for(int i = 0; i < items.size(); i++){
-			List<ValuePaperHistoryEntry> priceEntryList = (List<ValuePaperHistoryEntry>) items.get(i);
-			for(ValuePaperHistoryEntry priceEntry : priceEntryList){
-				em.persist(priceEntry);
-				numWrittenItems++;
-				LOG.info("Persisted " + priceEntry.toString());
-			}
-			if(numWrittenItems % 20 == 0){
-				em.flush();
-				em.clear();
-			}
+			List<ValuePaperHistoryEntry> historyEntryList = (List<ValuePaperHistoryEntry>) items.get(i);
+			valuePaperService.saveHistory(historyEntryList);
+			LOG.info("Saved " + historyEntryList.size() + " history entries");
 		}
 	}
 

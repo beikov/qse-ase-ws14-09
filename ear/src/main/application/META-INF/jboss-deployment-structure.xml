@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jboss-deployment-structure>
+	<sub-deployment name="service.jar">
+		<dependencies>
+			<module name="deployment.ear.ear.web-app.war"/>
+		</dependencies>
+	</sub-deployment>
 
 	<sub-deployment name="keycloak-server.war">
 		<dependencies>

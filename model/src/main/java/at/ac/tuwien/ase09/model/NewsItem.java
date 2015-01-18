@@ -2,9 +2,11 @@ package at.ac.tuwien.ase09.model;
 
 import java.util.Calendar;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -18,8 +20,9 @@ public class NewsItem extends BaseEntity<Long> {
 	private String source;
 	private Calendar created;
 	private Stock stock;
-	
-	@Column(nullable=false, columnDefinition="TEXT")
+
+	@Lob
+	@Basic(optional=false)
 	public String getTitle() {
 		return title;
 	}
@@ -27,8 +30,8 @@ public class NewsItem extends BaseEntity<Long> {
 	public void setTitle(String title) {
 		this.title = title;
 	}
-	
-	@Column(columnDefinition="TEXT")
+
+	@Lob
 	public String getText() {
 		return text;
 	}
