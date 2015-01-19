@@ -133,7 +133,7 @@ public class UserProfileBean implements Serializable {
 	}
 	
 	public boolean isProfileOwner() {
-		return user.getId() == owner.getId(); 
+		return user.getUsername().equals(owner.getUsername()); 
 	}
 	
 	public List<User> getFollowers() {
