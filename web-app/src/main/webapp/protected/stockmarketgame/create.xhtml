@@ -20,15 +20,17 @@
 	<ui:define name="head">
 		<style type="text/css">
 			.ui-picklist .ui-picklist-list {
-				height:300px;
-				width:400px;
+				height: 300px;
+				width: 400px;
 			}
+
 			.ui-fileupload .ui-progressbar {
-		        display: none;
-		    }
-		    .ui-fileupload td .ui-fileupload-cancel {
-		    	display: none;
-		    }
+				display: none;
+			}
+
+			.ui-fileupload td .ui-fileupload-cancel {
+				display: none;
+			}
 		</style>
 	</ui:define>
 
@@ -275,10 +277,12 @@
 
 							<f:facet name="sourceCaption">Verfügbar</f:facet>
 							<f:facet name="targetCaption">Erlaubt</f:facet>
+							
+							<p:ajax event="transfer" listener="#{stockMarketGameCreationBean.onTransfer}" update="allowedValuePapersPickList" />
 
 						</p:pickList>
 
-						<!-- <p:messages globalOnly="true" autoUpdate="true" />  -->
+						<p:messages globalOnly="true" autoUpdate="true" />
 
 					</p:panel>
 

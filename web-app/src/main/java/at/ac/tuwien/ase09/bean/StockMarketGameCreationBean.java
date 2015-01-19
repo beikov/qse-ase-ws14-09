@@ -7,10 +7,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Currency;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
@@ -23,6 +21,7 @@ import javax.sql.rowset.serial.SerialBlob;
 
 import org.apache.commons.io.IOUtils;
 import org.primefaces.event.FileUploadEvent;
+import org.primefaces.event.TransferEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.DualListModel;
 import org.primefaces.model.StreamedContent;
@@ -49,7 +48,7 @@ import at.ac.tuwien.ase09.service.StockMarketGameService;
 import java.io.Serializable;
 
 @Named
-@ViewScoped
+@SessionScoped
 public class StockMarketGameCreationBean implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -92,18 +91,19 @@ public class StockMarketGameCreationBean implements Serializable {
 	private BigDecimal capitalReturnTax;
 
 	//Allowed ValuePapers-Attributes
-	//private List<ValuePaper> selectedAllowedValuePapers = new ArrayList<ValuePaper>();
-	//private Set<ValuePaper> allowedValuePapers = new HashSet<>();
 	private ValuePaper searchValuePaper;
 	private ValuePaperType valuePaperType;
 	private Boolean isTypeSpecificated = false;
 	private String valuePaperName, valuePaperCode, valuePaperCountry, valuePaperCurrencyCode, valuePaperIndex;
-	//private List<ValuePaper> searchedValuePapers;
 
 	private DualListModel<ValuePaper> allowedValuePapersListModel;
-
 	private List<ValuePaper> allowedValuePapersSource;
 	private List<ValuePaper> allowedValuePapersTarget;
+	
+	private List<ValuePaper> allowedValuePapersFinal;
+
+	private boolean initCalled = false;
+
 
 
 	public DualListModel<ValuePaper> getAllowedValuePapersListModel() {
@@ -270,46 +270,53 @@ public class StockMarketGameCreationBean implements Serializable {
 
 	public void init() {
 
-		allowedValuePapersSource = new ArrayList<ValuePaper>();
-		allowedValuePapersTarget = new ArrayList<ValuePaper>();
+		if(!initCalled){
 
-		allowedValuePapersListModel = new DualListModel<ValuePaper>(allowedValuePapersSource, allowedValuePapersTarget);
+			loggedInUser = userContext.getUser();
 
-		loggedInUser = userContext.getUser();
-
-		if(loggedInUser != null){
-			try{
-				userInstitution = institutionDataAccess.getByAdmin(loggedInUser.getUsername());
+			if(loggedInUser != null){
+				try{
+					userInstitution = institutionDataAccess.getByAdmin(loggedInUser.getUsername());
+				}
+				catch(EntityNotFoundException e){}
 			}
-			catch(EntityNotFoundException e){}
+
+			loadStockMarketGame();
+
+			allowedValuePapersSource = new ArrayList<ValuePaper>();
+			allowedValuePapersTarget = new ArrayList<ValuePaper>();
+			
+			allowedValuePapersFinal = new ArrayList<ValuePaper>();
+
+			allowedValuePapersListModel = new DualListModel<ValuePaper>(allowedValuePapersSource, allowedValuePapersTarget);
+
+			if(stockMarketGame != null){
+
+				name = stockMarketGame.getName();
+				validFrom = stockMarketGame.getValidFrom().getTime();
+				validTo = stockMarketGame.getValidTo().getTime();
+				registrationFrom = stockMarketGame.getRegistrationFrom().getTime();
+				registrationTo = stockMarketGame.getRegistrationTo().getTime();
+				text = stockMarketGame.getText();
+				logo = stockMarketGame.getLogo();
+
+				startCapital = stockMarketGame.getSetting().getStartCapital().getValue();
+				orderFee = stockMarketGame.getSetting().getOrderFee().getValue();
+				portfolioFee = stockMarketGame.getSetting().getPortfolioFee().getValue();
+				capitalReturnTax = stockMarketGame.getSetting().getCapitalReturnTax();
+
+				allowedValuePapersListModel.setTarget(new ArrayList<ValuePaper>(stockMarketGame.getAllowedValuePapers()));
+			}
+			else{
+
+				orderFee = new BigDecimal(0);
+				portfolioFee = new BigDecimal(0);
+				capitalReturnTax = new BigDecimal(0);
+			}
+			
+			initCalled = true;
 		}
-
-		loadStockMarketGame();
-
-		if(stockMarketGame != null){
-
-			name = stockMarketGame.getName();
-			validFrom = stockMarketGame.getValidFrom().getTime();
-			validTo = stockMarketGame.getValidTo().getTime();
-			registrationFrom = stockMarketGame.getRegistrationFrom().getTime();
-			registrationTo = stockMarketGame.getRegistrationTo().getTime();
-			text = stockMarketGame.getText();
-			logo = stockMarketGame.getLogo();
-
-			startCapital = stockMarketGame.getSetting().getStartCapital().getValue();
-			orderFee = stockMarketGame.getSetting().getOrderFee().getValue();
-			portfolioFee = stockMarketGame.getSetting().getPortfolioFee().getValue();
-			capitalReturnTax = stockMarketGame.getSetting().getCapitalReturnTax();
-
-			//allowedValuePapers = stockMarketGame.getAllowedValuePapers();
-			allowedValuePapersListModel.setTarget(new ArrayList<ValuePaper>(stockMarketGame.getAllowedValuePapers()));
-		}
-		else{
-
-			orderFee = new BigDecimal(0);
-			portfolioFee = new BigDecimal(0);
-			capitalReturnTax = new BigDecimal(0);
-		}
+	
 	}
 
 	public boolean isStockMarketGameAdmin(){
@@ -383,7 +390,7 @@ public class StockMarketGameCreationBean implements Serializable {
 		stockMarketGame.setRegistrationFrom(StockMarketGameCreationBean.dateToCalendar(registrationFrom));
 		stockMarketGame.setRegistrationTo(StockMarketGameCreationBean.dateToCalendar(registrationTo));
 
-		stockMarketGame.setAllowedValuePapers(new LinkedHashSet<ValuePaper>(allowedValuePapersTarget));
+		stockMarketGame.setAllowedValuePapers(new LinkedHashSet<ValuePaper>(allowedValuePapersFinal));
 
 		PortfolioSetting portfolioSetting = new PortfolioSetting();
 
@@ -503,22 +510,20 @@ public class StockMarketGameCreationBean implements Serializable {
 			}
 		}
 
-		//<<<<<<< HEAD
-		allowedValuePapersTarget = allowedValuePapersListModel.getTarget();
-		/*=======
-		searchedValuePapers = valuePaperScreenerDataAccess.findByValuePaper(searchValuePaper.getType(), searchValuePaper);
 
-		searchedValuePapers.removeAll(allowedValuePapers);
->>>>>>> stockmarketgame_search*/
+		allowedValuePapersTarget = allowedValuePapersListModel.getTarget();
 
 		allowedValuePapersSource = valuePaperScreenerDataAccess.findByValuePaper(searchValuePaper, isTypeSpecificated);
 
-		//allowedValuePapersSource.removeAll(allowedValuePapers);
 		allowedValuePapersSource.removeAll(allowedValuePapersTarget);
 
 		allowedValuePapersListModel.setSource(allowedValuePapersSource);
 		allowedValuePapersListModel.setTarget(allowedValuePapersTarget);
 	}
+
+	public void onTransfer(TransferEvent event) {	
+		allowedValuePapersFinal = allowedValuePapersListModel.getTarget();
+	}  
 
 	public static Calendar dateToCalendar(Date date){ 
 		Calendar cal = Calendar.getInstance();
