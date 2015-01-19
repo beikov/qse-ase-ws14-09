@@ -212,12 +212,10 @@ public class PortfolioViewBean implements Serializable {
 	}*/
 	
 	public Money getProfit(PortfolioValuePaper pvp) {
-		Money profit = new Money();
-		profit.setCurrency(portfolio.getCurrentCapital().getCurrency());
-    	profit.setValue(new BigDecimal(portfolioDataAccess.getProfit(pvp)));
-		
-		return profit;
+		double profit = portfolioDataAccess.getProfit(pvp);
+		return createMoney(new BigDecimal(profit));
 	}
+	
 	
 	public Object[] getOrderStates() {
 		return OrderStatus.values();
@@ -233,21 +231,25 @@ public class PortfolioViewBean implements Serializable {
 	}
 	
 	public Money getCostValueForPortfolio() {
-		Money m = new Money();
-		m.setCurrency(portfolio.getCurrentCapital().getCurrency());
-		m.setValue(portfolioDataAccess.getCostValueForPortfolio(portfolioId));
-		return m;
+		BigDecimal cost = portfolioDataAccess.getCostValueForPortfolio(portfolioId);
+		return createMoney(cost);
 	}
 	
 	public Money getCurrentValueForPortfolio() {
-		Money m = new Money();
-		m.setCurrency(portfolio.getCurrentCapital().getCurrency());
-		m.setValue(portfolioDataAccess.getCurrentValueForPortfolio(portfolioId));
-		return m;
+		BigDecimal value = portfolioDataAccess.getCurrentValueForPortfolio(portfolioId);
+		return createMoney(value);
 	}
 	
 	public double getPortfolioPerformance() {
-		return portfolioDataAccess.getPortfolioPerformance(portfolioId).doubleValue();
+		BigDecimal performance;
+		try {
+			performance = portfolioDataAccess.getPortfolioPerformance(portfolioId); 
+		} catch(EntityNotFoundException e) {
+			performance = new BigDecimal(0);
+		} catch(AppException e) {
+			performance = new BigDecimal(0);
+		}
+		return performance.doubleValue();
 	}
 	
 	
@@ -294,7 +296,7 @@ public class PortfolioViewBean implements Serializable {
 	}
 	
 	public boolean isPortfolioOwner() {
-		return owner.getId() == user.getId();
+		return owner.getUsername().equals(user.getUsername());
 	}
 	
 	private boolean checkVisibilitySetting(boolean setting) {
@@ -372,5 +374,15 @@ public class PortfolioViewBean implements Serializable {
         
         portfolioChart.addSeries(series);
         
+	}
+	
+	private Money createMoney(BigDecimal value) {
+		Money m = new Money();
+		m.setCurrency(portfolio.getSetting().getStartCapital().getCurrency());
+		if (value == null)
+			value = new BigDecimal(0);
+		m.setValue(value);
+		return m;
+		
 	}
 }

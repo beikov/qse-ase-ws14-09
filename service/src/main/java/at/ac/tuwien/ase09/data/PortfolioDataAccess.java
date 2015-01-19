@@ -394,9 +394,15 @@ public class PortfolioDataAccess {
 		//double payed = getTotalPayedForPortfolioValuePaper(pvp).doubleValue();
 		int volume = pvp.getVolume();
 		double payed = pvp.getBuyPrice().doubleValue()*volume;
-		double latestPrice = priceDataAccess.getLastPriceEntry(pvp.getValuePaper().getCode()).getPrice().doubleValue();
-		
-		return latestPrice*volume - payed;
+		double latestPrice;
+		try {
+			latestPrice = priceDataAccess.getLastPriceEntry(pvp.getValuePaper().getCode()).getPrice().doubleValue();
+			return latestPrice*volume - payed;
+		} catch(NoResultException e) {
+			throw new EntityNotFoundException(e);
+		} catch(Exception e) {
+			throw new AppException(e);
+		}
 	}
 
 	public List<Portfolio> getActiveUserPortfolios(User user) {
