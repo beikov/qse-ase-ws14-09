@@ -395,7 +395,8 @@ public class PortfolioDataAccess {
 					+ "LEFT JOIN FETCH p.game game "
 					+ "JOIN FETCH p.owner owner "
 					+ "WHERE owner.id = :userId "
-					+ "AND (game IS NULL OR game.validTo > :now)", Portfolio.class)
+					+ "AND (game IS NULL OR game.validTo > :now) "
+					+ "ORDER BY p.name", Portfolio.class)
 				.setParameter("userId", user.getId())
 				.setParameter("now", Calendar.getInstance())
 				.getResultList();
