@@ -25,10 +25,10 @@
 			<p:growl id="messages" />
 
 			<p:panel header="Börsenspiel-Rangliste">
-			
-				<h:panelGrid columns="2">
-					<p:outputLabel for="name" value="Börsenspielbezeichnung:"
-						style="margin-right:20px" />
+
+				<h:panelGrid columns="2" style="margin-bottom:20px;margin-top:20px">
+					<h:outputText value="Börsenspielbezeichnung:"
+						style="font-weight:bold;margin-right:20px" />
 					<h:outputText id="name"
 						value="#{stockMarketGameRankingBean.stockMarketGame.name}">
 					</h:outputText>
@@ -41,23 +41,35 @@
 					paginator="true" rows="10">
 
 					<f:facet name="{Exporters}">
-						<h:commandLink value="PDF">
+						<h:commandLink style="float:right">
+							<p:graphicImage name="/images/export/pdf.png" width="24" style="margin-left:auto; margin-right:0"/>
 							<p:dataExporter type="pdf" target="ranking_table"
-								fileName="ranking" />
+								fileName="#{'Rangliste_'.concat(stockMarketGameRankingBean.stockMarketGame.name)}" />
+							<f:param name="stockMarketGameId"
+								value="#{stockMarketGameRankingBean.stockMarketGameId}" />
 						</h:commandLink>
 
-						<h:commandLink value="CSV">
+						<h:commandLink style="float:right">
+							<p:graphicImage name="/images/export/csv.png" width="24" />
 							<p:dataExporter type="csv" target="ranking_table"
-								fileName="ranking" />
+								fileName="#{'Rangliste_'.concat(stockMarketGameRankingBean.stockMarketGame.name)}" />
+							<f:param name="stockMarketGameId"
+								value="#{stockMarketGameRankingBean.stockMarketGameId}" />
 						</h:commandLink>
 					</f:facet>
 
-					<p:column headerText="#">
-						<h:outputText value="#{rowIndex+1}" />
-    				</p:column>
+					<p:column headerText="Platzierung">
+						<h:outputText value="#{rowIndex+1}." />
+					</p:column>
 
 					<p:column headerText="User">
 						<h:outputText value="#{portfolio.owner.username}" />
+					</p:column>
+
+					<p:column headerText="Portfoliowert">
+						<h:outputText
+							value="#{stockMarketGameRankingBean.portfolioRankingMap.get(portfolio.id).doubleValue()} EUR" />
+
 					</p:column>
 
 				</p:dataTable>
