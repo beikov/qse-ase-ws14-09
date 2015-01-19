@@ -1,0 +1,27 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ase="http://java.sun.com/jsf/composite/portfoliosimcomponents">
+		
+	<h:panelGroup rendered="#{not empty user.id}">
+		<p:panelGrid columns="2" styleClass="no-border">
+			
+			<c:forEach items="#{portfolioBean.activeUserPortfolios}" var="portfolio">
+				<p:panel header="#{portfolio.name}">
+					<p:panelGrid columns="2">
+						<h:outputText value="Kapital" />
+						<h:outputText value="#{portfolio.currentCapital}" />
+						
+						<h:outputText value="Gewinn seit gestern" />
+						<h:outputText value="???" />
+					</p:panelGrid>
+				</p:panel>
+			</c:forEach>
+			
+		</p:panelGrid>
+	</h:panelGroup>
+
+</ui:composition>
