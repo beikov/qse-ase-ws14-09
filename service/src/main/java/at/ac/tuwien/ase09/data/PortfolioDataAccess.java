@@ -390,19 +390,16 @@ public class PortfolioDataAccess {
 
 	public List<Portfolio> getActiveUserPortfolios(User user) {
 		try{
-			List<Portfolio> portfolios = em.createQuery("FROM Portfolio p LEFT JOIN FETCH p.game JOIN FETCH p.owner WHERE p.owner = :user", Portfolio.class).setParameter("user", user).getResultList();
-			List<Portfolio> result = new ArrayList<>();
-			for (Portfolio p : portfolios) {
-				if (p.getGame() == null) {
-					result.add(p);
-					continue;
-				}
-				Calendar now = Calendar.getInstance();
-				if (p.getGame().getValidTo().after(now)) {
-					result.add(p);
-				}
-			}
-			return result;
+			return em.createQuery(
+					"SELECT p "
+					+ "FROM Portfolio p "
+					+ "LEFT JOIN FETCH p.game game "
+					+ "JOIN FETCH p.owner owner "
+					+ "WHERE owner.id = :userId "
+					+ "AND (game IS NULL OR game.validTo > :now)", Portfolio.class)
+				.setParameter("userId", user.getId())
+				.setParameter("now", Calendar.getInstance())
+				.getResultList();
 		}catch(Exception e){
 			throw new AppException(e);
 		}

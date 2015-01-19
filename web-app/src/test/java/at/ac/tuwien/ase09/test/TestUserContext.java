@@ -1,6 +1,5 @@
 package at.ac.tuwien.ase09.test;
 
-import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Produces;
@@ -9,7 +8,6 @@ import javax.inject.Named;
 import at.ac.tuwien.ase09.context.Login;
 import at.ac.tuwien.ase09.context.UserContext;
 import at.ac.tuwien.ase09.keycloak.UserInfo;
-import at.ac.tuwien.ase09.model.Portfolio;
 import at.ac.tuwien.ase09.model.User;
 
 @SessionScoped
@@ -34,12 +32,12 @@ private static final long serialVersionUID = 1L;
 	}
 
 	@Override
-	public Portfolio getContext() {
+	public Long getContextId() {
 		if (userInfo == null) {
 			return null;
 		}
 
-		return userInfo.getContext();
+		return userInfo.getContextId();
 	}
 
 }

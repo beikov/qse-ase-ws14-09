@@ -17,6 +17,7 @@ public class UserDataAccess {
 	@Inject
 	private EntityManager em;
 
+	// TODO: Cache
 	public User getUserByUsername(String username) {
 		try {
 			return em.createQuery("SELECT u FROM User u WHERE u.username = :username", User.class).setParameter("username", username).getSingleResult();

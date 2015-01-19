@@ -63,7 +63,7 @@ public class UserFilter implements Filter {
 					userInfo.setUser(user);
 					
 					if (portfolioContext.getContextId() != null) {
-						userInfo.setContext(portfolioDataAccess.getPortfolioById(portfolioContext.getContextId()));
+						userInfo.setContextId(portfolioContext.getContextId());
 					}
 					
 					loginEvent.fire(userInfo);
