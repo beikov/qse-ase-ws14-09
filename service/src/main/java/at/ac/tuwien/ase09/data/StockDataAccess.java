@@ -15,8 +15,8 @@ public class StockDataAccess extends AbstractDataAccess {
 				+ "FROM Portfolio p "
 				+ "JOIN p.game g "
 				+ "JOIN TREAT(g.allowedValuePapers AS Stock) stock "
-				+ "WHERE p.id = :portfolioId", Stock.class)
-			.setParameter("portfolioId", userContext.getContext().getId())
+				+ "WHERE :portfolioId IS NULL OR p.id = :portfolioId", Stock.class)
+			.setParameter("portfolioId", userContext.getContextId())
 			.getResultList();
 	}
 }

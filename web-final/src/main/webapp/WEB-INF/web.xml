@@ -96,9 +96,14 @@
         <param-value>false</param-value>
     </context-param>
     
+    <listener>
+    	<listener-class>at.ac.tuwien.ase09.webapp.ConfigServletContextListener</listener-class>
+    </listener>
+    
     <session-config>
         <session-timeout>15</session-timeout>
         <cookie-config>
+        	<path>/</path>
             <http-only>true</http-only>
         </cookie-config>
         <tracking-mode>COOKIE</tracking-mode>
