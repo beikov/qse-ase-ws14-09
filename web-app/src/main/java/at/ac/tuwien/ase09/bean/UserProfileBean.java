@@ -52,13 +52,15 @@ public class UserProfileBean implements Serializable {
 		try {
 			owner = userDataAccess.loadUserForProfile(username);
 		} catch(EntityNotFoundException e) {
-			FacesContext.getCurrentInstance().getExternalContext().responseSendError(404, "Der Benutzer '" + username + "' wurde nicht gefunden");
-			FacesContext.getCurrentInstance().responseComplete();
+			FacesContext context = FacesContext.getCurrentInstance();
+			context.getExternalContext().responseSendError(404, "Der Benutzer '" + username + "' wurde nicht gefunden");
+			context.responseComplete();
 			return;
 		} catch(AppException e) {
 			e.printStackTrace();
-			FacesContext.getCurrentInstance().getExternalContext().responseSendError(500, "Fehler beim Laden des Benutzerprofils");
-			FacesContext.getCurrentInstance().responseComplete();
+			FacesContext context = FacesContext.getCurrentInstance();
+			context.getExternalContext().responseSendError(500, "Fehler beim Laden des Benutzerprofils");
+			context.responseComplete();
 			return;
 		}
 		user = userContext.getUser();

@@ -8,6 +8,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -19,7 +20,7 @@ import at.ac.tuwien.ase09.model.Institution;
 import at.ac.tuwien.ase09.service.InstitutionService;
 
 @Named
-@RequestScoped
+@ViewScoped
 public class InstitutionSettingsBean implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -42,11 +43,13 @@ public class InstitutionSettingsBean implements Serializable {
 		try {
 			institution = institutionDataAccess.getByAdmin(userContext.getUser().getUsername());
 		} catch(EntityNotFoundException e) {
-			FacesContext.getCurrentInstance().getExternalContext().responseSendError(404, "Keine Institution zum Bearbeiten gefunden");
-			FacesContext.getCurrentInstance().responseComplete();
+			FacesContext context = FacesContext.getCurrentInstance();
+			context.getExternalContext().responseSendError(404, "Keine Institution zum Bearbeiten gefunden");
+			context.responseComplete();
 		} catch(AppException e) {
-			FacesContext.getCurrentInstance().getExternalContext().responseSendError(500, "Fehler beim Laden der Institution");
-			FacesContext.getCurrentInstance().responseComplete();
+			FacesContext context = FacesContext.getCurrentInstance();
+			context.getExternalContext().responseSendError(500, "Fehler beim Laden der Institution");
+			context.responseComplete();
 		}
 	}
 	

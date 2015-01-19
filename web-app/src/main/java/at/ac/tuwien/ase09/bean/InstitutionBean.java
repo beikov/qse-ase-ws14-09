@@ -41,8 +41,9 @@ public class InstitutionBean implements Serializable {
 		try {
 			institution = institutionDataAccess.getById(institutionId);
 		} catch(EntityNotFoundException e) {
-			FacesContext.getCurrentInstance().getExternalContext().responseSendError(404, "Die Institution mit der Id '" + institutionId + "' konnte nicht gefunden werden");
-			FacesContext.getCurrentInstance().responseComplete();
+			FacesContext context = FacesContext.getCurrentInstance(); 
+			context.getExternalContext().responseSendError(404, "Die Institution mit der Id '" + institutionId + "' konnte nicht gefunden werden");
+			context.responseComplete();
 		}
 		
 		editMode = false;
