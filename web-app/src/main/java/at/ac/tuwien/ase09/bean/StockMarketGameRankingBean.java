@@ -6,13 +6,17 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
+
+import org.apache.commons.collections.map.HashedMap;
 
 import at.ac.tuwien.ase09.context.WebUserContext;
 import at.ac.tuwien.ase09.data.InstitutionDataAccess;
@@ -29,7 +33,7 @@ import at.ac.tuwien.ase09.model.User;
 public class StockMarketGameRankingBean implements Serializable{
 
 	private static final long serialVersionUID = 1L;
-	
+
 	@Inject
 	private WebUserContext userContext;
 
@@ -50,14 +54,21 @@ public class StockMarketGameRankingBean implements Serializable{
 	private Institution userInstitution;
 
 	private List<Portfolio> portfolioRankingList;
-	
-	
+	private Map<Long, BigDecimal> portfolioRankingMap;
+
+
 
 	public List<Portfolio> getPortfolioRankingList() {
 		return portfolioRankingList;
 	}
 	public void setPortfolioRankingList(List<Portfolio> portfolioRankingList) {
 		this.portfolioRankingList = portfolioRankingList;
+	}
+	public Map<Long, BigDecimal> getPortfolioRankingMap() {
+		return portfolioRankingMap;
+	}
+	public void setPortfolioRankingMap(Map<Long, BigDecimal> portfolioRankingMap) {
+		this.portfolioRankingMap = portfolioRankingMap;
 	}
 	public Long getStockMarketGameId() {
 		return stockMarketGameId;
@@ -98,9 +109,9 @@ public class StockMarketGameRankingBean implements Serializable{
 		}
 
 		loadStockMarketGame();
-		
+
 		loadStockMarketGameRanking();
-		
+
 		if(!isStockMarketGameAdmin() && !isStockMarketGameParticipant()){
 			FacesContext.getCurrentInstance().getExternalContext().responseSendError(403, "Nur die Teilnehmer und der Ersteller dieses Börsenspiels können das Teilnehmerranking aufrufen");
 			FacesContext.getCurrentInstance().responseComplete();
@@ -116,7 +127,7 @@ public class StockMarketGameRankingBean implements Serializable{
 	}
 	public boolean isStockMarketGameParticipant(){
 		if(stockMarketGame != null && loggedInUser != null){
-			
+
 			try{			
 				return portfolioDataAccess.getByGameAndUser(stockMarketGame, loggedInUser) != null;
 			}
@@ -141,32 +152,34 @@ public class StockMarketGameRankingBean implements Serializable{
 	}
 	private void loadStockMarketGameRanking() {
 		if(stockMarketGame != null){
-			
+
 			portfolioRankingList = new ArrayList<Portfolio>();
-			
+			portfolioRankingMap = new HashMap<Long, BigDecimal>();
+
+
 			portfolioRankingList = portfolioDataAccess.getPortfoliosByStockMarketGame(stockMarketGame.getId());
-			
+
+
+			for(Portfolio p : portfolioRankingList){
+
+				BigDecimal sum = p.getSetting().getStartCapital().getValue();
+
+				BigDecimal currentValue = portfolioDataAccess.getCurrentValueForPortfolio(p.getId());
+
+				if(currentValue != null){
+					sum.add(currentValue);
+				}
+
+				portfolioRankingMap.put(p.getId(), sum);
+			}
+
 			Collections.sort(portfolioRankingList, new Comparator<Portfolio>() {
-		        @Override
-		        public int compare(Portfolio p1, Portfolio p2)
-		        {
-		        	BigDecimal p1Sum = p1.getSetting().getStartCapital().getValue();
-		        	BigDecimal p2Sum = p2.getSetting().getStartCapital().getValue();
-
-		        	BigDecimal p1Value = portfolioDataAccess.getCurrentValueForPortfolio(p1.getId());
-		        	BigDecimal p2Value = portfolioDataAccess.getCurrentValueForPortfolio(p2.getId());
-
-		        	if(p1Value != null){
-		        		p1Sum.add(p1Value);
-		        	}
-		        	
-		        	if(p2Value != null){
-		        		p2Sum.add(p2Value);
-		        	}
-
-		        	return p1Sum.subtract(p2Sum).intValue();
-		        }
-		    });
+				@Override
+				public int compare(Portfolio p1, Portfolio p2)
+				{
+					return portfolioRankingMap.get(p2.getId()).subtract(portfolioRankingMap.get(p1.getId())).intValue();
+				}
+			});
 		}
 	}
 
