@@ -15,12 +15,6 @@
 				<h:outputText value="Besitzer:" />
 				<ase:userLogoLink user="#{portfolioViewBean.portfolio.owner}" />
 				
-				<h:outputText value="Erstellt:" />
-				<h:outputText value="#{dateUtil.formatDate( portfolioViewBean.portfolio.created.time )}" />
-				
-				<h:outputText value="Startkapital:" />
-				<h:outputText value="#{portfolioViewBean.portfolio.setting.startCapital}" />
-				
 				<h:outputText value="Aktuelles Kapital:" />
 				<h:outputText value="#{portfolioViewBean.portfolio.currentCapital}" />
 				
@@ -36,6 +30,12 @@
 		</div>
 		<div class="col-md-6">
 			<p:panelGrid columns="2">
+				<h:outputText value="Erstellt:" />
+				<h:outputText value="#{dateUtil.formatDate( portfolioViewBean.portfolio.created.time )}" />
+				
+				<h:outputText value="Startkapital:" />
+				<h:outputText value="#{portfolioViewBean.portfolio.setting.startCapital}" />
+				
 				<h:outputText value="Ordergebühr:" />
 				<h:outputText value="#{portfolioViewBean.portfolio.setting.orderFee}" />
 				
