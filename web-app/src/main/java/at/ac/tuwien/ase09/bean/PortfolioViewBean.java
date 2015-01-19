@@ -230,12 +230,18 @@ public class PortfolioViewBean implements Serializable {
 		return filteredOrders;
 	}
 	
-	public double getCostValueForPortfolio() {
-		return portfolioDataAccess.getCostValueForPortfolio(portfolioId).doubleValue();
+	public Money getCostValueForPortfolio() {
+		Money m = new Money();
+		m.setCurrency(portfolio.getCurrentCapital().getCurrency());
+		m.setValue(portfolioDataAccess.getCostValueForPortfolio(portfolioId));
+		return m;
 	}
 	
-	public double getCurrentValueForPortfolio() {
-		return portfolioDataAccess.getCurrentValueForPortfolio(portfolioId).doubleValue();
+	public Money getCurrentValueForPortfolio() {
+		Money m = new Money();
+		m.setCurrency(portfolio.getCurrentCapital().getCurrency());
+		m.setValue(portfolioDataAccess.getCurrentValueForPortfolio(portfolioId));
+		return m;
 	}
 	
 	public double getPortfolioPerformance() {
