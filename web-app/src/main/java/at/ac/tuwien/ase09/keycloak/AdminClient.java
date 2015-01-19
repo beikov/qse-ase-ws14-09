@@ -2,6 +2,8 @@ package at.ac.tuwien.ase09.keycloak;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -32,6 +34,8 @@ import at.ac.tuwien.ase09.model.User;
 public class AdminClient {
 	
 	private static final String APP_REALM = "portfolio-web";
+	private static final String APP_NAME = "protected";
+	private static final String CONTEXT_PATH = "/auth";
 	
     public static class Failure extends Exception {
         private int status;
@@ -118,9 +122,8 @@ public class AdminClient {
         HttpClient client = new HttpClientBuilder()
                 .disableTrustManager().build();
         try {
-        	StringBuilder uriBuilder = new StringBuilder();
-        	uriBuilder.append(UriUtils.getOrigin(req.getRequestURL().toString()));
-        	uriBuilder.append("/auth/admin/realms/");
+        	StringBuilder uriBuilder = getBase(req);
+        	uriBuilder.append("/admin/realms/");
         	uriBuilder.append(APP_REALM);
         	uriBuilder.append("/users/");
         	uriBuilder.append(session.getIdToken().getPreferredUsername());
@@ -143,9 +146,42 @@ public class AdminClient {
         }
     }
     
-    public static String getLogoutUrl(HttpServletRequest req) throws Failure {
+    public static String getLoginUrl(HttpServletRequest req) {
     	String host = UriUtils.getOrigin(req.getRequestURL().toString());
-    	return KeycloakUriBuilder.fromUri("/auth").path(ServiceUrlConstants.TOKEN_SERVICE_LOGOUT_PATH)
-    			.host(host).queryParam("redirect_uri", host).toString();
+    	return getBase(host).append("/realms/").append(APP_REALM).append("/tokens/login")
+    			.append("?redirect_uri=").append(getEncodedParam(host + "/protected"))
+    			.append("&client_id=").append(APP_NAME).toString();
+    }
+    
+    public static String getLogoutUrl(HttpServletRequest req) {
+    	String host = UriUtils.getOrigin(req.getRequestURL().toString());
+    	return getBase(host).append("/realms/").append(APP_REALM).append("/tokens/logout")
+    			.append("?redirect_uri=").append(getEncodedParam(host)).toString();
+    }
+    
+    public static String getRegisterUrl(HttpServletRequest req) {
+    	String host = UriUtils.getOrigin(req.getRequestURL().toString());
+    	return getBase(host).append("/realms/").append(APP_REALM).append("/tokens/registrations")
+    			.append("?redirect_uri=").append(getEncodedParam(host + "/protected"))
+    			.append("&client_id=").append(APP_NAME).toString();
+    }
+    
+    private static StringBuilder getBase(HttpServletRequest req) {
+    	return getBase(UriUtils.getOrigin(req.getRequestURL().toString()));
+    }
+    
+    private static StringBuilder getBase(String host) {
+    	StringBuilder uriBuilder = new StringBuilder();
+    	uriBuilder.append(host);
+    	uriBuilder.append(CONTEXT_PATH);
+    	return uriBuilder;
+    }
+    
+    private static String getEncodedParam(String param) {
+    	try {
+			return URLEncoder.encode(param, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new RuntimeException(e);
+		}
     }
 }

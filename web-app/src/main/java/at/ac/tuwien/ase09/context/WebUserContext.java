@@ -6,7 +6,6 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Named;
 
 import at.ac.tuwien.ase09.keycloak.UserInfo;
-import at.ac.tuwien.ase09.model.Portfolio;
 import at.ac.tuwien.ase09.model.User;
 
 @RequestScoped
@@ -22,7 +21,7 @@ public class WebUserContext implements UserContext {
 
 	@Produces
 	@Named
-	@RequestScoped
+	@RequestScoped	
 	@Override
 	public User getUser() {
 		if (userInfo == null) {
@@ -32,12 +31,12 @@ public class WebUserContext implements UserContext {
 	}
 
 	@Override
-	public Portfolio getContext() {
+	public Long getContextId() {
 		if (userInfo == null) {
 			return null;
 		}
 
-		return userInfo.getContext();
+		return userInfo.getContextId();
 	}
 
 }

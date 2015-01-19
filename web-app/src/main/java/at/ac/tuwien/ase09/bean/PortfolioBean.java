@@ -1,21 +1,18 @@
 package at.ac.tuwien.ase09.bean;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
-import javax.faces.bean.ViewScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import at.ac.tuwien.ase09.context.UserContext;
-import at.ac.tuwien.ase09.context.WebUserContext;
 import at.ac.tuwien.ase09.data.PortfolioDataAccess;
 import at.ac.tuwien.ase09.model.Portfolio;
-import at.ac.tuwien.ase09.model.User;
 
 @Named
-@ViewScoped
+@RequestScoped
 public class PortfolioBean implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -27,20 +24,10 @@ public class PortfolioBean implements Serializable {
 
 	@Inject
 	private UserContext userContext;
-	
-	/*public List<Portfolio> getPortfolios() {
-		return portfolioDataAccess.getPortfolios();
-	}*/
-
-	public List<Portfolio> getUserPortfolios() {
-		// only for /protected/portfolio/list.xhtml
-		User user = userContext.getUser();
-		return portfolioDataAccess.getPortfoliosByUser(user.getId());
-	}	
-	
-	public List<Portfolio> getActiveUserPortfolios(User user) {
+		
+	public List<Portfolio> getActiveUserPortfolios() {
 		if (portfolios == null) {
-			portfolios = portfolioDataAccess.getActiveUserPortfolios(user);
+			portfolios = portfolioDataAccess.getActiveUserPortfolios(userContext.getUser());
 		}
 		return portfolios;
 	}

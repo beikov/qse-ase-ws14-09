@@ -88,14 +88,18 @@ public class PWatchCompiler extends PWatchBaseVisitor<CharSequence> {
         	sb.append(STOCK_ALIAS);
         	sb.append(".priceEntries ");
         	sb.append(PRICE_ENTRY_ALIAS);
-        	sb.append(" ON ");
+        	sb.append(" WHERE ");
         	sb.append(PRICE_ENTRY_ALIAS);
         	sb.append(".created = (SELECT MAX(e.created) FROM ValuePaperPriceEntry e WHERE e.valuePaper = ");
         	sb.append(STOCK_ALIAS);
-        	sb.append(") "); 
+        	sb.append(") ");
+        	sb.append("AND ");
+        }
+        else{
+        	sb.append("WHERE ");
         }
         
-        sb.append("WHERE ");
+        
         sb.append(result);
         
         return sb.toString();

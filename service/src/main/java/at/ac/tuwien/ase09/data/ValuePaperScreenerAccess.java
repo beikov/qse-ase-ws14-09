@@ -238,6 +238,6 @@ public class ValuePaperScreenerAccess {
 	}
 	@SuppressWarnings("unchecked")
 	public List<ValuePaper> findByExpression(String expression){
-		return em.createQuery(expression).getResultList();
+		return em.createQuery(expression,ValuePaper.class).getResultList();
 	}
 }
