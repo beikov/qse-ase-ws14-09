@@ -77,8 +77,7 @@ public class PortfolioDataAccess {
 	public List<Portfolio> getPortfoliosByStockMarketGame(long stockMarketGameId) {
 		try{
 			StockMarketGame smg = em.getReference(StockMarketGame.class, stockMarketGameId);
-			return em.createQuery("FROM Portfolio p WHERE p.game = :smg", Portfolio.class).setParameter("smg", smg).getResultList();
-			//return em.createQuery("FROM Portfolio", Portfolio.class).getResultList();
+			return em.createQuery("SELECT p FROM Portfolio p LEFT JOIN FETCH p.owner WHERE p.game = :smg", Portfolio.class).setParameter("smg", smg).getResultList();
 		}catch(NoResultException e){
 			throw new EntityNotFoundException(e);
 		}catch(Exception e){
