@@ -37,7 +37,7 @@ public class InstitutionSettingsBean implements Serializable {
 	
 	private Institution institution;
 
-	@PostConstruct
+	//@PostConstruct
 	public void init() throws IOException {
 		try {
 			institution = institutionDataAccess.getByAdmin(userContext.getUser().getUsername());

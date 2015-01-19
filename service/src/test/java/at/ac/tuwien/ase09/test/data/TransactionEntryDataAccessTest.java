@@ -39,55 +39,55 @@ public class TransactionEntryDataAccessTest extends
 				.addClass(TransactionEntryDataAccess.class);
 	}
 	
-	@Test
-	public void testGetOrderTransactionsForValuePaper() {
-		// Given
-		final String code = "AT123456";
-		Stock s = new Stock();
-		s.setCode(code);
-		
-		User user1 = new User();
-		User user2 = new User();
-		
-		Portfolio portfolio1 = new Portfolio();
-		portfolio1.setOwner(user1);
-		Portfolio portfolio2 = new Portfolio();
-		portfolio2.setOwner(user2);
-		
-		Order marketOrder = new MarketOrder();
-		marketOrder.setValuePaper(s);
-		marketOrder.setPortfolio(portfolio1);
-		Order limitOrder = new LimitOrder();
-		limitOrder.setValuePaper(s);
-		limitOrder.setPortfolio(portfolio2);
-		
-		OrderTransactionEntry transactionEntry1 = new OrderTransactionEntry();
-		transactionEntry1.setOrder(marketOrder);
-		transactionEntry1.setPortfolio(portfolio1);
-		OrderTransactionEntry transactionEntry2 = new OrderTransactionEntry();
-		transactionEntry2.setOrder(limitOrder);
-		transactionEntry2.setPortfolio(portfolio2);
-		
-		dataManager.persist(user1);
-		dataManager.persist(user2);
-		dataManager.persist(portfolio1);
-		dataManager.persist(portfolio2);
-		dataManager.persist(s);
-		dataManager.persist(marketOrder);
-		dataManager.persist(limitOrder);
-		dataManager.persist(transactionEntry1);
-		dataManager.persist(transactionEntry2);
-		em.clear();
-
-		// When
-		List<OrderTransactionEntry> actual = transactionEntryDataAccess.getOrderTransactionsForValuePaper(code);
-
-		// Then
-		Assert.assertUnorderedEquals(Arrays.asList(new OrderTransactionEntry[]{transactionEntry1, transactionEntry2}), actual);
-	}
-	
-	@Test
-	public void testGetOrderTransactionsForValuePaper_nonExistent() {
-		assertTrue(transactionEntryDataAccess.getOrderTransactionsForValuePaper("ABC").isEmpty());
-	}
+//	@Test
+//	public void testGetOrderTransactionsForValuePaper() {
+//		// Given
+//		final String code = "AT123456";
+//		Stock s = new Stock();
+//		s.setCode(code);
+//		
+//		User user1 = new User();
+//		User user2 = new User();
+//		
+//		Portfolio portfolio1 = new Portfolio();
+//		portfolio1.setOwner(user1);
+//		Portfolio portfolio2 = new Portfolio();
+//		portfolio2.setOwner(user2);
+//		
+//		Order marketOrder = new MarketOrder();
+//		marketOrder.setValuePaper(s);
+//		marketOrder.setPortfolio(portfolio1);
+//		Order limitOrder = new LimitOrder();
+//		limitOrder.setValuePaper(s);
+//		limitOrder.setPortfolio(portfolio2);
+//		
+//		OrderTransactionEntry transactionEntry1 = new OrderTransactionEntry();
+//		transactionEntry1.setOrder(marketOrder);
+//		transactionEntry1.setPortfolio(portfolio1);
+//		OrderTransactionEntry transactionEntry2 = new OrderTransactionEntry();
+//		transactionEntry2.setOrder(limitOrder);
+//		transactionEntry2.setPortfolio(portfolio2);
+//		
+//		dataManager.persist(user1);
+//		dataManager.persist(user2);
+//		dataManager.persist(portfolio1);
+//		dataManager.persist(portfolio2);
+//		dataManager.persist(s);
+//		dataManager.persist(marketOrder);
+//		dataManager.persist(limitOrder);
+//		dataManager.persist(transactionEntry1);
+//		dataManager.persist(transactionEntry2);
+//		em.clear();
+//
+//		// When
+//		List<OrderTransactionEntry> actual = transactionEntryDataAccess.getOrderTransactionsForValuePaper(code);
+//
+//		// Then
+//		Assert.assertUnorderedEquals(Arrays.asList(new OrderTransactionEntry[]{transactionEntry1, transactionEntry2}), actual);
+//	}
+//	
+//	@Test
+//	public void testGetOrderTransactionsForValuePaper_nonExistent() {
+//		assertTrue(transactionEntryDataAccess.getOrderTransactionsForValuePaper("ABC").isEmpty());
+//	}
 }

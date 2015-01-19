@@ -17,6 +17,12 @@
 		    }
 		</style>
 	</ui:define>
+	
+	<ui:define name="metadata">
+		<f:metadata>
+    		<f:viewAction action="#{institutionSettingsBean.init()}" />
+		</f:metadata>
+	</ui:define>
     
 	<ui:define name="body">
 		<h:form id="institutionSettingsForm" enctype="multipart/form-data">

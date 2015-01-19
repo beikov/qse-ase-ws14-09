@@ -13,7 +13,7 @@
         <servlet-name>Faces Servlet</servlet-name>
         <url-pattern>*.xhtml</url-pattern>
     </servlet-mapping>
-	<!--
+    
     <error-page>
         <exception-type>java.lang.Exception</exception-type>
         <location>/WEB-INF/views/error.xhtml</location>
@@ -30,7 +30,6 @@
         <error-code>404</error-code>
         <location>/WEB-INF/views/fileNotFound.xhtml</location>
     </error-page>
-    -->
 	
     <!-- Standard config -->
     <context-param>
