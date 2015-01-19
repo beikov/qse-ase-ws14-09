@@ -19,6 +19,8 @@
 	<ui:define name="body">
 	
 	<h:form id="searchValuePapers">
+	
+		
 	 <p:tabView id="searchTab">
         <p:tab title="Einfache Aktiensuche">
 	 
@@ -87,7 +89,7 @@
 				
 		</p:tab>
 		 <p:tab title="Komplexe Aktiensuche" >
-		 	<h:inputTextarea id="editor" value="#{valuePaperScreenerBean.expression}" />
+		 	<p:inputTextarea id="editor" value="#{valuePaperScreenerBean.expression}" />
 		 	
 		 	<h:panelGroup layout="block" style="text-align: center;">
 					<p:commandButton value="Reset" type="reset" style="margin: 5px;"/>
@@ -136,19 +138,20 @@
 						</h:button> 
 				    </p:column>
 				</p:dataTable>
-			</h:form>
-			
 	<script>
 			//<![CDATA[
 			
-			CodeMirror.fromTextArea(document.getElementById("#{p:component('editor')}"), {
+			var editor=CodeMirror.fromTextArea(document.getElementById("#{p:component('editor')}"), {
 				lineNumbers: false,
 		        extraKeys: {"Ctrl-Space": "autocomplete"},
 				mode: "pwatch"
+				
 			});
+			 editor.on("change",function() {editor.save()});
 			
 			//]]>
-	</script>
+	</script>	
+	</h:form>
 	</ui:define>
 	<!-- content -->
 
