@@ -10,11 +10,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
 @Entity
-public class Institution extends BaseEntity<Long> implements Logo {
+public class Institution extends BaseEntity<Long> {
 	private static final long serialVersionUID = 1L;
 
 	private String name;
-	private Blob logo;
 	private User admin;
 	private String pageText;
 	
@@ -24,14 +23,6 @@ public class Institution extends BaseEntity<Long> implements Logo {
 	
 	public void setName(String name) {
 		this.name = name;
-	}
-	
-	public Blob getLogo() {
-		return logo;
-	}
-	
-	public void setLogo(Blob logo) {
-		this.logo = logo;
 	}
 	
 	@ManyToOne(optional = false, fetch=FetchType.LAZY)
@@ -52,13 +43,4 @@ public class Institution extends BaseEntity<Long> implements Logo {
 		this.pageText = pageText;
 	}
 
-	@Override
-	@Transient
-	public String getFullyQualifiedClassName() {
-		return "at.ac.tuwien.ase09.model.Institution";
-	}
-
-	@Override
-	public void setFullyQualifiedClassName(String unused) {
-	}
 }

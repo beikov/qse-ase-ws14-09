@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
@@ -17,12 +18,16 @@ import org.primefaces.model.DefaultDashboardModel;
 
 import at.ac.tuwien.ase09.context.UserContext;
 import at.ac.tuwien.ase09.context.WebUserContext;
+import at.ac.tuwien.ase09.data.InstitutionDataAccess;
 import at.ac.tuwien.ase09.data.PortfolioDataAccess;
 import at.ac.tuwien.ase09.data.UserDataAccess;
 import at.ac.tuwien.ase09.exception.AppException;
 import at.ac.tuwien.ase09.exception.EntityNotFoundException;
+import at.ac.tuwien.ase09.model.Institution;
 import at.ac.tuwien.ase09.model.Portfolio;
 import at.ac.tuwien.ase09.model.User;
+import at.ac.tuwien.ase09.service.InstitutionService;
+import at.ac.tuwien.ase09.service.UserService;
 
 @Named
 @ViewScoped
@@ -35,6 +40,13 @@ public class UserProfileBean implements Serializable {
 	
 	@Inject
 	private UserDataAccess userDataAccess;
+	@Inject
+	private UserService userService;
+	
+	@Inject
+	private InstitutionDataAccess institutionDataAccess;
+	@Inject
+	private InstitutionService institutionService;
 	
 	@Inject
 	private WebUserContext userContext;
@@ -42,13 +54,15 @@ public class UserProfileBean implements Serializable {
 	private String username;
 	private User owner;
 	private User user;
+	private Institution institution;
 	private List<User> followers;
 	private List<Portfolio> portfolios;
 	
-	 //private DashboardModel portfolioDashboard;
-	
-	
 	public void init() throws IOException {
+		if (username == null) {
+			//profileSettings without viewParam
+			username = userContext.getUser().getUsername();
+		}
 		try {
 			owner = userDataAccess.loadUserForProfile(username);
 		} catch(EntityNotFoundException e) {
@@ -63,6 +77,18 @@ public class UserProfileBean implements Serializable {
 			context.responseComplete();
 			return;
 		}
+		try {
+			institution = institutionDataAccess.getByAdmin(username);
+			// institution != null -> owner == institutionAdmin
+		} catch(EntityNotFoundException e) {
+		} catch(AppException e) {
+			e.printStackTrace();
+			FacesContext context = FacesContext.getCurrentInstance();
+			context.getExternalContext().responseSendError(500, "Fehler beim Laden der Institution");
+			context.responseComplete();
+			return;
+		}
+		
 		user = userContext.getUser();
 	
 		followers = new ArrayList<>(owner.getFollowers());
@@ -71,45 +97,38 @@ public class UserProfileBean implements Serializable {
 	}
 	
 	public void validateUsername() throws IOException {
+		System.out.println("username validate " + username);
 		FacesContext context = FacesContext.getCurrentInstance();
 		if (!context.isPostback() && context.isValidationFailed()) {
 			context.getExternalContext().responseSendError(500, "Fehlerhafter Benutzername");
 			context.responseComplete();
 		}
 	}
-	
-	/*private void createPortfolioDashboard() {
-		portfolioDashboard = new DefaultDashboardModel();
-		
-		DashboardColumn column1 = new DefaultDashboardColumn();
-		DashboardColumn column2 = new DefaultDashboardColumn();
-		DashboardColumn column3 = new DefaultDashboardColumn();
-		int i = 0;
-		for (Portfolio p : portfolios) {
-			DashboardColumn column = new DefaultDashboardColumn();
-			column.addWidget(p.getName());
-			switch(i % 3) {
-			case 0:
-				column1.addWidget(p.getName());
-				break;
-			case 1:
-				column2.addWidget(p.getName());
-				break;
-			case 2:
-				column3.addWidget(p.getName());
-				break;
-			}
-			i++;
+
+	public void saveChanges() {
+		try {
+			userService.updateUser(user);
+			if (institution != null)
+				institutionService.update(institution);
+			FacesMessage message = new FacesMessage("Änderungen erfolgreich gespeichert");
+	        FacesContext.getCurrentInstance().addMessage(null, message);
+		} catch (Exception e) {
+			FacesMessage message = new FacesMessage("Fehler beim Speichern der Änderungen");
+	        FacesContext.getCurrentInstance().addMessage(null, message);
+	        e.printStackTrace();
 		}
- 
-        portfolioDashboard.addColumn(column1);
-        portfolioDashboard.addColumn(column2);
-        portfolioDashboard.addColumn(column3);
-	}*/
+	}
 	
 	public String getFollowerName(User follower) {
 		String currentUsername = userContext.getUser().getUsername();
 		String followerUsername = follower.getUsername();
+		
+		try {
+			Institution institution = institutionDataAccess.getByAdmin(followerUsername);
+			if (currentUsername.equals(institution.getAdmin().getUsername()))
+				return "Eigene Institution";
+			return institution.getName();
+		} catch(EntityNotFoundException e) {}
 		
 		if (followerUsername.equals(currentUsername))
 			return "Ich";
@@ -144,7 +163,7 @@ public class UserProfileBean implements Serializable {
 		return portfolios;
 	}
 	
-	/*public DashboardModel getPortfolioDashboard() {
-		return portfolioDashboard;
-	}*/
+	public Institution getInstitution() {
+		return institution;
+	}
 }

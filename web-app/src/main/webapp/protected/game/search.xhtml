@@ -50,12 +50,12 @@
 			        	
 			            <h:panelGrid columns="2" cellpadding="5" border="0">
 			            	<f:facet name="header">
-			            		<ase:logo logoEntity="#{game.owner}" maxWidth="300px" />
+			            		<ase:logo user="#{game.owner}" maxWidth="300px" />
 			            	</f:facet>
 			                <h:outputText value="Institution:" style="font-weight: bold" />
 			                <h:panelGrid columns="2" cellpadding="5" border="0">
-			                	<p:link value="#{game.owner.name}" outcome="/institution/view">
-					            	<f:param name="institution" value="#{game.owner.id}" />
+			                	<p:link value="#{game.owner.name}" outcome="/user/profile">
+					            	<f:param name="user" value="#{game.owner.admin.username}" />
 					            </p:link>
 			                </h:panelGrid>
 			                

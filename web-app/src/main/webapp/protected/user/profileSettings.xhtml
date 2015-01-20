@@ -18,12 +18,18 @@
 		</style>
 	</ui:define>
 	
+	<ui:define name="metadata">
+        <f:metadata>
+		    <f:viewAction action="#{userProfileBean.init}" />
+		</f:metadata>
+    </ui:define>
+	
 	<ui:define name="body">
 		<h:form id="profileSettingsForm" enctype="multipart/form-data">
 			<p:growl id="messages" />
 			
 			<div class="col-md-8 col-md-offset-2">
-				<p:fieldset legend="Benutzereinstellungen" style="margin-bottom:20px">
+				<p:fieldset legend="#{userProfileBean.institution == null ? 'Benutzereinstellungen' : 'Institutionseinstellungen'}" style="margin-bottom:20px">
 					<div class="row">
 						<div class="col-md-3">
 							<p:outputLabel value="Logo" />
@@ -31,13 +37,33 @@
 						<div class="col-md-7">
 							<p:fileUpload  fileUploadListener="#{logoBean.handleLogoUpload}" mode="advanced" dragDropSupport="false"
 					    		update="messages" sizeLimit="100000" fileLimit="1" allowTypes="/(\.|\/)(gif|jpe?g|png)$/">
-					    		<f:attribute name="entity" value="#{userProfileSettingsBean.user}" />
+					    		<f:attribute name="user" value="#{userProfileBean.user}" />
 					    	</p:fileUpload>
 						</div>
 					</div>
+					
+					<c:if test="#{userProfileBean.institution != null}">
+						<div class="row" style="margin-top: 25px; margin-bottom: 25px;">
+							<div class="col-md-3">
+								<h:outputLabel value="Name" />
+							</div>
+							<div class="col-md-8">
+								<h:inputText value="#{userProfileBean.institution.name}" />
+							</div>
+						</div>
+						<div class="row" style="margin-bottom: 10px;">
+							<div class="col-md-3">
+								<h:outputLabel value="Text" />
+							</div>
+							<div class="col-md-8">
+								<p:editor id="editor" widgetVar="editorWidget" value="#{userProfileBean.institution.pageText}" width="450" />
+							</div>
+						</div>
+					</c:if>
+					
 				</p:fieldset>
 				
-				<p:commandButton value="Änderungen speichern" update="@form" action="#{userProfileSettingsBean.saveChanges()}" />
+				<p:commandButton value="Änderungen speichern" update="@form" action="#{userProfileBean.saveChanges()}" />
 			</div>
 		</h:form>
 	</ui:define>

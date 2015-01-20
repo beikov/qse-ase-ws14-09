@@ -76,10 +76,6 @@
 								<li>
 									<p:link value="Account-Einstellungen" outcome="/protected/user/profileSettings" />
 								</li>
-								<!-- TODO: Use the following to conditionally display the institution stuff -->
-	<!-- 							<h:panelGroup rendered="#{request.isUserInRole('INSTITUTION')}"> -->
-					        		<li><p:link value="Institutions-Einstellungen" outcome="/protected/institution/institutionSettings.xhtml" /></li>
-	<!-- 				        	</h:panelGroup> -->
 								<li class="divider"></li>
 								<li>
 									<p:commandLink action="#{userBean.logout}" value="Logout" />

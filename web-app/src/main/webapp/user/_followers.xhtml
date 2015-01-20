@@ -31,7 +31,7 @@
  			
 	 		<div style="display: inline-block; margin-right: 20px;">
 	 			<h:link outcome="/user/profile">
-	 				<ase:logo logoEntity="#{follower}" />
+	 				<ase:logo user="#{follower}" />
 	 				<h:outputText value="#{followerName}" style="margin-left: 5px;" />
 					<f:param name="user" value="#{follower.username}"/>
 				</h:link>

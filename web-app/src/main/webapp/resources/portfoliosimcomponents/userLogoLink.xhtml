@@ -13,7 +13,7 @@
 		<cc:implementation>
 		
 			<h:link outcome="/user/profile" styleClass="media-left">
- 				<ase:logo logoEntity="#{cc.attrs.user}" width="50px" height="50px" />
+ 				<ase:logo user="#{cc.attrs.user}" width="50px" height="50px" />
  				<h:outputText value="#{userProfileBean.getFollowerName(cc.attrs.user)}" style="margin-left: 5px;" />
 				<f:param name="user" value="#{cc.attrs.user.username}"/>
 			</h:link>
