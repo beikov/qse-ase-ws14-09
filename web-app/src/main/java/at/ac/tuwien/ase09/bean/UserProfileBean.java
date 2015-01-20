@@ -97,10 +97,23 @@ public class UserProfileBean implements Serializable {
 			context.responseComplete();
 		}
 	}
+	
+	public void deleteLogo() {
+		try {
+			userService.deleteLogo(owner);
+			owner.setLogo(null);
+			FacesMessage message = new FacesMessage("Logo erfolgreich gelöscht");
+	        FacesContext.getCurrentInstance().addMessage(null, message);
+		} catch (Exception e) {
+			FacesMessage message = new FacesMessage("Fehler beim Löschen des Logos");
+	        FacesContext.getCurrentInstance().addMessage(null, message);
+	        e.printStackTrace();
+		}
+	}
 
 	public void saveChanges() {
 		try {
-			userService.updateUser(user);
+			owner = userService.updateUser(owner);
 			if (institution != null)
 				institutionService.update(institution);
 			FacesMessage message = new FacesMessage("Änderungen erfolgreich gespeichert");

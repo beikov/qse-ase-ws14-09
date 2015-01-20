@@ -6,7 +6,10 @@ import java.util.Set;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 
+import at.ac.tuwien.ase09.exception.AppException;
+import at.ac.tuwien.ase09.exception.EntityNotFoundException;
 import at.ac.tuwien.ase09.model.User;
 import at.ac.tuwien.ase09.model.notification.FollowerAddedNotification;
 
@@ -41,6 +44,16 @@ public class UserService {
     public User unfollowUser(User userToUnfollow, User follower){
     	userToUnfollow.getFollowers().remove(follower);
     	return updateUser(userToUnfollow);
+    }
+    
+    public void deleteLogo(User user) {
+    	try {
+    		em.createQuery("update User u set u.logo = null where u.username = :username").setParameter("username", user.getUsername()).executeUpdate();
+    	} catch (NoResultException e) {
+			throw new EntityNotFoundException(e);
+		} catch (Exception e) {
+			throw new AppException(e);
+		}
     }
 
 }
