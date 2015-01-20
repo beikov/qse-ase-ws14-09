@@ -44,7 +44,7 @@
 					<c:choose>
 						<c:when test="#{stockMarketGameCreationBean.stockMarketGameAdmin}">
 
-							<p:growl id="messages" showDetail="true" />
+							<p:growl id="messages" showDetail="false" />
 
 							<div class="row" style="margin-bottom: 15px;">
 								<div class="col-md-7">
@@ -65,22 +65,6 @@
 												style="width:396px;margin-bottom:5px">
 											</p:inputText>
 
-											<p:outputLabel for="validFrom" value="Spiel beginnt am:"
-												style="margin-right:5px" />
-											<p:outputPanel style="margin-bottom:5px">
-												<p:calendar id="validFrom"
-													value="#{stockMarketGameCreationBean.validFrom}"
-													required="true" size="53" />
-											</p:outputPanel>
-
-											<p:outputLabel for="validTo" value="Spiel endet am:"
-												style="margin-right:5px" />
-											<p:outputPanel style="margin-bottom:5px">
-												<p:calendar id="validTo"
-													value="#{stockMarketGameCreationBean.validTo}"
-													required="true" size="53" />
-											</p:outputPanel>
-
 											<p:outputLabel for="registrationFrom"
 												value="Registrierung beginnt am:" style="margin-right:5px" />
 											<p:outputPanel style="margin-bottom:5px">
@@ -94,6 +78,22 @@
 											<p:outputPanel style="margin-bottom:5px">
 												<p:calendar id="registrationTo"
 													value="#{stockMarketGameCreationBean.registrationTo}"
+													required="true" size="53" />
+											</p:outputPanel>
+											
+											<p:outputLabel for="validFrom" value="Spiel beginnt am:"
+												style="margin-right:5px" />
+											<p:outputPanel style="margin-bottom:5px">
+												<p:calendar id="validFrom"
+													value="#{stockMarketGameCreationBean.validFrom}"
+													required="true" size="53" />
+											</p:outputPanel>
+
+											<p:outputLabel for="validTo" value="Spiel endet am:"
+												style="margin-right:5px" />
+											<p:outputPanel style="margin-bottom:5px">
+												<p:calendar id="validTo"
+													value="#{stockMarketGameCreationBean.validTo}"
 													required="true" size="53" />
 											</p:outputPanel>
 
@@ -270,7 +270,7 @@
 
 						<p:pickList id="allowedValuePapersPickList"
 							value="#{stockMarketGameCreationBean.allowedValuePapersListModel}"
-							var="vp" itemValue="#{vp}" itemLabel="#{vp.name}"
+							var="vp" itemValue="#{vp}" itemLabel=" #{vp.name}"
 							showCheckbox="true" showSourceFilter="true"
 							showTargetFilter="true" filterMatchMode="contains"
 							converter="valuePaperPickListConverter">

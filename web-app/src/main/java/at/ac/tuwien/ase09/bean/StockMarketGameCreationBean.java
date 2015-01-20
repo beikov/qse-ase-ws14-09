@@ -48,7 +48,7 @@ import at.ac.tuwien.ase09.service.StockMarketGameService;
 import java.io.Serializable;
 
 @Named
-@SessionScoped
+@ViewScoped
 public class StockMarketGameCreationBean implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -99,10 +99,10 @@ public class StockMarketGameCreationBean implements Serializable {
 	private DualListModel<ValuePaper> allowedValuePapersListModel;
 	private List<ValuePaper> allowedValuePapersSource;
 	private List<ValuePaper> allowedValuePapersTarget;
-	
+
 	private List<ValuePaper> allowedValuePapersFinal;
 
-	private boolean initCalled = false;
+	//private boolean initCalled = false;
 
 
 
@@ -270,53 +270,50 @@ public class StockMarketGameCreationBean implements Serializable {
 
 	public void init() {
 
-		if(!initCalled){
+		System.out.println("INIT");
 
-			loggedInUser = userContext.getUser();
+		loggedInUser = userContext.getUser();
 
-			if(loggedInUser != null){
-				try{
-					userInstitution = institutionDataAccess.getByAdmin(loggedInUser.getUsername());
-				}
-				catch(EntityNotFoundException e){}
+		if(loggedInUser != null){
+			try{
+				userInstitution = institutionDataAccess.getByAdmin(loggedInUser.getUsername());
 			}
-
-			loadStockMarketGame();
-
-			allowedValuePapersSource = new ArrayList<ValuePaper>();
-			allowedValuePapersTarget = new ArrayList<ValuePaper>();
-			
-			allowedValuePapersFinal = new ArrayList<ValuePaper>();
-
-			allowedValuePapersListModel = new DualListModel<ValuePaper>(allowedValuePapersSource, allowedValuePapersTarget);
-
-			if(stockMarketGame != null){
-
-				name = stockMarketGame.getName();
-				validFrom = stockMarketGame.getValidFrom().getTime();
-				validTo = stockMarketGame.getValidTo().getTime();
-				registrationFrom = stockMarketGame.getRegistrationFrom().getTime();
-				registrationTo = stockMarketGame.getRegistrationTo().getTime();
-				text = stockMarketGame.getText();
-				logo = stockMarketGame.getLogo();
-
-				startCapital = stockMarketGame.getSetting().getStartCapital().getValue();
-				orderFee = stockMarketGame.getSetting().getOrderFee().getValue();
-				portfolioFee = stockMarketGame.getSetting().getPortfolioFee().getValue();
-				capitalReturnTax = stockMarketGame.getSetting().getCapitalReturnTax();
-
-				allowedValuePapersListModel.setTarget(new ArrayList<ValuePaper>(stockMarketGame.getAllowedValuePapers()));
-			}
-			else{
-
-				orderFee = new BigDecimal(0);
-				portfolioFee = new BigDecimal(0);
-				capitalReturnTax = new BigDecimal(0);
-			}
-			
-			initCalled = true;
+			catch(EntityNotFoundException e){}
 		}
-	
+
+		loadStockMarketGame();
+
+		allowedValuePapersSource = new ArrayList<ValuePaper>();
+		allowedValuePapersTarget = new ArrayList<ValuePaper>();
+
+		allowedValuePapersFinal = new ArrayList<ValuePaper>();
+
+		allowedValuePapersListModel = new DualListModel<ValuePaper>(allowedValuePapersSource, allowedValuePapersTarget);
+
+		if(stockMarketGame != null){
+
+			name = stockMarketGame.getName();
+			validFrom = stockMarketGame.getValidFrom().getTime();
+			validTo = stockMarketGame.getValidTo().getTime();
+			registrationFrom = stockMarketGame.getRegistrationFrom().getTime();
+			registrationTo = stockMarketGame.getRegistrationTo().getTime();
+			text = stockMarketGame.getText();
+			logo = stockMarketGame.getLogo();
+
+			startCapital = stockMarketGame.getSetting().getStartCapital().getValue();
+			orderFee = stockMarketGame.getSetting().getOrderFee().getValue();
+			portfolioFee = stockMarketGame.getSetting().getPortfolioFee().getValue();
+			capitalReturnTax = stockMarketGame.getSetting().getCapitalReturnTax();
+
+			allowedValuePapersListModel.setTarget(new ArrayList<ValuePaper>(stockMarketGame.getAllowedValuePapers()));
+		}
+		else{
+
+			orderFee = new BigDecimal(0);
+			portfolioFee = new BigDecimal(0);
+			capitalReturnTax = new BigDecimal(0);
+		}		
+
 	}
 
 	public boolean isStockMarketGameAdmin(){
@@ -355,28 +352,47 @@ public class StockMarketGameCreationBean implements Serializable {
 			startCapital = new BigDecimal(0);
 		}else if( startCapital.compareTo(new BigDecimal(0)) == -1 ){
 			FacesMessage facesMessage = new FacesMessage("Fehler: Startkapital muss größer als 0 sein!");
-			FacesContext.getCurrentInstance().addMessage("createForm:startCapital", facesMessage);
+			FacesContext.getCurrentInstance().addMessage("stockmarketgame_create:startCapital", facesMessage);
 			return;
 		}
 
 		if( orderFee.compareTo(new BigDecimal(0)) == -1){
 			FacesMessage facesMessage = new FacesMessage("Fehler: Ordergebühr muss größer gleich 0  sein!");
-			FacesContext.getCurrentInstance().addMessage("createForm:orderFee", facesMessage);
+			FacesContext.getCurrentInstance().addMessage("stockmarketgame_create:orderFee", facesMessage);
 			return;
 		}
 
 		if( portfolioFee.compareTo(new BigDecimal(0)) == -1){
-			FacesMessage facesMessage = new FacesMessage("Fehler: Portfoliogebü½hr muss größer gleich 0  sein!");
-			FacesContext.getCurrentInstance().addMessage("createForm:portfolioFee", facesMessage);
+			FacesMessage facesMessage = new FacesMessage("Fehler: Portfoliogebühr muss größer gleich 0  sein!");
+			FacesContext.getCurrentInstance().addMessage("stockmarketgame_create:portfolioFee", facesMessage);
 			return;
 		}
 
 		if( capitalReturnTax.compareTo(new BigDecimal(0)) == -1 || capitalReturnTax.compareTo(new BigDecimal(99)) == 1){
 			FacesMessage facesMessage = new FacesMessage("Fehler: Kapitalertragssteuer muss zwischen 0% und 99% liegen!");
-			FacesContext.getCurrentInstance().addMessage("createForm:capitalReturnTax", facesMessage);
+			FacesContext.getCurrentInstance().addMessage("stockmarketgame_create:capitalReturnTax", facesMessage);
+			return;
+		}
+		
+		if(new Date(registrationFrom.getTime()+1).after(registrationTo)){
+			FacesMessage facesMessage = new FacesMessage("Fehler: Registrierungsbeginndatum muss vor Registrierungsenddatum liegen!");
+			FacesContext.getCurrentInstance().addMessage("stockmarketgame_create:registrationFrom", facesMessage);
+			return;
+		}
+		
+		if(new Date(validFrom.getTime()+1).after(validTo)){
+			FacesMessage facesMessage = new FacesMessage("Fehler: Börsenspielbeginndatum muss vor Börsenspielenddatum liegen!");
+			FacesContext.getCurrentInstance().addMessage("stockmarketgame_create:validFrom", facesMessage);
 			return;
 		}
 
+		if(new Date(registrationTo.getTime()+1).after(validFrom)){
+			FacesMessage facesMessage = new FacesMessage("Fehler: Registrierungsenddatum muss vor Börsenspielbeginndatum liegen!");
+			FacesContext.getCurrentInstance().addMessage("stockmarketgame_create:registrationTo", facesMessage);
+			return;
+		}
+		
+		
 		if(stockMarketGame == null){
 			stockMarketGame = new StockMarketGame();
 		}
