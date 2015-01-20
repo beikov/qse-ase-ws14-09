@@ -20,11 +20,10 @@
 			listener="#{notificationBean.checkNewNotifications}"
 			update="notificationGrowl  notificationBtn" />
 
-
 		<p:commandButton id="notificationBtn" icon="ui-icon-mail-closed"
 			type="button" value="#{notificationBean.unreadCount}"
 			onclick="PF('ovl').loadContents()" />
-
+			
 		<p:overlayPanel id="notificationPanel" widgetVar="ovl"
 			for="notificationBtn" hideEffect="fade" style="width:500px">
 			<p:dataTable id="notificationTable" widgetVar="ovlList"
