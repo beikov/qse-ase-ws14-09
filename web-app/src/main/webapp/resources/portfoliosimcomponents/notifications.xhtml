@@ -14,19 +14,18 @@
 </composite:interface>
 
 <composite:implementation>
-	<h:form id="form1">
+	<!-- <h:form id="form1">   -->
 		<p:growl id="notificationGrowl" showDetail="true" />
 		<p:poll interval="5"
 			listener="#{notificationBean.checkNewNotifications}"
 			update="notificationGrowl  notificationBtn" />
 
-
 		<p:commandButton id="notificationBtn" icon="ui-icon-mail-closed"
 			type="button" value="#{notificationBean.unreadCount}"
 			onclick="PF('ovl').loadContents()" />
-
+			
 		<p:overlayPanel id="notificationPanel" widgetVar="ovl"
-			for="form1:notificationBtn" hideEffect="fade" style="width:500px">
+			for="notificationBtn" hideEffect="fade" style="width:500px">
 			<p:dataTable id="notificationTable" widgetVar="ovlList"
 				var="notifications" value="#{notificationBean.notifications}"
 				scrollable="true" scrollHeight="230" scrollRows="5"
@@ -60,7 +59,8 @@
 				actionListener="#{notificationBean.setAllRead()}"
 				update="notificationTable" style="float: right;" />
 		</p:overlayPanel>
-	</h:form>
+	<!-- 	</h:form>   -->
+
 
 </composite:implementation>
 

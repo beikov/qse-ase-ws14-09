@@ -20,16 +20,16 @@ public class ValuePaperPickListConverter implements Converter{
 			Object dualList = ((PickList) arg1).getValue();
 			DualListModel<ValuePaper> dl = (DualListModel<ValuePaper>) dualList;
 			for (Object o : dl.getSource()) {
-				String name = "" + ((ValuePaper) o).getName();
-				if (arg2.equals(name)) {
+				String id = "" + ((ValuePaper) o).getId();
+				if (arg2.equals(id)) {
 					ret = o;
 					break;
 				}
 			}
 			if (ret == null)
 				for (Object o : dl.getTarget()) {
-					String name = "" + ((ValuePaper) o).getName();
-					if (arg2.equals(name)) {
+					String id = "" + ((ValuePaper) o).getId();
+					if (arg2.equals(id)) {
 						ret = o;
 						break;
 					}
@@ -42,7 +42,7 @@ public class ValuePaperPickListConverter implements Converter{
 	public String getAsString(FacesContext arg0, UIComponent arg1, Object arg2) {
 		String str = "";
 		if (arg2 instanceof ValuePaper) {
-			str = "" + ((ValuePaper) arg2).getName();
+			str = "" + ((ValuePaper) arg2).getId();
 		}
 		return str;
 	}

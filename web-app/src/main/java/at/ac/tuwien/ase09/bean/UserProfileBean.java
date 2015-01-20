@@ -11,12 +11,6 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.primefaces.model.DashboardColumn;
-import org.primefaces.model.DashboardModel;
-import org.primefaces.model.DefaultDashboardColumn;
-import org.primefaces.model.DefaultDashboardModel;
-
-import at.ac.tuwien.ase09.context.UserContext;
 import at.ac.tuwien.ase09.context.WebUserContext;
 import at.ac.tuwien.ase09.data.InstitutionDataAccess;
 import at.ac.tuwien.ase09.data.PortfolioDataAccess;
@@ -155,6 +149,14 @@ public class UserProfileBean implements Serializable {
 		return user.getUsername().equals(owner.getUsername()); 
 	}
 	
+	public boolean isFollowable(){
+		return (!user.getUsername().equals("Gast") && !owner.getFollowers().contains(user) && !isProfileOwner());
+	}
+	
+	public boolean isUnfollowable(){
+		return (owner.getFollowers().contains(user));
+	}
+	
 	public List<User> getFollowers() {
 		return followers;
 	}
@@ -166,4 +168,14 @@ public class UserProfileBean implements Serializable {
 	public Institution getInstitution() {
 		return institution;
 	}
+
+	public void follow(){
+		userService.followUser(owner, user);
+	}
+	
+	public void unfollow(){
+		System.out.println("unfollowing");
+		userService.unfollowUser(owner,user);
+	}
+	
 }

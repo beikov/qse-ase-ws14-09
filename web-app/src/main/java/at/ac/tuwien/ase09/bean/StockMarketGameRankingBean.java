@@ -98,7 +98,7 @@ public class StockMarketGameRankingBean implements Serializable{
 
 
 	public void init() throws IOException {
-
+	
 		loggedInUser = userContext.getUser();
 
 		if(loggedInUser != null){
@@ -162,7 +162,7 @@ public class StockMarketGameRankingBean implements Serializable{
 
 			for(Portfolio p : portfolioRankingList){
 
-				BigDecimal sum = p.getSetting().getStartCapital().getValue();
+				BigDecimal sum = p.getCurrentCapital().getValue();
 
 				BigDecimal currentValue = portfolioDataAccess.getCurrentValueForPortfolio(p.getId());
 
