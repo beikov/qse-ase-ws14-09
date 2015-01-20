@@ -23,6 +23,7 @@ import at.ac.tuwien.ase09.exception.AppException;
 import at.ac.tuwien.ase09.exception.EntityNotFoundException;
 import at.ac.tuwien.ase09.model.Portfolio;
 import at.ac.tuwien.ase09.model.User;
+import at.ac.tuwien.ase09.service.UserService;
 
 @Named
 @ViewScoped
@@ -38,6 +39,9 @@ public class UserProfileBean implements Serializable {
 	
 	@Inject
 	private WebUserContext userContext;
+	
+	@Inject
+	private UserService userService;
 	
 	private String username;
 	private User owner;
@@ -136,12 +140,29 @@ public class UserProfileBean implements Serializable {
 		return user.getId() == owner.getId(); 
 	}
 	
+	public boolean isFollowable(){
+		return (!user.getUsername().equals("Gast") && !owner.getFollowers().contains(user) && !isProfileOwner());
+	}
+	
+	public boolean isUnfollowable(){
+		return (owner.getFollowers().contains(user));
+	}
+	
 	public List<User> getFollowers() {
 		return followers;
 	}
 	
 	public List<Portfolio> getPortfolios() {
 		return portfolios;
+	}
+	
+	public void follow(){
+		userService.followUser(owner, user);
+	}
+	
+	public void unfollow(){
+		System.out.println("unfollowing");
+		userService.unfollowUser(owner,user);
 	}
 	
 	/*public DashboardModel getPortfolioDashboard() {

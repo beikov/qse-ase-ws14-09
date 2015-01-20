@@ -1,7 +1,7 @@
 package at.ac.tuwien.ase09.bean;
 
+import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -20,6 +20,7 @@ import at.ac.tuwien.ase09.model.notification.FollowerAddedNotification;
 import at.ac.tuwien.ase09.model.notification.FollowerTransactionAddedNotification;
 import at.ac.tuwien.ase09.model.notification.GameStartedNotification;
 import at.ac.tuwien.ase09.model.notification.Notification;
+import at.ac.tuwien.ase09.model.notification.NotificationType;
 import at.ac.tuwien.ase09.model.notification.WatchTriggeredNotification;
 import at.ac.tuwien.ase09.service.NotificationService;
 
@@ -110,7 +111,6 @@ public class NotificationBean implements Serializable{
 			RequestContext rContext =  RequestContext.getCurrentInstance();
 			rContext.update("notificationComponent:form1:countTxt");
 		}
-		System.out.println("got new notifications count: "+newNot.size());
 	}
 
 
@@ -120,24 +120,24 @@ public class NotificationBean implements Serializable{
 
 
 	public void setSelectedNotification(Notification selectedNotification) {
-		System.out.println("set selected notification");
 		this.selectedNotification = selectedNotification;
 	}
 
 	public void onRowSelect(SelectEvent event) {
-		//		try {
-		updateNotification(selectedNotification);
-		System.out.println("set read");
-		//			FacesContext.getCurrentInstance().getExternalContext().redirect("../"+getNotificationRedirectionUrl(selectedNotification));
-		//		} catch (IOException e) {
-		//			// TODO Auto-generated catch block
-		//			e.printStackTrace();
-		//		}
+		try {
+			updateNotification(selectedNotification);
+			if(selectedNotification.getType().equals(NotificationType.FOLLOWER_ADDED)){
+				FacesContext.getCurrentInstance().getExternalContext().redirect("../"+getNotificationRedirectionUrl(selectedNotification));
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	private String getNotificationRedirectionUrl(Notification n){
 		switch(n.getType()){
-		case FOLLOWER_ADDED: return "user"+((FollowerAddedNotification)n).getFollower().getId()+".xhtml";
+		case FOLLOWER_ADDED: return "user/profile.xhtml?user="+((FollowerAddedNotification)n).getFollower().getUsername();
 		case FOLLOWER_TRANSACTION_ADDED: return "transaction"+((FollowerTransactionAddedNotification)n).getTransactionEntry().getId()+".xhtml"; 
 		case GAME_STARTED: return "game"+((GameStartedNotification)n).getGame().getId()+".xhtml"; 
 		case WATCH_TRIGGERED: return "watches/watch.xhtml"; 
@@ -160,13 +160,11 @@ public class NotificationBean implements Serializable{
 
 
 	public void setShowOnlyNew(boolean showOnlyNew) {
-		System.out.println("setting only new: "+showOnlyNew);
 		this.showOnlyNew = showOnlyNew;
 		if(!showOnlyNew){
 			notifications = (List<Notification>) data.getNotificationsForUser(userContext.getUser());
 		}else{
 			notifications = (List<Notification>) data.getUnreadNotificationsForUser(userContext.getUser());
-			System.out.println("now: "+notifications.size());
 		}
 	}
 
