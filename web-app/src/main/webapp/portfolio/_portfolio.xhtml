@@ -80,7 +80,11 @@
 				<p:panel id="stats">
 					<f:facet name="header">
 						<h:outputText value="Portfolio: " /><h:outputText value="#{portfolioViewBean.portfolio.name}" />
-						<p:commandButton value="Folgen" style="margin-left: 20px;" rendered="#{not empty user.id and not portfolioViewBean.portfolioOwner}" />
+						
+						<p:commandButton id="followUnfollowButton" value="#{portfolioViewBean.followUnfollowButtonText}" rendered="#{not empty portfolioViewBean.followUnfollowButtonText}" actionListener="#{portfolioViewBean.followUnfollow()}" update="@this :portfolioViewForm:followerList" />
+						
+						<!-- <p:commandButton id="followUserButton" value="Folgen" rendered="#{portfolioViewBean.followable}" actionListener="#{portfolioViewBean.follow()}" update=":portfolioViewForm:stats, :portfolioViewForm:followerList" style="margin-left: 20px;" />
+						<p:commandButton id="unfollowUserButton" value="Nicht mehr folgen" rendered="#{portfolioViewBean.unfollowable}" actionListener="#{portfolioViewBean.unfollow()}" update=":portfolioViewForm:stats, :portfolioViewForm:followerList" style="margin-left: 20px;" /> -->
 						<p:commandButton type="button" onclick="PF('visibilityDialog').show();" icon="ui-icon-gear" style="float:right;" rendered="#{portfolioViewBean.portfolioOwner}" />
 					</f:facet>
 					<c:if test="#{portfolioViewBean.isStatisticsVisible()}">

@@ -22,11 +22,11 @@ public class UserService {
 		em.persist(user);
 	}
 	
-    public void updateUser(User user) {
-        em.merge(user);
+    public User updateUser(User user) {
+        return em.merge(user);
     }
     
-    public void followUser(User userToFollow, User follower){
+    public User followUser(User userToFollow, User follower){
     	Set<User> followers = userToFollow.getFollowers();
     	followers.add(follower);
     	userToFollow.setFollowers(followers);
@@ -35,12 +35,12 @@ public class UserService {
     	fan.setFollower(follower);
     	fan.setUser(userToFollow);
     	notificationService.addNotification(fan);
-    	updateUser(userToFollow);
+    	return updateUser(userToFollow);
     }
     
-    public void unfollowUser(User userToUnfollow, User follower){
+    public User unfollowUser(User userToUnfollow, User follower){
     	userToUnfollow.getFollowers().remove(follower);
-    	updateUser(userToUnfollow);
+    	return updateUser(userToUnfollow);
     }
 
 }

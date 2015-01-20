@@ -91,7 +91,6 @@ public class UserProfileBean implements Serializable {
 	}
 	
 	public void validateUsername() throws IOException {
-		System.out.println("username validate " + username);
 		FacesContext context = FacesContext.getCurrentInstance();
 		if (!context.isPostback() && context.isValidationFailed()) {
 			context.getExternalContext().responseSendError(500, "Fehlerhafter Benutzername");
@@ -169,13 +168,22 @@ public class UserProfileBean implements Serializable {
 		return institution;
 	}
 
-	public void follow(){
-		userService.followUser(owner, user);
+	public String getFollowUnfollowButtonText() {
+		if (isFollowable()) {
+			return "Folgen";
+		} else if (isUnfollowable()) {
+			return "Nicht mehr folgen";
+		}
+		return "";
 	}
 	
-	public void unfollow(){
-		System.out.println("unfollowing");
-		userService.unfollowUser(owner,user);
+	public void followUnfollow() {
+		if (isFollowable()) {
+			owner = userService.followUser(owner, user);
+		} else if (isUnfollowable()) {
+			owner = userService.unfollowUser(owner,user);
+		}
+		followers = new ArrayList<>(owner.getFollowers());
 	}
 	
 }

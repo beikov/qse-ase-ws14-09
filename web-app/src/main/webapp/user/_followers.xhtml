@@ -6,7 +6,7 @@
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:ase="http://java.sun.com/jsf/composite/portfoliosimcomponents">
 	
-		<p:dataList value="#{userProfileBean.followers}" var="follower" type="unordered" itemType="none" 
+		<p:dataList id="followerList" value="#{userProfileBean.followers}" var="follower" type="unordered" itemType="none" 
 			paginator="true" rows="10" styleClass="paginated"
 			emptyMessage="Keine Benutzer folgen diesem Benutzer."
 			itemStyleClass="media">

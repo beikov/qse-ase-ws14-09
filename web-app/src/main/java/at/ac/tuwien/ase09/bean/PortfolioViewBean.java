@@ -142,6 +142,32 @@ public class PortfolioViewBean implements Serializable {
         }*/
     }
     
+    public boolean isFollowable(){
+		return (!user.getUsername().equals("Gast") && !portfolio.getFollowers().contains(user) && !isPortfolioOwner());
+	}
+	
+	public boolean isUnfollowable(){
+		return (portfolio.getFollowers().contains(user));
+	}
+	
+	public String getFollowUnfollowButtonText() {
+		if (isFollowable()) {
+			return "Folgen";
+		} else if (isUnfollowable()) {
+			return "Nicht mehr folgen";
+		}
+		return "";
+	}
+	
+	public void followUnfollow() {
+		if (isFollowable()) {
+			portfolio = portfolioService.followPortfolio(portfolio, user);
+		} else if (isUnfollowable()) {
+			portfolio = portfolioService.unfollowPortfolio(portfolio,user);
+		}
+		followers = new LinkedList<User>(portfolio.getFollowers());
+	}
+	    
     public User getUser() {
     	return user;
     }
@@ -296,6 +322,8 @@ public class PortfolioViewBean implements Serializable {
 	}
 	
 	public boolean isPortfolioOwner() {
+		if (user == null)
+			return false;
 		return owner.getUsername().equals(user.getUsername());
 	}
 	

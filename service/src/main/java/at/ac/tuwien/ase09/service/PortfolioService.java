@@ -1,10 +1,15 @@
 package at.ac.tuwien.ase09.service;
 
+import java.util.Calendar;
+import java.util.Set;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
 import at.ac.tuwien.ase09.model.Portfolio;
+import at.ac.tuwien.ase09.model.User;
+import at.ac.tuwien.ase09.model.notification.FollowerAddedNotification;
 
 @Stateless
 public class PortfolioService {
@@ -24,5 +29,24 @@ public class PortfolioService {
 	public void removePortfolio(Portfolio portfolio) {
 		em.remove(em.contains(portfolio) ? portfolio : em.merge(portfolio));
 	}
+	
+	public Portfolio followPortfolio(Portfolio portfolioToFollow, User follower) {
+    	Set<User> followers = portfolioToFollow.getFollowers();
+    	followers.add(follower);
+    	portfolioToFollow.setFollowers(followers);
+    	// TODO: fix notification creation
+    	/*FollowerAddedNotification fan = new FollowerAddedNotification();
+    	fan.setCreated(Calendar.getInstance());
+    	fan.setFollower(follower);
+    	fan.setUser(portfolioToFollow);
+    	notificationService.addNotification(fan);*/
+    	return savePortfolio(portfolioToFollow);
+    }
+    
+    public Portfolio unfollowPortfolio(Portfolio portfolioToUnfollow, User follower) {
+    	portfolioToUnfollow.getFollowers().remove(follower);
+    	//savePortfolio(portfolioToUnfollow);
+    	return savePortfolio(portfolioToUnfollow);
+    }
 	
 }
