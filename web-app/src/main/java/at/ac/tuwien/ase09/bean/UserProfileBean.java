@@ -125,22 +125,6 @@ public class UserProfileBean implements Serializable {
 		}
 	}
 	
-	public String getFollowerName(User follower) {
-		String currentUsername = userContext.getUser().getUsername();
-		String followerUsername = follower.getUsername();
-		
-		try {
-			Institution institution = institutionDataAccess.getByAdmin(followerUsername);
-			if (currentUsername.equals(institution.getAdmin().getUsername()))
-				return "Eigene Institution";
-			return institution.getName();
-		} catch(EntityNotFoundException e) {}
-		
-		if (followerUsername.equals(currentUsername))
-			return "Ich";
-		return followerUsername;
-	}
-	
 	public void setUsername(String username) {
 		this.username = username;
 	}

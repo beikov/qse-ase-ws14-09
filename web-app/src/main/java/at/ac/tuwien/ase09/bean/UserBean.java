@@ -8,7 +8,12 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 
+import at.ac.tuwien.ase09.context.WebUserContext;
+import at.ac.tuwien.ase09.data.InstitutionDataAccess;
+import at.ac.tuwien.ase09.exception.EntityNotFoundException;
 import at.ac.tuwien.ase09.keycloak.AdminClient;
+import at.ac.tuwien.ase09.model.Institution;
+import at.ac.tuwien.ase09.model.User;
 
 @Named
 @RequestScoped
@@ -16,6 +21,12 @@ public class UserBean {
 
 	@Inject
 	private HttpServletRequest request;
+	
+	@Inject
+	private InstitutionDataAccess institutionDataAccess;
+	
+	@Inject
+	private WebUserContext userContext;
 	
 	public String logout() {
 		// Invalidate old session
@@ -33,5 +44,30 @@ public class UserBean {
 		}
 		
 		return null;
+	}
+	
+	public boolean isInstitutionAdmin(User user) {
+		try {
+			institutionDataAccess.getByAdmin(user.getUsername());
+			return true;
+		} catch(Exception e) {
+			return false;
+		}
+	}
+	
+	public String getFollowerName(User follower) {
+		String currentUsername = userContext.getUser().getUsername();
+		String followerUsername = follower.getUsername();
+		
+		try {
+			Institution institution = institutionDataAccess.getByAdmin(followerUsername);
+			if (currentUsername.equals(institution.getAdmin().getUsername()))
+				return "Eigene Institution";
+			return institution.getName();
+		} catch(EntityNotFoundException e) {}
+		
+		if (followerUsername.equals(currentUsername))
+			return "Ich";
+		return followerUsername;
 	}
 }
