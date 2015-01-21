@@ -13,7 +13,7 @@
 		<f:metadata>
 			<f:viewParam name="stockMarketGameId"
 				value="#{stockMarketGameRankingBean.stockMarketGameId}"
-				required="true" />
+				required="#{!facesContext.postback}" />
 			<f:viewAction action="#{stockMarketGameRankingBean.init()}" />
 		</f:metadata>
 	</ui:define>
