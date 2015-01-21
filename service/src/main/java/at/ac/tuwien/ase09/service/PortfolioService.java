@@ -10,11 +10,15 @@ import javax.persistence.EntityManager;
 import at.ac.tuwien.ase09.model.Portfolio;
 import at.ac.tuwien.ase09.model.User;
 import at.ac.tuwien.ase09.model.notification.FollowerAddedNotification;
+import at.ac.tuwien.ase09.model.notification.PortfolioFollowerAddedNotification;
 
 @Stateless
 public class PortfolioService {
 	@Inject
 	private EntityManager em;
+	
+	@Inject
+	private NotificationService notificationService;
 	
 	public Portfolio savePortfolio(Portfolio portfolio){
 		if(portfolio.getId() != null){
@@ -34,6 +38,12 @@ public class PortfolioService {
     	Set<User> followers = portfolioToFollow.getFollowers();
     	followers.add(follower);
     	portfolioToFollow.setFollowers(followers);
+    	PortfolioFollowerAddedNotification fan = new PortfolioFollowerAddedNotification();
+    	fan.setCreated(Calendar.getInstance());
+    	fan.setFollower(follower);
+    	fan.setUser(portfolioToFollow.getOwner());
+    	fan.setPortfolio(portfolioToFollow);
+    	notificationService.addNotification(fan);
     	// TODO: fix notification creation
     	/*FollowerAddedNotification fan = new FollowerAddedNotification();
     	fan.setCreated(Calendar.getInstance());
