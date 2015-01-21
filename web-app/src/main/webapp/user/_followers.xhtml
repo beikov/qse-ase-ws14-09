@@ -14,21 +14,24 @@
 	            Followers <span class="badge">#{followers.size()}</span>
 	        </f:facet>
 	        <div style="display: inline-block; width: 60px;">
-				<h:link outcome="/user/profile" rendered="#{follower.logo == null}">
-					<f:param name="user" value="#{follower.username}"/>
-					<i class="fa fa-user fa-3x" style="vertical-align: middle;" />
-				</h:link>
-				<h:link outcome="/user/profile" rendered="#{follower.logo != null}">
-					<f:param name="user" value="#{follower.username}"/>
-					<p:graphicImage value="#{logoBean.logo}" style="width: 44px; height: 56px;">
-						<f:param name="username" value="#{follower.username}" />
-					</p:graphicImage>
-				</h:link>
+	        	<h:link outcome="/user/profile">
+	        		<f:param name="user" value="#{follower.username}"/>
+	        		<c:choose>
+	        			<c:when test="#{follower.logo == null}">
+	        				<i class="fa #{userBean.isInstitutionAdmin(follower) ? 'fa-users' : 'fa-user'} fa-3x" style="vertical-align: middle;" />
+	        			</c:when>
+	        			<c:otherwise>
+	        				<p:graphicImage value="#{logoBean.logo}" style="width: 44px; height: 56px;">
+								<f:param name="username" value="#{follower.username}" />
+							</p:graphicImage>
+	        			</c:otherwise>
+	        		</c:choose>
+	        	</h:link>
 	        </div>
 	        <div style="display: inline-block;">
 	        	<h:link outcome="/user/profile">
 					<f:param name="user" value="#{follower.username}"/>
-	        		<h:outputText value="#{userProfileBean.getFollowerName(follower)}" style="margin-left: 5px;" />
+	        		<h:outputText value="#{userBean.getFollowerName(follower)}" style="margin-left: 5px;" />
 	        	</h:link>
 	        </div>
 			

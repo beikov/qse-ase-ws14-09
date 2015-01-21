@@ -24,22 +24,30 @@
 			<p:growl id="messages" />
 			
 			<p:fieldset legend="Börsenspielsuche" style="margin-bottom:20px">
-				<h:panelGrid columns="2" cellpadding="5" border="0">
-		            <h:outputText value="Name" />
-		            <p:inputText value="#{stockMarketGameSearchBean.filterGameName}">
+				<div class="col-md-3">
+		            <p:outputLabel for="name" value="Name:" />
+				</div>
+				<div class="col-md-5">
+		            <p:inputText id="name" value="#{stockMarketGameSearchBean.filterGameName}">
 		            	<p:ajax event="keyup" update=":searchGamesForm:games" listener="#{stockMarketGameSearchBean.handleFilterGameKeyEvent}" />
 		            </p:inputText>
-		            
-		            <h:outputText value="Text" />
-		            <p:inputText value="#{stockMarketGameSearchBean.filterGameText}">
+		        </div>
+		        <div class="col-md-4">
+		            <p:outputLabel for="text" value="Text:" />
+		        </div>
+		        <div class="col-md-6">
+		            <p:inputText id="text" value="#{stockMarketGameSearchBean.filterGameText}">
 		            	<p:ajax event="keyup" update=":searchGamesForm:games" listener="#{stockMarketGameSearchBean.handleFilterGameKeyEvent}" />
 		            </p:inputText>
-		            
-		            <h:outputText value="Institution" />
-		            <p:inputText value="#{stockMarketGameSearchBean.filterGameInstitutionName}">
+		        </div>
+		        <div class="col-md-4">
+		            <p:outputLabel for="institution" value="Institution:" />
+		        </div>
+		        <div class="col-md-8">
+		            <p:inputText id="institution" value="#{stockMarketGameSearchBean.filterGameInstitutionName}">
 		            	<p:ajax event="keyup" update=":searchGamesForm:games" listener="#{stockMarketGameSearchBean.handleFilterGameKeyEvent}" />
 		            </p:inputText>
-		        </h:panelGrid>
+		        </div>
 			</p:fieldset>
 			
 			<p:fieldset id="games" legend="Gefundene Spiele" style="margin-bottom:20px">
