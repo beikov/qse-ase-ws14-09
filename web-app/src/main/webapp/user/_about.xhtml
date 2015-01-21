@@ -9,7 +9,7 @@
 	<div>
 		<div>
 			<h:panelGroup rendered="#{userProfileBean.owner.logo == null and userProfileBean.institution == null}"><i class="fa fa-user fa-5x" /></h:panelGroup>
-			<h:panelGroup rendered="#{userProfileBean.owner.logo == null and userProfileBean.institution != null}"><i class="fa fa-users fa-5x" /></h:panelGroup>
+			<h:panelGroup rendered="#{userProfileBean.owner.logo == null and userProfileBean.institution != null}"><i class="fa fa-institution fa-5x" /></h:panelGroup>
 			<p:graphicImage value="#{logoBean.logo}" style="max-width: 100%;" rendered="#{userProfileBean.owner.logo != null}">
 				<f:param name="username" value="#{userProfileBean.owner.username}" />
 			</p:graphicImage>

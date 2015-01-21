@@ -19,7 +19,7 @@
 					<f:param name="user" value="#{portfolioViewBean.portfolio.owner.username}"/>
 					<c:choose>
 						<c:when test="#{portfolioViewBean.portfolio.owner.logo == null}">
-							<i class="fa #{userBean.isInstitutionAdmin(portfolioViewBean.portfolio.owner) ? 'fa-users' : 'fa-user'} fa-3x" style="vertical-align: middle;" />
+							<i class="fa #{userBean.isInstitutionAdmin(portfolioViewBean.portfolio.owner) ? 'fa-institution fa-2x' : 'fa-user fa-3x'}" style="vertical-align: middle;" />
 						</c:when>
 						<c:otherwise>
 							<p:graphicImage value="#{logoBean.logo}" style="width: 44px; height: 56px;">

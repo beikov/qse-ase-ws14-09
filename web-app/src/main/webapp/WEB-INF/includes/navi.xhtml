@@ -77,7 +77,7 @@
 										<f:param name="user" value="#{user.username}"/>
 										<c:choose>
 											<c:when test="#{user.logo == null}">
-												<i class="fa #{userBean.isInstitutionAdmin(user) ? 'fa-users' : 'fa-user'} fa-3x" style="vertical-align: middle;" />
+												<i class="fa #{userBean.isInstitutionAdmin(user) ? 'fa-institution fa-2x' : 'fa-user fa-3x'}" style="vertical-align: middle;" />
 											</c:when>
 											<c:otherwise>
 												<p:graphicImage value="#{logoBean.logo}" style="width: 44px; height: 56px;">

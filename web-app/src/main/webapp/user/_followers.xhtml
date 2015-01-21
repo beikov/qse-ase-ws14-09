@@ -16,16 +16,14 @@
 	        <div style="display: inline-block; width: 60px;">
 	        	<h:link outcome="/user/profile">
 	        		<f:param name="user" value="#{follower.username}"/>
-	        		<c:choose>
-	        			<c:when test="#{follower.logo == null}">
-	        				<i class="fa #{userBean.isInstitutionAdmin(follower) ? 'fa-users' : 'fa-user'} fa-3x" style="vertical-align: middle;" />
-	        			</c:when>
-	        			<c:otherwise>
-	        				<p:graphicImage value="#{logoBean.logo}" style="width: 44px; height: 56px;">
-								<f:param name="username" value="#{follower.username}" />
-							</p:graphicImage>
-	        			</c:otherwise>
-	        		</c:choose>
+	        		<h:panelGroup rendered="#{follower.logo == null}">
+	        			<span class="fa #{userBean.isInstitutionAdmin(follower) ? 'fa-institution fa-2x' : 'fa-user fa-3x'}" style="vertical-align: middle;" />
+	        		</h:panelGroup>
+	        		<h:panelGroup rendered="#{follower.logo != null}">
+	        			<p:graphicImage value="#{logoBean.logo}" style="width: 44px; height: 56px;">
+							<f:param name="username" value="#{follower.username}" />
+						</p:graphicImage>
+	        		</h:panelGroup>
 	        	</h:link>
 	        </div>
 	        <div style="display: inline-block;">
