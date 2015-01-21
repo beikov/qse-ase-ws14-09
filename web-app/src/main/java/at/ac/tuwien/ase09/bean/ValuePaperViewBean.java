@@ -190,6 +190,31 @@ public class ValuePaperViewBean implements Serializable{
 			return null;
 		}
 	}
+	
+	public String getLastPriceEntryString() {
+			
+			switch(valuePaper.getType()){
+			case STOCK:
+				if(((Stock)valuePaper).getCurrency() != null){
+					return getLastPriceEntry().getPrice().toString() + "" + ((Stock)valuePaper).getCurrency().getSymbol();
+				}
+				else{
+					return getLastPriceEntry().getPrice().toString();
+				}
+				
+			case FUND:
+				if(((Fund)valuePaper).getCurrency() != null){
+					return getLastPriceEntry().getPrice().toString() + " " + ((Fund)valuePaper).getCurrency().getSymbol();
+				}
+				else{
+					return getLastPriceEntry().getPrice().toString();
+				}
+				
+			default:			
+				return getLastPriceEntry().getPrice().toString()+"%";
+			}
+		
+	}
 
 	public List<NewsItem> getNewsItems(){		
 		return newsItemDataAccess.getNewsItemsByValuePaperCode(valuePaper.getCode());

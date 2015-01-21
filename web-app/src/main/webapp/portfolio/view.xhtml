@@ -8,6 +8,8 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:ase="http://java.sun.com/jsf/composite/portfoliosimcomponents"
 	xmlns:pa="http://java.sun.com/jsf/composite/portfolioVisibility"
+	xmlns:og="http://ogp.me/ns#"
+	xmlns:fb="https://www.facebook.com/2008/fbml"
 	template="/WEB-INF/templates/template.xhtml">
 
 	<ui:define name="head">
@@ -26,6 +28,15 @@
     			display: inline-block;
     		}
 		</style>
+		
+    	<meta property="og:title" content="#{portfolioViewBean.portfolio.name} #{portfolioViewBean.portfolio.owner.username}" />
+		<meta property="og:url" content="#{socialMediaBean.absoluteApplicationUrl}" />
+		<meta property="og:image" content="http://www.fondsprofessionell.de/upload/attach/1343813118_aktienkurs_steigend.jpg" />
+		<meta property="og:description" content="Mein Portfolio #{portfolioViewBean.portfolio.name} mit einem aktuellen Wert von #{portfolioViewBean.currentValueForPortfolio} und einer Performance von #{portfolioViewBean.portfolioPerformance}% " />
+		<meta property="og:site_name" content="Börsensimulator" />
+
+		<meta property="og:type" content="website" />
+	
 	</ui:define>
 
 	<ui:define name="metadata">
@@ -37,7 +48,18 @@
     </ui:define>
 	
 	<ui:define name="body">
+		<ui:include src="/resources/socialmedia/_fbsdk.xhtml" />
+		<ui:include src="/resources/socialmedia/_twsdk.xhtml" />
 		
+		<div align="right">
+			<div  class="fb-share-button" data-href="#{socialMediaBean.absoluteApplicationUrl}" data-layout="button"></div>
+			<div style="float:right; margin-left:5px;">
+				<a  class="twitter-share-button" href="https://twitter.com/share"
+  					data-text="Mein Portfolio #{portfolioViewBean.portfolio.name} mit einem aktuellen Wert von #{portfolioViewBean.currentValueForPortfolio} und einer Performance von #{portfolioViewBean.portfolioPerformance}%"
+  					data-count="none"
+  					data-hashtags="#{portfolioViewBean.portfolio.name},#{portfolioViewBean.portfolio.owner.username},Börsenspiel"/>
+  			</div>
+		</div>
 		<c:choose>
 			<c:when test="#{portfolioViewBean.isHidden()}"><ui:include src="_hidden.xhtml" /></c:when>
 			<c:otherwise><ui:include src="_portfolio.xhtml" /></c:otherwise>
