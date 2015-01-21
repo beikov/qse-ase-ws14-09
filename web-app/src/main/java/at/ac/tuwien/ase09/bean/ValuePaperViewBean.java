@@ -1,5 +1,6 @@
 package at.ac.tuwien.ase09.bean;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
@@ -12,6 +13,7 @@ import java.util.Map;
 
 import javax.enterprise.context.SessionScoped;
 import javax.faces.bean.ManagedBean;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
@@ -46,6 +48,21 @@ public class ValuePaperViewBean implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 
+	@Inject
+	private ValuePaperPriceEntryDataAccess valuePaperPriceEntryDataAccess;
+
+	@Inject
+	private ValuePaperDataAccess valuePaperDataAccess;
+
+	@Inject
+	private NewsItemDataAccess newsItemDataAccess;
+
+	@Inject
+	private DividendHistoryEntryDataAccess dividendHistoryEntryDataAccess;
+
+	@Inject
+	private AnalystOpinionDataAccess analystOpinionDataAccess;
+	
 	private ValuePaper valuePaper = null;
 	private NewsItem selectedNewsItem = null;
 	private AnalystOpinion selectedAnalystOpinion = null;
@@ -61,28 +78,8 @@ public class ValuePaperViewBean implements Serializable{
 	private Map<String, String> mainValuePaperAttributes = null;
 	private Map<String, String> additionalValuePaperAttributes = null;
 
-	@Inject
-	private ValuePaperPriceEntryService valuePaperPriceEntryService;
-	
-	@Inject
-	private ValuePaperPriceEntryDataAccess valuePaperPriceEntryDataAccess;
 
-	@Inject
-	private ValuePaperDataAccess valuePaperDataAccess;
-
-	@Inject
-	private NewsItemDataAccess newsItemDataAccess;
-
-	@Inject
-	private DividendHistoryEntryDataAccess dividendHistoryEntryDataAccess;
-
-	@Inject
-	private AnalystOpinionDataAccess analystOpinionDataAccess;
-
-	@Inject
-	private EntityManager em;
-
-	public void init() {
+	public void init() throws IOException {
 		loadValuePaper(valuePaperCode);
 
 		if(this.valuePaper != null){
@@ -91,6 +88,12 @@ public class ValuePaperViewBean implements Serializable{
 			loadStockDividendHistoryEntries();
 			loadStockAnalystOpinions();
 			createLineChartModels();
+		}
+		else{
+			FacesContext context = FacesContext.getCurrentInstance();
+			context.getExternalContext().responseSendError(404, "Wertpapier-Code existiert nicht");
+			context.responseComplete();
+			return;
 		}
 	}
 
