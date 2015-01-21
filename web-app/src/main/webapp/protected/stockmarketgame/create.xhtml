@@ -37,155 +37,134 @@
 	<ui:define name="body">
 
 		<h:form id="stockmarketgame_create" enctype="multipart/form-data">
-			<c:choose>
-				<c:when
-					test="#{stockMarketGameCreationBean.userInstitution != null}">
 
-					<c:choose>
-						<c:when test="#{stockMarketGameCreationBean.stockMarketGameAdmin}">
+			<p:growl id="messages" showDetail="false" />
 
-							<p:growl id="messages" showDetail="false" />
+			<div class="row" style="margin-bottom: 15px;">
+				<div class="col-md-7">
 
-							<div class="row" style="margin-bottom: 15px;">
-								<div class="col-md-7">
+					<p:panel header="Börsenspiel-Einstellungen">
+						<h:panelGrid columns="2" cellpadding="5">
+							<p:outputLabel for="name" value="Börsenspielbezeichnung:"
+								style="margin-right:5px" />
+							<p:inputText id="name"
+								value="#{stockMarketGameCreationBean.name}" required="true"
+								style="width:396px;margin-bottom:5px" disabled="#{!stockMarketGameCreationBean.allowedToEditStockMarketGameSettings}">
+							</p:inputText>
 
-									<p:panel header="Börsenspiel-Einstellungen">
-										<h:panelGrid columns="2" cellpadding="5">
-											<p:outputLabel for="name" value="Börsenspielbezeichnung:"
-												style="margin-right:5px" />
-											<p:inputText id="name"
-												value="#{stockMarketGameCreationBean.name}" required="true"
-												style="width:396px;margin-bottom:5px">
-											</p:inputText>
+							<p:outputLabel for="text" value="Beschreibung:"
+								style="margin-right:5px" />
+							<p:inputText id="text"
+								value="#{stockMarketGameCreationBean.text}" required="true"
+								style="width:396px;margin-bottom:5px" disabled="#{!stockMarketGameCreationBean.allowedToEditStockMarketGameSettings}">
+							</p:inputText>
 
-											<p:outputLabel for="text" value="Beschreibung:"
-												style="margin-right:5px" />
-											<p:inputText id="text"
-												value="#{stockMarketGameCreationBean.text}" required="true"
-												style="width:396px;margin-bottom:5px">
-											</p:inputText>
+							<p:outputLabel for="registrationFrom"
+								value="Registrierung beginnt am:" style="margin-right:5px" />
+							<p:outputPanel style="margin-bottom:5px">
+								<p:calendar id="registrationFrom"
+									value="#{stockMarketGameCreationBean.registrationFrom}"
+									required="true" size="53" disabled="#{!stockMarketGameCreationBean.allowedToEditStockMarketGameSettings}"/>
+							</p:outputPanel>
 
-											<p:outputLabel for="registrationFrom"
-												value="Registrierung beginnt am:" style="margin-right:5px" />
-											<p:outputPanel style="margin-bottom:5px">
-												<p:calendar id="registrationFrom"
-													value="#{stockMarketGameCreationBean.registrationFrom}"
-													required="true" size="53" />
-											</p:outputPanel>
+							<p:outputLabel for="registrationTo"
+								value="Registrierung endet am:" style="margin-right:5px" />
+							<p:outputPanel style="margin-bottom:5px">
+								<p:calendar id="registrationTo"
+									value="#{stockMarketGameCreationBean.registrationTo}"
+									required="true" size="53" disabled="#{!stockMarketGameCreationBean.allowedToEditStockMarketGameSettings}"/>
+							</p:outputPanel>
 
-											<p:outputLabel for="registrationTo"
-												value="Registrierung endet am:" style="margin-right:5px" />
-											<p:outputPanel style="margin-bottom:5px">
-												<p:calendar id="registrationTo"
-													value="#{stockMarketGameCreationBean.registrationTo}"
-													required="true" size="53" />
-											</p:outputPanel>
-											
-											<p:outputLabel for="validFrom" value="Spiel beginnt am:"
-												style="margin-right:5px" />
-											<p:outputPanel style="margin-bottom:5px">
-												<p:calendar id="validFrom"
-													value="#{stockMarketGameCreationBean.validFrom}"
-													required="true" size="53" />
-											</p:outputPanel>
+							<p:outputLabel for="validFrom" value="Spiel beginnt am:"
+								style="margin-right:5px" />
+							<p:outputPanel style="margin-bottom:5px">
+								<p:calendar id="validFrom"
+									value="#{stockMarketGameCreationBean.validFrom}"
+									required="true" size="53" disabled="#{!stockMarketGameCreationBean.allowedToEditStockMarketGameSettings}"/>
+							</p:outputPanel>
 
-											<p:outputLabel for="validTo" value="Spiel endet am:"
-												style="margin-right:5px" />
-											<p:outputPanel style="margin-bottom:5px">
-												<p:calendar id="validTo"
-													value="#{stockMarketGameCreationBean.validTo}"
-													required="true" size="53" />
-											</p:outputPanel>
+							<p:outputLabel for="validTo" value="Spiel endet am:"
+								style="margin-right:5px" />
+							<p:outputPanel style="margin-bottom:5px">
+								<p:calendar id="validTo"
+									value="#{stockMarketGameCreationBean.validTo}" required="true"
+									size="53" disabled="#{!stockMarketGameCreationBean.allowedToEditStockMarketGameSettings}"/>
+							</p:outputPanel>
 
-											<p:outputLabel for="logo" value="Logo:"
-												style="margin-right:5px" />
-											<p:fileUpload id="logo"
-												fileUploadListener="#{stockMarketGameCreationBean.handleLogoUpload}"
-												mode="advanced" dragDropSupport="false" update="messages"
-												sizeLimit="100000" fileLimit="1"
-												allowTypes="/(\.|\/)(gif|jpe?g|png)$/" style="width:396px" />
+							<p:outputLabel for="logo" value="Logo:" style="margin-right:5px" />
+							<p:fileUpload id="logo"
+								fileUploadListener="#{stockMarketGameCreationBean.handleLogoUpload}"
+								mode="advanced" dragDropSupport="false" update="messages"
+								sizeLimit="100000" fileLimit="1"
+								allowTypes="/(\.|\/)(gif|jpe?g|png)$/" style="width:396px" disabled="#{!stockMarketGameCreationBean.allowedToEditStockMarketGameSettings}"/>
 
-											<!-- <p:graphicImage value="#{stockMarketGameCreationBean.image}"
+							<!-- <p:graphicImage value="#{stockMarketGameCreationBean.image}"
 										style="max-width:800px;max-height:400px;"
 										rendered="#{stockMarketGameCreationBean.logo != null}">
 										<f:param name="id"
 											value="#{stockMarketGameCreationBean.stockMarketGame.id}" />
 									</p:graphicImage>  -->
 
-										</h:panelGrid>
-									</p:panel>
+						</h:panelGrid>
+					</p:panel>
 
-								</div>
+				</div>
 
-								<div class="col-md-5">
+				<div class="col-md-5">
 
-									<p:panel header="Portfolio-Voreinstellungen">
+					<p:panel header="Portfolio-Voreinstellungen">
 
-										<h:panelGrid columns="2" cellpadding="5">
+						<h:panelGrid columns="2" cellpadding="5">
 
-											<p:outputLabel for="startCapital" value="Startkapital(€):"
-												style="margin-right:5px" />
-											<p:inputText id="startCapital"
-												value="#{stockMarketGameCreationBean.startCapital}"
-												placeholder="unendlich"
-												style="width:220px;margin-bottom:5px">
-											</p:inputText>
+							<p:outputLabel for="startCapital" value="Startkapital(€):"
+								style="margin-right:5px" />
+							<p:inputText id="startCapital"
+								value="#{stockMarketGameCreationBean.startCapital}"
+								placeholder="unbegrenzt" style="width:220px;margin-bottom:5px" 
+								disabled="#{!stockMarketGameCreationBean.allowedToEditStockMarketGameSettings}">
+							</p:inputText>
 
-											<p:outputLabel for="orderFee" value="Ordergebühr(€):"
-												style="margin-right:5px" />
-											<p:inputText id="orderFee"
-												value="#{stockMarketGameCreationBean.orderFee}"
-												required="true" style="width:220px;margin-bottom:5px" />
+							<p:outputLabel for="orderFee" value="Ordergebühr(€):"
+								style="margin-right:5px" />
+							<p:inputText id="orderFee"
+								value="#{stockMarketGameCreationBean.orderFee}" required="true"
+								style="width:220px;margin-bottom:5px" 
+								disabled="#{!stockMarketGameCreationBean.allowedToEditStockMarketGameSettings}"/>
 
-											<p:outputLabel for="portfolioFee" value="Portfoliogebühr(€):"
-												style="margin-right:5px" />
-											<p:inputText id="portfolioFee"
-												value="#{stockMarketGameCreationBean.portfolioFee}"
-												required="true" style="width:220px;margin-bottom:5px" />
+							<p:outputLabel for="portfolioFee" value="Portfoliogebühr(€):"
+								style="margin-right:5px" />
+							<p:inputText id="portfolioFee"
+								value="#{stockMarketGameCreationBean.portfolioFee}"
+								required="true" style="width:220px;margin-bottom:5px" 
+								disabled="#{!stockMarketGameCreationBean.allowedToEditStockMarketGameSettings}"/>
 
-											<p:outputLabel for="capitalReturnTax"
-												value="Kapitalertragssteuer(%):" style="margin-right:5px" />
-											<p:inputText id="capitalReturnTax"
-												value="#{stockMarketGameCreationBean.capitalReturnTax}"
-												required="true" style="width:220px" />
+							<p:outputLabel for="capitalReturnTax"
+								value="Kapitalertragssteuer(%):" style="margin-right:5px" />
+							<p:inputText id="capitalReturnTax"
+								value="#{stockMarketGameCreationBean.capitalReturnTax}"
+								required="true" style="width:220px" 
+								disabled="#{!stockMarketGameCreationBean.allowedToEditStockMarketGameSettings}"/>
 
-										</h:panelGrid>
+						</h:panelGrid>
 
-										<h:panelGrid columns="2" cellpadding="10"
-											style="width: 40%;margin-top:20px">
-											<p:commandButton value="Reset" type="reset" />
-											<p:commandButton value="Erstellen"
-												action="#{stockMarketGameCreationBean.createStockMarketGame()}"
-												update=":allowed_ValuePapers:allowedValuePapersPickList stockmarketgame_create"
-												ajax="true" />
-										</h:panelGrid>
+						<h:panelGrid columns="2" cellpadding="10"
+							style="width: 40%;margin-top:20px">
+							<p:commandButton value="Reset" type="reset"
+							disabled="#{!stockMarketGameCreationBean.allowedToEditStockMarketGameSettings}"/>
+							<p:commandButton value="Erstellen"
+								action="#{stockMarketGameCreationBean.createStockMarketGame()}"
+								update=":allowed_ValuePapers:allowedValuePapersPickList stockmarketgame_create"
+								ajax="true" disabled="#{!stockMarketGameCreationBean.allowedToEditStockMarketGameSettings}"/>
+						</h:panelGrid>
 
-									</p:panel>
+					</p:panel>
 
-								</div>
-							</div>
-
-						</c:when>
-
-						<c:otherwise>
-							<h:outputText
-								value="Dieses Börsenspiel kann nur von der Institution, die das Börsenspiel erstellt hat, bearbeitet werden." />
-						</c:otherwise>
-
-					</c:choose>
-
-				</c:when>
-
-				<c:otherwise>
-					<h:outputText
-						value="Börsenspiele können nur von Institutionen erstellt/bearbeitet werden." />
-				</c:otherwise>
-			</c:choose>
+				</div>
+			</div>
 
 		</h:form>
 
-		<h:form id="allowed_ValuePapers"
-			rendered="#{stockMarketGameCreationBean.userInstitution != null and stockMarketGameCreationBean.stockMarketGameAdmin}">
+		<h:form id="allowed_ValuePapers">
 
 			<div class="row">
 
@@ -199,13 +178,14 @@
 								style="padding: 10px;" />
 							<p:inputText id="valuePaperName"
 								value="#{stockMarketGameCreationBean.valuePaperName}"
-								style="width:200px" />
+								style="width:200px" disabled="#{!stockMarketGameCreationBean.allowedToEditStockMarketGameSettings}"/>
 
 							<p:outputLabel for="valuePaperType" value="Wertpapiertyp: "
 								style="padding: 10px;margin-left:50px" />
 							<p:selectOneMenu id="valuePaperType"
 								value="#{stockMarketGameCreationBean.valuePaperType}"
-								style="width:200px">
+								style="width:200px" 
+								disabled="#{!stockMarketGameCreationBean.allowedToEditStockMarketGameSettings}">
 								<f:selectItem itemLabel="Beliebig" itemValue="#{null}" />
 								<f:selectItems value="#{valuePaperScreenerBean.valuePaperTypes}"
 									var="paperTypes" itemValue="#{paperTypes}"
@@ -216,7 +196,8 @@
 								style="padding: 10px;" />
 							<p:inputText id="valuePaperCode"
 								value="#{stockMarketGameCreationBean.valuePaperCode}"
-								style="width:200px">
+								style="width:200px" 
+								disabled="#{!stockMarketGameCreationBean.allowedToEditStockMarketGameSettings}">
 								<f:validateRegex
 									pattern="^([a-zA-Z]|\?|\*){2}([a-zA-Z0-9]|\?|\*)*" />
 							</p:inputText>
@@ -225,7 +206,8 @@
 								style="padding: 10px;margin-left:50px" />
 							<p:selectOneMenu id="valuePaperCountry"
 								value="#{stockMarketGameCreationBean.valuePaperCountry}"
-								style="width:200px">
+								style="width:200px" 
+								disabled="#{!stockMarketGameCreationBean.allowedToEditStockMarketGameSettings}">
 								<f:selectItem itemLabel="Beliebig" itemValue="#{null}" />
 								<f:selectItems
 									value="#{stockMarketGameCreationBean.usedCountries}"
@@ -236,7 +218,8 @@
 								style="padding: 10px;" />
 							<p:selectOneMenu id="valuePaperCurrency"
 								value="#{stockMarketGameCreationBean.valuePaperCurrencyCode}"
-								style="width:200px">
+								style="width:200px" 
+								disabled="#{!stockMarketGameCreationBean.allowedToEditStockMarketGameSettings}">
 								<f:selectItem itemLabel="Beliebig" itemValue="#{null}" />
 								<f:selectItems
 									value="#{stockMarketGameCreationBean.usedCurrencies}"
@@ -248,7 +231,8 @@
 								style="padding: 10px;margin-left:50px" />
 							<p:selectOneMenu id="valuePaperIndex"
 								value="#{stockMarketGameCreationBean.valuePaperIndex}"
-								style="width:200px">
+								style="width:200px" 
+								disabled="#{!stockMarketGameCreationBean.allowedToEditStockMarketGameSettings}">
 								<f:selectItem itemLabel="Beliebig" itemValue="#{null}" />
 								<f:selectItems
 									value="#{stockMarketGameCreationBean.usedIndexes}" var="index"
@@ -260,11 +244,8 @@
 						<p:commandButton value="Suche"
 							action="#{stockMarketGameCreationBean.searchValuePapers()}"
 							update="allowedValuePapersPickList" ajax="true"
-							style="margin-right:20px" />
-
-						<!-- <h:outputText id="allowedValuePapersCount"
-							value="#{'Anzahl erlaubter Wertpapiere: '.concat(stockMarketGameCreationBean.allowedValuePapersTarget.size())}" />
-						 -->
+							style="margin-right:20px" 
+							disabled="#{!stockMarketGameCreationBean.allowedToEditStockMarketGameSettings}"/>
 
 						<p:separator />
 
@@ -273,16 +254,17 @@
 							var="vp" itemValue="#{vp}" itemLabel=" #{vp.name}"
 							showCheckbox="true" showSourceFilter="true"
 							showTargetFilter="true" filterMatchMode="contains"
-							converter="valuePaperPickListConverter">
+							converter="valuePaperPickListConverter" 
+							disabled="#{!stockMarketGameCreationBean.allowedToEditStockMarketGameSettings}">
 
 							<f:facet name="sourceCaption">Verfügbar</f:facet>
 							<f:facet name="targetCaption">Erlaubt</f:facet>
-							
-							<p:ajax event="transfer" listener="#{stockMarketGameCreationBean.onTransfer}" update="allowedValuePapersPickList" />
+
+							<p:ajax event="transfer"
+								listener="#{stockMarketGameCreationBean.onTransfer}"
+								update="allowedValuePapersPickList" />
 
 						</p:pickList>
-
-						<p:messages globalOnly="true" autoUpdate="true" />
 
 					</p:panel>
 

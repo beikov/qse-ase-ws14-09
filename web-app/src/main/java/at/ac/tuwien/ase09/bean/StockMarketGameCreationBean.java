@@ -45,6 +45,7 @@ import at.ac.tuwien.ase09.model.ValuePaper;
 import at.ac.tuwien.ase09.model.ValuePaperType;
 import at.ac.tuwien.ase09.service.StockMarketGameService;
 
+import java.io.IOException;
 import java.io.Serializable;
 
 @Named
@@ -268,9 +269,7 @@ public class StockMarketGameCreationBean implements Serializable {
 
 
 
-	public void init() {
-
-		System.out.println("INIT");
+	public void init() throws IOException {
 
 		loggedInUser = userContext.getUser();
 
@@ -278,10 +277,24 @@ public class StockMarketGameCreationBean implements Serializable {
 			try{
 				userInstitution = institutionDataAccess.getByAdmin(loggedInUser.getUsername());
 			}
-			catch(EntityNotFoundException e){}
+			catch(EntityNotFoundException e){			
+				FacesContext context = FacesContext.getCurrentInstance();
+				context.getExternalContext().responseSendError(403, "Börsenspiele können nur von Institutionen erstellt/bearbeitet werden.");
+				context.responseComplete();
+				return;
+			}
 		}
 
 		loadStockMarketGame();
+		
+		if(stockMarketGame != null){
+			if(!isStockMarketGameAdmin()){
+				FacesContext context = FacesContext.getCurrentInstance();
+				context.getExternalContext().responseSendError(403, "Dieses Börsenspiel kann nur von der Institution, die das Börsenspiel erstellt hat, bearbeitet werden.");
+				context.responseComplete();
+				return;
+			}
+		}
 
 		allowedValuePapersSource = new ArrayList<ValuePaper>();
 		allowedValuePapersTarget = new ArrayList<ValuePaper>();
@@ -305,6 +318,7 @@ public class StockMarketGameCreationBean implements Serializable {
 			portfolioFee = stockMarketGame.getSetting().getPortfolioFee().getValue();
 			capitalReturnTax = stockMarketGame.getSetting().getCapitalReturnTax();
 
+			allowedValuePapersFinal = new ArrayList<ValuePaper>(stockMarketGame.getAllowedValuePapers());
 			allowedValuePapersListModel.setTarget(new ArrayList<ValuePaper>(stockMarketGame.getAllowedValuePapers()));
 		}
 		else{
@@ -316,6 +330,22 @@ public class StockMarketGameCreationBean implements Serializable {
 
 	}
 
+	public boolean isAllowedToEditStockMarketGameSettings(){
+		if(stockMarketGame != null){
+			System.out.println("SMG: " + stockMarketGame.getValidFrom().getTimeInMillis() + " NOW: " + System.currentTimeMillis());
+			System.out.println("FUNC: " + StockMarketGameCreationBean.dateToCalendar(new Date()).getTimeInMillis());
+			if(stockMarketGame.getValidFrom().after(StockMarketGameCreationBean.dateToCalendar(new Date()))){
+				return true;
+			}
+			else{
+				return false;
+			}
+		}
+		else{
+			return true;
+		}
+	}
+	
 	public boolean isStockMarketGameAdmin(){
 		if(stockMarketGame != null && stockMarketGame.getOwner() != null){
 			return stockMarketGame.getOwner().getId() == userInstitution.getId();
@@ -347,6 +377,10 @@ public class StockMarketGameCreationBean implements Serializable {
 	}
 
 	public void createStockMarketGame(){
+		
+		if(!isAllowedToEditStockMarketGameSettings()){
+			return;
+		}
 
 		if( startCapital == null){
 			startCapital = new BigDecimal(0);
