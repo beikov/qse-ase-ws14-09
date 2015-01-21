@@ -15,6 +15,7 @@ import at.ac.tuwien.ase09.model.notification.FollowerAddedNotification;
 import at.ac.tuwien.ase09.model.notification.FollowerTransactionAddedNotification;
 import at.ac.tuwien.ase09.model.notification.GameStartedNotification;
 import at.ac.tuwien.ase09.model.notification.Notification;
+import at.ac.tuwien.ase09.model.notification.PortfolioFollowerAddedNotification;
 import at.ac.tuwien.ase09.model.notification.WatchTriggeredNotification;
 
 @Stateless
@@ -40,6 +41,10 @@ public class NotificationDataAccess {
 					break;
 				case WATCH_TRIGGERED: 
 					Hibernate.initialize(((WatchTriggeredNotification)notification).getWatch());
+					break;
+				case PORTFOLIO_FOLLOWER_ADDED:
+					Hibernate.initialize(((PortfolioFollowerAddedNotification)notification).getPortfolio());
+					Hibernate.initialize(((PortfolioFollowerAddedNotification)notification).getFollower());
 					break;
 				}
 				Hibernate.initialize(notification);
@@ -70,6 +75,10 @@ public class NotificationDataAccess {
 					break;
 				case WATCH_TRIGGERED: 
 					Hibernate.initialize(((WatchTriggeredNotification)notification).getWatch());
+					break;
+				case PORTFOLIO_FOLLOWER_ADDED:
+					Hibernate.initialize(((PortfolioFollowerAddedNotification)notification).getPortfolio());
+					Hibernate.initialize(((PortfolioFollowerAddedNotification)notification).getFollower());
 					break;
 				}
 				Hibernate.initialize(notification);
@@ -118,6 +127,10 @@ public class NotificationDataAccess {
 				break;
 			case WATCH_TRIGGERED: 
 				Hibernate.initialize(((WatchTriggeredNotification)notification).getWatch());
+				break;
+			case PORTFOLIO_FOLLOWER_ADDED:
+				Hibernate.initialize(((PortfolioFollowerAddedNotification)notification).getPortfolio());
+				Hibernate.initialize(((PortfolioFollowerAddedNotification)notification).getFollower());
 				break;
 			}
 			Hibernate.initialize(notification);

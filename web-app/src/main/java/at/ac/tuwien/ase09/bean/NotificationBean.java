@@ -21,6 +21,7 @@ import at.ac.tuwien.ase09.model.notification.FollowerTransactionAddedNotificatio
 import at.ac.tuwien.ase09.model.notification.GameStartedNotification;
 import at.ac.tuwien.ase09.model.notification.Notification;
 import at.ac.tuwien.ase09.model.notification.NotificationType;
+import at.ac.tuwien.ase09.model.notification.PortfolioFollowerAddedNotification;
 import at.ac.tuwien.ase09.model.notification.WatchTriggeredNotification;
 import at.ac.tuwien.ase09.service.NotificationService;
 
@@ -66,6 +67,9 @@ public class NotificationBean implements Serializable{
 		this.notifications = notifications;
 	}
 
+	public String getTextForNotification(PortfolioFollowerAddedNotification notification) {
+		return "Benutzer: '"+notification.getFollower().getUsername()+"' folgt nun Ihrem Portfolio: "+notification.getPortfolio().getName()+".";
+	}
 
 	public String getTextForNotification(FollowerAddedNotification notification) {
 		return "Benutzer: '"+notification.getFollower().getUsername()+"' folgt Ihnen nun.";
@@ -103,6 +107,7 @@ public class NotificationBean implements Serializable{
 			case FOLLOWER_TRANSACTION_ADDED: addMessage("Neue Notifikation!", getTextForNotification((FollowerTransactionAddedNotification)notification)); break;
 			case GAME_STARTED: addMessage("Neue Notifikation!", getTextForNotification((GameStartedNotification)notification)); break;
 			case WATCH_TRIGGERED: addMessage("Neue Notifikation!", getTextForNotification((WatchTriggeredNotification)notification)); break;
+			case PORTFOLIO_FOLLOWER_ADDED: addMessage("Neue Notifikation!", getTextForNotification((PortfolioFollowerAddedNotification)notification)); break;
 			default: break;
 			}
 		}
@@ -126,7 +131,8 @@ public class NotificationBean implements Serializable{
 	public void onRowSelect(SelectEvent event) {
 		try {
 			updateNotification(selectedNotification);
-			if(selectedNotification.getType().equals(NotificationType.FOLLOWER_ADDED)){
+			if(selectedNotification.getType().equals(NotificationType.FOLLOWER_ADDED)
+					|| selectedNotification.getType().equals(NotificationType.PORTFOLIO_FOLLOWER_ADDED)){
 				FacesContext.getCurrentInstance().getExternalContext().redirect("../"+getNotificationRedirectionUrl(selectedNotification));
 			}
 		} catch (IOException e) {
@@ -137,6 +143,7 @@ public class NotificationBean implements Serializable{
 
 	private String getNotificationRedirectionUrl(Notification n){
 		switch(n.getType()){
+		case PORTFOLIO_FOLLOWER_ADDED:
 		case FOLLOWER_ADDED: return "user/profile.xhtml?user="+((FollowerAddedNotification)n).getFollower().getUsername();
 		case FOLLOWER_TRANSACTION_ADDED: return "transaction"+((FollowerTransactionAddedNotification)n).getTransactionEntry().getId()+".xhtml"; 
 		case GAME_STARTED: return "game"+((GameStartedNotification)n).getGame().getId()+".xhtml"; 
