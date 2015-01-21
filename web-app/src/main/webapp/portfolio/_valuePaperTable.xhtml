@@ -38,24 +38,24 @@
 	    
 	    <p:column width="180" styleClass="links">
 	    	<div>
-		    	<p:link id="btn-details" outcome="/protected/valuepaper/valuepaperview">
-		    		<span class="ui-icon ui-icon-search" />
+		    	<p:link id="btn-details" outcome="/protected/valuepaper/valuepaperview" >
+		    		<span class="fa fa-search" />
 		    		<f:param name="valuePaperCode" value="#{pvp.valuePaper.code}" />
 		    	</p:link>
 		    	<p:tooltip for="btn-details" value="Details" />
 		    </div>
 		    <div>	
 		    	<p:link id="btn-buy" outcome="/protected/valuepaper/valuepaperview">
-		    		<span class="ui-icon inline ui-icon-cart" />
-		    		<span class="ui-icon inline ui-icon-plus" />
+		    		<span class="inline fa fa-shopping-cart" />
+		    		<span class="inline fa fa-plus" />
 		    		<f:param name="valuePaperCode" value="#{pvp.valuePaper.code}" />
 		    	</p:link>
 		    	<p:tooltip for="btn-buy" value="Kaufen" />
 		    </div>
 		    <div>
 		    	<p:link id="btn-sell" outcome="/protected/valuepaper/valuepaperview">
-		    		<span class="ui-icon inline ui-icon-cart" />
-		    		<span class="ui-icon inline ui-icon-minus" />
+		    		<span class="inline fa fa-shopping-cart" />
+		    		<span class="inline fa fa-minus" />
 		    		<f:param name="valuePaperCode" value="#{pvp.valuePaper.code}" />
 		    	</p:link>
 		    	<p:tooltip for="btn-sell" value="Verkaufen" />
