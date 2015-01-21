@@ -5,8 +5,11 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:ase="http://java.sun.com/jsf/composite/portfoliosimcomponents">
-	
-	<div class="row">
+
+	<h:panelGroup layout="block" rendered="#{not portfolioViewBean.isStatisticsVisible()}">
+		<h:outputText value="Die Statistiken sind nicht sichtbar." />
+	</h:panelGroup>	
+	<h:panelGroup layout="block" styleClass="row" rendered="#{portfolioViewBean.isStatisticsVisible()}">
 		<div class="col-md-6">
 			<p:panelGrid columns="2">
 				<!-- <h:outputText value="Portfolio:" />
@@ -46,7 +49,7 @@
 				<h:outputText value="#{portfolioViewBean.portfolio.setting.capitalReturnTax} %" />
 			</p:panelGrid>
 		</div>
-	</div>
+	</h:panelGroup>
 	
 	
 </ui:composition>

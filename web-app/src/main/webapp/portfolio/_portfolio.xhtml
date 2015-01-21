@@ -87,18 +87,15 @@
 						<p:commandButton id="unfollowUserButton" value="Nicht mehr folgen" rendered="#{portfolioViewBean.unfollowable}" actionListener="#{portfolioViewBean.unfollow()}" update=":portfolioViewForm:stats, :portfolioViewForm:followerList" style="margin-left: 20px;" /> -->
 						<p:commandButton type="button" onclick="PF('visibilityDialog').show();" icon="ui-icon-gear" style="float:right;" rendered="#{portfolioViewBean.portfolioOwner}" />
 					</f:facet>
-					<c:if test="#{portfolioViewBean.isStatisticsVisible()}">
-						<ui:include src="_stats.xhtml" />
-					</c:if>
+					<ui:include src="_stats.xhtml" />
 				</p:panel>
 			</div>
-			<c:if test="#{portfolioViewBean.isStatisticsVisible()}">
- 				<div class="col-md-4">
-					<ui:include src="/user/_followers.xhtml">
-						<ui:param name="followers" value="#{portfolioViewBean.getFollowerList()}" />
-					</ui:include>
- 				</div>
-			</c:if>
+			
+			<div class="col-md-4">
+				<ui:include src="/user/_followers.xhtml">
+					<ui:param name="followers" value="#{portfolioViewBean.getFollowerList()}" />
+				</ui:include>
+			</div>
 		</div>
 		
 		<div class="row" style="margin-bottom: 15px;">
