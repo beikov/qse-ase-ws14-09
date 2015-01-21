@@ -14,9 +14,21 @@
 			<p:panelGrid columns="2">
 				<!-- <h:outputText value="Portfolio:" />
 				<h:outputText value="#{portfolioViewBean.portfolio.name}" /> -->
-				
 				<h:outputText value="Besitzer:" />
-				<ase:userLogoLink user="#{portfolioViewBean.portfolio.owner}" />
+				<h:link outcome="/user/profile">
+					<f:param name="user" value="#{portfolioViewBean.portfolio.owner.username}"/>
+					<c:choose>
+						<c:when test="#{portfolioViewBean.portfolio.owner.logo == null}">
+							<i class="fa fa-user fa-3x" style="vertical-align: middle;" />
+						</c:when>
+						<c:otherwise>
+							<p:graphicImage value="#{logoBean.logo}" style="width: 44px; height: 56px;">
+								<f:param name="username" value="#{portfolioViewBean.portfolio.owner.username}" />
+							</p:graphicImage>
+						</c:otherwise>
+					</c:choose>
+					<h:outputText value="#{userProfileBean.getFollowerName(portfolioViewBean.portfolio.owner)}" style="margin-left: 5px;" />
+				</h:link>
 				
 				<h:outputText value="Aktuelles Kapital:" />
 				<h:outputText value="#{portfolioViewBean.portfolio.currentCapital}" />

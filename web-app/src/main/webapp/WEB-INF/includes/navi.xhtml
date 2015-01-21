@@ -70,7 +70,20 @@
 				        	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">#{user.username} <span class="caret"></span></a>
 			            	<ul class="dropdown-menu" role="menu">
 	          					<li>
-			          				<ase:userLogoLink user="#{user}" />
+			          				<h:link outcome="/user/profile">
+										<f:param name="user" value="#{user.username}"/>
+										<c:choose>
+											<c:when test="#{user.logo == null}">
+												<i class="fa fa-user fa-3x" style="vertical-align: middle;" />
+											</c:when>
+											<c:otherwise>
+												<p:graphicImage value="#{logoBean.logo}" style="width: 44px; height: 56px;">
+													<f:param name="username" value="#{user.username}" />
+												</p:graphicImage>
+											</c:otherwise>
+										</c:choose>
+										<h:outputText value="#{userProfileBean.getFollowerName(user)}" style="margin-left: 5px;" />
+									</h:link>
 								</li>
 								<li class="divider"></li>
 								<li>
