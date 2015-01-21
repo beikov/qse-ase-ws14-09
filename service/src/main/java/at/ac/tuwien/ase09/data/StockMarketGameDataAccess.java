@@ -54,7 +54,7 @@ public class StockMarketGameDataAccess {
 			text = text == null ? "" : text;
 			owner = owner == null ? "" : owner;
 			
-			return em.createQuery("FROM StockMarketGame g JOIN FETCH g.owner where g.name like :name and g.text like :text and g.owner.name like :owner", StockMarketGame.class).setParameter("name", "%"+name+"%").setParameter("text", "%"+text+"%").setParameter("owner", "%"+owner+"%").getResultList();
+			return em.createQuery("FROM StockMarketGame g JOIN FETCH g.owner JOIN FETCH g.owner.admin where g.name like :name and g.text like :text and g.owner.name like :owner", StockMarketGame.class).setParameter("name", "%"+name+"%").setParameter("text", "%"+text+"%").setParameter("owner", "%"+owner+"%").getResultList();
 		} catch(Exception e) {
 			throw new AppException(e);
 		}

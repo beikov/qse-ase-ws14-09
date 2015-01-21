@@ -94,7 +94,9 @@
 			</div>
 			<c:if test="#{portfolioViewBean.isStatisticsVisible()}">
  				<div class="col-md-4">
-					<ui:include src="_followerList.xhtml" />
+					<ui:include src="/user/_followers.xhtml">
+						<ui:param name="followers" value="#{portfolioViewBean.getFollowerList()}" />
+					</ui:include>
  				</div>
 			</c:if>
 		</div>

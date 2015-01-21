@@ -7,7 +7,8 @@
 		xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 		xmlns:p="http://primefaces.org/ui">
 		<cc:interface>
-			<cc:attribute name="user" required="true" />
+			<cc:attribute name="user" />
+			<cc:attribute name="game" />
 			<cc:attribute name="maxWidth" />
 			<cc:attribute name="maxHeight" />
 			<cc:attribute name="width" />
@@ -17,7 +18,12 @@
 			<p:graphicImage library="images" name="Default_Profile_Picture.png" style="width: #{cc.attrs.width}; max-width: #{cc.attrs.maxWidth}; height: #{cc.attrs.height}; maxHeight: #{cc.attrs.maxHeight}" rendered="#{cc.attrs.user == null or cc.attrs.user.logo == null}" />
 			
 			<p:graphicImage value="#{logoBean.logo}" style="width: #{cc.attrs.width}; max-width: #{cc.attrs.maxWidth}; height: #{cc.attrs.height}; maxHeight: #{cc.attrs.maxHeight}" rendered="#{cc.attrs.user != null and cc.attrs.user.logo != null}">
-				<f:param name="username" value="#{cc.attrs.user.username}" />
+				<c:if test="#{not empty cc.attrs.user}">
+					<f:param name="username" value="#{cc.attrs.user.username}" />
+				</c:if>
+				<c:if test="#{not empty cc.attrs.game}">
+					<f:param name="gameId" value="#{cc.attrs.game.id}" />
+				</c:if>
 			</p:graphicImage>
 		</cc:implementation>
 </ui:component>

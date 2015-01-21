@@ -36,7 +36,10 @@
 							<p:outputLabel value="Aktuelles Logo" />
 						</h:panelGroup>
 						<h:panelGroup id="currentLogo" layout="block" styleClass="col-md-7">
-							<ase:logo user="#{userProfileBean.owner}" width="100%" />
+							<p:graphicImage library="images" name="defaultUserLogo.png" style="max-width: 100%;" rendered="#{user.logo == null}" />
+		            		<p:graphicImage value="#{logoBean.logo}" style="max-width: 100%;" rendered="#{user.logo != null}">
+								<f:param name="username" value="#{userProfileBean.owner.username}" />
+							</p:graphicImage>
 							<div>
 								<p:commandButton value="Logo löschen" actionListener="#{userProfileBean.deleteLogo()}" update="@form" />
 							</div>

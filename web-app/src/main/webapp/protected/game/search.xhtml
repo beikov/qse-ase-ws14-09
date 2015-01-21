@@ -50,7 +50,12 @@
 			        	
 			            <h:panelGrid columns="2" cellpadding="5" border="0">
 			            	<f:facet name="header">
-			            		<ase:logo user="#{game.owner}" maxWidth="300px" />
+			            		<p:graphicImage value="#{logoBean.logo}" style="max-width: 100%;" rendered="#{game.logo == null}">
+									<f:param name="username" value="#{game.owner.admin.username}" />
+								</p:graphicImage>
+			            		<p:graphicImage value="#{logoBean.logo}" style="height: 200px;" rendered="#{game.logo != null}">
+									<f:param name="gameId" value="#{game.id}" />
+								</p:graphicImage>
 			            	</f:facet>
 			                <h:outputText value="Institution:" style="font-weight: bold" />
 			                <h:panelGrid columns="2" cellpadding="5" border="0">

@@ -11,11 +11,17 @@
 			<cc:attribute name="user" required="true" />
 		</cc:interface>
 		<cc:implementation>
-		
-			<h:link outcome="/user/profile" styleClass="media-left">
- 				<ase:logo user="#{cc.attrs.user}" width="50px" height="50px" />
- 				<h:outputText value="#{userProfileBean.getFollowerName(cc.attrs.user)}" style="margin-left: 5px;" />
+			<h:link outcome="/user/profile" styleClass="media-left" rendered="#{cc.attrs.user.logo == null}">
 				<f:param name="user" value="#{cc.attrs.user.username}"/>
+ 				<i class="fa fa-user fa-3x" />
+ 				<h:outputText value="#{userProfileBean.getFollowerName(cc.attrs.user)}" style="margin-left: 5px;" />
+			</h:link>
+			<h:link outcome="/user/profile" styleClass="media-left" rendered="#{cc.attrs.user.logo != null}">
+				<f:param name="user" value="#{cc.attrs.user.username}"/>
+ 				<p:graphicImage value="#{logoBean.logo}" style="width: 44px; height: 56px;">
+					<f:param name="username" value="#{cc.attrs.user.username}" />
+				</p:graphicImage>
+				<h:outputText value="#{userProfileBean.getFollowerName(cc.attrs.user)}" style="margin-left: 5px;" />
 			</h:link>
 		</cc:implementation>
 </ui:component>

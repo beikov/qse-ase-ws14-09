@@ -22,7 +22,9 @@
 					<ui:include src="_about.xhtml" />
 				</div>
 				<div class="col-md-4">
-					<ui:include src="_followers.xhtml" />
+					<ui:include src="_followers.xhtml">
+						<ui:param name="followers" value="#{userProfileBean.followers}" />
+					</ui:include>
 				</div>
 			</div>
 			<div class="row">
