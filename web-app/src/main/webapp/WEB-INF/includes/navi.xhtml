@@ -73,7 +73,7 @@
 				        	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">#{user.email} <span class="caret"></span></a>
 			            	<ul class="dropdown-menu" role="menu">
 	          					<li>
-			          				<h:link outcome="/user/profile">
+			          				<h:link id="navUserLink" outcome="/user/profile">
 										<f:param name="user" value="#{user.username}"/>
 										<c:choose>
 											<c:when test="#{user.logo == null}">

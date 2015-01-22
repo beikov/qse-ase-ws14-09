@@ -28,6 +28,7 @@ public class Portfolio extends BaseEntity<Long> {
 	private static final long serialVersionUID = 1L;
 
 	private Long version;
+	private boolean deleted = false;
 	private String name;
 	private User owner;
 	private Calendar created;
@@ -160,4 +161,12 @@ public class Portfolio extends BaseEntity<Long> {
 		this.followers = followers;
 	}
 
+	public boolean isDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
+	}
+	
 }

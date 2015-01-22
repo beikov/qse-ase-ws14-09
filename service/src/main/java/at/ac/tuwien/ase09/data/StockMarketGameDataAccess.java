@@ -71,7 +71,7 @@ public class StockMarketGameDataAccess {
 	
 	public Long getSubscribedUsersCount(StockMarketGame game) {
 		try {
-			return em.createQuery("SELECT count(*) from Portfolio p where p.game.id = :gameId", Long.class).setParameter("gameId", game.getId()).getSingleResult();
+			return em.createQuery("SELECT count(*) from Portfolio p where p.game.id = :gameId and p.deleted=false", Long.class).setParameter("gameId", game.getId()).getSingleResult();
 		} catch(Exception e) {
 			throw new AppException(e);
 		}

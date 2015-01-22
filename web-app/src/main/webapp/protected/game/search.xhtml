@@ -94,7 +94,17 @@
 			            <p:button value="Details" outcome="view">
 		                	<f:param name="gameId" value="#{game.id}" />
 		                </p:button>
-		                <p:commandButton value="#{stockMarketGameSearchBean.getParticipateButtonText(game)}" update=":searchGamesForm:messages :searchGamesForm:games" actionListener="#{stockMarketGameSearchBean.participate(game)}" />
+                		<p:commandButton value="Löschen" update=":searchGamesForm:messages :searchGamesForm:games" actionListener="#{stockMarketGameSearchBean.participate(game)}" rendered="#{stockMarketGameSearchBean.hasAlreadyOrderedPapers(game)}">
+					        <p:confirm header="Bestätigung" message="Sie haben bereits Orders erstellt. Sind Sie Sicher, dass sie sich von diesem Spiel abmelden wollen? Kann nicht rückgängig gemacht werden" icon="fa fa-warning" />
+					    </p:commandButton>
+							 
+					    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" rendered="#{stockMarketGameSearchBean.hasAlreadyOrderedPapers(game)}">
+					        <p:commandButton value="Ja" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+					        <p:commandButton value="Nein" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+					    </p:confirmDialog>
+	                	
+	                	<p:commandButton value="#{stockMarketGameSearchBean.getParticipateButtonText(game)}" update=":searchGamesForm:messages :searchGamesForm:games" actionListener="#{stockMarketGameSearchBean.participate(game)}" rendered="#{not stockMarketGameSearchBean.hasAlreadyOrderedPapers(game)}"/>
+		                	
 			        </p:tab>
 			    </p:accordionPanel>
 			</p:fieldset>

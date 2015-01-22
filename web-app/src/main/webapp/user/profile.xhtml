@@ -11,7 +11,7 @@
         <f:metadata>
 			<f:viewParam name="user" value="#{userProfileBean.username}" required="#{!facesContext.postback}" />
 			<f:event type="postValidate" listener="#{userProfileBean.validateUsername}" />
-		    <f:viewAction action="#{userProfileBean.init}" />
+		    <f:viewAction action="#{userProfileBean.initProfileView()}" />
 		</f:metadata>
     </ui:define>
 	

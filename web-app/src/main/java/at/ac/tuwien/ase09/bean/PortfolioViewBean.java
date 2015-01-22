@@ -104,6 +104,9 @@ public class PortfolioViewBean implements Serializable {
     public void init() throws IOException {
     	try {
     		portfolio = portfolioDataAccess.getPortfolioById(portfolioId);
+    		if (portfolio.isDeleted()) {
+    			throw new EntityNotFoundException();
+    		}
 		} catch(EntityNotFoundException e) {
 			FacesContext context = FacesContext.getCurrentInstance();
 			context.getExternalContext().responseSendError(404, "Kein Portfolio mit der Id '"+ portfolioId +"' gefunden");

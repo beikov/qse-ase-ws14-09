@@ -6,7 +6,12 @@ import java.util.Set;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceException;
 
+import org.hibernate.exception.ConstraintViolationException;
+
+import at.ac.tuwien.ase09.exception.AppException;
+import at.ac.tuwien.ase09.exception.EntityNotFoundException;
 import at.ac.tuwien.ase09.model.Portfolio;
 import at.ac.tuwien.ase09.model.User;
 import at.ac.tuwien.ase09.model.notification.FollowerAddedNotification;
@@ -29,7 +34,9 @@ public class PortfolioService extends AbstractService {
 	}
 
 	public void removePortfolio(Portfolio portfolio) {
-		em.remove(em.contains(portfolio) ? portfolio : em.merge(portfolio));
+		portfolio.setDeleted(true);
+		updatePortfolio(portfolio);
+		//em.remove(em.contains(portfolio) ? portfolio : em.merge(portfolio));
 	}
 	
 	public Portfolio followPortfolio(Portfolio portfolioToFollow, Long followerId) {

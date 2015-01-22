@@ -77,7 +77,7 @@ public class UserBean {
 		
 		try {
 			Institution institution = institutionDataAccess.getByAdmin(followerUsername);
-			if (currentUsername.equals(institution.getAdmin().getUsername()))
+			if (institution.getAdmin().getUsername().equals(currentUsername))
 				return "Eigene Institution";
 			return institution.getName();
 		} catch(EntityNotFoundException e) {}

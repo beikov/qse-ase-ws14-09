@@ -21,7 +21,7 @@
 	
 	<ui:define name="metadata">
         <f:metadata>
-		    <f:viewAction action="#{userProfileBean.init}" />
+		    <f:viewAction action="#{userProfileBean.initProfileSettings()}" />
 		</f:metadata>
     </ui:define>
 	
@@ -30,14 +30,14 @@
 			<p:growl id="messages" />
 			
 			<div class="col-md-8 col-md-offset-2">
-				<p:fieldset id="wrapper" legend="#{userProfileBean.institution == null ? 'Benutzereinstellungen' : 'Institutionseinstellungen'}" style="margin-bottom:20px">
-					<h:panelGroup id="currentLogoWrapper" layout="block" styleClass="row" style="margin-bottom: 25px;" rendered="#{userProfileBean.owner.logo != null}">
+				<p:fieldset id="wrapper" legend="#{userProfileBean.institutionAdmin ? 'Institutionseinstellungen' : 'Benutzereinstellungen'}" style="margin-bottom:20px">
+					<h:panelGroup id="currentLogoWrapper" layout="block" styleClass="row" style="margin-bottom: 25px;" rendered="#{userProfileBean.user.logo != null}">
 						<h:panelGroup layout="block" class="col-md-3">
 							<p:outputLabel value="Aktuelles Logo" />
 						</h:panelGroup>
 						<h:panelGroup id="currentLogo" layout="block" styleClass="col-md-7">
 		            		<p:graphicImage value="#{logoBean.logo}" style="max-width: 400px;">
-								<f:param name="username" value="#{userProfileBean.owner.username}" />
+								<f:param name="username" value="#{userProfileBean.user.username}" />
 							</p:graphicImage>
 							<div style="margin-top: 5px;">
 								<p:commandButton value="Logo löschen" actionListener="#{userProfileBean.deleteLogo()}" update="@form" />
@@ -51,12 +51,12 @@
 						<div class="col-md-7">
 							<p:fileUpload  fileUploadListener="#{logoBean.handleLogoUpload}" mode="advanced" dragDropSupport="false"
 					    		update="messages" sizeLimit="100000" fileLimit="1" allowTypes="/(\.|\/)(gif|jpe?g|png)$/">
-					    		<f:attribute name="user" value="#{userProfileBean.owner}" />
+					    		<f:attribute name="user" value="#{userProfileBean.user}" />
 					    	</p:fileUpload>
 						</div>
 					</div>
 					
-					<c:if test="#{userProfileBean.institution != null}">
+					<c:if test="#{userProfileBean.institutionAdmin}">
 						<div class="row" style="margin-top: 25px; margin-bottom: 25px;">
 							<div class="col-md-3">
 								<h:outputLabel value="Name" />
@@ -77,7 +77,7 @@
 					
 				</p:fieldset>
 				
-				<p:commandButton value="Änderungen speichern" update="@form" action="#{userProfileBean.saveChanges()}" icon="fa fa-save" />
+				<p:commandButton value="Änderungen speichern" update="@form :navigationForm:navUserLink" action="#{userProfileBean.saveChanges()}" icon="fa fa-save" />
 			</div>
 		</h:form>
 	</ui:define>

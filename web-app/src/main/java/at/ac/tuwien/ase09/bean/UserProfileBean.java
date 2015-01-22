@@ -55,15 +55,11 @@ public class UserProfileBean implements Serializable {
 	private User user;
 	private boolean isOwner;
 	private Institution institution;
-	private List<StockMarketGame> institutionGames;
-	private List<User> followers;
-	private List<Portfolio> portfolios;
+	private List<StockMarketGame> institutionGames = new ArrayList<>();
+	private List<User> followers = new ArrayList<>();
+	private List<Portfolio> portfolios = new ArrayList<>();
 	
-	public void init() throws IOException {
-		if (username == null) {
-			//profileSettings without viewParam
-			username = userContext.getUser().getUsername();
-		}
+	public void initProfileView() throws IOException {
 		try {
 			owner = userDataAccess.loadUserForProfile(username);
 		} catch(EntityNotFoundException e) {
@@ -78,9 +74,26 @@ public class UserProfileBean implements Serializable {
 			context.responseComplete();
 			return;
 		}
+		loadInstitution(owner, true);
+		
+
+		isOwner = owner.getId().equals(userContext.getUserId());
+		user = userContext.getUserId() == null ? null : userDataAccess.getUserById(userContext.getUserId());
+    	followers = new ArrayList<>(owner.getFollowers());
+		portfolios = portfolioDataAccess.getActiveUserPortfolios(owner.getId());
+		//createPortfolioDashboard();
+	}
+	
+	public void initProfileSettings() throws IOException {
+		//profileSettings without viewParam
+		user = userDataAccess.getUserById(userContext.getUserId());
+		loadInstitution(user, false);
+		 
+	}
+	
+	private void loadInstitution(User user, boolean loadGames) throws IOException {
 		try {
-			institution = institutionDataAccess.getByAdmin(username);
-			institutionGames = gameDataAccess.getByInstitution(institution); 
+			institution = institutionDataAccess.getByAdmin(user.getUsername());
 			// institution != null -> owner == institutionAdmin
 		} catch(EntityNotFoundException e) {
 		} catch(AppException e) {
@@ -90,13 +103,15 @@ public class UserProfileBean implements Serializable {
 			context.responseComplete();
 			return;
 		}
-		
-
-		isOwner = owner.getId().equals(userContext.getUserId());
-		user = userContext.getUserId() == null ? null : userDataAccess.getUserById(userContext.getUserId());
-    	followers = new ArrayList<>(owner.getFollowers());
-		portfolios = portfolioDataAccess.getActiveUserPortfolios(owner.getId());
-		//createPortfolioDashboard();
+		if (loadGames) {
+			try {
+				institutionGames = gameDataAccess.getByInstitution(institution);
+			} catch(EntityNotFoundException e) {
+			} catch(AppException e) {
+				FacesMessage message = new FacesMessage("Fehler beim Laden der Börsenspiele");
+		        FacesContext.getCurrentInstance().addMessage(null, message);
+			}
+		}
 	}
 	
 	public void validateUsername() throws IOException {
@@ -109,8 +124,8 @@ public class UserProfileBean implements Serializable {
 	
 	public void deleteLogo() {
 		try {
-			userService.deleteLogo(owner);
-			owner.setLogo(null);
+			userService.deleteLogo(user);
+			user.setLogo(null);
 			FacesMessage message = new FacesMessage("Logo erfolgreich gelöscht");
 	        FacesContext.getCurrentInstance().addMessage(null, message);
 		} catch (Exception e) {
@@ -122,7 +137,7 @@ public class UserProfileBean implements Serializable {
 
 	public void saveChanges() {
 		try {
-			owner = userService.updateUser(owner);
+			user = userService.updateUser(user);
 			if (institution != null)
 				institutionService.update(institution);
 			FacesMessage message = new FacesMessage("Änderungen erfolgreich gespeichert");
@@ -140,6 +155,10 @@ public class UserProfileBean implements Serializable {
 	
 	public String getUsername() {
 		return username;
+	}
+	
+	public User getUser() {
+		return user;
 	}
 	
 	public User getOwner() {
