@@ -1,6 +1,7 @@
 package at.ac.tuwien.ase09.bean;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
@@ -139,6 +140,24 @@ public class StockMarketGameViewBean implements Serializable{
 
 		}
 
+	}
+	public String getStartcapital()
+	{
+		if(stockMarketGame!=null)
+		{
+			if(stockMarketGame.getSetting().getStartCapital().getValue().compareTo(new BigDecimal(0.00))==0)
+			{
+				return "unbegrenzt";
+			}
+			else
+			{
+				return stockMarketGame.getSetting().getStartCapital().toString();
+			}
+		}
+		else
+		{
+			return null;
+		}
 	}
 	
 	public StreamedContent getImage() {

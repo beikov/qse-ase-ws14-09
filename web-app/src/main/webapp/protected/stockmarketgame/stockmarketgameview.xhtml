@@ -136,7 +136,7 @@
 												style="font-weight:bold; margin: 5px;" />
 									</div>
 									<div class="col-md-5">
-										<p:outputLabel value="#{stockMarketGameViewBean.stockMarketGame.setting.startCapital}"
+										<p:outputLabel value="#{stockMarketGameViewBean.startcapital}"
 												rendered="#{stockMarketGameViewBean.stockMarketGame.setting.startCapital!=null}"
 												style="font-weight:bold; margin: 5px;" />
 									</div>
@@ -232,6 +232,11 @@
 						<center>
 							<p:button value="Bearbeiten" outcome="/protected/stockmarketgame/create" icon="ui-icon-pencil"
 							style="margin-top:20px" rendered="#{stockMarketGameViewBean.adminLoggedIn == true}">
+								<f:param name="stockMarketGameId" value="#{stockMarketGameViewBean.gameID}" />
+							</p:button>
+		
+							<p:button value="Ranking" outcome="/protected/stockmarketgame/ranking" icon="fa fa-trophy"
+							style="margin-left:5px" >
 								<f:param name="stockMarketGameId" value="#{stockMarketGameViewBean.gameID}" />
 							</p:button>
 						</center>
