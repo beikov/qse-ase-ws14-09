@@ -332,8 +332,6 @@ public class StockMarketGameCreationBean implements Serializable {
 
 	public boolean isAllowedToEditStockMarketGameSettings(){
 		if(stockMarketGame != null){
-			System.out.println("SMG: " + stockMarketGame.getValidFrom().getTimeInMillis() + " NOW: " + System.currentTimeMillis());
-			System.out.println("FUNC: " + StockMarketGameCreationBean.dateToCalendar(new Date()).getTimeInMillis());
 			if(stockMarketGame.getValidFrom().after(StockMarketGameCreationBean.dateToCalendar(new Date()))){
 				return true;
 			}

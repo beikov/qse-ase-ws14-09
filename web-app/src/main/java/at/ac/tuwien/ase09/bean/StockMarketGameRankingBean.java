@@ -98,7 +98,7 @@ public class StockMarketGameRankingBean implements Serializable{
 
 
 	public void init() throws IOException {
-	
+
 		loggedInUser = userContext.getUser();
 
 		if(loggedInUser != null){
@@ -109,6 +109,13 @@ public class StockMarketGameRankingBean implements Serializable{
 		}
 
 		loadStockMarketGame();
+
+		if(stockMarketGame == null){
+			FacesContext context = FacesContext.getCurrentInstance();
+			context.getExternalContext().responseSendError(404, "Das Börsenspiel konnte nicht gefunden werden.");
+			context.responseComplete();
+			return;
+		}
 
 		loadStockMarketGameRanking();
 
@@ -144,10 +151,7 @@ public class StockMarketGameRankingBean implements Serializable{
 			try{
 				stockMarketGame = stockMarketGameDataAccess.getStockMarketGameByID(stockMarketGameId);
 			}
-			catch(EntityNotFoundException e){
-				FacesContext.getCurrentInstance().getExternalContext().responseSendError(404, "Das Börsenspiel mit der Id '" + stockMarketGameId + "' konnte nicht gefunden werden");
-				FacesContext.getCurrentInstance().responseComplete();
-			}
+			catch(EntityNotFoundException e){}
 		}
 	}
 	private void loadStockMarketGameRanking() {
