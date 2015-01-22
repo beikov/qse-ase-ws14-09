@@ -66,7 +66,7 @@ public class NotificationDataAccessTest extends AbstractContainerTest<Notificati
 		fn.setUser(u1);
 		notiService.addNotification(fn);
 
-		assertTrue(data.getNotificationsForUser(u1).size() == 2);
+		assertTrue(data.getNotificationsForUser(u1.getId()).size() == 2);
 	}
 
 	@Test
@@ -84,7 +84,7 @@ public class NotificationDataAccessTest extends AbstractContainerTest<Notificati
 		fn.setUser(u2);
 		notiService.addNotification(fn);
 
-		assertTrue(data.getNotificationsForUser(u1).size() == 1);
+		assertTrue(data.getNotificationsForUser(u1.getId()).size() == 1);
 	}
 
 
@@ -104,7 +104,7 @@ public class NotificationDataAccessTest extends AbstractContainerTest<Notificati
 			notifications.add(fn);
 		}
 		
-		List<? extends Notification> received = data.getNotificationsForUser(u1);
+		List<? extends Notification> received = data.getNotificationsForUser(u1.getId());
 		for(int i=2; i>=0; i--){
 			assertEquals(received.get(i),notifications.get(i));
 		}
@@ -119,7 +119,7 @@ public class NotificationDataAccessTest extends AbstractContainerTest<Notificati
 		fn.setRead(false);
 		notiService.addNotification(fn);
 		
-		assertNotNull(data.getUnreadNotificationsForUser(u1));
+		assertNotNull(data.getUnreadNotificationsForUser(u1.getId()));
 	}
 
 	@Test
@@ -138,7 +138,7 @@ public class NotificationDataAccessTest extends AbstractContainerTest<Notificati
 		fn.setRead(true);
 		notiService.addNotification(fn);
 		
-		assertEquals(data.getUnreadNotificationsForUser(u1).size(), 1);
+		assertEquals(data.getUnreadNotificationsForUser(u1.getId()).size(), 1);
 	}
 	
 	
@@ -151,7 +151,7 @@ public class NotificationDataAccessTest extends AbstractContainerTest<Notificati
 		fn.setRead(false);
 		notiService.addNotification(fn);
 		
-		assertEquals(1, data.getUnreadNotificationsCount(u1));
+		assertEquals(1, data.getUnreadNotificationsCount(u1.getId()));
 	}
 	
 	
@@ -164,7 +164,7 @@ public class NotificationDataAccessTest extends AbstractContainerTest<Notificati
 		fn.setRead(true);
 		notiService.addNotification(fn);
 		
-		assertEquals(0, data.getUnreadNotificationsCount(u1));
+		assertEquals(0, data.getUnreadNotificationsCount(u1.getId()));
 	}
 	
 	@Test
@@ -197,7 +197,7 @@ public class NotificationDataAccessTest extends AbstractContainerTest<Notificati
 		fn.setRead(false);
 		notiService.addNotification(fn);
 		
-		assertEquals(3, data.getUnreadNotificationsCount(u1));
+		assertEquals(3, data.getUnreadNotificationsCount(u1.getId()));
 	}
 	
 	

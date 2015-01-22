@@ -17,6 +17,7 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 
+import at.ac.tuwien.ase09.context.UserAccount;
 import at.ac.tuwien.ase09.currency.CurrencyConversionService;
 import at.ac.tuwien.ase09.exception.AppException;
 import at.ac.tuwien.ase09.exception.EntityNotFoundException;
@@ -184,10 +185,10 @@ public class PortfolioDataAccess {
 		}
 	}*/
 	
-	public Portfolio getPortfolioByNameForUser(String portfolioName, User user){
+	public Portfolio getPortfolioByNameForUser(String portfolioName, Long userId){
 		try{
 			List<Portfolio> results;
-			results = em.createQuery("FROM Portfolio p WHERE p.owner = :user AND p.name = :name", Portfolio.class).setParameter("user", user).setParameter("name", portfolioName).getResultList();
+			results = em.createQuery("FROM Portfolio p WHERE p.owner.id = :userId AND p.name = :name", Portfolio.class).setParameter("userId", userId).setParameter("name", portfolioName).getResultList();
 			if (results.isEmpty()){
 				return null;
 			}else{
@@ -198,12 +199,12 @@ public class PortfolioDataAccess {
 		}
 	}
 	
-	public Portfolio getByGameAndUser(StockMarketGame game, User user) {
+	public Portfolio getByGameAndUser(StockMarketGame game, Long userId) {
 		try {
 			return em.createQuery("FROM Portfolio p "
 					+ "LEFT JOIN FETCH p.game "
 					+ "JOIN FETCH p.owner "
-					+ "WHERE p.game.id = :gameId AND p.owner.id = :ownerId", Portfolio.class).setParameter("gameId", game.getId()).setParameter("ownerId", user.getId()).getSingleResult();
+					+ "WHERE p.game.id = :gameId AND p.owner.id = :ownerId", Portfolio.class).setParameter("gameId", game.getId()).setParameter("ownerId", userId).getSingleResult();
 		} catch(NoResultException e) {
 			throw new EntityNotFoundException(e);
 		} catch(Exception e) {
@@ -243,8 +244,8 @@ public class PortfolioDataAccess {
 		return valuePaperCountryCountMap;
 	}
 	
-	public boolean existsPortfolioWithNameForUser(String portfolioName, User user) {
-		return getPortfolioByNameForUser(portfolioName, user) != null;
+	public boolean existsPortfolioWithNameForUser(String portfolioName, Long userId) {
+		return getPortfolioByNameForUser(portfolioName, userId) != null;
 	}
 
 	/*public BigDecimal getTotalPayedForPortfolioValuePaper(PortfolioValuePaper pvp) {
@@ -399,7 +400,7 @@ public class PortfolioDataAccess {
 		return latestPrice*volume - payed;
 	}
 
-	public List<Portfolio> getActiveUserPortfolios(User user) {
+	public List<Portfolio> getActiveUserPortfolios(Long userId) {
 		try{
 			return em.createQuery(
 					"SELECT p "
@@ -409,7 +410,7 @@ public class PortfolioDataAccess {
 					+ "WHERE owner.id = :userId "
 					+ "AND (game IS NULL OR game.validTo > :now) "
 					+ "ORDER BY p.name", Portfolio.class)
-				.setParameter("userId", user.getId())
+				.setParameter("userId", userId)
 				.setParameter("now", Calendar.getInstance())
 				.getResultList();
 		}catch(Exception e){

@@ -37,7 +37,6 @@ public class StockMarketGameViewBean implements Serializable{
 	
 	private Long gameID;
 	private boolean adminLoggedIn;
-	private User user;
 	private StockMarketGame stockMarketGame=null;
 	
 	private Map<String,String> mainGameAttributes=null;
@@ -47,10 +46,10 @@ public class StockMarketGameViewBean implements Serializable{
 	
 	public void init(){
 
-			user = userContext.getUser();
 			loadStockMarketGame(gameID);
-			checkAdminLoggedIn();
-
+			if(stockMarketGame!=null) {
+				adminLoggedIn = stockMarketGame.getOwner().getId().equals(userContext.getUserId());
+			}
 		
 	}
 	
@@ -85,16 +84,6 @@ public class StockMarketGameViewBean implements Serializable{
 	}
 
 
-	public User getUser() {
-		return user;
-	}
-
-
-	public void setUser(User user) {
-		this.user = user;
-	}
-
-
 	public StockMarketGame getStockMarketGame() {
 		return stockMarketGame;
 	}
@@ -114,13 +103,6 @@ public class StockMarketGameViewBean implements Serializable{
 		this.mainGameAttributes = mainGameAttributes;
 	}
 	
-	
-	private void checkAdminLoggedIn() {
-		if(stockMarketGame!=null)
-			adminLoggedIn=user.equals(stockMarketGame.getOwner().getAdmin());
-
-		
-	}
 	private void loadStockMarketGame(Long gameID) {
 
 		try{

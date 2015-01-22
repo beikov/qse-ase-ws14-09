@@ -28,6 +28,7 @@ import org.primefaces.model.DualListModel;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
 
+import at.ac.tuwien.ase09.context.UserAccount;
 import at.ac.tuwien.ase09.context.WebUserContext;
 import at.ac.tuwien.ase09.data.InstitutionDataAccess;
 import at.ac.tuwien.ase09.data.StockMarketGameDataAccess;
@@ -73,7 +74,6 @@ public class StockMarketGameCreationBean implements Serializable {
 
 	private StockMarketGame stockMarketGame;
 
-	private User loggedInUser;
 	private Institution userInstitution;
 
 	//StockMarketGame-Attributes
@@ -253,12 +253,6 @@ public class StockMarketGameCreationBean implements Serializable {
 	public void setCapitalReturnTax(BigDecimal capitalReturnTax) {
 		this.capitalReturnTax = capitalReturnTax;
 	}
-	public User getLoggedInUser() {
-		return loggedInUser;
-	}
-	public void setLoggedInUser(User loggedInUser) {
-		this.loggedInUser = loggedInUser;
-	}
 	public Institution getUserInstitution() {
 		return userInstitution;
 	}
@@ -275,7 +269,7 @@ public class StockMarketGameCreationBean implements Serializable {
 
 		allowedValuePapersListModel = new DualListModel<ValuePaper>(allowedValuePapersSource, allowedValuePapersTarget);
 
-		loggedInUser = userContext.getUser();
+		UserAccount loggedInUser = userContext.getUser();
 
 		if(loggedInUser != null){
 			try{

@@ -15,7 +15,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import at.ac.tuwien.ase09.context.UserContext;
-import at.ac.tuwien.ase09.context.WebUserContext;
 import at.ac.tuwien.ase09.data.PortfolioDataAccess;
 import at.ac.tuwien.ase09.model.Money;
 import at.ac.tuwien.ase09.model.Portfolio;
@@ -66,7 +65,7 @@ public class PortfolioCreationViewBean implements Serializable{
 
 	public void create(){
 
-		if( portfolioDataAccess.existsPortfolioWithNameForUser(portfolio.getName(), userContext.getUser()) ){
+		if( portfolioDataAccess.existsPortfolioWithNameForUser(portfolio.getName(), userContext.getUserId()) ){
 			FacesMessage facesMessage = new FacesMessage("Fehler: Für diesen Benutzer existiert bereits ein Portfolio mit dem selben Namen.");
 			FacesContext.getCurrentInstance().addMessage("createForm:name", facesMessage);
 			return;
@@ -105,9 +104,7 @@ public class PortfolioCreationViewBean implements Serializable{
 		portfolio.getSetting().setPortfolioFee(new Money(portfolioFee, Currency.getInstance("EUR")));
 		portfolio.getSetting().setCapitalReturnTax(capitalReturnTax);
 
-		portfolio.setOwner(userContext.getUser());
-
-		portfolioService.savePortfolio(portfolio);
+		portfolioService.createPortfolio(portfolio);
 
 		try {
 			FacesContext.getCurrentInstance().getExternalContext().redirect("list.xhtml");

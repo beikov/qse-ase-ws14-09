@@ -23,11 +23,27 @@ public class WebUserContext implements UserContext {
 	@Named
 	@RequestScoped	
 	@Override
-	public User getUser() {
+	public UserAccount getUser() {
 		if (userInfo == null) {
-			return new User("Gast");
+			return new UserAccount("Gast");
 		}
-		return userInfo.getUser();
+		UserAccount account = new UserAccount();
+		account.setId(userInfo.getUser().getId());
+		account.setUsername(userInfo.getUser().getUsername());
+		account.setFirstName(userInfo.getFirstName());
+		account.setLastName(userInfo.getLastName());
+		account.setEmail(userInfo.getEmail());
+		account.setLogo(userInfo.getUser().getLogo());
+		return account;
+	}
+	
+	@Override
+	public Long getUserId() {
+		if (userInfo == null) {
+			return null;
+		}
+		
+		return userInfo.getUser().getId();
 	}
 
 	@Override

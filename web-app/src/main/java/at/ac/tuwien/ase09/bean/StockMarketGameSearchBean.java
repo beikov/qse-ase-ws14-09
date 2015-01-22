@@ -46,9 +46,7 @@ public class StockMarketGameSearchBean implements Serializable{
 	@Inject
 	private PortfolioService portfolioService;
 	@Inject
-	private WebUserContext userContext;
-	
-	private User user;
+	private UserContext userContext;
 	
 	private String filterGameName;
 	private String filterGameText;
@@ -60,7 +58,6 @@ public class StockMarketGameSearchBean implements Serializable{
 	
 	@PostConstruct
 	public void init() {
-		user=userContext.getUser();
 		loadStockMarketGames();
 	}
 	
@@ -70,7 +67,7 @@ public class StockMarketGameSearchBean implements Serializable{
 			return false;
 		}
 		try {
-			portfolioDataAccess.getByGameAndUser(game, user);
+			portfolioDataAccess.getByGameAndUser(game, userContext.getUserId());
 			return true;
 		} catch(EntityNotFoundException e) {
 			return false;
@@ -106,14 +103,6 @@ public class StockMarketGameSearchBean implements Serializable{
 
 	public void setFilterGameInstitutionName(String filterGameInstitutionName) {
 		this.filterGameInstitutionName = filterGameInstitutionName;
-	}
-
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
 	}
 	
 	public List<StockMarketGame> getGames() {
@@ -160,9 +149,9 @@ public class StockMarketGameSearchBean implements Serializable{
     
     public void subscribeForGame(StockMarketGame game) {
     	try {
-    		portfolioDataAccess.getByGameAndUser(game, user);
+    		portfolioDataAccess.getByGameAndUser(game, userContext.getUserId());
     	} catch(EntityNotFoundException e) {
-    		stockMarketGameService.participateInGame(game, user);
+    		stockMarketGameService.participateInGame(game, userContext.getUserId());
         	FacesMessage message = new FacesMessage("Sie nehmen nun am Börsenspiel '" + game.getName() + "' teil");
             FacesContext.getCurrentInstance().addMessage(null, message);
             return;
@@ -175,7 +164,7 @@ public class StockMarketGameSearchBean implements Serializable{
     public void unsubscribeFromGame(StockMarketGame game) {
     	Portfolio p;
     	try {
-    		p = portfolioDataAccess.getByGameAndUser(game, user);
+    		p = portfolioDataAccess.getByGameAndUser(game, userContext.getUserId());
     		portfolioService.removePortfolio(p);
     		FacesMessage message = new FacesMessage("Erfolgreich vom Börsenspiel '" + game.getName() + "' abgemeldet");
             FacesContext.getCurrentInstance().addMessage(null, message);

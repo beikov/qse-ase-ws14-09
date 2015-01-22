@@ -15,6 +15,7 @@ import org.primefaces.model.DashboardModel;
 import org.primefaces.model.DefaultDashboardColumn;
 import org.primefaces.model.DefaultDashboardModel;
 
+import at.ac.tuwien.ase09.context.UserAccount;
 import at.ac.tuwien.ase09.context.UserContext;
 import at.ac.tuwien.ase09.context.WebUserContext;
 import at.ac.tuwien.ase09.data.PortfolioDataAccess;
@@ -41,7 +42,7 @@ public class UserProfileBean implements Serializable {
 	
 	private String username;
 	private User owner;
-	private User user;
+	private boolean isOwner;
 	private List<User> followers;
 	private List<Portfolio> portfolios;
 	
@@ -63,10 +64,10 @@ public class UserProfileBean implements Serializable {
 			context.responseComplete();
 			return;
 		}
-		user = userContext.getUser();
-	
+
+		isOwner = owner.getId().equals(userContext.getUserId());
 		followers = new ArrayList<>(owner.getFollowers());
-		portfolios = portfolioDataAccess.getActiveUserPortfolios(owner);
+		portfolios = portfolioDataAccess.getActiveUserPortfolios(owner.getId());
 		//createPortfolioDashboard();
 	}
 	
@@ -106,10 +107,17 @@ public class UserProfileBean implements Serializable {
         portfolioDashboard.addColumn(column2);
         portfolioDashboard.addColumn(column3);
 	}*/
+
+	public String getFollowerName(UserAccount follower) {
+		return getFollowerName(follower.getUsername());
+	}
 	
 	public String getFollowerName(User follower) {
+		return getFollowerName(follower.getUsername());
+	}
+	
+	public String getFollowerName(String followerUsername) {
 		String currentUsername = userContext.getUser().getUsername();
-		String followerUsername = follower.getUsername();
 		
 		if (followerUsername.equals(currentUsername))
 			return "Ich";
@@ -128,12 +136,8 @@ public class UserProfileBean implements Serializable {
 		return owner;
 	}
 	
-	public User getUser() {
-		return user;
-	}
-	
 	public boolean isProfileOwner() {
-		return user.getId() == owner.getId(); 
+		return isOwner; 
 	}
 	
 	public List<User> getFollowers() {

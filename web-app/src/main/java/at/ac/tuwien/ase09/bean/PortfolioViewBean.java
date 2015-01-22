@@ -60,8 +60,8 @@ public class PortfolioViewBean implements Serializable {
 	private WebUserContext userContext;
 	
 	private User owner;
-	private User user;
-
+	private boolean isOwner;
+	
 	private List<User> followers;
 	
 	private List<PortfolioValuePaper> portfolioValuePapers;
@@ -98,7 +98,6 @@ public class PortfolioViewBean implements Serializable {
 	}
 	
     public void init() throws IOException {
-    	user = userContext.getUser();
     	try {
     		portfolio = portfolioDataAccess.getPortfolioById(portfolioId);
 		} catch(EntityNotFoundException e) {
@@ -114,6 +113,7 @@ public class PortfolioViewBean implements Serializable {
 		}
     	
     	owner = portfolio.getOwner();
+    	isOwner = owner.getId().equals(userContext.getUserId());
         createPieModels();
         createPortfolioChart();
         followers = new LinkedList<User>(portfolio.getFollowers());
@@ -140,10 +140,6 @@ public class PortfolioViewBean implements Serializable {
         	profitMap.put(code, profit);
         	changeMap.put(code, change);
         }*/
-    }
-    
-    public User getUser() {
-    	return user;
     }
     
     public Portfolio getPortfolio() {
@@ -196,7 +192,7 @@ public class PortfolioViewBean implements Serializable {
 	}
 	
 	public void changeVisibility() {
-		portfolioService.savePortfolio(portfolio);
+		portfolioService.updatePortfolio(portfolio);
 		FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Sichtbarkeitseinstellungen gespeichert",  null);
         FacesContext.getCurrentInstance().addMessage(null, message);
 	}
@@ -294,7 +290,7 @@ public class PortfolioViewBean implements Serializable {
 	}
 	
 	public boolean isPortfolioOwner() {
-		return owner.getId() == user.getId();
+		return isOwner;
 	}
 	
 	private boolean checkVisibilitySetting(boolean setting) {
