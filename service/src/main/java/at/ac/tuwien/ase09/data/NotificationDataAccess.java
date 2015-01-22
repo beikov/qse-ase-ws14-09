@@ -24,9 +24,9 @@ public class NotificationDataAccess {
 	@Inject
 	private EntityManager em;
 
-	public List<? extends Notification> getNotificationsForUser(User user){
+	public List<? extends Notification> getNotificationsForUser(Long userId){
 		try{
-			List<Notification> ret = em.createQuery("FROM Notification n WHERE n.user = :user ORDER BY n.created DESC", Notification.class).setParameter("user", user).getResultList();
+			List<Notification> ret = em.createQuery("FROM Notification n WHERE n.user.id = :userId ORDER BY n.created DESC", Notification.class).setParameter("userId", userId).getResultList();
 		
 			for (Notification notification : ret) {
 				switch (notification.getType()) {
@@ -58,9 +58,9 @@ public class NotificationDataAccess {
 		}
 	}
 
-	public List<? extends Notification> getUnreadNotificationsForUser(User user){
+	public List<? extends Notification> getUnreadNotificationsForUser(Long userId){
 		try{
-			List<Notification> ret = em.createQuery("FROM Notification n WHERE n.user = :user AND n.read = false  ORDER BY n.created DESC", Notification.class).setParameter("user", user).getResultList();
+			List<Notification> ret = em.createQuery("FROM Notification n WHERE n.user.id = :userId AND n.read = false  ORDER BY n.created DESC", Notification.class).setParameter("userId", userId).getResultList();
 			
 			for (Notification notification : ret) {
 				switch (notification.getType()) {
@@ -92,18 +92,18 @@ public class NotificationDataAccess {
 		}
 	}
 
-	public int getUnreadNotificationsCount(User user) {
+	public int getUnreadNotificationsCount(Long userId) {
 		try{
-			return  em.createQuery("SELECT count(n) FROM Notification n WHERE n.user = :user AND n.read = false", Long.class).setParameter("user", user).getSingleResult().intValue();
+			return  em.createQuery("SELECT count(n) FROM Notification n WHERE n.user.id = :userId AND n.read = false", Long.class).setParameter("userId", userId).getSingleResult().intValue();
 		}catch(Exception e){
 			throw new AppException(e);
 		}
 	}
 
-	public List<Notification> getUnpushedNotifications(User user) {
+	public List<Notification> getUnpushedNotifications(Long userId) {
 		try{
-			List<Notification> ret = em.createQuery("FROM Notification n WHERE n.user = :user AND n.pushed = false ORDER BY n.created DESC", Notification.class).setParameter("user", user).getResultList();
-			em.createQuery("UPDATE Notification n SET n.pushed = true WHERE n.user = :user AND n.pushed = false").setParameter("user", user).executeUpdate();	
+			List<Notification> ret = em.createQuery("FROM Notification n WHERE n.user.id = :userId AND n.pushed = false ORDER BY n.created DESC", Notification.class).setParameter("userId", userId).getResultList();
+			em.createQuery("UPDATE Notification n SET n.pushed = true WHERE n.user.id = :userId AND n.pushed = false").setParameter("userId", userId).executeUpdate();	
 
 			initialize(ret);
 

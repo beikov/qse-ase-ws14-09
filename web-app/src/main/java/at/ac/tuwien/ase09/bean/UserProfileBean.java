@@ -48,6 +48,7 @@ public class UserProfileBean implements Serializable {
 	private String username;
 	private User owner;
 	private User user;
+	private boolean isOwner;
 	private Institution institution;
 	private List<User> followers;
 	private List<Portfolio> portfolios;
@@ -83,10 +84,11 @@ public class UserProfileBean implements Serializable {
 			return;
 		}
 		
-		user = userContext.getUser();
-	
-		followers = new ArrayList<>(owner.getFollowers());
-		portfolios = portfolioDataAccess.getActiveUserPortfolios(owner);
+
+		isOwner = owner.getId().equals(userContext.getUserId());
+		user = userContext.getUserId() == null ? null : userDataAccess.getUserById(userContext.getUserId());
+    	followers = new ArrayList<>(owner.getFollowers());
+		portfolios = portfolioDataAccess.getActiveUserPortfolios(owner.getId());
 		//createPortfolioDashboard();
 	}
 	
@@ -137,16 +139,12 @@ public class UserProfileBean implements Serializable {
 		return owner;
 	}
 	
-	public User getUser() {
-		return user;
-	}
-	
 	public boolean isProfileOwner() {
-		return user.getUsername().equals(owner.getUsername()); 
+		return isOwner; 
 	}
-	
-	public boolean isFollowable(){
-		return (!user.getUsername().equals("Gast") && !owner.getFollowers().contains(user) && !isProfileOwner());
+    
+    public boolean isFollowable(){
+		return (userContext.getUserId() != null && !owner.getFollowers().contains(user) && !isProfileOwner());
 	}
 	
 	public boolean isUnfollowable(){

@@ -67,14 +67,14 @@ public class PortfolioServiceTest extends AbstractServiceTest<PortfolioServiceTe
 	@Test
 	public void test_savePortfolio_withoutOwner_throwsException(){
 		portfolio.setName("pf1");
-		Assert.verifyException(portfolioService, PersistenceException.class).savePortfolio(portfolio);
+		Assert.verifyException(portfolioService, PersistenceException.class).createPortfolio(portfolio);
 	}
 
 	@Test
 	public void test_savePortfolio_portfolioInDB(){
 		portfolio.setName("pf1");
 		portfolio.setOwner(owner);
-		portfolioService.savePortfolio(portfolio);
+		portfolioService.createPortfolio(portfolio);
 
 		assertTrue(portfolioDataAccess.getPortfolios().contains(portfolio));
 	}
@@ -94,10 +94,10 @@ public class PortfolioServiceTest extends AbstractServiceTest<PortfolioServiceTe
 		// When
 		final String newName = "MyPortfolio2";
 		portfolio.setName(newName);
-		portfolioService.savePortfolio(portfolio);
+		portfolioService.updatePortfolio(portfolio);
 		
 		// Then
-		Portfolio actual = portfolioDataAccess.getPortfolioByNameForUser(newName, user);
+		Portfolio actual = portfolioDataAccess.getPortfolioByNameForUser(newName, user.getId());
 		assertEquals(newName, actual.getName());
 	}
 	

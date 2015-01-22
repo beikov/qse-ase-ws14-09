@@ -25,6 +25,7 @@ import org.primefaces.model.chart.PieChartModel;
 import at.ac.tuwien.ase09.context.UserContext;
 import at.ac.tuwien.ase09.context.WebUserContext;
 import at.ac.tuwien.ase09.data.PortfolioDataAccess;
+import at.ac.tuwien.ase09.data.UserDataAccess;
 import at.ac.tuwien.ase09.data.ValuePaperPriceEntryDataAccess;
 import at.ac.tuwien.ase09.exception.AppException;
 import at.ac.tuwien.ase09.exception.EntityNotFoundException;
@@ -55,13 +56,16 @@ public class PortfolioViewBean implements Serializable {
 	
 	@Inject
 	private ValuePaperPriceEntryDataAccess priceDataAccess;
+	@Inject
+	private UserDataAccess userDataAccess;
 	
 	@Inject
-	private WebUserContext userContext;
+	private UserContext userContext;
 	
 	private User owner;
 	private User user;
-
+	private boolean isOwner;
+	
 	private List<User> followers;
 	
 	private List<PortfolioValuePaper> portfolioValuePapers;
@@ -98,7 +102,6 @@ public class PortfolioViewBean implements Serializable {
 	}
 	
     public void init() throws IOException {
-    	user = userContext.getUser();
     	try {
     		portfolio = portfolioDataAccess.getPortfolioById(portfolioId);
 		} catch(EntityNotFoundException e) {
@@ -114,6 +117,8 @@ public class PortfolioViewBean implements Serializable {
 		}
     	
     	owner = portfolio.getOwner();
+    	user = userContext.getUserId() == null ? null : userDataAccess.getUserById(userContext.getUserId());
+    	isOwner = owner.getId().equals(userContext.getUserId());
         createPieModels();
         createPortfolioChart();
         followers = new LinkedList<User>(portfolio.getFollowers());
@@ -143,7 +148,7 @@ public class PortfolioViewBean implements Serializable {
     }
     
     public boolean isFollowable(){
-		return (!user.getUsername().equals("Gast") && !portfolio.getFollowers().contains(user) && !isPortfolioOwner());
+		return (userContext.getUserId() != null && !portfolio.getFollowers().contains(user) && !isPortfolioOwner());
 	}
 	
 	public boolean isUnfollowable(){
@@ -161,17 +166,13 @@ public class PortfolioViewBean implements Serializable {
 	
 	public void followUnfollow() {
 		if (isFollowable()) {
-			portfolio = portfolioService.followPortfolio(portfolio, user);
+			portfolio = portfolioService.followPortfolio(portfolio, userContext.getUserId());
 		} else if (isUnfollowable()) {
-			portfolio = portfolioService.unfollowPortfolio(portfolio,user);
+			portfolio = portfolioService.unfollowPortfolio(portfolio, userContext.getUserId());
 		}
 		followers = new LinkedList<User>(portfolio.getFollowers());
 	}
 	    
-    public User getUser() {
-    	return user;
-    }
-    
     public Portfolio getPortfolio() {
     	return portfolio;
     }
@@ -222,7 +223,7 @@ public class PortfolioViewBean implements Serializable {
 	}
 	
 	public void changeVisibility() {
-		portfolioService.savePortfolio(portfolio);
+		portfolioService.updatePortfolio(portfolio);
 		FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Sichtbarkeitseinstellungen gespeichert",  null);
         FacesContext.getCurrentInstance().addMessage(null, message);
 	}
@@ -322,9 +323,7 @@ public class PortfolioViewBean implements Serializable {
 	}
 	
 	public boolean isPortfolioOwner() {
-		if (user == null)
-			return false;
-		return owner.getUsername().equals(user.getUsername());
+		return isOwner;
 	}
 	
 	private boolean checkVisibilitySetting(boolean setting) {

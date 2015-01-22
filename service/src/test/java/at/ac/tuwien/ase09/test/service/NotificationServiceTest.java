@@ -55,24 +55,24 @@ public class NotificationServiceTest  extends AbstractContainerTest<Notification
 	@Test
 	public void testAddNotificationAddsNotification(){
 		service.addNotification(fn);
-		assertEquals(fn, data.getNotificationsForUser(u1).get(0));
+		assertEquals(fn, data.getNotificationsForUser(u1.getId()).get(0));
 	}
 	
 	@Test
 	public void testSetReadSetsNotificationRead(){
 		service.addNotification(fn);
-		Notification n = data.getNotificationsForUser(u1).get(0);
+		Notification n = data.getNotificationsForUser(u1.getId()).get(0);
 		assertFalse(n.getRead());
 		service.setRead(n);
-		assertTrue(data.getNotificationsForUser(u1).get(0).getRead());
+		assertTrue(data.getNotificationsForUser(u1.getId()).get(0).getRead());
 	}
 	
 	@Test
 	public void testSetPushedSetsNotificationPushed(){
 		service.addNotification(fn);
-		Notification n = data.getNotificationsForUser(u1).get(0);
+		Notification n = data.getNotificationsForUser(u1.getId()).get(0);
 		assertFalse(n.getPushed());
 		service.setPushed(n);
-		assertTrue(data.getNotificationsForUser(u1).get(0).getPushed());
+		assertTrue(data.getNotificationsForUser(u1.getId()).get(0).getPushed());
 	}
 }

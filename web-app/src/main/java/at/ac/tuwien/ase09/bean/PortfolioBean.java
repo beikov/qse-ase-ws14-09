@@ -27,7 +27,7 @@ public class PortfolioBean implements Serializable {
 		
 	public List<Portfolio> getActiveUserPortfolios() {
 		if (portfolios == null) {
-			portfolios = portfolioDataAccess.getActiveUserPortfolios(userContext.getUser());
+			portfolios = portfolioDataAccess.getActiveUserPortfolios(userContext.getUserId());
 		}
 		return portfolios;
 	}

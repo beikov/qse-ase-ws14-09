@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 
+import at.ac.tuwien.ase09.context.UserAccount;
 import at.ac.tuwien.ase09.context.WebUserContext;
 import at.ac.tuwien.ase09.data.InstitutionDataAccess;
 import at.ac.tuwien.ase09.exception.EntityNotFoundException;
@@ -46,18 +47,33 @@ public class UserBean {
 		return null;
 	}
 	
+	public boolean isInstitutionAdmin(UserAccount user) {
+		return isInstitutionAdmin(user.getUsername());
+	}
+	
 	public boolean isInstitutionAdmin(User user) {
+		return isInstitutionAdmin(user.getUsername());
+	}
+	
+	public boolean isInstitutionAdmin(String username) {
 		try {
-			institutionDataAccess.getByAdmin(user.getUsername());
+			institutionDataAccess.getByAdmin(username);
 			return true;
 		} catch(Exception e) {
 			return false;
 		}
 	}
 	
+	public String getFollowerName(UserAccount follower) {
+		return getFollowerName(follower.getUsername());
+	}
+		
 	public String getFollowerName(User follower) {
+		return getFollowerName(follower.getUsername());
+	}
+	
+	public String getFollowerName(String followerUsername) {
 		String currentUsername = userContext.getUser().getUsername();
-		String followerUsername = follower.getUsername();
 		
 		try {
 			Institution institution = institutionDataAccess.getByAdmin(followerUsername);
