@@ -1,5 +1,6 @@
 package at.ac.tuwien.ase09.data;
 
+import java.util.Calendar;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -32,6 +33,14 @@ public class StockMarketGameDataAccess {
 			throw new AppException(e);
 		}
 	}
+	
+	public List<StockMarketGame> getByInstitution(Institution institution) {
+		try{
+			return em.createQuery("FROM StockMarketGame g JOIN FETCH g.owner where g.owner.id = :institutionId and g.validTo > :now", StockMarketGame.class).setParameter("institutionId", institution.getId()).setParameter("now", Calendar.getInstance()).getResultList();
+		}catch(Exception e){
+			throw new AppException(e);
+		}
+	}
 
 	public  StockMarketGame getStockMarketGameByID(Long id){
 		try{
@@ -55,6 +64,14 @@ public class StockMarketGameDataAccess {
 			owner = owner == null ? "" : owner;
 			
 			return em.createQuery("FROM StockMarketGame g JOIN FETCH g.owner JOIN FETCH g.owner.admin where g.name like :name and g.text like :text and g.owner.name like :owner", StockMarketGame.class).setParameter("name", "%"+name+"%").setParameter("text", "%"+text+"%").setParameter("owner", "%"+owner+"%").getResultList();
+		} catch(Exception e) {
+			throw new AppException(e);
+		}
+	}
+	
+	public Long getSubscribedUsersCount(StockMarketGame game) {
+		try {
+			return em.createQuery("SELECT count(*) from Portfolio p where p.game.id = :gameId", Long.class).setParameter("gameId", game.getId()).getSingleResult();
 		} catch(Exception e) {
 			throw new AppException(e);
 		}

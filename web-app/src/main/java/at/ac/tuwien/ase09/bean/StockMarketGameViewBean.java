@@ -113,7 +113,7 @@ public class StockMarketGameViewBean implements Serializable{
 			this.stockMarketGame = null;
 			/*
 			try {
-				FacesContext.getCurrentInstance().getExternalContext().responseSendError(404, "Das Börsenspiel mit der Id '" + gameID + "' konnte nicht gefunden werden");
+				FacesContext.getCurrentInstance().getExternalContext().responseSendError(404, "Das Bï¿½rsenspiel mit der Id '" + gameID + "' konnte nicht gefunden werden");
 			} catch (IOException e1) {
 				
 			}
@@ -167,4 +167,8 @@ public class StockMarketGameViewBean implements Serializable{
         	}
         }
     }
+	
+	public Long getSubscribedUsersCount(StockMarketGame game) {
+		return stockMarketGameAccess.getSubscribedUsersCount(game);
+	}
 }

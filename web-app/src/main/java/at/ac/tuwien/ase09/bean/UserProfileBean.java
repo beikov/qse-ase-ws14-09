@@ -14,11 +14,13 @@ import javax.inject.Named;
 import at.ac.tuwien.ase09.context.WebUserContext;
 import at.ac.tuwien.ase09.data.InstitutionDataAccess;
 import at.ac.tuwien.ase09.data.PortfolioDataAccess;
+import at.ac.tuwien.ase09.data.StockMarketGameDataAccess;
 import at.ac.tuwien.ase09.data.UserDataAccess;
 import at.ac.tuwien.ase09.exception.AppException;
 import at.ac.tuwien.ase09.exception.EntityNotFoundException;
 import at.ac.tuwien.ase09.model.Institution;
 import at.ac.tuwien.ase09.model.Portfolio;
+import at.ac.tuwien.ase09.model.StockMarketGame;
 import at.ac.tuwien.ase09.model.User;
 import at.ac.tuwien.ase09.service.InstitutionService;
 import at.ac.tuwien.ase09.service.UserService;
@@ -43,6 +45,9 @@ public class UserProfileBean implements Serializable {
 	private InstitutionService institutionService;
 	
 	@Inject
+	private StockMarketGameDataAccess gameDataAccess;
+	
+	@Inject
 	private WebUserContext userContext;
 	
 	private String username;
@@ -50,6 +55,7 @@ public class UserProfileBean implements Serializable {
 	private User user;
 	private boolean isOwner;
 	private Institution institution;
+	private List<StockMarketGame> institutionGames;
 	private List<User> followers;
 	private List<Portfolio> portfolios;
 	
@@ -74,6 +80,7 @@ public class UserProfileBean implements Serializable {
 		}
 		try {
 			institution = institutionDataAccess.getByAdmin(username);
+			institutionGames = gameDataAccess.getByInstitution(institution); 
 			// institution != null -> owner == institutionAdmin
 		} catch(EntityNotFoundException e) {
 		} catch(AppException e) {
@@ -142,6 +149,10 @@ public class UserProfileBean implements Serializable {
 	public boolean isProfileOwner() {
 		return isOwner; 
 	}
+	
+	public boolean isInstitutionAdmin() {
+		return institution != null;
+	}
     
     public boolean isFollowable(){
 		return (userContext.getUserId() != null && !owner.getFollowers().contains(user) && !isProfileOwner());
@@ -161,6 +172,10 @@ public class UserProfileBean implements Serializable {
 	
 	public Institution getInstitution() {
 		return institution;
+	}
+	
+	public List<StockMarketGame> getInstitutionGames() {
+		return institutionGames;
 	}
 
 	public String getFollowUnfollowButtonText() {

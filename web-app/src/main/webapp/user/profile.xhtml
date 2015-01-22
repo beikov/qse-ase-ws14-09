@@ -28,7 +28,42 @@
 				</div>
 			</div>
 			<div class="row">
-				<ui:include src="_portfolios.xhtml" />
+				<c:choose>
+					<c:when test="#{userProfileBean.institutionAdmin}">
+						<p:dataGrid var="game" value="#{userProfileBean.institutionGames}" columns="3" layout="grid"
+					        rows="2" paginator="true" id="portfolios" emptyMessage="Diese Institution hat noch keine Börsenspiele erstellt"
+					        paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}">
+					 
+					        <f:facet name="header">
+					            Börsenspiele
+					        </f:facet>
+					 
+					        <p:panel header="#{game.name}" style="text-align:center">
+					            <p:panelGrid style="width:100%" >
+					            	<p:row>
+					            		<p:column><h:outputText value="Start:" /></p:column>
+					            		<p:column><h:outputText value="#{dateUtil.formatCalendar(game.validFrom)}" /></p:column>
+					            	</p:row>
+					            	<p:row>
+					            		<p:column><h:outputText value="Ende:" /></p:column>
+					            		<p:column><h:outputText value="#{dateUtil.formatCalendar(game.validTo)}" /></p:column>
+					            	</p:row> 
+					            	<p:row>
+					            		<p:column><h:outputText value="Teilnehmer:" /></p:column>
+					            		<p:column><h:outputText value="#{stockMarketGameViewBean.getSubscribedUsersCount(game)}" /></p:column>
+					            	</p:row>
+					            </p:panelGrid>
+					            <p:link title="Details" outcome="/protected/stockmarketgame/stockmarketgameview" style="margin-top: 5px;">
+				                    <f:param name="gameId" value="#{game.id}" />
+				                    <span class="fa fa-search" style="margin:0 auto;" />
+				                </p:link>
+					        </p:panel>
+					    </p:dataGrid>
+					</c:when>
+					<c:otherwise>
+						<ui:include src="_portfolios.xhtml" />
+					</c:otherwise>
+				</c:choose>
 			</div>
 		</h:form>		
 	</ui:define>
