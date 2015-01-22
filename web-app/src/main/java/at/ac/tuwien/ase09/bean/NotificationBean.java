@@ -47,9 +47,9 @@ public class NotificationBean implements Serializable{
 	@PostConstruct
 	public void init(){
 		if(!showOnlyNew){
-			notifications = (List<Notification>) data.getNotificationsForUser(userContext.getUser());
+			notifications = (List<Notification>) data.getNotificationsForUser(userContext.getUserId());
 		}else{
-			notifications = (List<Notification>) data.getUnreadNotificationsForUser(userContext.getUser());
+			notifications = (List<Notification>) data.getUnreadNotificationsForUser(userContext.getUserId());
 		}
 	}
 
@@ -96,11 +96,11 @@ public class NotificationBean implements Serializable{
 	}
 
 	public int getUnreadCount(){
-		return data.getUnreadNotificationsCount(userContext.getUser());
+		return data.getUnreadNotificationsCount(userContext.getUserId());
 	}
 
 	public void checkNewNotifications(){
-		List<Notification> newNot = data.getUnpushedNotifications(userContext.getUser());
+		List<Notification> newNot = data.getUnpushedNotifications(userContext.getUserId());
 		for (Notification notification : newNot) {
 			switch (notification.getType()) {
 			case FOLLOWER_ADDED: addMessage("Neue Notifikation!", getTextForNotification((FollowerAddedNotification)notification)); break;
@@ -169,9 +169,9 @@ public class NotificationBean implements Serializable{
 	public void setShowOnlyNew(boolean showOnlyNew) {
 		this.showOnlyNew = showOnlyNew;
 		if(!showOnlyNew){
-			notifications = (List<Notification>) data.getNotificationsForUser(userContext.getUser());
+			notifications = (List<Notification>) data.getNotificationsForUser(userContext.getUserId());
 		}else{
-			notifications = (List<Notification>) data.getUnreadNotificationsForUser(userContext.getUser());
+			notifications = (List<Notification>) data.getUnreadNotificationsForUser(userContext.getUserId());
 		}
 	}
 

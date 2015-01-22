@@ -18,6 +18,7 @@ import javax.persistence.EntityManager;
 
 import org.apache.commons.collections.map.HashedMap;
 
+import at.ac.tuwien.ase09.context.UserAccount;
 import at.ac.tuwien.ase09.context.WebUserContext;
 import at.ac.tuwien.ase09.data.InstitutionDataAccess;
 import at.ac.tuwien.ase09.data.PortfolioDataAccess;
@@ -50,7 +51,7 @@ public class StockMarketGameRankingBean implements Serializable{
 
 	private StockMarketGame stockMarketGame;
 
-	private User loggedInUser;
+	private UserAccount loggedInUser;
 	private Institution userInstitution;
 
 	private List<Portfolio> portfolioRankingList;
@@ -81,12 +82,6 @@ public class StockMarketGameRankingBean implements Serializable{
 	}
 	public void setStockMarketGame(StockMarketGame stockMarketGame) {
 		this.stockMarketGame = stockMarketGame;
-	}
-	public User getLoggedInUser() {
-		return loggedInUser;
-	}
-	public void setLoggedInUser(User loggedInUser) {
-		this.loggedInUser = loggedInUser;
 	}
 	public Institution getUserInstitution() {
 		return userInstitution;
@@ -136,7 +131,7 @@ public class StockMarketGameRankingBean implements Serializable{
 		if(stockMarketGame != null && loggedInUser != null){
 
 			try{			
-				return portfolioDataAccess.getByGameAndUser(stockMarketGame, loggedInUser) != null;
+				return portfolioDataAccess.getByGameAndUser(stockMarketGame, loggedInUser.getId()) != null;
 			}
 			catch(EntityNotFoundException e){
 				return false;
