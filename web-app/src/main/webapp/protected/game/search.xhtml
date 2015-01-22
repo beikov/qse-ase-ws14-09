@@ -94,7 +94,7 @@
 			            <p:button value="Details" outcome="view">
 		                	<f:param name="gameId" value="#{game.id}" />
 		                </p:button>
-                		<p:commandButton value="Löschen" update=":searchGamesForm:messages :searchGamesForm:games" actionListener="#{stockMarketGameSearchBean.participate(game)}" rendered="#{stockMarketGameSearchBean.hasAlreadyOrderedPapers(game)}">
+                		<p:commandButton value="Abmelden" update=":searchGamesForm:messages :searchGamesForm:games" actionListener="#{stockMarketGameSearchBean.participate(game)}" rendered="#{stockMarketGameSearchBean.hasAlreadyOrderedPapers(game)}">
 					        <p:confirm header="Bestätigung" message="Sie haben bereits Orders erstellt. Sind Sie Sicher, dass sie sich von diesem Spiel abmelden wollen? Kann nicht rückgängig gemacht werden" icon="fa fa-warning" />
 					    </p:commandButton>
 							 
