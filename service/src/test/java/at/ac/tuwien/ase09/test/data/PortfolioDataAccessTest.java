@@ -556,12 +556,12 @@ public class PortfolioDataAccessTest extends AbstractServiceTest<PortfolioDataAc
 	
 	@Test
 	public void test_existsPortfolioWithNameForUser_forNonExistingPortfolio_returnsFalse(){
-		assertFalse(portfolioDataAccess.existsPortfolioWithNameForUser("not_exists", portfolio.getOwner()));
+		assertFalse(portfolioDataAccess.existsPortfolioWithNameForUser("not_exists", portfolio.getOwner().getId()));
 	}
 
 	@Test
 	public void test_existsPortfolioWithNameForUser_forExistingPortfolio_returnsTrue(){
-		assertTrue(portfolioDataAccess.existsPortfolioWithNameForUser(portfolio.getName(), portfolio.getOwner()));
+		assertTrue(portfolioDataAccess.existsPortfolioWithNameForUser(portfolio.getName(), portfolio.getOwner().getId()));
 	}
 	
 	@Test

@@ -39,7 +39,7 @@
 			<ui:repeat id="repeatTag" var="filter" value="#{valuePaperScreenerBean.filters}" >
 			
 				<h:panelGrid columns="7" cellpadding="10">
-					<p:commandButton icon="ui-icon-closethick"  >
+					<p:commandButton icon="fa fa-close"  >
 				        	<f:ajax listener="#{valuePaperScreenerBean.delete(filter)}" immediate="true" render="@form" />
 					</p:commandButton>
 				
@@ -76,7 +76,7 @@
 				
 			</ui:repeat>
 
-			<p:commandButton icon="ui-icon-plusthick" style="margin-top: 10px;">
+			<p:commandButton icon="fa fa-plus" style="margin-top: 10px;">
 					<f:ajax listener="#{valuePaperScreenerBean.addFilter()}" execute="@form" render="@form" /> 
 			</p:commandButton>
 			

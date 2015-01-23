@@ -19,7 +19,7 @@ public class TransactionEntryDataAccess {
 
 	public List<OrderTransactionEntry> getOrderTransactionsForPortfolioValuePaper(PortfolioValuePaper pvp) {
 		try {
-			return em.createQuery("FROM OrderTransactionEntry ot WHERE ot.order.portfolio = :p AND ot.order.valuePaper = :vp", OrderTransactionEntry.class).setParameter("p", pvp.getPortfolio()).setParameter("vp", pvp.getValuePaper()).getResultList();
+			return em.createQuery("FROM OrderTransactionEntry ot WHERE ot.order.portfolio = :p AND ot.order.valuePaper = :vp  and ot.order.portfolio.deleted=false", OrderTransactionEntry.class).setParameter("p", pvp.getPortfolio()).setParameter("vp", pvp.getValuePaper()).getResultList();
 		} catch(Exception e) {
 			throw new AppException(e);
 		}

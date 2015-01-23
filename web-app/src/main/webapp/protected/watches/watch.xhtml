@@ -17,6 +17,7 @@
 	</ui:define>
 	
 	<ui:define name="body">
+		<h:form>
 		<p:tabView>
 			<p:tab title="Einfach">
 			</p:tab>
@@ -35,6 +36,8 @@
 				<h:inputTextarea id="watch-editor" value="#{watchBean.watchExpression}" />
 			</p:tab>
 		</p:tabView>
+		
+		</h:form>
 		
 		
 		<script>

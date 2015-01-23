@@ -7,7 +7,8 @@
 	xmlns:ase="http://java.sun.com/jsf/composite/portfoliosimcomponents"
 	template="/WEB-INF/templates/template.xhtml">
 	
-	<h:outputText value="#{request.getAttribute('errorMsg')}" />
-	<h:outputText value="#{request.getAttribute('errorMessge')}" />
+	<ui:define name="body">
+		#{requestScope['javax.servlet.error.message']}
+	</ui:define>
 	
 </ui:composition>

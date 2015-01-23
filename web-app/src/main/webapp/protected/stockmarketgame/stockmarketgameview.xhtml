@@ -6,14 +6,27 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:og="http://ogp.me/ns#"
+	xmlns:fb="https://www.facebook.com/2008/fbml"
 	template="/WEB-INF/templates/template.xhtml">
+	
+	<ui:define name="head">
+    	<meta property="og:title" content="#{stockMarketGameViewBean.stockMarketGame.name}" />
+		<meta property="og:url" content="#{socialMediaBean.absoluteApplicationUrl}" />
+		<meta property="og:image" content="http://www.fondsprofessionell.de/upload/attach/1343813118_aktienkurs_steigend.jpg" />
+		<meta property="og:description" content="#{stockMarketGameViewBean.stockMarketGame.text}" />
+		<meta property="og:site_name" content="Börsensimulator" />
 
+		<meta property="og:type" content="website" />
+	</ui:define>
 	<ui:define name="body">
-
+	
+		<ui:include src="/resources/socialmedia/_fbsdk.xhtml" />
+		<ui:include src="/resources/socialmedia/_twsdk.xhtml" />
 		<f:metadata>
 
 			<f:viewParam name="gameId"
-				value="#{stockMarketGameViewBean.gameID}" required="true" />
+				value="#{stockMarketGameViewBean.gameID}" required="#{!facesContext.postback}" />
 			<f:viewAction action="#{stockMarketGameViewBean.init}" />
 
 		</f:metadata>
@@ -22,6 +35,16 @@
 				<c:when test="#{stockMarketGameViewBean.stockMarketGame != null}">
 		
 				<h3 style="margin-top: 0">Börsenspielseite</h3>
+				
+				<div align="right">
+					<div  class="fb-share-button" data-href="#{socialMediaBean.absoluteApplicationUrl}" data-layout="button"></div>
+					<div style="float:right; margin-left:5px;">
+						<a  class="twitter-share-button" href="https://twitter.com/share"
+  						data-text="#{stockMarketGameViewBean.stockMarketGame.text}"
+  						data-count="none"
+  						data-hashtags="#{stockMarketGameViewBean.stockMarketGame.name},#{stockMarketGameViewBean.stockMarketGame.owner.name},Börsenspiel"/>
+  					</div>
+				</div>
 				<div class="row">
 					<div class="col-md-8">
 						<p:panel id="general" header="Allgemeine Informationen"
@@ -113,7 +136,7 @@
 												style="font-weight:bold; margin: 5px;" />
 									</div>
 									<div class="col-md-5">
-										<p:outputLabel value="#{stockMarketGameViewBean.stockMarketGame.setting.startCapital}"
+										<p:outputLabel value="#{stockMarketGameViewBean.startcapital}"
 												rendered="#{stockMarketGameViewBean.stockMarketGame.setting.startCapital!=null}"
 												style="font-weight:bold; margin: 5px;" />
 									</div>
@@ -207,8 +230,13 @@
 						</p:panel>
 						
 						<center>
-							<p:button value="Bearbeiten" outcome="/protected/stockmarketgame/create" icon="ui-icon-pencil"
+							<p:button value="Bearbeiten" outcome="/protected/stockmarketgame/create" icon="fa fa-pencil"
 							style="margin-top:20px" rendered="#{stockMarketGameViewBean.adminLoggedIn == true}">
+								<f:param name="stockMarketGameId" value="#{stockMarketGameViewBean.gameID}" />
+							</p:button>
+		
+							<p:button value="Ranking" outcome="/protected/stockmarketgame/ranking" icon="fa fa-trophy"
+							style="margin-left:5px" >
 								<f:param name="stockMarketGameId" value="#{stockMarketGameViewBean.gameID}" />
 							</p:button>
 						</center>

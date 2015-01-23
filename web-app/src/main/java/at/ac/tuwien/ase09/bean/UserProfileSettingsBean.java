@@ -45,7 +45,7 @@ public class UserProfileSettingsBean implements Serializable {
 		user = userDataAccess.loadUserForProfile(userContext.getUser().getUsername());
 		
 		followers = new ArrayList<>(user.getFollowers());
-		portfolios = portfolioDataAccess.getActiveUserPortfolios(user);
+		portfolios = portfolioDataAccess.getActiveUserPortfolios(userContext.getUserId());
 	}
 	
 	public User getUser() {

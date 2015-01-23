@@ -20,8 +20,8 @@
 	                <h:outputText value="#{portfolio.currentCapital}" />
 	            </h:panelGrid>
 	            <p:link title="Details" outcome="/portfolio/view">
-                    <h:outputText styleClass="ui-icon ui-icon-search" style="margin:0 auto;" />
                     <f:param name="portfolioId" value="#{portfolio.id}" />
+                    <span class="fa fa-search" style="margin:0 auto;" />
                 </p:link>
 	        </p:panel>
 	    </p:dataGrid>

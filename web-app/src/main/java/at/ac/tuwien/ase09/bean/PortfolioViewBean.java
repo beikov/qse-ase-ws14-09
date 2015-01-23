@@ -25,6 +25,7 @@ import org.primefaces.model.chart.PieChartModel;
 import at.ac.tuwien.ase09.context.UserContext;
 import at.ac.tuwien.ase09.context.WebUserContext;
 import at.ac.tuwien.ase09.data.PortfolioDataAccess;
+import at.ac.tuwien.ase09.data.UserDataAccess;
 import at.ac.tuwien.ase09.data.ValuePaperPriceEntryDataAccess;
 import at.ac.tuwien.ase09.exception.AppException;
 import at.ac.tuwien.ase09.exception.EntityNotFoundException;
@@ -55,13 +56,16 @@ public class PortfolioViewBean implements Serializable {
 	
 	@Inject
 	private ValuePaperPriceEntryDataAccess priceDataAccess;
+	@Inject
+	private UserDataAccess userDataAccess;
 	
 	@Inject
-	private WebUserContext userContext;
+	private UserContext userContext;
 	
 	private User owner;
 	private User user;
-
+	private boolean isOwner;
+	
 	private List<User> followers;
 	
 	private List<PortfolioValuePaper> portfolioValuePapers;
@@ -98,20 +102,26 @@ public class PortfolioViewBean implements Serializable {
 	}
 	
     public void init() throws IOException {
-    	user = userContext.getUser();
     	try {
     		portfolio = portfolioDataAccess.getPortfolioById(portfolioId);
+    		if (portfolio.isDeleted()) {
+    			throw new EntityNotFoundException();
+    		}
 		} catch(EntityNotFoundException e) {
-			FacesContext.getCurrentInstance().getExternalContext().responseSendError(404, "Kein Portfolio mit der Id '"+ portfolioId +"' gefunden");
-			FacesContext.getCurrentInstance().responseComplete();
+			FacesContext context = FacesContext.getCurrentInstance();
+			context.getExternalContext().responseSendError(404, "Kein Portfolio mit der Id '"+ portfolioId +"' gefunden");
+			context.responseComplete();
 			return;
 		} catch(AppException e) {
-			FacesContext.getCurrentInstance().getExternalContext().responseSendError(500, "Fehler beim Laden des Portfolios");
-			FacesContext.getCurrentInstance().responseComplete();
+			FacesContext context = FacesContext.getCurrentInstance();
+			context.getExternalContext().responseSendError(500, "Fehler beim Laden des Portfolios");
+			context.responseComplete();
 			return;
 		}
     	
     	owner = portfolio.getOwner();
+    	user = userContext.getUserId() == null ? null : userDataAccess.getUserById(userContext.getUserId());
+    	isOwner = owner.getId().equals(userContext.getUserId());
         createPieModels();
         createPortfolioChart();
         followers = new LinkedList<User>(portfolio.getFollowers());
@@ -140,10 +150,32 @@ public class PortfolioViewBean implements Serializable {
         }*/
     }
     
-    public User getUser() {
-    	return user;
-    }
-    
+    public boolean isFollowable(){
+		return (userContext.getUserId() != null && !portfolio.getFollowers().contains(user) && !isPortfolioOwner());
+	}
+	
+	public boolean isUnfollowable(){
+		return (portfolio.getFollowers().contains(user));
+	}
+	
+	public String getFollowUnfollowButtonText() {
+		if (isFollowable()) {
+			return "Folgen";
+		} else if (isUnfollowable()) {
+			return "Nicht mehr folgen";
+		}
+		return "";
+	}
+	
+	public void followUnfollow() {
+		if (isFollowable()) {
+			portfolio = portfolioService.followPortfolio(portfolio, userContext.getUserId());
+		} else if (isUnfollowable()) {
+			portfolio = portfolioService.unfollowPortfolio(portfolio, userContext.getUserId());
+		}
+		followers = new LinkedList<User>(portfolio.getFollowers());
+	}
+	    
     public Portfolio getPortfolio() {
     	return portfolio;
     }
@@ -194,7 +226,7 @@ public class PortfolioViewBean implements Serializable {
 	}
 	
 	public void changeVisibility() {
-		portfolioService.savePortfolio(portfolio);
+		portfolioService.updatePortfolio(portfolio);
 		FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Sichtbarkeitseinstellungen gespeichert",  null);
         FacesContext.getCurrentInstance().addMessage(null, message);
 	}
@@ -210,12 +242,10 @@ public class PortfolioViewBean implements Serializable {
 	}*/
 	
 	public Money getProfit(PortfolioValuePaper pvp) {
-		Money profit = new Money();
-		profit.setCurrency(portfolio.getCurrentCapital().getCurrency());
-    	profit.setValue(new BigDecimal(portfolioDataAccess.getProfit(pvp)));
-		
-		return profit;
+		double profit = portfolioDataAccess.getProfit(pvp);
+		return createMoney(new BigDecimal(profit));
 	}
+	
 	
 	public Object[] getOrderStates() {
 		return OrderStatus.values();
@@ -231,21 +261,25 @@ public class PortfolioViewBean implements Serializable {
 	}
 	
 	public Money getCostValueForPortfolio() {
-		Money m = new Money();
-		m.setCurrency(portfolio.getCurrentCapital().getCurrency());
-		m.setValue(portfolioDataAccess.getCostValueForPortfolio(portfolioId));
-		return m;
+		BigDecimal cost = portfolioDataAccess.getCostValueForPortfolio(portfolioId);
+		return createMoney(cost);
 	}
 	
 	public Money getCurrentValueForPortfolio() {
-		Money m = new Money();
-		m.setCurrency(portfolio.getCurrentCapital().getCurrency());
-		m.setValue(portfolioDataAccess.getCurrentValueForPortfolio(portfolioId));
-		return m;
+		BigDecimal value = portfolioDataAccess.getCurrentValueForPortfolio(portfolioId);
+		return createMoney(value);
 	}
 	
 	public double getPortfolioPerformance() {
-		return portfolioDataAccess.getPortfolioPerformance(portfolioId).doubleValue();
+		BigDecimal performance;
+		try {
+			performance = portfolioDataAccess.getPortfolioPerformance(portfolioId); 
+		} catch(EntityNotFoundException e) {
+			performance = new BigDecimal(0);
+		} catch(AppException e) {
+			performance = new BigDecimal(0);
+		}
+		return performance.doubleValue();
 	}
 	
 	
@@ -292,7 +326,7 @@ public class PortfolioViewBean implements Serializable {
 	}
 	
 	public boolean isPortfolioOwner() {
-		return owner.getId() == user.getId();
+		return isOwner;
 	}
 	
 	private boolean checkVisibilitySetting(boolean setting) {
@@ -370,5 +404,15 @@ public class PortfolioViewBean implements Serializable {
         
         portfolioChart.addSeries(series);
         
+	}
+	
+	private Money createMoney(BigDecimal value) {
+		Money m = new Money();
+		m.setCurrency(portfolio.getSetting().getStartCapital().getCurrency());
+		if (value == null)
+			value = new BigDecimal(0);
+		m.setValue(value);
+		return m;
+		
 	}
 }

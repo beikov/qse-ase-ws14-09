@@ -18,6 +18,17 @@ public class UserDataAccess {
 	private EntityManager em;
 
 	// TODO: Cache
+	public User getUserById(Long userId) {
+		try {
+			return em.createQuery("SELECT u FROM User u WHERE u.id = :userId", User.class).setParameter("userId", userId).getSingleResult();
+		} catch (NoResultException e) {
+			throw new EntityNotFoundException();
+		} catch (Exception e) {
+			throw new AppException(e);
+		}
+	}
+
+	// TODO: Cache
 	public User getUserByUsername(String username) {
 		try {
 			return em.createQuery("SELECT u FROM User u WHERE u.username = :username", User.class).setParameter("username", username).getSingleResult();

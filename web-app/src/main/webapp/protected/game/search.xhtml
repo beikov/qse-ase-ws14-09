@@ -24,22 +24,36 @@
 			<p:growl id="messages" />
 			
 			<p:fieldset legend="Börsenspielsuche" style="margin-bottom:20px">
-				<h:panelGrid columns="2" cellpadding="5" border="0">
-		            <h:outputText value="Name" />
-		            <p:inputText value="#{stockMarketGameSearchBean.filterGameName}">
-		            	<p:ajax event="keyup" update=":searchGamesForm:games" listener="#{stockMarketGameSearchBean.handleFilterGameKeyEvent}" />
-		            </p:inputText>
-		            
-		            <h:outputText value="Text" />
-		            <p:inputText value="#{stockMarketGameSearchBean.filterGameText}">
-		            	<p:ajax event="keyup" update=":searchGamesForm:games" listener="#{stockMarketGameSearchBean.handleFilterGameKeyEvent}" />
-		            </p:inputText>
-		            
-		            <h:outputText value="Institution" />
-		            <p:inputText value="#{stockMarketGameSearchBean.filterGameInstitutionName}">
-		            	<p:ajax event="keyup" update=":searchGamesForm:games" listener="#{stockMarketGameSearchBean.handleFilterGameKeyEvent}" />
-		            </p:inputText>
-		        </h:panelGrid>
+				<div class="row" style="margin-bottom: 5px;">
+					<div class="col-md-2">
+			            <p:outputLabel for="name" value="Name:" />
+					</div>
+					<div class="col-md-5">
+			            <p:inputText id="name" value="#{stockMarketGameSearchBean.filterGameName}">
+			            	<p:ajax event="keyup" update=":searchGamesForm:games" listener="#{stockMarketGameSearchBean.handleFilterGameKeyEvent}" />
+			            </p:inputText>
+					</div>
+		        </div>
+		        <div class="row" style="margin-bottom: 5px;">
+			        <div class="col-md-2">
+			            <p:outputLabel for="text" value="Text:" />
+			        </div>
+			        <div class="col-md-5">
+			            <p:inputText id="text" value="#{stockMarketGameSearchBean.filterGameText}">
+			            	<p:ajax event="keyup" update=":searchGamesForm:games" listener="#{stockMarketGameSearchBean.handleFilterGameKeyEvent}" />
+			            </p:inputText>
+			        </div>
+				</div>
+				<div class="row">
+			        <div class="col-md-2">
+			            <p:outputLabel for="institution" value="Institution:" />
+			        </div>
+			        <div class="col-md-5">
+			            <p:inputText id="institution" value="#{stockMarketGameSearchBean.filterGameInstitutionName}">
+			            	<p:ajax event="keyup" update=":searchGamesForm:games" listener="#{stockMarketGameSearchBean.handleFilterGameKeyEvent}" />
+			            </p:inputText>
+			        </div>
+				</div>
 			</p:fieldset>
 			
 			<p:fieldset id="games" legend="Gefundene Spiele" style="margin-bottom:20px">
@@ -48,27 +62,49 @@
 				<p:accordionPanel value="#{stockMarketGameSearchBean.games}" var="game" activeIndex="">
 			        <p:tab title="Spiel - #{game.name}" titleStyleClass="#{stockMarketGameSearchBean.isParticipatingInGame(game) ? 'participating' : ''}">
 			        	
-			            <h:panelGrid columns="2" cellpadding="5" border="0">
-			            	<f:facet name="header">
-			            		<ase:logo logoEntity="#{game.owner}" maxWidth="300px" />
-			            	</f:facet>
-			                <h:outputText value="Institution:" style="font-weight: bold" />
-			                <h:panelGrid columns="2" cellpadding="5" border="0">
-			                	<p:link value="#{game.owner.name}" outcome="/institution/view">
-					            	<f:param name="institution" value="#{game.owner.id}" />
+			        	<div>
+				        	<p:graphicImage value="#{logoBean.logo}" style="max-width: 100%;" rendered="#{game.logo == null and game.owner.admin.logo != null}">
+								<f:param name="username" value="#{game.owner.admin.username}" />
+							</p:graphicImage>
+		            		<p:graphicImage value="#{logoBean.logo}" style="height: 200px;" rendered="#{game.logo != null}">
+								<f:param name="gameId" value="#{game.id}" />
+							</p:graphicImage>
+			        	</div>
+			        	<div class="row" style="margin-top: 5px; margin-bottom: 5px;">
+			        		<div class="col-md-1">
+			        			<h:outputText value="Institution:" style="font-weight: bold" />
+			        		</div>
+			        		<div class="col-md-9">
+			                	<p:link value="#{game.owner.name}" outcome="/user/profile">
+					            	<f:param name="user" value="#{game.owner.admin.username}" />
 					            </p:link>
-			                </h:panelGrid>
-			                
-			                <h:outputText value="Spielstart:" style="font-weight: bold" />
-			                <h:outputText value="#{dateUtil.formatCalendar(game.validFrom)}" />
-			            </h:panelGrid>
+				            </div>
+				       	</div>
+				       	<div class="row">
+				       		<div class="col-md-1">
+			                	<h:outputText value="Spielstart:" style="font-weight: bold" />
+			                </div>
+			                <div class="col-md-9">
+			                	<h:outputText value="#{dateUtil.formatCalendar(game.validFrom)}" />
+			                </div>
+			        	</div>
 			            
 			            <p style="margin-top: 10px; margin-bottom: 10px;">#{game.text}</p>
 			            
 			            <p:button value="Details" outcome="view">
 		                	<f:param name="gameId" value="#{game.id}" />
 		                </p:button>
-		                <p:commandButton value="#{stockMarketGameSearchBean.getParticipateButtonText(game)}" update=":searchGamesForm:messages :searchGamesForm:games" actionListener="#{stockMarketGameSearchBean.participate(game)}" />
+                		<p:commandButton value="Abmelden" update=":searchGamesForm:messages :searchGamesForm:games" actionListener="#{stockMarketGameSearchBean.participate(game)}" rendered="#{stockMarketGameSearchBean.hasAlreadyOrderedPapers(game)}">
+					        <p:confirm header="Bestätigung" message="Sie haben bereits Orders erstellt. Sind Sie Sicher, dass sie sich von diesem Spiel abmelden wollen? Kann nicht rückgängig gemacht werden" icon="fa fa-warning" />
+					    </p:commandButton>
+							 
+					    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" rendered="#{stockMarketGameSearchBean.hasAlreadyOrderedPapers(game)}">
+					        <p:commandButton value="Ja" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+					        <p:commandButton value="Nein" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+					    </p:confirmDialog>
+	                	
+	                	<p:commandButton value="#{stockMarketGameSearchBean.getParticipateButtonText(game)}" update=":searchGamesForm:messages :searchGamesForm:games" actionListener="#{stockMarketGameSearchBean.participate(game)}" rendered="#{not stockMarketGameSearchBean.hasAlreadyOrderedPapers(game)}"/>
+		                	
 			        </p:tab>
 			    </p:accordionPanel>
 			</p:fieldset>

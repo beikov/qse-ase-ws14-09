@@ -17,6 +17,7 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 
+import at.ac.tuwien.ase09.context.UserAccount;
 import at.ac.tuwien.ase09.currency.CurrencyConversionService;
 import at.ac.tuwien.ase09.exception.AppException;
 import at.ac.tuwien.ase09.exception.EntityNotFoundException;
@@ -68,7 +69,7 @@ public class PortfolioDataAccess {
 	public List<Portfolio> getPortfoliosByUser(long userId) {
 		try{
 			User user = em.getReference(User.class, userId);
-			return em.createQuery("FROM Portfolio p WHERE p.owner = :user", Portfolio.class).setParameter("user", user).getResultList();
+			return em.createQuery("FROM Portfolio p WHERE p.owner = :user and p.deleted=false", Portfolio.class).setParameter("user", user).getResultList();
 		}catch(Exception e){
 			throw new AppException(e);
 		}
@@ -77,7 +78,7 @@ public class PortfolioDataAccess {
 	public List<Portfolio> getPortfoliosByStockMarketGame(long stockMarketGameId) {
 		try{
 			StockMarketGame smg = em.getReference(StockMarketGame.class, stockMarketGameId);
-			return em.createQuery("SELECT p FROM Portfolio p LEFT JOIN FETCH p.owner WHERE p.game = :smg", Portfolio.class).setParameter("smg", smg).getResultList();
+			return em.createQuery("SELECT p FROM Portfolio p LEFT JOIN FETCH p.owner WHERE p.game = :smg and p.deleted=false", Portfolio.class).setParameter("smg", smg).getResultList();
 		}catch(NoResultException e){
 			throw new EntityNotFoundException(e);
 		}catch(Exception e){
@@ -158,7 +159,7 @@ public class PortfolioDataAccess {
 					+ "LEFT JOIN FETCH o.valuePaper "
 					+ "JOIN FETCH p.owner "
 					+ "LEFT JOIN FETCH p.followers "
-					+ "WHERE p.id = :id", Portfolio.class).setParameter("id", id).getSingleResult();
+					+ "WHERE p.id = :id and p.deleted=false", Portfolio.class).setParameter("id", id).getSingleResult();
 		} catch(NoResultException e) {
 			throw new EntityNotFoundException(e);
 		} catch(Exception e) {
@@ -184,10 +185,10 @@ public class PortfolioDataAccess {
 		}
 	}*/
 	
-	public Portfolio getPortfolioByNameForUser(String portfolioName, User user){
+	public Portfolio getPortfolioByNameForUser(String portfolioName, Long userId){
 		try{
 			List<Portfolio> results;
-			results = em.createQuery("FROM Portfolio p WHERE p.owner = :user AND p.name = :name", Portfolio.class).setParameter("user", user).setParameter("name", portfolioName).getResultList();
+			results = em.createQuery("FROM Portfolio p WHERE p.owner.id = :userId AND p.name = :name and p.deleted=false", Portfolio.class).setParameter("userId", userId).setParameter("name", portfolioName).getResultList();
 			if (results.isEmpty()){
 				return null;
 			}else{
@@ -198,12 +199,13 @@ public class PortfolioDataAccess {
 		}
 	}
 	
-	public Portfolio getByGameAndUser(StockMarketGame game, User user) {
+	public Portfolio getByGameAndUser(StockMarketGame game, Long userId) {
 		try {
 			return em.createQuery("FROM Portfolio p "
+					+ "LEFT JOIN FETCH p.orders "
 					+ "LEFT JOIN FETCH p.game "
 					+ "JOIN FETCH p.owner "
-					+ "WHERE p.game.id = :gameId AND p.owner.id = :ownerId", Portfolio.class).setParameter("gameId", game.getId()).setParameter("ownerId", user.getId()).getSingleResult();
+					+ "WHERE p.game.id = :gameId AND p.owner.id = :ownerId and p.deleted=false", Portfolio.class).setParameter("gameId", game.getId()).setParameter("ownerId", userId).getSingleResult();
 		} catch(NoResultException e) {
 			throw new EntityNotFoundException(e);
 		} catch(Exception e) {
@@ -243,8 +245,8 @@ public class PortfolioDataAccess {
 		return valuePaperCountryCountMap;
 	}
 	
-	public boolean existsPortfolioWithNameForUser(String portfolioName, User user) {
-		return getPortfolioByNameForUser(portfolioName, user) != null;
+	public boolean existsPortfolioWithNameForUser(String portfolioName, Long userId) {
+		return getPortfolioByNameForUser(portfolioName, userId) != null;
 	}
 
 	/*public BigDecimal getTotalPayedForPortfolioValuePaper(PortfolioValuePaper pvp) {
@@ -394,12 +396,18 @@ public class PortfolioDataAccess {
 		//double payed = getTotalPayedForPortfolioValuePaper(pvp).doubleValue();
 		int volume = pvp.getVolume();
 		double payed = pvp.getBuyPrice().doubleValue()*volume;
-		double latestPrice = priceDataAccess.getLastPriceEntry(pvp.getValuePaper().getCode()).getPrice().doubleValue();
-		
-		return latestPrice*volume - payed;
+		double latestPrice;
+		try {
+			latestPrice = priceDataAccess.getLastPriceEntry(pvp.getValuePaper().getCode()).getPrice().doubleValue();
+			return latestPrice*volume - payed;
+		} catch(NoResultException e) {
+			throw new EntityNotFoundException(e);
+		} catch(Exception e) {
+			throw new AppException(e);
+		}
 	}
 
-	public List<Portfolio> getActiveUserPortfolios(User user) {
+	public List<Portfolio> getActiveUserPortfolios(Long userId) {
 		try{
 			return em.createQuery(
 					"SELECT p "
@@ -407,9 +415,9 @@ public class PortfolioDataAccess {
 					+ "LEFT JOIN FETCH p.game game "
 					+ "JOIN FETCH p.owner owner "
 					+ "WHERE owner.id = :userId "
-					+ "AND (game IS NULL OR game.validTo > :now) "
+					+ "AND (game IS NULL OR game.validTo > :now) and p.deleted=false "
 					+ "ORDER BY p.name", Portfolio.class)
-				.setParameter("userId", user.getId())
+				.setParameter("userId", userId)
 				.setParameter("now", Calendar.getInstance())
 				.getResultList();
 		}catch(Exception e){

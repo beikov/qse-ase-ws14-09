@@ -111,7 +111,7 @@ public class ValuePaperDataAccess {
 	
 	public List<PortfolioValuePaper> getValuePapersForPortfolio(long portfolioId){
 		try{
-			return em.createQuery("SELECT pvp FROM PortfolioValuePaper pvp JOIN FETCH pvp.valuePaper WHERE pvp.portfolio = :portfolioId", PortfolioValuePaper.class)
+			return em.createQuery("SELECT pvp FROM PortfolioValuePaper pvp JOIN FETCH pvp.valuePaper WHERE pvp.portfolio = :portfolioId  and pvp.portfolio.deleted=false", PortfolioValuePaper.class)
 				.setParameter("portfolioId", em.getReference(Portfolio.class, portfolioId))
 				.getResultList();
 		} catch(Exception e){

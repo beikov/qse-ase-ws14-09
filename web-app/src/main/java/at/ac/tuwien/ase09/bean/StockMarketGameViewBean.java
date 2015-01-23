@@ -1,6 +1,7 @@
 package at.ac.tuwien.ase09.bean;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +38,6 @@ public class StockMarketGameViewBean implements Serializable{
 	
 	private Long gameID;
 	private boolean adminLoggedIn;
-	private User user;
 	private StockMarketGame stockMarketGame=null;
 	
 	private Map<String,String> mainGameAttributes=null;
@@ -47,10 +47,10 @@ public class StockMarketGameViewBean implements Serializable{
 	
 	public void init(){
 
-			user = userContext.getUser();
 			loadStockMarketGame(gameID);
-			checkAdminLoggedIn();
-
+			if(stockMarketGame!=null) {
+				adminLoggedIn = stockMarketGame.getOwner().getId().equals(userContext.getUserId());
+			}
 		
 	}
 	
@@ -85,16 +85,6 @@ public class StockMarketGameViewBean implements Serializable{
 	}
 
 
-	public User getUser() {
-		return user;
-	}
-
-
-	public void setUser(User user) {
-		this.user = user;
-	}
-
-
 	public StockMarketGame getStockMarketGame() {
 		return stockMarketGame;
 	}
@@ -114,13 +104,6 @@ public class StockMarketGameViewBean implements Serializable{
 		this.mainGameAttributes = mainGameAttributes;
 	}
 	
-	
-	private void checkAdminLoggedIn() {
-		if(stockMarketGame!=null)
-			adminLoggedIn=user.equals(stockMarketGame.getOwner().getAdmin());
-
-		
-	}
 	private void loadStockMarketGame(Long gameID) {
 
 		try{
@@ -130,7 +113,7 @@ public class StockMarketGameViewBean implements Serializable{
 			this.stockMarketGame = null;
 			/*
 			try {
-				FacesContext.getCurrentInstance().getExternalContext().responseSendError(404, "Das Börsenspiel mit der Id '" + gameID + "' konnte nicht gefunden werden");
+				FacesContext.getCurrentInstance().getExternalContext().responseSendError(404, "Das Bï¿½rsenspiel mit der Id '" + gameID + "' konnte nicht gefunden werden");
 			} catch (IOException e1) {
 				
 			}
@@ -139,6 +122,24 @@ public class StockMarketGameViewBean implements Serializable{
 
 		}
 
+	}
+	public String getStartcapital()
+	{
+		if(stockMarketGame!=null)
+		{
+			if(stockMarketGame.getSetting().getStartCapital().getValue().compareTo(new BigDecimal(0.00))==0)
+			{
+				return "unbegrenzt";
+			}
+			else
+			{
+				return stockMarketGame.getSetting().getStartCapital().toString();
+			}
+		}
+		else
+		{
+			return null;
+		}
 	}
 	
 	public StreamedContent getImage() {
@@ -166,4 +167,8 @@ public class StockMarketGameViewBean implements Serializable{
         	}
         }
     }
+	
+	public Long getSubscribedUsersCount(StockMarketGame game) {
+		return stockMarketGameAccess.getSubscribedUsersCount(game);
+	}
 }

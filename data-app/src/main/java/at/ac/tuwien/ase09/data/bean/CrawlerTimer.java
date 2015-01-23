@@ -5,7 +5,7 @@ import javax.ejb.Schedules;
 import javax.ejb.Singleton;
 import javax.inject.Inject;
 
-@Singleton
+//@Singleton
 public class CrawlerTimer {
 	
 	@Inject

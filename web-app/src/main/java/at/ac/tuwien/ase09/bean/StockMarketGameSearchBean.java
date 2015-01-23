@@ -46,9 +46,7 @@ public class StockMarketGameSearchBean implements Serializable{
 	@Inject
 	private PortfolioService portfolioService;
 	@Inject
-	private WebUserContext userContext;
-	
-	private User user;
+	private UserContext userContext;
 	
 	private String filterGameName;
 	private String filterGameText;
@@ -60,29 +58,40 @@ public class StockMarketGameSearchBean implements Serializable{
 	
 	@PostConstruct
 	public void init() {
-		user=userContext.getUser();
 		loadStockMarketGames();
 	}
 	
 	public boolean isParticipatingInGame(StockMarketGame game) {
-		System.out.println(game);
 		if (game == null) {
 			return false;
 		}
 		try {
-			portfolioDataAccess.getByGameAndUser(game, user);
+			portfolioDataAccess.getByGameAndUser(game, userContext.getUserId());
 			return true;
 		} catch(EntityNotFoundException e) {
 			return false;
 		}
 	}
 	
+	public boolean hasAlreadyOrderedPapers(StockMarketGame game) {
+		try {
+			Portfolio p = portfolioDataAccess.getByGameAndUser(game, userContext.getUserId());
+			return p.getOrders().size() > 0; 
+		} catch (EntityNotFoundException e) {
+			return false;
+		}
+	}
+	
 	public String getParticipateButtonText(StockMarketGame game) {
 		if (isParticipatingInGame(game)) {
+			if (hasAlreadyOrderedPapers(game)) {
+				return "Löschen";
+			}
 			return "Abmelden";
 		}
 		return "Teilnehmen";
 	}
+	
 	
 	public String getFilterGameName() {
 		return filterGameName;
@@ -106,14 +115,6 @@ public class StockMarketGameSearchBean implements Serializable{
 
 	public void setFilterGameInstitutionName(String filterGameInstitutionName) {
 		this.filterGameInstitutionName = filterGameInstitutionName;
-	}
-
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
 	}
 	
 	public List<StockMarketGame> getGames() {
@@ -160,9 +161,9 @@ public class StockMarketGameSearchBean implements Serializable{
     
     public void subscribeForGame(StockMarketGame game) {
     	try {
-    		portfolioDataAccess.getByGameAndUser(game, user);
+    		portfolioDataAccess.getByGameAndUser(game, userContext.getUserId());
     	} catch(EntityNotFoundException e) {
-    		stockMarketGameService.participateInGame(game, user);
+    		stockMarketGameService.participateInGame(game, userContext.getUserId());
         	FacesMessage message = new FacesMessage("Sie nehmen nun am Börsenspiel '" + game.getName() + "' teil");
             FacesContext.getCurrentInstance().addMessage(null, message);
             return;
@@ -173,15 +174,19 @@ public class StockMarketGameSearchBean implements Serializable{
     }
     
     public void unsubscribeFromGame(StockMarketGame game) {
-    	Portfolio p;
+    	/*if (hasAlreadyOrderedPapers(game)) {
+			// TODO: fix remove portfolio with orders etc.
+    		FacesMessage message = new FacesMessage("Fehler beim abmelden vom Börsenspiel '" + game.getName() + "'. Haben Sie bereits Wertpapiere geordert?");
+            FacesContext.getCurrentInstance().addMessage(null, message);
+            return;
+		}*/
     	try {
-    		p = portfolioDataAccess.getByGameAndUser(game, user);
+    		Portfolio p = portfolioDataAccess.getByGameAndUser(game, userContext.getUserId());
     		portfolioService.removePortfolio(p);
     		FacesMessage message = new FacesMessage("Erfolgreich vom Börsenspiel '" + game.getName() + "' abgemeldet");
             FacesContext.getCurrentInstance().addMessage(null, message);
-    		return;
     	} catch(EntityNotFoundException e) {
-    	}
+    	} catch(AppException e) {}
     }
     
 	private void loadStockMarketGames() {

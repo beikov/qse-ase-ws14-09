@@ -10,57 +10,64 @@
 	<!-- content -->
 	<ui:define name="body">
 		<h:form id="createForm">
-			<p:panel header="Neues Portfolio">
+			<p:panel header="Neues Portfolio" style="width: 600px">
+				<div style="padding-left: 40px">
+					<div style="margin-top: 10px">
+						<h:panelGrid columns="3" cellpadding="100">
+							<h:outputText value="Portfolioname: " style="padding-right:130px" />
+							<p:inputText id="name"
+								value="#{portfolioCreationViewBean.portfolio.name}"
+								required="true">
+								<f:validateRegex pattern="[a-zA-Z]+[a-zA-z0-9]*"></f:validateRegex>
+							</p:inputText>
+							<h:message for="name" style="color:red" />
 
-				<h:panelGrid columns="3" cellpadding="5" >
+							<h:outputText value="Startkapital(€): " />
+							<p:inputText id="startCapital"
+								value="#{portfolioCreationViewBean.startCapital}"
+								placeholder="unendlich">
+							</p:inputText>
+							<h:message for="startCapital" style="color:red" />
 
-					<h:outputText value="Portfolioname: " />
-					<p:inputText id="name"
-						value="#{portfolioCreationViewBean.portfolio.name}"
-						required="true">
-						<f:validateRegex pattern="[a-zA-Z]+[a-zA-z0-9]*"></f:validateRegex>
-					</p:inputText>
-					<h:message for="name" style="color:red" />
-
-					<h:outputText value="Startkapital(€): " />
-					<p:inputText id="startCapital"
-						value="#{portfolioCreationViewBean.startCapital}" placeholder="unendlich">
-					</p:inputText>
-					<h:message for="startCapital" style="color:red" />
-
-					<h:outputText value="Ordergebühr(€): " />
-					<p:inputText id="orderFee"
-						value="#{portfolioCreationViewBean.orderFee}" required="true" />
-					<h:message for="orderFee" style="color:red" />
-
-
-					<h:outputText value="Portfoliogebühr(€): " />
-					<p:inputText id="portfolioFee"
-						value="#{portfolioCreationViewBean.portfolioFee}" required="true" />
-					<h:message for="portfolioFee" style="color:red" />
+							<h:outputText value="Ordergebühr(€): " />
+							<p:inputText id="orderFee"
+								value="#{portfolioCreationViewBean.orderFee}" required="true" />
+							<h:message for="orderFee" style="color:red" />
 
 
-					<h:outputText value="Kapitalertragssteuer(%): " />
-					<p:inputText id="capitalReturnTax"
-						value="#{portfolioCreationViewBean.capitalReturnTax}"
-						required="true" />
-					<h:message for="capitalReturnTax" style="color:red" />
+							<h:outputText value="Portfoliogebühr(€): " />
+							<p:inputText id="portfolioFee"
+								value="#{portfolioCreationViewBean.portfolioFee}"
+								required="true" />
+							<h:message for="portfolioFee" style="color:red" />
 
 
-				</h:panelGrid>
-				
-					<h:outputText value="Sichtbarkeit" />
-					<pa:portfolioVisibility id="portfolioVisibility" visibilitySettings="#{portfolioCreationViewBean.portfolio.visibility}" />
+							<h:outputText value="Kapitalertragssteuer(%): " />
+							<p:inputText id="capitalReturnTax"
+								value="#{portfolioCreationViewBean.capitalReturnTax}"
+								required="true" />
+							<h:message for="capitalReturnTax" style="color:red" />
+						</h:panelGrid>
+					</div>
 
-				<h:panelGrid columns="2" cellpadding="10" style="width: 40%">
-					<p:commandButton id="reset" value="Reset" type="reset" />
-					<p:commandButton id="save" value="Erstellen"
-						action="#{portfolioCreationViewBean.create()}" update="createForm"
-						ajax="true" />
-				</h:panelGrid>
-			
+					<div style="margin-top: 10px">
+						<h:outputText value="Sichtbarkeit"
+							style="font-weight:bold; font-size:18" />
+						<pa:portfolioVisibility id="portfolioVisibility"
+							visibilitySettings="#{portfolioCreationViewBean.portfolio.visibility}" />
+					</div>
 
-			
+					<div style="margin-top: 25px">
+						<h:panelGrid columns="2" cellpadding="10" style="width: 100%">
+							<p:commandButton id="reset" value="Reset" type="reset" />
+							<p:commandButton id="save" value="Erstellen"
+								action="#{portfolioCreationViewBean.create()}"
+								update="createForm" ajax="true" />
+						</h:panelGrid>
+					</div>
+
+				</div>
+
 
 			</p:panel>
 		</h:form>

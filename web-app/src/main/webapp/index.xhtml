@@ -6,11 +6,35 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:p="http://primefaces.org/ui"
+	xmlns:og="http://ogp.me/ns#"
+	xmlns:fb="https://www.facebook.com/2008/fbml"
 	template="/WEB-INF/templates/template.xhtml">
 	
+	<ui:define name="head">
+    	<meta property="og:title" content="Börsenspiel GR09" />
+		<meta property="og:url" content="#{socialMediaBean.absoluteApplicationUrl}" />
+		<meta property="og:image" content="http://www.fondsprofessionell.de/upload/attach/1343813118_aktienkurs_steigend.jpg" />
+		<meta property="og:description" content="Börsenspiel der ASE Gruppe 09" />
+		<meta property="og:site_name" content="Börsensimulator" />
+
+		<meta property="og:type" content="website" />
+	</ui:define>
 	<ui:define name="body">
-		Willkommen zum Börsenspiel
+		<ui:include src="/resources/socialmedia/_fbsdk.xhtml" />
+		<ui:include src="/resources/socialmedia/_twsdk.xhtml" />
 		
+	
+		Willkommen zum Börsenspiel
+		<br/>
+		<div align="right">
+		<div  class="fb-share-button" data-href="#{socialMediaBean.absoluteApplicationUrl}" data-layout="button"></div>
+		<div style="float:right; margin-left:5px;">
+		<a  class="twitter-share-button" href="https://twitter.com/share"
+  			data-text="Besuche unseren Börsensimulator"
+  			data-count="none"
+  			data-hashtags="ASE,GR09,Simulator"/>
+  		</div>
+		</div>
 		<ui:include src="/WEB-INF/includes/dashboard.xhtml" />
 	</ui:define>
 	

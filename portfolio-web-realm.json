@@ -14,7 +14,7 @@
   "verifyEmail" : false,
   "resetPasswordAllowed" : true,
   "social" : true,
-  "updateProfileOnInitialSocialLogin" : true,
+  "updateProfileOnInitialSocialLogin" : false,
   "bruteForceProtected" : false,
   "maxFailureWaitSeconds" : 900,
   "minimumQuickLoginWaitSeconds" : 60,

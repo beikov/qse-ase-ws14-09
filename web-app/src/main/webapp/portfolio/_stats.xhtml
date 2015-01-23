@@ -5,21 +5,30 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:ase="http://java.sun.com/jsf/composite/portfoliosimcomponents">
-	
-	<div class="row">
+
+	<h:panelGroup layout="block" rendered="#{not portfolioViewBean.isStatisticsVisible()}">
+		<h:outputText value="Die Statistiken sind nicht sichtbar." />
+	</h:panelGroup>	
+	<h:panelGroup layout="block" styleClass="row" rendered="#{portfolioViewBean.isStatisticsVisible()}">
 		<div class="col-md-6">
 			<p:panelGrid columns="2">
 				<!-- <h:outputText value="Portfolio:" />
 				<h:outputText value="#{portfolioViewBean.portfolio.name}" /> -->
-				
 				<h:outputText value="Besitzer:" />
-				<ase:userLogoLink user="#{portfolioViewBean.portfolio.owner}" />
-				
-				<h:outputText value="Erstellt:" />
-				<h:outputText value="#{dateUtil.formatDate( portfolioViewBean.portfolio.created.time )}" />
-				
-				<h:outputText value="Startkapital:" />
-				<h:outputText value="#{portfolioViewBean.portfolio.setting.startCapital}" />
+				<h:link outcome="/user/profile">
+					<f:param name="user" value="#{portfolioViewBean.portfolio.owner.username}"/>
+					<c:choose>
+						<c:when test="#{portfolioViewBean.portfolio.owner.logo == null}">
+							<i class="fa #{userBean.isInstitutionAdmin(portfolioViewBean.portfolio.owner) ? 'fa-institution fa-2x' : 'fa-user fa-3x'}" style="vertical-align: middle;" />
+						</c:when>
+						<c:otherwise>
+							<p:graphicImage value="#{logoBean.logo}" style="width: 44px; height: 56px;">
+								<f:param name="username" value="#{portfolioViewBean.portfolio.owner.username}" />
+							</p:graphicImage>
+						</c:otherwise>
+					</c:choose>
+					<h:outputText value="#{userBean.getFollowerName(portfolioViewBean.portfolio.owner)}" style="margin-left: 5px;" />
+				</h:link>
 				
 				<h:outputText value="Aktuelles Kapital:" />
 				<h:outputText value="#{portfolioViewBean.portfolio.currentCapital}" />
@@ -36,6 +45,12 @@
 		</div>
 		<div class="col-md-6">
 			<p:panelGrid columns="2">
+				<h:outputText value="Erstellt:" />
+				<h:outputText value="#{dateUtil.formatDate( portfolioViewBean.portfolio.created.time )}" />
+				
+				<h:outputText value="Startkapital:" />
+				<h:outputText value="#{portfolioViewBean.portfolio.setting.startCapital}" />
+				
 				<h:outputText value="Ordergebühr:" />
 				<h:outputText value="#{portfolioViewBean.portfolio.setting.orderFee}" />
 				
@@ -46,7 +61,7 @@
 				<h:outputText value="#{portfolioViewBean.portfolio.setting.capitalReturnTax} %" />
 			</p:panelGrid>
 		</div>
-	</div>
+	</h:panelGroup>
 	
 	
 </ui:composition>

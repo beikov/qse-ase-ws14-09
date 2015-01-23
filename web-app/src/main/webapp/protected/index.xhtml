@@ -7,7 +7,7 @@
 	template="/WEB-INF/templates/template.xhtml">
 	
 	<ui:define name="body">
-		Willkommen zum Börsenspiel! Hallo #{user.username}
+		Willkommen zum Börsenspiel! Hallo #{user.firstName} #{user.lastName}
 		
 		<ui:include src="/WEB-INF/includes/dashboard.xhtml" />
 	</ui:define>

@@ -7,10 +7,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Currency;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
@@ -23,11 +21,13 @@ import javax.sql.rowset.serial.SerialBlob;
 
 import org.apache.commons.io.IOUtils;
 import org.primefaces.event.FileUploadEvent;
+import org.primefaces.event.TransferEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.DualListModel;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
 
+import at.ac.tuwien.ase09.context.UserAccount;
 import at.ac.tuwien.ase09.context.WebUserContext;
 import at.ac.tuwien.ase09.data.InstitutionDataAccess;
 import at.ac.tuwien.ase09.data.StockMarketGameDataAccess;
@@ -46,6 +46,7 @@ import at.ac.tuwien.ase09.model.ValuePaper;
 import at.ac.tuwien.ase09.model.ValuePaperType;
 import at.ac.tuwien.ase09.service.StockMarketGameService;
 
+import java.io.IOException;
 import java.io.Serializable;
 
 @Named
@@ -73,7 +74,6 @@ public class StockMarketGameCreationBean implements Serializable {
 
 	private StockMarketGame stockMarketGame;
 
-	private User loggedInUser;
 	private Institution userInstitution;
 
 	//StockMarketGame-Attributes
@@ -92,18 +92,19 @@ public class StockMarketGameCreationBean implements Serializable {
 	private BigDecimal capitalReturnTax;
 
 	//Allowed ValuePapers-Attributes
-	//private List<ValuePaper> selectedAllowedValuePapers = new ArrayList<ValuePaper>();
-	//private Set<ValuePaper> allowedValuePapers = new HashSet<>();
 	private ValuePaper searchValuePaper;
 	private ValuePaperType valuePaperType;
 	private Boolean isTypeSpecificated = false;
 	private String valuePaperName, valuePaperCode, valuePaperCountry, valuePaperCurrencyCode, valuePaperIndex;
-	//private List<ValuePaper> searchedValuePapers;
 
 	private DualListModel<ValuePaper> allowedValuePapersListModel;
-
 	private List<ValuePaper> allowedValuePapersSource;
 	private List<ValuePaper> allowedValuePapersTarget;
+
+	private List<ValuePaper> allowedValuePapersFinal;
+
+	//private boolean initCalled = false;
+
 
 
 	public DualListModel<ValuePaper> getAllowedValuePapersListModel() {
@@ -253,12 +254,6 @@ public class StockMarketGameCreationBean implements Serializable {
 	public void setCapitalReturnTax(BigDecimal capitalReturnTax) {
 		this.capitalReturnTax = capitalReturnTax;
 	}
-	public User getLoggedInUser() {
-		return loggedInUser;
-	}
-	public void setLoggedInUser(User loggedInUser) {
-		this.loggedInUser = loggedInUser;
-	}
 	public Institution getUserInstitution() {
 		return userInstitution;
 	}
@@ -268,23 +263,39 @@ public class StockMarketGameCreationBean implements Serializable {
 
 
 
-	public void init() {
+	public void init() throws IOException {
 
-		allowedValuePapersSource = new ArrayList<ValuePaper>();
-		allowedValuePapersTarget = new ArrayList<ValuePaper>();
-
-		allowedValuePapersListModel = new DualListModel<ValuePaper>(allowedValuePapersSource, allowedValuePapersTarget);
-
-		loggedInUser = userContext.getUser();
+		UserAccount loggedInUser = userContext.getUser();
 
 		if(loggedInUser != null){
 			try{
 				userInstitution = institutionDataAccess.getByAdmin(loggedInUser.getUsername());
 			}
-			catch(EntityNotFoundException e){}
+			catch(EntityNotFoundException e){			
+				FacesContext context = FacesContext.getCurrentInstance();
+				context.getExternalContext().responseSendError(403, "Börsenspiele können nur von Institutionen erstellt/bearbeitet werden.");
+				context.responseComplete();
+				return;
+			}
 		}
 
 		loadStockMarketGame();
+		
+		if(stockMarketGame != null){
+			if(!isStockMarketGameAdmin()){
+				FacesContext context = FacesContext.getCurrentInstance();
+				context.getExternalContext().responseSendError(403, "Dieses Börsenspiel kann nur von der Institution, die das Börsenspiel erstellt hat, bearbeitet werden.");
+				context.responseComplete();
+				return;
+			}
+		}
+
+		allowedValuePapersSource = new ArrayList<ValuePaper>();
+		allowedValuePapersTarget = new ArrayList<ValuePaper>();
+
+		allowedValuePapersFinal = new ArrayList<ValuePaper>();
+
+		allowedValuePapersListModel = new DualListModel<ValuePaper>(allowedValuePapersSource, allowedValuePapersTarget);
 
 		if(stockMarketGame != null){
 
@@ -301,7 +312,7 @@ public class StockMarketGameCreationBean implements Serializable {
 			portfolioFee = stockMarketGame.getSetting().getPortfolioFee().getValue();
 			capitalReturnTax = stockMarketGame.getSetting().getCapitalReturnTax();
 
-			//allowedValuePapers = stockMarketGame.getAllowedValuePapers();
+			allowedValuePapersFinal = new ArrayList<ValuePaper>(stockMarketGame.getAllowedValuePapers());
 			allowedValuePapersListModel.setTarget(new ArrayList<ValuePaper>(stockMarketGame.getAllowedValuePapers()));
 		}
 		else{
@@ -309,9 +320,24 @@ public class StockMarketGameCreationBean implements Serializable {
 			orderFee = new BigDecimal(0);
 			portfolioFee = new BigDecimal(0);
 			capitalReturnTax = new BigDecimal(0);
-		}
+		}		
+
 	}
 
+	public boolean isAllowedToEditStockMarketGameSettings(){
+		if(stockMarketGame != null){
+			if(stockMarketGame.getValidFrom().after(StockMarketGameCreationBean.dateToCalendar(new Date()))){
+				return true;
+			}
+			else{
+				return false;
+			}
+		}
+		else{
+			return true;
+		}
+	}
+	
 	public boolean isStockMarketGameAdmin(){
 		if(stockMarketGame != null && stockMarketGame.getOwner() != null){
 			return stockMarketGame.getOwner().getId() == userInstitution.getId();
@@ -343,33 +369,56 @@ public class StockMarketGameCreationBean implements Serializable {
 	}
 
 	public void createStockMarketGame(){
+		
+		if(!isAllowedToEditStockMarketGameSettings()){
+			return;
+		}
 
 		if( startCapital == null){
 			startCapital = new BigDecimal(0);
 		}else if( startCapital.compareTo(new BigDecimal(0)) == -1 ){
 			FacesMessage facesMessage = new FacesMessage("Fehler: Startkapital muss größer als 0 sein!");
-			FacesContext.getCurrentInstance().addMessage("createForm:startCapital", facesMessage);
+			FacesContext.getCurrentInstance().addMessage("stockmarketgame_create:startCapital", facesMessage);
 			return;
 		}
 
 		if( orderFee.compareTo(new BigDecimal(0)) == -1){
 			FacesMessage facesMessage = new FacesMessage("Fehler: Ordergebühr muss größer gleich 0  sein!");
-			FacesContext.getCurrentInstance().addMessage("createForm:orderFee", facesMessage);
+			FacesContext.getCurrentInstance().addMessage("stockmarketgame_create:orderFee", facesMessage);
 			return;
 		}
 
 		if( portfolioFee.compareTo(new BigDecimal(0)) == -1){
-			FacesMessage facesMessage = new FacesMessage("Fehler: Portfoliogebü½hr muss größer gleich 0  sein!");
-			FacesContext.getCurrentInstance().addMessage("createForm:portfolioFee", facesMessage);
+			FacesMessage facesMessage = new FacesMessage("Fehler: Portfoliogebühr muss größer gleich 0  sein!");
+			FacesContext.getCurrentInstance().addMessage("stockmarketgame_create:portfolioFee", facesMessage);
 			return;
 		}
 
 		if( capitalReturnTax.compareTo(new BigDecimal(0)) == -1 || capitalReturnTax.compareTo(new BigDecimal(99)) == 1){
 			FacesMessage facesMessage = new FacesMessage("Fehler: Kapitalertragssteuer muss zwischen 0% und 99% liegen!");
-			FacesContext.getCurrentInstance().addMessage("createForm:capitalReturnTax", facesMessage);
+			FacesContext.getCurrentInstance().addMessage("stockmarketgame_create:capitalReturnTax", facesMessage);
+			return;
+		}
+		
+		if(new Date(registrationFrom.getTime()+1).after(registrationTo)){
+			FacesMessage facesMessage = new FacesMessage("Fehler: Registrierungsbeginndatum muss vor Registrierungsenddatum liegen!");
+			FacesContext.getCurrentInstance().addMessage("stockmarketgame_create:registrationFrom", facesMessage);
+			return;
+		}
+		
+		if(new Date(validFrom.getTime()+1).after(validTo)){
+			FacesMessage facesMessage = new FacesMessage("Fehler: Börsenspielbeginndatum muss vor Börsenspielenddatum liegen!");
+			FacesContext.getCurrentInstance().addMessage("stockmarketgame_create:validFrom", facesMessage);
 			return;
 		}
 
+		if(new Date(registrationTo.getTime()+1).after(validFrom)){
+			FacesMessage facesMessage = new FacesMessage("Fehler: Registrierungsenddatum muss vor Börsenspielbeginndatum liegen!");
+			FacesContext.getCurrentInstance().addMessage("stockmarketgame_create:registrationTo", facesMessage);
+			return;
+		}
+		
+		
 		if(stockMarketGame == null){
 			stockMarketGame = new StockMarketGame();
 		}
@@ -383,7 +432,7 @@ public class StockMarketGameCreationBean implements Serializable {
 		stockMarketGame.setRegistrationFrom(StockMarketGameCreationBean.dateToCalendar(registrationFrom));
 		stockMarketGame.setRegistrationTo(StockMarketGameCreationBean.dateToCalendar(registrationTo));
 
-		stockMarketGame.setAllowedValuePapers(new LinkedHashSet<ValuePaper>(allowedValuePapersTarget));
+		stockMarketGame.setAllowedValuePapers(new LinkedHashSet<ValuePaper>(allowedValuePapersFinal));
 
 		PortfolioSetting portfolioSetting = new PortfolioSetting();
 
@@ -503,22 +552,20 @@ public class StockMarketGameCreationBean implements Serializable {
 			}
 		}
 
-		//<<<<<<< HEAD
-		allowedValuePapersTarget = allowedValuePapersListModel.getTarget();
-		/*=======
-		searchedValuePapers = valuePaperScreenerDataAccess.findByValuePaper(searchValuePaper.getType(), searchValuePaper);
 
-		searchedValuePapers.removeAll(allowedValuePapers);
->>>>>>> stockmarketgame_search*/
+		allowedValuePapersTarget = allowedValuePapersListModel.getTarget();
 
 		allowedValuePapersSource = valuePaperScreenerDataAccess.findByValuePaper(searchValuePaper, isTypeSpecificated);
 
-		//allowedValuePapersSource.removeAll(allowedValuePapers);
 		allowedValuePapersSource.removeAll(allowedValuePapersTarget);
 
 		allowedValuePapersListModel.setSource(allowedValuePapersSource);
 		allowedValuePapersListModel.setTarget(allowedValuePapersTarget);
 	}
+
+	public void onTransfer(TransferEvent event) {	
+		allowedValuePapersFinal = allowedValuePapersListModel.getTarget();
+	}  
 
 	public static Calendar dateToCalendar(Date date){ 
 		Calendar cal = Calendar.getInstance();
