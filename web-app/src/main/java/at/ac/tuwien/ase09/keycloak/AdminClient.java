@@ -6,6 +6,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.HttpHeaders;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -13,6 +14,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.ByteArrayEntity;
+import org.keycloak.KeycloakPrincipal;
 import org.keycloak.KeycloakSecurityContext;
 import org.keycloak.ServiceUrlConstants;
 import org.keycloak.adapters.HttpClientBuilder;
@@ -50,7 +52,7 @@ public class AdminClient {
     }
 	
 	public static User createUser(HttpServletRequest request) {
-		KeycloakSecurityContext session = (KeycloakSecurityContext) request.getAttribute(KeycloakSecurityContext.class.getName());
+		KeycloakSecurityContext session = ((KeycloakPrincipal) request.getUserPrincipal()).getKeycloakSecurityContext();
 		
 		if (session == null) {
 			return null;
@@ -63,18 +65,25 @@ public class AdminClient {
 	}
 
     public static String getCurrentUserName(HttpServletRequest req) {
-        KeycloakSecurityContext session = (KeycloakSecurityContext) req.getAttribute(KeycloakSecurityContext.class.getName());
+    	KeycloakSecurityContext session = ((KeycloakPrincipal) req.getUserPrincipal()).getKeycloakSecurityContext();
     	return session.getIdToken().getPreferredUsername();
     }
 
     public static UserInfo getCurrentUser(HttpServletRequest req) throws Failure {
-        KeycloakSecurityContext session = (KeycloakSecurityContext) req.getAttribute(KeycloakSecurityContext.class.getName());
+    	KeycloakSecurityContext session = ((KeycloakPrincipal) req.getUserPrincipal()).getKeycloakSecurityContext();
     	
-        if (session == null) {
+    	if (session == null) {
         	return null;
         }
+    	
+    	String authorizationHeader = req.getHeader(HttpHeaders.AUTHORIZATION);
         
-        IDToken token = session.getIdToken();
+    	IDToken token;
+    	if(authorizationHeader != null && authorizationHeader.startsWith("Bearer")){
+    		token = session.getToken();
+    	}else{
+    		token = session.getIdToken();
+    	}
         String username = token.getPreferredUsername();
         String firstName = token.getName();
         String lastName = token.getFamilyName();
@@ -117,7 +126,7 @@ public class AdminClient {
     }
 
     public static void updateCurrentUser(HttpServletRequest req, UserRepresentation user) throws Failure {
-        KeycloakSecurityContext session = (KeycloakSecurityContext) req.getAttribute(KeycloakSecurityContext.class.getName());
+    	KeycloakSecurityContext session = ((KeycloakPrincipal) req.getUserPrincipal()).getKeycloakSecurityContext();
     	
         HttpClient client = new HttpClientBuilder()
                 .disableTrustManager().build();

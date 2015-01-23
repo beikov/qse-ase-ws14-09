@@ -38,7 +38,7 @@ public class UserFilter implements Filter {
 	private PortfolioDataAccess portfolioDataAccess;
 	@Inject
 	private UserService userService;
-	
+
 	@Override
 	public void destroy() {
 	}
@@ -48,28 +48,31 @@ public class UserFilter implements Filter {
 			FilterChain chain) throws IOException, ServletException {
 		if (request instanceof HttpServletRequest) {
 			HttpServletRequest httpRequest = (HttpServletRequest) request;
-
-			try {
-				UserInfo userInfo = AdminClient.getCurrentUser(httpRequest);
-				
-				if (userInfo != null) {
-					User user;
-					try {
-						user = userDataAccess.getUserByUsername(userInfo.getUsername());
-					} catch (EntityNotFoundException e) {
-						user = AdminClient.createUser(httpRequest);
-						userService.saveUser(user);
+			if(!httpRequest.getRequestURI().startsWith("/data-final/")){
+				try {
+					UserInfo userInfo = AdminClient.getCurrentUser(httpRequest);
+	
+					if (userInfo != null) {
+						User user;
+						try {
+							user = userDataAccess.getUserByUsername(userInfo
+									.getUsername());
+						} catch (EntityNotFoundException e) {
+							user = AdminClient.createUser(httpRequest);
+							userService.saveUser(user);
+						}
+						userInfo.setUser(user);
+	
+						if (portfolioContext.getContextId() != null) {
+							userInfo.setContextId(portfolioContext
+									.getContextId());
+						}
+	
+						loginEvent.fire(userInfo);
 					}
-					userInfo.setUser(user);
-					
-					if (portfolioContext.getContextId() != null) {
-						userInfo.setContextId(portfolioContext.getContextId());
-					}
-					
-					loginEvent.fire(userInfo);
+				} catch (Failure e) {
+					throw new ServletException(e);
 				}
-			} catch (Failure e) {
-				throw new ServletException(e);
 			}
 		}
 

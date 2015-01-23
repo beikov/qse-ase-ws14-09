@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "at.ac.tuwien.ase09.android_app"
-        minSdkVersion 14
+        minSdkVersion 16
         targetSdkVersion 21
         versionCode 1
         versionName "1.0"
@@ -31,4 +31,7 @@ dependencies {
     compile 'com.android.support:support-v4:21.0.3'
     compile 'at.ac.tuwien.ase09:rest-api:1.0.0-SNAPSHOT'
     compile 'com.fasterxml.jackson.core:jackson-databind:2.4.2'
+    compile 'com.google.code.gson:gson:2.2.2'
+    compile 'org.jboss.aerogear:aerogear-android-pipe:2.0.0@aar'
+    compile 'org.jboss.aerogear:aerogear-android-core:2.0.0@aar'
 }

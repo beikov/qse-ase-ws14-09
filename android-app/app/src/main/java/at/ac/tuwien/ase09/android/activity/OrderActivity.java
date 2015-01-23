@@ -26,7 +26,6 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.util.Calendar;
 
 import at.ac.tuwien.ase09.android.R;
@@ -37,6 +36,7 @@ import at.ac.tuwien.ase09.android.service.RestService;
 import at.ac.tuwien.ase09.android.singleton.PortfolioContext;
 import at.ac.tuwien.ase09.model.order.OrderAction;
 import at.ac.tuwien.ase09.model.order.OrderType;
+import at.ac.tuwien.ase09.rest.model.PortfolioDto;
 import at.ac.tuwien.ase09.rest.model.ValuePaperDto;
 
 public class OrderActivity extends Activity implements TimePickerDialog.OnTimeSetListener, DatePickerDialog.OnDateSetListener, TextWatcher, View.OnClickListener, RestResultReceiver.Receiver {
@@ -66,6 +66,7 @@ public class OrderActivity extends Activity implements TimePickerDialog.OnTimeSe
     private EditText limitEditText;
     private TextView stopLimitTextView;
     private EditText stopLimitEditText;
+    private TextView orderFeeTextView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -118,6 +119,7 @@ public class OrderActivity extends Activity implements TimePickerDialog.OnTimeSe
         });
 
         estimatedOrderCostTextView = (TextView) this.findViewById(R.id.estimatedOrderCost);
+        orderFeeTextView = (TextView) findViewById(R.id.orderFee);
 
         volumeEditText = (EditText) this.findViewById(R.id.orderVolumeInput);
         volumeEditText.addTextChangedListener(this);
@@ -237,14 +239,15 @@ public class OrderActivity extends Activity implements TimePickerDialog.OnTimeSe
 
     @Override
     public void afterTextChanged(Editable s) {
-        if (valuePaper.getLastPrice() != null && s.length() > 0) {
+        if (valuePaper.getLastPrice() != null && valuePaper.getCurrency() != null && s.length() > 0) {
             int volume = Integer.valueOf(s.toString());
             BigDecimal estimatedCosts = valuePaper.getLastPrice().multiply(new BigDecimal(volume));
-            DecimalFormat df = new DecimalFormat();
-            df.setMaximumFractionDigits(2);
-            df.setMinimumFractionDigits(0);
-            estimatedOrderCostTextView.setText(df.format(estimatedCosts) + " " + valuePaper.getCurrency().getCurrencyCode());
+            estimatedOrderCostTextView.setText(LayoutPopulator.formatMoney(estimatedCosts, valuePaper.getCurrency()));
+        }else{
+            estimatedOrderCostTextView.setText("-");
         }
+        PortfolioDto portfolio = PortfolioContext.getPortfolio();
+        orderFeeTextView.setText(LayoutPopulator.formatMoney(portfolio.getOrderFee(), portfolio.getCurrency()));
     }
 
     @Override

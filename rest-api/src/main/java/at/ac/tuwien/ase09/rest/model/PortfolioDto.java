@@ -13,12 +13,13 @@ public class PortfolioDto implements Serializable {
 	private BigDecimal currentCapital;
 	private BigDecimal costValue;
 	private BigDecimal currentValue;
+	private BigDecimal orderFee;
 
 	public PortfolioDto(){}
 
 	public PortfolioDto(Long id, String name, Currency currency,
 			BigDecimal currentCapital, BigDecimal costValue,
-			BigDecimal currentValue) {
+			BigDecimal currentValue, BigDecimal orderFee) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -26,6 +27,7 @@ public class PortfolioDto implements Serializable {
 		this.currentCapital = currentCapital;
 		this.costValue = costValue;
 		this.currentValue = currentValue;
+		this.orderFee = orderFee;
 	}
 
 	public Long getId() {
@@ -75,5 +77,12 @@ public class PortfolioDto implements Serializable {
 	public void setCurrentValue(BigDecimal currentValue) {
 		this.currentValue = currentValue;
 	}
-	
+
+	public BigDecimal getOrderFee() {
+		return orderFee;
+	}
+
+	public void setOrderFee(BigDecimal orderFee) {
+		this.orderFee = orderFee;
+	}
 }

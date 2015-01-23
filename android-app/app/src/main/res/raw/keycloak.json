@@ -1,0 +1,8 @@
+{
+  "realm": "portfolio-web",
+  "realm-public-key": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDoofcCWoR+Kr8jCWJCfWXhavMIcBvVPvz7CxpPuSa7mOjsfqbsuZ7roctIhx99wizEGwIAxWtZ/obJuMdE1uts0rqqtaqiKaaQkbXdn9RRH5lAxuX4ZerZl96tME64jdcRedllGlBphCFNjCRiJR0DLUCuSnIrDFzdj4CQdUVzIwIDAQAB",
+  "auth-server-url": "http://10.0.2.2:8080/auth",
+  "ssl-required": "none",
+  "resource": "android",
+  "public-client": true
+}

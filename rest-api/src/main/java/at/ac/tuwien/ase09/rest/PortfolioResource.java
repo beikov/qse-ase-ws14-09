@@ -21,4 +21,8 @@ public interface PortfolioResource {
 	@Path("/{portfolioId}/valuePapers")
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<PortfolioValuePaperDto> getValuePapers(@PathParam("portfolioId") long portfolioId);
+	
+	@GET
+	@Produces("application/json")
+	public List<PortfolioDto> getPortfolios ();
 }

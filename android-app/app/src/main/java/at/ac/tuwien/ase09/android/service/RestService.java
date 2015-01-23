@@ -20,7 +20,6 @@ import at.ac.tuwien.ase09.model.order.OrderAction;
 import at.ac.tuwien.ase09.model.order.OrderType;
 import at.ac.tuwien.ase09.rest.OrderResource;
 import at.ac.tuwien.ase09.rest.PortfolioResource;
-import at.ac.tuwien.ase09.rest.UserResource;
 import at.ac.tuwien.ase09.rest.ValuePaperResource;
 import at.ac.tuwien.ase09.rest.model.OrderDto;
 import at.ac.tuwien.ase09.rest.model.PortfolioDto;
@@ -69,25 +68,23 @@ public class RestService extends IntentService {
         Bundle b = new Bundle();
         b.putInt("command", command);
 
+        receiver.send(STATUS_RUNNING, b);
+
         try {
             switch (command){
                 case COMMAND_PORTFOLIOS:
-                    receiver.send(STATUS_RUNNING, b);
                     b.putSerializable("results", getPortfolios());
                     receiver.send(STATUS_FINISHED, b);
                     break;
                 case COMMAND_INITIAL_PORTFOLIO:
-                    receiver.send(STATUS_RUNNING, b);
                     b.putSerializable("results", getInitialPortfolioContext());
                     receiver.send(STATUS_FINISHED, b);
                     break;
                 case COMMAND_SEARCH_VALUE_PAPERS:
-                    receiver.send(STATUS_RUNNING, b);
-                    b.putSerializable("results", searchValuePapers(intent.getStringExtra(COMMAND_SEARCH_VALUE_PAPERS_ARG_FILTER), (ValuePaperType) intent.getSerializableExtra(COMMAND_SEARCH_VALUE_PAPERS_ARG_TYPE)));
+                    b.putSerializable("results", searchValuePapers(intent));
                     receiver.send(STATUS_FINISHED, b);
                     break;
                 case COMMAND_CREATE_ORDER:
-                    receiver.send(STATUS_RUNNING, b);
                     int responseStatus = createOrder(intent);
                     if(responseStatus != Response.Status.CREATED.getStatusCode()){
                         b.putString(Intent.EXTRA_TEXT, "Order creation failed - status " + responseStatus);
@@ -97,7 +94,6 @@ public class RestService extends IntentService {
                     }
                     break;
                 case COMMAND_PORTFOLIO_VALUE_PAPERS:
-                    receiver.send(STATUS_RUNNING, b);
                     b.putSerializable("results", getValuePapersForPortfolio(intent));
                     receiver.send(STATUS_FINISHED, b);
                     break;
@@ -115,8 +111,8 @@ public class RestService extends IntentService {
 
     private PortfolioDto getInitialPortfolioContext() {
         Log.i(LOG_TAG, "Query default portfolio context");
-        UserResource userResource = WebserviceFactory.getInstance().getUserResource();
-        List<PortfolioDto> portfolios = userResource.getPortfolios(1L); //TODO: use user id of logged in user
+        PortfolioResource portfolioResource = WebserviceFactory.getInstance().getPortfolioResource();
+        List<PortfolioDto> portfolios = portfolioResource.getPortfolios();
         if (!portfolios.isEmpty()) {
             PortfolioContext.setPortfolio(portfolios.get(0));
         }
@@ -125,14 +121,16 @@ public class RestService extends IntentService {
 
     private ArrayList<PortfolioDto> getPortfolios() {
         Log.i(LOG_TAG, "Query portfolios");
-        UserResource userResource = WebserviceFactory.getInstance().getUserResource();
-        return new ArrayList<PortfolioDto>(userResource.getPortfolios(1L)); //TODO: use user id of logged in user
+        PortfolioResource portfolioResource = WebserviceFactory.getInstance().getPortfolioResource();
+        return new ArrayList<PortfolioDto>(portfolioResource.getPortfolios());
     }
 
-    private ArrayList<ValuePaperDto> searchValuePapers(String filter, ValuePaperType valuePaperType) {
+    private ArrayList<ValuePaperDto> searchValuePapers(Intent intent) {
         Log.i(LOG_TAG, "Query value papers by filter");
+        String filter = intent.getStringExtra(COMMAND_SEARCH_VALUE_PAPERS_ARG_FILTER);
+        ValuePaperType valuePaperType = (ValuePaperType) intent.getSerializableExtra(COMMAND_SEARCH_VALUE_PAPERS_ARG_TYPE);
         ValuePaperResource valuePaperResource = WebserviceFactory.getInstance().getValuePaperResource();
-        return new ArrayList<ValuePaperDto>(valuePaperResource.getValuePapers(filter, valuePaperType));
+        return new ArrayList<ValuePaperDto>(valuePaperResource.getValuePapers(PortfolioContext.getPortfolio().getId(), filter, valuePaperType));
     }
 
     private ArrayList<PortfolioValuePaperDto> getValuePapersForPortfolio(Intent intent){

@@ -16,7 +16,7 @@ import at.ac.tuwien.ase09.naming.CustomNamingStrategy;
 
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(name = "unique_username", columnNames = "c_username"))
-public class User extends BaseEntity<Long> implements Logo {
+public class User extends BaseEntity<Long> {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -61,16 +61,6 @@ public class User extends BaseEntity<Long> implements Logo {
 
 	public void setFollowers(Set<User> followers) {
 		this.followers = followers;
-	}
-
-	@Override
-	@Transient
-	public String getFullyQualifiedClassName() {
-		return "at.ac.tuwien.ase09.model.User";
-	}
-
-	@Override
-	public void setFullyQualifiedClassName(String unused) {
 	}
 
 }

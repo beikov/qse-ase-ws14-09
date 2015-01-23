@@ -5,6 +5,12 @@
 			<module name="deployment.ear.ear.web-app.war"/>
 		</dependencies>
 	</sub-deployment>
+	
+	<sub-deployment name="rest-impl.jar">
+		<dependencies>
+			<module name="deployment.ear.ear.web-app.war"/>
+		</dependencies>
+	</sub-deployment>
 
 	<sub-deployment name="keycloak-server.war">
 		<dependencies>

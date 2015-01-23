@@ -40,5 +40,6 @@
     <string name="currentValue">Aktueller Wert</string>
     <string name="remaining_cash">Kapital verbleibend</string>
     <string name="price">Kurs</string>
+    <string name="add_account_label">KeyCloak Secured Account</string>
 
 </resources>

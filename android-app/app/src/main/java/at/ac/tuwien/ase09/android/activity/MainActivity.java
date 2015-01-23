@@ -1,12 +1,21 @@
 package at.ac.tuwien.ase09.android.activity;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
+import android.accounts.AccountManagerCallback;
+import android.accounts.AccountManagerFuture;
+import android.accounts.AuthenticatorException;
+import android.accounts.OperationCanceledException;
 import android.app.Activity;
 
 import android.app.ActionBar;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.res.AssetManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v4.widget.DrawerLayout;
@@ -19,8 +28,10 @@ import at.ac.tuwien.ase09.android.fragment.NavigationDrawerFragment;
 import at.ac.tuwien.ase09.android.fragment.PortfolioContextFragment;
 import at.ac.tuwien.ase09.android.fragment.PortfolioViewFragment;
 import at.ac.tuwien.ase09.android.fragment.ValuePaperSearchFragment;
+import at.ac.tuwien.ase09.android.keycloak.KeyCloak;
 import at.ac.tuwien.ase09.android.listener.ValuePaperSelectionListener;
 import at.ac.tuwien.ase09.android.singleton.PortfolioContext;
+import at.ac.tuwien.ase09.android.singleton.UserContext;
 import at.ac.tuwien.ase09.android.singleton.WebserviceFactory;
 import at.ac.tuwien.ase09.android.R;
 import at.ac.tuwien.ase09.rest.model.PortfolioDto;
@@ -28,7 +39,7 @@ import at.ac.tuwien.ase09.rest.model.ValuePaperDto;
 
 
 public class MainActivity extends Activity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks, PortfolioContextFragment.PortfolioContextChangeListener, ValuePaperSelectionListener {
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks, PortfolioContextFragment.PortfolioContextChangeListener, ValuePaperSelectionListener, AccountManagerCallback<Boolean> {
     private static final String LOG_TAG = "MainActivity";
 
     private static final int REQUEST_CREATE_ORDER = 1;
@@ -56,14 +67,44 @@ public class MainActivity extends Activity
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
+//        setLoggedInUser();
+
         AssetManager assetMgr = getAssets();
         Properties settings = new Properties();
         try {
             settings.load(assetMgr.open("settings.properties"));
-            WebserviceFactory.configure(settings);
+            WebserviceFactory.configure(settings, this);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        // remove account at every start - this is a workaround since token refreshing does not work
+        AccountManager am = AccountManager.get(this.getApplicationContext());
+        Account[] accounts = am.getAccountsByType(KeyCloak.ACCOUNT_TYPE);
+        for(Account account : accounts){
+            am.removeAccount(account, this, new Handler());
+        }
+        if(accounts.length == 0){
+            mNavigationDrawerFragment.selectItem(0);
+        }
+    }
+
+    @Override
+    public void run(AccountManagerFuture<Boolean> future) {
+        try {
+            if (future.getResult()) {
+                Log.e(LOG_TAG, "Could not remove account");
+            }
+        }catch(Exception e){
+            Log.e(LOG_TAG, "Exception during account removal");
+        }finally {
+            mNavigationDrawerFragment.selectItem(0);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     @Override

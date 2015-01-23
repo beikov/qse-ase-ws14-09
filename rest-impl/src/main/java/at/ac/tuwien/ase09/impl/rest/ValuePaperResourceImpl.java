@@ -22,10 +22,10 @@ public class ValuePaperResourceImpl extends AbstractResource implements ValuePap
 	private ValuePaperScreenerAccess valuePaperScreenerDataAccess;
 	
 	/**
-	 * TODO: deliver only such value papers that are allowed for the current portfolio
+	 * TODO: deliver only such value papers that are allowed for the current portfolioId
 	 */
 	@Override
-	public List<ValuePaperDto> getValuePapers(String filter,
+	public List<ValuePaperDto> getValuePapers(long portfolioId, String filter,
 			ValuePaperType valuePaperType) {
 		ValuePaper  valuePaper = null;
 		
