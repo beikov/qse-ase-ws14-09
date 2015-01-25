@@ -1,0 +1,90 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:cc="http://java.sun.com/jsf/composite">
+
+<cc:interface>
+	<cc:attribute name="model" type="at.ac.tuwien.ase09.model.FilterModel" />
+	<cc:attribute name="availableCurrencies" type="java.util.List"/>
+	<cc:attribute name="availableIndices" type="java.util.List"/>
+</cc:interface>
+
+<cc:implementation>
+	<div id="#{cc.clientId}">
+		<ui:repeat id="filters" var="filter" value="#{cc.attrs.model.filters}">
+
+			<h:panelGrid columns="7" cellpadding="10">
+				<p:commandButton id="deleteButton" icon="fa fa-close" actionListener="#{cc.attrs.model.delete(filter)}" process="@this" update=":#{cc.clientId}" />
+
+				<p:selectOneMenu id="attributeSelect" value="#{filter.attribute}"
+					style="width:250px; margin: 5px;" required="true">
+					<f:selectItem itemLabel="Wähle Filterattribut" itemValue="#{null}"
+						noSelectionOption="true" />
+					<f:selectItems value="#{cc.attrs.model.attributes}"
+						var="attribute" itemValue="#{attribute}"
+						itemLabel="#{attribute.label}" />
+					<p:ajax process="@this" update=":#{cc.clientId}" />
+				</p:selectOneMenu>
+
+				<p:selectOneMenu id="operator" value="#{filter.operatorType}"
+					style="width:50px; margin:5px;"
+					rendered="#{filter.attribute != null}">
+					<p:ajax process="@this" update="@this"/>
+					<f:selectItems value="#{filter.allowedOperatorTypes}"
+						var="operator" itemValue="#{operator}"
+						itemLabel="#{operator.operator}" />
+				</p:selectOneMenu>
+
+				<p:inputText id="nummericField" value="#{filter.numericValue}"
+					style="margin:5px;" required="true"
+					rendered="#{filter.numericType}">
+					<p:ajax process="@this" update="@this"/>
+					<f:convertNumber type="number" />
+				</p:inputText>
+
+				<p:calendar id="dateTimeField" value="#{filter.dateTimeValue}"
+					style="width:247px; margin: 5px;" required="true"
+					rendered="#{filter.dateTimeType}" pattern="dd.MM.yyyy" locale="de" navigator="true">
+					<p:ajax process="@this" update="@this"/>
+				</p:calendar>
+
+				<p:selectOneMenu id="currencySelect" value="#{filter.currencyValue}"
+					style="width:100px; margin:5px;" filter="true" filterMatchMode="startsWith"
+					rendered="#{filter.currencyType}">
+					<p:ajax process="@this" update="@this"/>
+					<f:selectItems value="#{cc.attrs.availableCurrencies}"
+						var="currencyValue" itemValue="#{currencyValue.currencyCode}"
+						itemLabel="#{currencyValue.currencyCode}" />
+				</p:selectOneMenu>
+				
+				<p:selectOneMenu id="indexSelect" value="#{filter.indexValue}"
+					style="width:100px; margin:5px;" filter="true" filterMatchMode="startsWith"
+					rendered="#{filter.indexType}">
+					<p:ajax process="@this" update="@this"/>
+					<f:selectItems value="#{cc.attrs.availableIndices}" />
+				</p:selectOneMenu>
+
+				<p:inputText id="textField" value="#{filter.textValue}"
+					style="width:247px; margin: 5px;" required="true"
+					rendered="#{filter.textType}">
+					<p:ajax process="@this" update="@this"/>
+				</p:inputText>
+
+				<p:selectBooleanCheckbox id="enabled" value="#{filter.enabled}"
+					style="margin:5px;" rendered="#{filter.attribute != null}">
+					<p:ajax process="@this" update="@this"/>
+				</p:selectBooleanCheckbox>
+			</h:panelGrid>
+
+		</ui:repeat>
+
+		<p:commandButton icon="fa fa-plus" style="margin-top: 10px;" actionListener="#{cc.attrs.model.addFilter()}" process=":#{cc.clientId}" update=":#{cc.clientId}" />
+	</div>
+</cc:implementation>
+</html>

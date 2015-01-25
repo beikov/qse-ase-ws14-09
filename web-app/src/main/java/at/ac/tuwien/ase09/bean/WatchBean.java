@@ -1,50 +1,124 @@
 package at.ac.tuwien.ase09.bean;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
-import javax.faces.convert.Converter;
-import javax.faces.model.SelectItem;
+import javax.enterprise.inject.Produces;
+import javax.faces.validator.Validator;
+import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import at.ac.tuwien.ase09.context.UserContext;
-import at.ac.tuwien.ase09.converter.SelectItemListConverter;
-import at.ac.tuwien.ase09.data.StockDataAccess;
-import at.ac.tuwien.ase09.data.ValuePaperDataAccess;
+import org.primefaces.event.TabChangeEvent;
+import org.primefaces.model.SelectableDataModel;
+
+import at.ac.tuwien.ase09.data.WatchDataAccess;
+import at.ac.tuwien.ase09.model.EntityDataModel;
+import at.ac.tuwien.ase09.model.FilterModel;
 import at.ac.tuwien.ase09.model.Stock;
+import at.ac.tuwien.ase09.model.ValuePaperType;
+import at.ac.tuwien.ase09.model.Watch;
+import at.ac.tuwien.ase09.model.filter.Attribute;
+import at.ac.tuwien.ase09.model.filter.AttributeFilter;
+import at.ac.tuwien.ase09.parser.PWatchCompiler;
+import at.ac.tuwien.ase09.service.WatchService;
+import at.ac.tuwien.ase09.validator.PWatchExpressionValidator;
 
 @Named
-@RequestScoped
-public class WatchBean {
+@ViewScoped
+public class WatchBean implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 
-	private String watchExpression = "(MARKET_CAP < 9829 AND ENTERPRISE_VALUE > SQRT(REVENUE*3) + 100) OR TOTAL_CASH < 0";
+	@Inject
+	private WatchDataAccess watchDataAccess;
+	@Inject
+	private WatchService watchService;
+
 	private Stock stock;
 	
-	@Inject
-	private UserContext userContext;
+	private FilterModel filterModel;
+	private Watch selectedWatch;
+	private String watchExpression;
+	private String activeIndex;
+	private boolean advancedOnly;
 	
-	@Inject
-	private StockDataAccess stockDataAccess;
-
-	@Named("stockItems")
-	@RequestScoped
-	public List<SelectItem> getStockItems() {
-		List<Stock> stocks = stockDataAccess.getAllowedStocks();
-		List<SelectItem> stockItems = new ArrayList<SelectItem>(stocks.size());
+	@PostConstruct
+	private void init() {
+		filterModel = new FilterModel();
+		filterModel.setValuePaperType(ValuePaperType.STOCK);
+		filterModel.addExcludedAttributes(
+				Attribute.NAME,
+				Attribute.CODE,
+				Attribute.INDEX,
+				Attribute.COUNTRY,
+				Attribute.CURRENCY
+		);
 		
-		for (Stock s : stocks) {
-			stockItems.add(new SelectItem(s, s.getName()));
-		}
-		
-		return stockItems;
+		activeIndex = "0";
+		newWatch();
 	}
 	
-	@Named("stockConverter")
+	public void newWatch() {
+		setSelectedWatch(new Watch());
+	}
+	
+	public void saveWatch() {
+		if ("0".equals(activeIndex)) {
+			selectedWatch.setExpression(PWatchCompiler.attributeFiltersAsPWatch(filterModel.getFilters()));
+		} else {
+			selectedWatch.setExpression(watchExpression);
+		}
+		
+		if (selectedWatch.getId() == null) {
+			watchService.addWatch(selectedWatch);
+		} else {
+			watchService.updateWatch(selectedWatch);
+		}
+	}
+
+	public void setSelectedWatch(Watch selectedWatch) {
+		if (selectedWatch == null) {
+			selectedWatch = new Watch();
+		}
+		
+		this.selectedWatch = selectedWatch;
+		setWatchExpression(selectedWatch.getExpression());
+	}
+		
+	public void setWatchExpression(String watchExpression) {
+		if (watchExpression == null) {
+			watchExpression = "";
+		}
+		
+		this.watchExpression = watchExpression;
+		List<AttributeFilter> filters = PWatchCompiler.pwatchAsAttributeFilters(watchExpression, false, ValuePaperType.STOCK);
+		
+		if (filters == null) {
+			filterModel.setFilters(new ArrayList<>());
+			advancedOnly = true;
+			activeIndex = "1";
+		} else {
+			filterModel.setFilters(filters);
+			advancedOnly = false;
+		}
+	}
+	
+	@Named("watches")
 	@RequestScoped
-	public Converter getStockConverter(@Named("stockItems") List<SelectItem> stockItems) {
-		return new SelectItemListConverter(getStockItems());
+	@Produces
+	EntityDataModel<Watch> getWatches() {
+		return new EntityDataModel<Watch>(watchDataAccess.getWatches());
+	}
+	
+	@Named("watchValidator")
+	@RequestScoped
+	@Produces
+	PWatchExpressionValidator getWatchValidator() {
+		return new PWatchExpressionValidator("0".equals(activeIndex), false, ValuePaperType.STOCK);
 	}
 	
 	// Getters + Setters
@@ -57,11 +131,27 @@ public class WatchBean {
 		this.stock = stock;
 	}
 
+	public FilterModel getFilterModel() {
+		return filterModel;
+	}
+
+	public Watch getSelectedWatch() {
+		return selectedWatch;
+	}
+
 	public String getWatchExpression() {
 		return watchExpression;
 	}
 
-	public void setWatchExpression(String watchExpression) {
-		this.watchExpression = watchExpression;
+	public boolean isAdvancedOnly() {
+		return advancedOnly;
+	}
+
+	public String getActiveIndex() {
+		return activeIndex;
+	}
+
+	public void setActiveIndex(String activeIndex) {
+		this.activeIndex = activeIndex;
 	}
 }

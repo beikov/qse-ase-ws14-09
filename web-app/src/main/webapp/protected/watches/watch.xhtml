@@ -5,52 +5,64 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:p="http://primefaces.org/ui"
+	xmlns:ase="http://java.sun.com/jsf/composite/portfolio"
 	template="/WEB-INF/templates/template.xhtml">
 	
-	<ui:define name="head">
-		<h:outputStylesheet library="webjars" name="codemirror/4.8/lib/codemirror.css"/>
-		<h:outputStylesheet library="webjars" name="codemirror/4.8/addon/hint/show-hint.css"/>
-		<h:outputScript library="webjars" name="codemirror/4.8/lib/codemirror.js"/>
-		<h:outputScript library="webjars" name="codemirror/4.8/addon/mode/simple.js"/>
-		<h:outputScript library="webjars" name="codemirror/4.8/addon/hint/show-hint.js"/>
-		<h:outputScript library="portfolio" name="editor/pwatch.js"/>
-	</ui:define>
-	
 	<ui:define name="body">
-		<h:form>
-		<p:tabView>
-			<p:tab title="Einfach">
-			</p:tab>
+		<h:form id="form">
+			<p:commandButton value="Neuen Ausdruck anlegen" actionListener="#{watchBean.newWatch()}" process="@this" update="@form"/>
 			
-			<p:tab title="Erweitert">
-				<h:panelGrid columns="2" cellpadding="10">		
-					<p:outputLabel for="stock" value="Wähle Aktie: " style="padding: 10px;"/>
-					<p:selectOneMenu id="stock" value="#{watchBean.stock}" style="width:200px"
-						converter="#{stockConverter}"
-						required="true" requiredMessage="Bitte auswählen!">
-						<f:selectItem itemLabel="Bitte auswählen" itemValue="#{null}" />
-						<f:selectItems value="#{stockItems}"/>
-					</p:selectOneMenu>
-				</h:panelGrid>
+			<p:separator />
+		
+			<p:dataTable id="watchTable" value="#{watches}" var="watch" selectionMode="single" selection="#{watchBean.selectedWatch}" emptyMessage="Keine Einträge gefunden">
+			
+				<p:ajax event="rowSelect"/>
+				<p:ajax event="rowUnselect"/>
+			
+				<p:column headerText="Erstellungsdatum">
+					<h:outputText value="#{watch.created.time}">
+						<f:convertDateTime type="both" dateStyle="medium" timeStyle="medium"/>
+					</h:outputText>
+				</p:column>
+				<p:column headerText="Wertpapier">
+					<h:outputText value="#{watch.valuePaper.name}"/>
+				</p:column>
+				<p:column headerText="Ausdruck">
+					<h:outputText value="#{watch.expression}"/>
+				</p:column>
+			</p:dataTable>
+			
+			<p:separator />
+			
+			<h:panelGrid columns="2" cellpadding="10">		
+				<p:outputLabel for="stock" value="Wähle Aktie: " style="padding: 10px;"/>
+				<p:selectOneMenu id="stock" value="#{watchBean.selectedWatch.valuePaper}" style="width:200px"
+					converter="#{stockConverter}"
+					required="true" requiredMessage="Bitte auswählen!">
+					<f:selectItem itemLabel="Bitte auswählen" itemValue="#{null}" />
+					<f:selectItems value="#{stockItems}"/>
+				</p:selectOneMenu>
+			</h:panelGrid>
+		
+			<p:tabView id="watchTabView" activeIndex="#{watchBean.activeIndex}">
+			
+        		<p:ajax event="tabChange"/>
+			
+				<p:tab id="simple" title="Einfach" disabled="#{watchBean.advancedOnly}" titletip="#{watchBean.advancedOnly ? 'Der Ausdruck ist zu kompliziert um im einfachen Modus bearbeitet zu werden!' : ''}">
+					<ase:filterEditor id="filterEditor" model="#{watchBean.filterModel}" />
+				</p:tab>
 				
-				<h:inputTextarea id="watch-editor" value="#{watchBean.watchExpression}" />
-			</p:tab>
-		</p:tabView>
+				<p:tab id="advanced" title="Erweitert">
+					<ase:expressionEditor id="watchEditor" value="#{watchBean.watchExpression}" expressionValidator="#{watchValidator}"/>
+					<p:message for="watchEditor:expressionEditor" showSummary="true" showDetail="false"/>
+				</p:tab>
+			</p:tabView>
+			
+			<p:separator />
+			
+			<p:commandButton value="#{empty watchBean.selectedWatch.id ? 'Erstellen' : 'Speichern'}" ajax="false" actionListener="#{watchBean.saveWatch()}"/>
 		
 		</h:form>
-		
-		
-		<script>
-			//<![CDATA[
-			
-			CodeMirror.fromTextArea(document.getElementById("#{p:component('watch-editor')}"), {
-				lineNumbers: false,
-		        extraKeys: {"Ctrl-Space": "autocomplete"},
-				mode: "pwatch"
-			});
-			
-			//]]>
-		</script>
 	</ui:define>
 	
 </ui:composition>

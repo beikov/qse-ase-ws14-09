@@ -119,8 +119,17 @@ DATE_TIME_ATTRIBUTE  : FISCAL_YEAR_ENDS
                      | DIVIDEND_DATE
                      | EX_DIVIDEND_DATE;
 
-STRING_ATTRIBUTE 	: COUNTRY
+STRING_ATTRIBUTE 	: NAME
+					| CODE
+					| INDEX
+					| COUNTRY
 					| CURRENCY;
+					
+FUND_STRING_ATTRIBUTE 	: NAME
+						| CODE
+						| CURRENCY;
+BOND_STRING_ATTRIBUTE 	: NAME
+						| CODE;
 
 PRICE : P R I C E ;
 MARKET_CAP : M A R K E T '_' C A P ;
@@ -179,6 +188,9 @@ PAYOUT_RATIO : P A Y O U T '_' R A T I O ;
 DIVIDEND_DATE : D I V I D E N D '_' D A T E ;
 EX_DIVIDEND_DATE : E X '_' D I V I D E N D '_' D A T E ;
 
+NAME : N A M E ;
+CODE : C O D E ;
+INDEX : I N D E X ;
 CURRENCY : C U R R E N C Y ;
 COUNTRY : C O U N T R Y ;
 

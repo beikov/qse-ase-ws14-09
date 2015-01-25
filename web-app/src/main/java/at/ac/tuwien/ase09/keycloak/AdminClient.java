@@ -70,6 +70,10 @@ public class AdminClient {
     }
 
     public static UserInfo getCurrentUser(HttpServletRequest req) throws Failure {
+    	if (req.getUserPrincipal() == null) {
+    		return null;
+    	}
+    	
     	KeycloakSecurityContext session = ((KeycloakPrincipal) req.getUserPrincipal()).getKeycloakSecurityContext();
     	
     	if (session == null) {
