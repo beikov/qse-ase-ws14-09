@@ -57,7 +57,7 @@ public class StockService {
 		}
 	}
 
-	public void onPriceEntryAdded(@Observes(during = TransactionPhase.AFTER_COMPLETION) @Added Stock pe) {
+	public void onStockUpdated(@Observes(during = TransactionPhase.AFTER_COMPLETION) @Added Stock pe) {
 		epService.addEvent(new StockDTO(pe));
 	}
 

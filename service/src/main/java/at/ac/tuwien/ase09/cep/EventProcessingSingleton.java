@@ -39,9 +39,6 @@ public class EventProcessingSingleton {
 	
 	@Inject
 	private WatchDataAccess watchDataAccess;
-	@Inject
-	@Added
-	private Event<Watch> watchAdded;
 	
 	@PostConstruct
 	void init() {
@@ -65,7 +62,7 @@ public class EventProcessingSingleton {
 		epService = EPServiceProviderManager.getDefaultProvider(config);
 		
 		for (Watch w : watchDataAccess.getWatches()) {
-			watchAdded.fire(w);
+			addWatch(w);
 		}
 	}
 	

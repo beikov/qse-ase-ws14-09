@@ -24,17 +24,17 @@
 					<ul class="nav navbar-nav">
 				        <li class="dropdown">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-								<span class="fa fa-line-chart"/> Portfolios
+								<span class="fa fa-line-chart"/>
+								<h:outputText value=" #{portfolioBean.currentPortfolioName}"/>
 								<span class="caret"></span>
 							</a>
 							<ul class="dropdown-menu" role="menu">
 								<ui:repeat value="#{portfolioBean.activeUserPortfolios}" var="portfolio">
-									<li>
-				        				<p:link value="#{portfolio.name}" outcome="/portfolio/view.xhtml">
-				        					<f:param name="portfolioId" value="#{portfolio.id}" />
-				        				</p:link>
+									<li class="#{portfolio.id == portfolioBean.currentPortfolioId ? 'active' : ''}">
+				        				<p:commandLink value="#{portfolio.name}" action="#{portfolioBean.switchPortfolio(portfolio.id)}" ajax="false"/>
 									</li>
 								</ui:repeat>
+								
 								<h:panelGroup rendered="#{not empty portfolioBean.activeUserPortfolios}">
 		            				<li class="divider"></li>
 		            			</h:panelGroup>

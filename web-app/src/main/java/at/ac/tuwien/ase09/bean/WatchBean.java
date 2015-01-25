@@ -70,10 +70,15 @@ public class WatchBean implements Serializable {
 		}
 		
 		if (selectedWatch.getId() == null) {
-			watchService.addWatch(selectedWatch);
+			selectedWatch = watchService.addWatch(selectedWatch);
 		} else {
-			watchService.updateWatch(selectedWatch);
+			selectedWatch = watchService.updateWatch(selectedWatch);
 		}
+	}
+	
+	public void removeWatch() {
+		watchService.removeWatch(selectedWatch);
+		newWatch();
 	}
 
 	public void setSelectedWatch(Watch selectedWatch) {

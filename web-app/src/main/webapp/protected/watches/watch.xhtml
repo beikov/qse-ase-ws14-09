@@ -16,15 +16,15 @@
 		
 			<p:dataTable id="watchTable" value="#{watches}" var="watch" selectionMode="single" selection="#{watchBean.selectedWatch}" emptyMessage="Keine Einträge gefunden">
 			
-				<p:ajax event="rowSelect"/>
-				<p:ajax event="rowUnselect"/>
+				<p:ajax event="rowSelect" update="@form"/>
+				<p:ajax event="rowUnselect" update="@form"/>
 			
 				<p:column headerText="Erstellungsdatum">
 					<h:outputText value="#{watch.created.time}">
 						<f:convertDateTime type="both" dateStyle="medium" timeStyle="medium"/>
 					</h:outputText>
 				</p:column>
-				<p:column headerText="Wertpapier">
+				<p:column headerText="Aktienname">
 					<h:outputText value="#{watch.valuePaper.name}"/>
 				</p:column>
 				<p:column headerText="Ausdruck">
@@ -35,9 +35,9 @@
 			<p:separator />
 			
 			<h:panelGrid columns="2" cellpadding="10">		
-				<p:outputLabel for="stock" value="Wähle Aktie: " style="padding: 10px;"/>
-				<p:selectOneMenu id="stock" value="#{watchBean.selectedWatch.valuePaper}" style="width:200px"
-					converter="#{stockConverter}"
+				<p:outputLabel for="valuePaper" value="Wähle Aktie: " style="padding: 10px;"/>
+				<p:selectOneMenu id="valuePaper" value="#{watchBean.selectedWatch.valuePaper}" style="width:200px"
+					converter="#{stockConverter}" filter="true" filterMatchMode="contains"
 					required="true" requiredMessage="Bitte auswählen!">
 					<f:selectItem itemLabel="Bitte auswählen" itemValue="#{null}" />
 					<f:selectItems value="#{stockItems}"/>
@@ -46,22 +46,32 @@
 		
 			<p:tabView id="watchTabView" activeIndex="#{watchBean.activeIndex}">
 			
-        		<p:ajax event="tabChange"/>
+        		<p:ajax event="tabChange" update="@parent:buttonBar"/>
 			
 				<p:tab id="simple" title="Einfach" disabled="#{watchBean.advancedOnly}" titletip="#{watchBean.advancedOnly ? 'Der Ausdruck ist zu kompliziert um im einfachen Modus bearbeitet zu werden!' : ''}">
-					<ase:filterEditor id="filterEditor" model="#{watchBean.filterModel}" />
+				 	<f:subview id="simpleTab">
+				 		<div id="#{p:component('simpleTab')}">
+							<ase:filterEditor id="filterEditor" model="#{watchBean.filterModel}" />
+						</div>
+					</f:subview>
 				</p:tab>
 				
 				<p:tab id="advanced" title="Erweitert">
-					<ase:expressionEditor id="watchEditor" value="#{watchBean.watchExpression}" expressionValidator="#{watchValidator}"/>
-					<p:message for="watchEditor:expressionEditor" showSummary="true" showDetail="false"/>
+				 	<f:subview id="advancedTab">
+				 		<div id="#{p:component('advancedTab')}">
+							<ase:expressionEditor id="watchEditor" value="#{watchBean.watchExpression}" expressionValidator="#{watchValidator}"/>
+							<p:message for="watchEditor:expressionEditor" showSummary="true" showDetail="false"/>
+						</div>
+					</f:subview>
 				</p:tab>
 			</p:tabView>
 			
 			<p:separator />
 			
-			<p:commandButton value="#{empty watchBean.selectedWatch.id ? 'Erstellen' : 'Speichern'}" ajax="false" actionListener="#{watchBean.saveWatch()}"/>
-		
+		 	<h:panelGroup id="buttonBar" layout="block">
+				<p:commandButton value="#{empty watchBean.selectedWatch.id ? 'Erstellen' : 'Speichern'}" actionListener="#{watchBean.saveWatch()}" process="@this valuePaper #{watchBean.activeIndex == '0' ? 'watchTabView:simpleTab' : 'watchTabView:advancedTab'}" update="@form"/>
+				<p:commandButton value="Löschen" rendered="#{not empty watchBean.selectedWatch.id}" actionListener="#{watchBean.removeWatch()}" process="@this" update="@form"/>
+			</h:panelGroup>
 		</h:form>
 	</ui:define>
 	

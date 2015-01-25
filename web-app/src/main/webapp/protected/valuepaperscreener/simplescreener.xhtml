@@ -27,23 +27,29 @@
 			
 			 <p:tabView id="searchTab" activeIndex="#{valuePaperScreenerBean.activeIndex}">
 			
-        		<p:ajax event="tabChange"/>
+        		<p:ajax event="tabChange" update="@parent:buttonBar"/>
         		
 		        <p:tab title="Einfache Aktiensuche">
-					<ase:filterEditor id="filterEditor" model="#{valuePaperScreenerBean.filterModel}" availableCurrencies="#{usedCurrencies}" availableIndices="#{usedIndices}"/>
+				 	<f:subview id="simpleTab">
+				 		<div id="#{p:component('simpleTab')}">
+							<ase:filterEditor id="filterEditor" model="#{valuePaperScreenerBean.filterModel}" availableCurrencies="#{usedCurrencies}" availableIndices="#{usedIndices}"/>
+						</div>
+					</f:subview>
 				</p:tab>
 				
 				 <p:tab title="Komplexe Aktiensuche" >
-					<ase:expressionEditor id="screeningEditor" value="#{valuePaperScreenerBean.expression}" expressionValidator="#{screenerValidator}"/>
-					<p:message for="screeningEditor:expressionEditor" showSummary="true" showDetail="false"/>
+				 	<f:subview id="advancedTab">
+				 		<div id="#{p:component('advancedTab')}">
+							<ase:expressionEditor id="screeningEditor" value="#{valuePaperScreenerBean.expression}" expressionValidator="#{screenerValidator}"/>
+							<p:message for="screeningEditor:expressionEditor" showSummary="true" showDetail="false"/>
+						</div>
+					</f:subview>
 				 </p:tab>
 			</p:tabView>	
 				 	
-		 	<h:panelGroup layout="block" style="text-align: center;">
+		 	<h:panelGroup id="buttonBar" layout="block" style="text-align: center;">
 				<p:commandButton value="Reset" type="reset" style="margin: 5px;"/>
-				<p:commandButton value="Suche"
-					action="#{valuePaperScreenerBean.search()}" update="@form"
-					ajax="true" />
+				<p:commandButton value="Suche" actionListener="#{valuePaperScreenerBean.search()}" process="@this #{valuePaperScreenerBean.activeIndex == '0' ? 'searchTab:simpleTab' : 'searchTab:advancedTab'}" update="@form" />
 			</h:panelGroup>
 				
 							

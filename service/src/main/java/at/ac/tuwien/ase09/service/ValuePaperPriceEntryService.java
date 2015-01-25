@@ -30,16 +30,12 @@ public class ValuePaperPriceEntryService {
 	@Inject
 	private EventProcessingSingleton epService;
 
-	public void savePriceEntry(ValuePaperPriceEntry pe) {
-		em.persist(pe);
-		priceEntryAdded.fire(pe);
-	}
-
 	public void savePriceEntry(String code, BigDecimal price) {
 		ValuePaperPriceEntry priceEntry = new ValuePaperPriceEntry();
 		priceEntry.setPrice(price);
 		priceEntry.setValuePaper(valuePaperDataAccess.getValuePaperByCode(code, ValuePaper.class));
 		em.persist(priceEntry);
+		priceEntryAdded.fire(priceEntry);
 	}
 	
 	public void onPriceEntryAdded(@Observes(during = TransactionPhase.AFTER_COMPLETION) @Added ValuePaperPriceEntry pe) {

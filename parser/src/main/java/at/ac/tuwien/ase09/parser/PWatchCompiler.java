@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.antlr.v4.runtime.ANTLRErrorListener;
 import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.CommonToken;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.LexerNoViableAltException;
 import org.antlr.v4.runtime.Parser;
@@ -16,6 +17,8 @@ import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.atn.ATNConfigSet;
 import org.antlr.v4.runtime.dfa.DFA;
+import org.antlr.v4.runtime.misc.Interval;
+import org.antlr.v4.runtime.misc.IntervalSet;
 
 import at.ac.tuwien.ase09.model.ValuePaperType;
 import at.ac.tuwien.ase09.model.filter.AttributeFilter;
@@ -107,6 +110,9 @@ public class PWatchCompiler {
 		if (pwatchExpression == null) {
             throw new NullPointerException("pwatchExpression");
         }
+    	if (valuePaperType == null) {
+    		valuePaperType = ValuePaperType.STOCK;
+    	}
         
         StringBuilder sb = new StringBuilder(100);
         sb.append("SELECT ");
@@ -127,7 +133,7 @@ public class PWatchCompiler {
         lexer.addErrorListener(ERR_LISTENER);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         boolean stringExpressionAllowed = true;
-        PWatchParser parser = new PWatchParser(tokens, stringExpressionAllowed, valuePaperType == null ? ValuePaperType.BOND : valuePaperType);
+        PWatchParser parser = new PWatchParser(tokens, stringExpressionAllowed, valuePaperType);
         parser.removeErrorListeners();
         parser.addErrorListener(ERR_LISTENER);
         
@@ -210,11 +216,11 @@ public class PWatchCompiler {
 	}
 
 	public static String validate(String pwatchExpression, boolean simple, boolean stringExpressionAllowed, ValuePaperType valuePaperType) {
-    	if (valuePaperType == null) {
-    		throw new NullPointerException("valuePaperType");
-    	}
     	if (pwatchExpression == null || pwatchExpression.isEmpty()) {
     		return null;
+    	}
+    	if (valuePaperType == null) {
+    		valuePaperType = ValuePaperType.STOCK;
     	}
     	
     	SimpleErrorListener errorListener = new SimpleErrorListener();
@@ -274,6 +280,14 @@ public class PWatchCompiler {
         	
         	if (e instanceof LexerNoViableAltException) {
         		reason = "Das Zeichen '" +  (char) e.getInputStream().LA(1) + "' ist unerwartet.";
+        	} else if (offendingSymbol instanceof CommonToken) {
+        		reason = "Das Zeichen '" +  ((CommonToken) offendingSymbol).getText() + "' ist unerwartet.";
+        		IntervalSet expectedToken = recognizer.getATN().getExpectedTokens(recognizer.getState(), ((Parser) recognizer).getContext());
+        		
+        		if (expectedToken.size() > 0) {
+        			reason += " Eines der folgenden Zeichen wurde erwartet ";
+	        		reason += expectedToken.toString(recognizer.getTokenNames());
+        		}
         	} else {
         		reason = msg;
         	}

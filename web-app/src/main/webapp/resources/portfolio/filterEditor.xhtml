@@ -23,7 +23,7 @@
 				<p:commandButton id="deleteButton" icon="fa fa-close" actionListener="#{cc.attrs.model.delete(filter)}" process="@this" update=":#{cc.clientId}" />
 
 				<p:selectOneMenu id="attributeSelect" value="#{filter.attribute}"
-					style="width:250px; margin: 5px;" required="true">
+					style="width:250px; margin: 5px;" required="true" filter="true" filterMatchMode="contains">
 					<f:selectItem itemLabel="Wähle Filterattribut" itemValue="#{null}"
 						noSelectionOption="true" />
 					<f:selectItems value="#{cc.attrs.model.attributes}"

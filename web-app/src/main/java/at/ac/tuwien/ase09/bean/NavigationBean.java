@@ -5,6 +5,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 
+import at.ac.tuwien.ase09.context.PortfolioContext;
 import at.ac.tuwien.ase09.keycloak.AdminClient;
 
 @Named

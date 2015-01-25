@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Produces;
 import javax.faces.convert.Converter;
 import javax.faces.model.SelectItem;
 import javax.inject.Inject;
@@ -20,8 +21,9 @@ public class WatchSupport {
 	
 	@Named("stockItems")
 	@RequestScoped
+	@Produces
 	public List<SelectItem> getStockItems() {
-		List<Stock> stocks = stockDataAccess.getAllowedStocks();
+		List<Stock> stocks = stockDataAccess.getStocks();
 		List<SelectItem> stockItems = new ArrayList<SelectItem>(stocks.size());
 		
 		for (Stock s : stocks) {
@@ -33,6 +35,7 @@ public class WatchSupport {
 	
 	@Named("stockConverter")
 	@RequestScoped
+	@Produces
 	public Converter getStockConverter(@Named("stockItems") List<SelectItem> stockItems) {
 		return new SelectItemListConverter(stockItems);
 	}
