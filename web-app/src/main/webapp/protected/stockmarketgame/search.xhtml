@@ -93,7 +93,7 @@
 			            
 			            <p style="margin-top: 10px; margin-bottom: 10px;">#{game.text}</p>
 			            
-			            <p:button value="Details" outcome="view">
+			            <p:button value="Details" outcome="stockmarketgameview">
 		                	<f:param name="gameId" value="#{game.id}" />
 		                </p:button>
                 		<p:commandButton value="Abmelden" update=":searchGamesForm:messages :searchGamesForm:games" actionListener="#{stockMarketGameSearchBean.participate(game)}" rendered="#{stockMarketGameSearchBean.hasAlreadyOrderedPapers(game)}">
