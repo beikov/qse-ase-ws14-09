@@ -56,7 +56,7 @@ public class ValuePaperScreenerAccessTest extends AbstractServiceTest<ValuePaper
 		Stock stockAtx = new Stock();
 		stockAtx.setCode("stock1");
 		stockAtx.setIndex("ATX");
-		stockAtx.setCountry("Österreich");
+		stockAtx.setCountry("Ã–sterreich");
 		stockAtx.setCurrency(Currency.getInstance("EUR"));
 		stockAtx.setName("Andritz");
 		
@@ -303,19 +303,19 @@ public class ValuePaperScreenerAccessTest extends AbstractServiceTest<ValuePaper
 		Stock stockAtx = new Stock();
 		stockAtx.setCode("stock3");
 		stockAtx.setIndex("ATX");
-		stockAtx.setCountry("Österrund");
+		stockAtx.setCountry("Ã–sterrund");
 		
 		Stock stockAtx2 = new Stock();
 		stockAtx2.setCode("stock4");
 		stockAtx2.setIndex("ATX");
-		stockAtx2.setCountry("Österresch");
+		stockAtx2.setCountry("Ã–sterresch");
 		dataManager.persist(stockAtx);
 		dataManager.persist(stockAtx2);
 		em.clear();
 		
 		AttributeFilter atfilter=new AttributeFilter();
 		atfilter.setAttribute(Attribute.COUNTRY);
-		atfilter.setTextValue("Österre?ch");
+		atfilter.setTextValue("Ã–sterre?ch");
 		List<AttributeFilter> filterList=new ArrayList<AttributeFilter>();
 		filterList.add(atfilter);
 		
@@ -324,12 +324,12 @@ public class ValuePaperScreenerAccessTest extends AbstractServiceTest<ValuePaper
 		assertEquals(2,valuePapers.size());
 		for(ValuePaper vp: valuePapers)
 		{
-			assertTrue(((Stock)vp).getCountry().matches("Österre.ch"));
+			assertTrue(((Stock)vp).getCountry().matches("Ã–sterre.ch"));
 		}
 		
 		AttributeFilter atfilter2=new AttributeFilter();
 		atfilter2.setAttribute(Attribute.COUNTRY);
-		atfilter2.setTextValue("Öster*");
+		atfilter2.setTextValue("Ã–ster*");
 		
 		filterList.clear();
 		filterList.add(atfilter2);
@@ -339,7 +339,7 @@ public class ValuePaperScreenerAccessTest extends AbstractServiceTest<ValuePaper
 		assertEquals(3,valuePapers.size());
 		for(ValuePaper vp: valuePapers)
 		{
-			assertTrue(((Stock)vp).getCountry().matches("Öster[a-zA-Z]*"));
+			assertTrue(((Stock)vp).getCountry().matches("Ã–ster[a-zA-Z]*"));
 		}
 	}
 	@Test
@@ -568,7 +568,7 @@ public class ValuePaperScreenerAccessTest extends AbstractServiceTest<ValuePaper
 	{
 		Stock s=new Stock();
 		s.setCode("stock1");
-		s.setCountry("Österreich");
+		s.setCountry("Ã–sterreich");
 		s.setCurrency(Currency.getInstance("EUR"));
 		s.setName("Andritz");
 		

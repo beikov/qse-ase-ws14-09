@@ -18,7 +18,7 @@ public class Fund extends ValuePaper {
 	private String depotBank;
 	private Short businessYearStartDay;
 	private Short businessYearStartMonth;
-	private BigDecimal denomination; //Stückelung
+	private BigDecimal denomination; //StÃ¼ckelung
 	private String category;
 	private Currency currency;
 	

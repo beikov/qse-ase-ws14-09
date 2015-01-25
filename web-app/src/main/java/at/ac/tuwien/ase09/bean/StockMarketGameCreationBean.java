@@ -383,13 +383,13 @@ public class StockMarketGameCreationBean implements Serializable {
 		}
 
 		if( orderFee.compareTo(new BigDecimal(0)) == -1){
-			FacesMessage facesMessage = new FacesMessage("Fehler: Ordergeb�hr muss größer gleich 0  sein!");
+			FacesMessage facesMessage = new FacesMessage("Fehler: Ordergebühr muss größer gleich 0  sein!");
 			FacesContext.getCurrentInstance().addMessage("stockmarketgame_create:orderFee", facesMessage);
 			return;
 		}
 
 		if( portfolioFee.compareTo(new BigDecimal(0)) == -1){
-			FacesMessage facesMessage = new FacesMessage("Fehler: Portfoliogeb�hr muss größer gleich 0  sein!");
+			FacesMessage facesMessage = new FacesMessage("Fehler: Portfoliogebühr muss größer gleich 0  sein!");
 			FacesContext.getCurrentInstance().addMessage("stockmarketgame_create:portfolioFee", facesMessage);
 			return;
 		}

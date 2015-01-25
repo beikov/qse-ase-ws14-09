@@ -87,12 +87,12 @@ public class FundDetailReader extends AbstractItemReader {
 			fund.setDepotBank(tableRows.get("Depotbank"));
 			fund.setCategory(tableRows.get("Fondskategorie"));
 			
-			String currencyStr = tableRows.get("Währung");
+			String currencyStr = tableRows.get("WÃ¤hrung");
 			if(currencyStr != null && !currencyStr.isEmpty()){
 				fund.setCurrency(Currency.getInstance(currencyStr));
 			}	
 			
-			String businessYearStr = tableRows.get("Geschäftsjahr");
+			String businessYearStr = tableRows.get("GeschÃ¤ftsjahr");
 			if(businessYearStr != null && !businessYearStr.isEmpty()){
 				Matcher matcher = BUSINESS_YEAR_PATTERN.matcher(businessYearStr);
 				if(matcher.find()){
@@ -103,14 +103,14 @@ public class FundDetailReader extends AbstractItemReader {
 			
 			String yieldTypeStr = tableRows.get("Ertragstyp");
 			if(yieldTypeStr != null){
-				if("Ausschütter".equals(yieldTypeStr)){
+				if("AusschÃ¼tter".equals(yieldTypeStr)){
 					fund.setYieldType(YieldType.DISTRIBUTING);
 				}else if(yieldTypeStr.toLowerCase().contains("thesaurier")){
 					fund.setYieldType(YieldType.CUMULATIVE);
 				}
 			}
 			
-			String denominationStr = tableRows.get("Stückelung");
+			String denominationStr = tableRows.get("StÃ¼ckelung");
 			if(denominationStr != null && !denominationStr.isEmpty()){
 				fund.setDenomination(new BigDecimal(denominationStr.replaceAll("\\.", "").replace(',', '.')));
 			}

@@ -107,7 +107,7 @@ public class StockMarketGameRankingBean implements Serializable{
 
 		if(stockMarketGame == null){
 			FacesContext context = FacesContext.getCurrentInstance();
-			context.getExternalContext().responseSendError(404, "Das B�rsenspiel konnte nicht gefunden werden.");
+			context.getExternalContext().responseSendError(404, "Das Börsenspiel konnte nicht gefunden werden.");
 			context.responseComplete();
 			return;
 		}

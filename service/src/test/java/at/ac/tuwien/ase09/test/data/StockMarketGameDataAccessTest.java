@@ -52,7 +52,7 @@ private static final long serialVersionUID = 1L;
 		Stock stockAtx = new Stock();
 		stockAtx.setCode("stock1");
 		stockAtx.setIndex("ATX");
-		stockAtx.setCountry("�sterreich");
+		stockAtx.setCountry("Österreich");
 		stockAtx.setCurrency(Currency.getInstance("EUR"));
 		stockAtx.setName("Andritz");
 		
@@ -79,14 +79,14 @@ private static final long serialVersionUID = 1L;
 		StockMarketGame game=new StockMarketGame();
 		game.setName("Erste Bank Spiel");
 		game.setOwner(inst);
-		game.setText("Ein B�rsenspiel");
+		game.setText("Ein Börsenspiel");
 		game.setAllowedValuePapers(allowedValuePapers);
 		dataManager.persist(game);
 		
 		allowedValuePapers.add(f);
 		game2.setName("Erste Bank Spiel2");
 		game2.setOwner(inst);
-		game2.setText("Ein anderes B�rsenspiel");
+		game2.setText("Ein anderes Börsenspiel");
 		game2.setAllowedValuePapers(allowedValuePapers);
 		dataManager.persist(game2);
 		
@@ -98,7 +98,7 @@ private static final long serialVersionUID = 1L;
 		
 		assertEquals(game2.getId(),smg.getId());
 		assertEquals("Erste Bank Spiel2",smg.getName());
-		assertEquals("Ein anderes B�rsenspiel",smg.getText());
+		assertEquals("Ein anderes Börsenspiel",smg.getText());
 		assertEquals(3,smg.getAllowedValuePapers().size());
 	}
 	
