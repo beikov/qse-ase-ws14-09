@@ -1,7 +1,7 @@
 {
   "realm" : "portfolio-web",
   "notBefore" : 0,
-  "accessTokenLifespan" : 300,
+  "accessTokenLifespan" : 3600,
   "ssoSessionIdleTimeout" : 600,
   "ssoSessionMaxLifespan" : 36000,
   "accessCodeLifespan" : 60,
@@ -101,7 +101,25 @@
     "publicClient" : false,
     "fullScopeAllowed" : true
   } ],
-  "oauthClients" : [ ],
+  "oauthClients": [ {
+		"name": "android",
+		"enabled": true,
+		"publicClient": true,
+		"directGrantsOnly": false,
+		"redirectUris": [ "*" ],
+		"secret": "password",
+		"fullScopeAllowed" : false,
+		"claims" : {
+		      "name" : true,
+		      "username" : true,
+		      "profile" : true,
+		      "picture" : true,
+		      "website" : true,
+		      "email" : true,
+		      "gender" : true,
+		      "locale" : true
+		}
+  } ],
   "browserSecurityHeaders" : {
     "xFrameOptions" : "SAMEORIGIN",
     "contentSecurityPolicy" : "frame-src 'self'"
