@@ -541,7 +541,7 @@ public class StockMarketGameCreationBean implements Serializable {
 		searchValuePaper.setName(valuePaperName);
 
 
-		if((searchValuePaper.getType() == ValuePaperType.STOCK || searchValuePaper.getType() == ValuePaperType.FUND) && !valuePaperCurrencyCode.isEmpty() && valuePaperCurrencyCode != null) {
+		if((searchValuePaper.getType() == ValuePaperType.STOCK || searchValuePaper.getType() == ValuePaperType.FUND) && valuePaperCurrencyCode != null && !valuePaperCurrencyCode.isEmpty()) {
 			try{
 				((Stock)searchValuePaper).setCurrency(Currency.getInstance(valuePaperCurrencyCode));
 			}
