@@ -32,6 +32,7 @@ public class LogoBean {
 	@Inject
 	private StockMarketGameDataAccess gameDataAccess;
 	
+	/*
 	public void handleLogoUpload(FileUploadEvent event) {
 		try {
 			UploadedFile logo = event.getFile();
@@ -55,7 +56,7 @@ public class LogoBean {
 			FacesMessage message = new FacesMessage("Fehler beim Speichern des neuen Logos!");
 	        FacesContext.getCurrentInstance().addMessage(null, message);
 		}
-    }
+    }*/
 	
 	public StreamedContent getLogo() {
         FacesContext context = FacesContext.getCurrentInstance();

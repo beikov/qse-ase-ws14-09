@@ -49,12 +49,24 @@
 							<p:outputLabel value="Neues Logo" />
 						</div>
 						<div class="col-md-7">
-							<p:fileUpload  fileUploadListener="#{logoBean.handleLogoUpload}" mode="advanced" dragDropSupport="false"
-					    		update="messages" sizeLimit="100000" fileLimit="1" allowTypes="/(\.|\/)(gif|jpe?g|png)$/">
+							<p:fileUpload  fileUploadListener="#{userProfileBean.handleLogoUpload}" mode="advanced" dragDropSupport="false"
+					    		update="messages @form" sizeLimit="1000000" fileLimit="1" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" auto="true" >
 					    		<f:attribute name="user" value="#{userProfileBean.user}" />
 					    	</p:fileUpload>
 						</div>
 					</div>
+					
+					<!-- <div class="row">
+						<div class="col-md-3">
+							<p:outputLabel value="Währung" />
+						</div>
+						<div class="col-md-7">
+							<p:selectOneMenu id="currency" value="#{userProfileBean.user.definedCurrencyCode}" filter="true" filterMatchMode="contains">
+					            <f:selectItem itemLabel="Select One" itemValue="" />
+					            <f:selectItems value="#{userProfileBean.currencies}" />
+					        </p:selectOneMenu>
+						</div>
+					</div> -->
 					
 					<c:if test="#{userProfileBean.institutionAdmin}">
 						<div class="row" style="margin-top: 25px; margin-bottom: 25px;">
