@@ -28,7 +28,7 @@ public class Portfolio extends BaseEntity<Long> {
 	private static final long serialVersionUID = 1L;
 
 	private Long version;
-	private boolean deleted = false;
+	private Boolean deleted = false;
 	private String name;
 	private User owner;
 	private Calendar created;
@@ -161,11 +161,12 @@ public class Portfolio extends BaseEntity<Long> {
 		this.followers = followers;
 	}
 
-	public boolean isDeleted() {
+	@Column(nullable=false)
+	public Boolean isDeleted() {
 		return deleted;
 	}
 
-	public void setDeleted(boolean deleted) {
+	public void setDeleted(Boolean deleted) {
 		this.deleted = deleted;
 	}
 	

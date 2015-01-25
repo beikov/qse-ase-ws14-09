@@ -49,7 +49,6 @@ public class YahooStockDetailReader extends AbstractStockDetailReader {
 
 	@Override
 	protected void readStats(StockDetailModel stockDetailModel) throws Exception {
-		// TODO Auto-generated method stub
 		Stock stock = stockDetailModel.getStock();
 		Document d = JsoupUtils.getPage(YQL_KEYSTATS_QUERY_TEMPLATE.replaceAll("#\\{symbol\\}", stock.getTickerSymbol()));
 		Elements keyStats = d.select("results stats").first().children();

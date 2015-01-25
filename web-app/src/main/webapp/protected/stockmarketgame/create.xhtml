@@ -116,7 +116,7 @@
 
 						<h:panelGrid columns="2" cellpadding="5">
 
-							<p:outputLabel for="startCapital" value="Startkapital(€):"
+							<p:outputLabel for="startCapital" value="Startkapital (€):"
 								style="margin-right:5px" />
 							<p:inputText id="startCapital"
 								value="#{stockMarketGameCreationBean.startCapital}"
@@ -124,14 +124,14 @@
 								disabled="#{!stockMarketGameCreationBean.allowedToEditStockMarketGameSettings}">
 							</p:inputText>
 
-							<p:outputLabel for="orderFee" value="Ordergebühr(€):"
+							<p:outputLabel for="orderFee" value="Ordergebühr (€):"
 								style="margin-right:5px" />
 							<p:inputText id="orderFee"
 								value="#{stockMarketGameCreationBean.orderFee}" required="true"
 								style="width:220px;margin-bottom:5px" 
 								disabled="#{!stockMarketGameCreationBean.allowedToEditStockMarketGameSettings}"/>
 
-							<p:outputLabel for="portfolioFee" value="Portfoliogebühr(€):"
+							<p:outputLabel for="portfolioFee" value="Portfoliogebühr/Jahr (€):"
 								style="margin-right:5px" />
 							<p:inputText id="portfolioFee"
 								value="#{stockMarketGameCreationBean.portfolioFee}"
@@ -139,7 +139,7 @@
 								disabled="#{!stockMarketGameCreationBean.allowedToEditStockMarketGameSettings}"/>
 
 							<p:outputLabel for="capitalReturnTax"
-								value="Kapitalertragssteuer(%):" style="margin-right:5px" />
+								value="Kapitalertragssteuer (%):" style="margin-right:5px" />
 							<p:inputText id="capitalReturnTax"
 								value="#{stockMarketGameCreationBean.capitalReturnTax}"
 								required="true" style="width:220px" 

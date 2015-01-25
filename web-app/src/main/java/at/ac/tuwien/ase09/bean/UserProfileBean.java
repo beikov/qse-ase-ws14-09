@@ -2,16 +2,25 @@ package at.ac.tuwien.ase09.bean;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.sql.Blob;
 import java.util.ArrayList;
+//import java.util.Currency;
 import java.util.List;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+//import javax.faces.model.SelectItem;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.sql.rowset.serial.SerialBlob;
+
+import org.apache.commons.io.IOUtils;
+import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.UploadedFile;
 
 import at.ac.tuwien.ase09.context.WebUserContext;
+//import at.ac.tuwien.ase09.data.CurrencyDataAccess;
 import at.ac.tuwien.ase09.data.InstitutionDataAccess;
 import at.ac.tuwien.ase09.data.PortfolioDataAccess;
 import at.ac.tuwien.ase09.data.StockMarketGameDataAccess;
@@ -47,6 +56,9 @@ public class UserProfileBean implements Serializable {
 	@Inject
 	private StockMarketGameDataAccess gameDataAccess;
 	
+	//@Inject
+	//private CurrencyDataAccess currencyDataAccess;
+	
 	@Inject
 	private WebUserContext userContext;
 	
@@ -58,6 +70,8 @@ public class UserProfileBean implements Serializable {
 	private List<StockMarketGame> institutionGames = new ArrayList<>();
 	private List<User> followers = new ArrayList<>();
 	private List<Portfolio> portfolios = new ArrayList<>();
+	//private String currency;
+	//private List<SelectItem> currencies = new ArrayList<>();
 	
 	public void initProfileView() throws IOException {
 		try {
@@ -82,12 +96,16 @@ public class UserProfileBean implements Serializable {
     	followers = new ArrayList<>(owner.getFollowers());
 		portfolios = portfolioDataAccess.getActiveUserPortfolios(owner.getId());
 		//createPortfolioDashboard();
+		
 	}
 	
 	public void initProfileSettings() throws IOException {
 		//profileSettings without viewParam
 		user = userDataAccess.getUserById(userContext.getUserId());
 		loadInstitution(user, false);
+		/*for (Currency c : currencyDataAccess.getCurrencies()) {
+			currencies.add(new SelectItem(c.getCurrencyCode(), c.getCurrencyCode()));
+		}*/
 		 
 	}
 	
@@ -164,6 +182,24 @@ public class UserProfileBean implements Serializable {
 		return true;
 	}
 	
+	public void handleLogoUpload(FileUploadEvent event) {
+		try {
+			UploadedFile logo = event.getFile();
+			byte[] uploadedLogo = IOUtils.toByteArray(logo.getInputstream());
+			Blob newLogo = new SerialBlob(uploadedLogo);
+			if (user != null) {
+				user.setLogo(newLogo);
+				user = userService.updateUser(user);
+				FacesMessage message = new FacesMessage("Logo: " + logo.getFileName() + " erfolgreich hochgeladen.");
+				FacesContext.getCurrentInstance().addMessage(null, message);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			FacesMessage message = new FacesMessage("Fehler beim Speichern des neuen Logos!");
+	        FacesContext.getCurrentInstance().addMessage(null, message);
+		}
+    }
+	
 	public void setUsername(String username) {
 		this.username = username;
 	}
@@ -230,4 +266,15 @@ public class UserProfileBean implements Serializable {
 		followers = new ArrayList<>(owner.getFollowers());
 	}
 	
+	/*public String getCurrency() {
+		return currency;
+	}
+	
+	public void getCurrency(String currency) {
+		this.currency = currency;
+	}
+	
+	public List<SelectItem> getCurrencies() {
+		return currencies;
+	}*/
 }

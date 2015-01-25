@@ -87,6 +87,9 @@ public abstract class AbstractStockDetailReader extends AbstractItemReader {
 			Elements columns = contentTableRow.getElementsByTag("td");
 			if(columns.size() >= 2 && "Land".equals(columns.first().text().trim())){
 				country = columns.get(1).text();
+				if("k.A.".equals(country)){
+					country = null;
+				}
 			}
 		}
 
