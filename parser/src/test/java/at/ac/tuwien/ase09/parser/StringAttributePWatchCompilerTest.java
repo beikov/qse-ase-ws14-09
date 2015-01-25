@@ -11,6 +11,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
+import at.ac.tuwien.ase09.model.ValuePaperType;
 import at.ac.tuwien.ase09.parser.PWatchCompiler;
 
 @RunWith(Parameterized.class)
@@ -63,7 +64,7 @@ public class StringAttributePWatchCompilerTest {
 	public void comparisonWithLiteralTest() {
 		String logicalExpr = " AND (1 < 1 OR (NOT (1 > 1) AND 1 = 1))";
 		String pwatchExpression = attribute + " " + operator + " " + literal + logicalExpr;
-		String actualExpression = PWatchCompiler.compileJpql(pwatchExpression);
+		String actualExpression = PWatchCompiler.compileJpql(pwatchExpression, ValuePaperType.STOCK);
 
 		String expectedExpression = "SELECT " + STOCK_ALIAS + " FROM Stock " + STOCK_ALIAS;
 		expectedExpression += " WHERE ";

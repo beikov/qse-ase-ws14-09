@@ -3,6 +3,7 @@ package at.ac.tuwien.ase09.parser;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
+import at.ac.tuwien.ase09.model.ValuePaperType;
 import at.ac.tuwien.ase09.parser.PWatchCompiler;
 import at.ac.tuwien.ase09.parser.SyntaxErrorException;
 
@@ -14,7 +15,7 @@ public class PWatchCompilerTest {
 	@Test
 	public void testSimplePriceJpql() {
 		String pwatchExpression = "COUNTRY = 'DE' AND PRICE > 100";
-		String actualExpression = PWatchCompiler.compileJpql(pwatchExpression);
+		String actualExpression = PWatchCompiler.compileJpql(pwatchExpression, ValuePaperType.STOCK);
 		String expectedExpression = "SELECT " + STOCK_ALIAS + " FROM Stock " + STOCK_ALIAS;
 		expectedExpression += " JOIN " + STOCK_ALIAS + ".priceEntries " + PRICE_ENTRY_ALIAS + " ON ";
 		expectedExpression += PRICE_ENTRY_ALIAS + ".created = (SELECT MAX(e.created) FROM ValuePaperPriceEntry e WHERE e.valuePaper = " + STOCK_ALIAS + ")";
@@ -37,7 +38,7 @@ public class PWatchCompilerTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void testStupidJpql() {
 		String pwatchExpression = "1 = 1";
-		PWatchCompiler.compileJpql(pwatchExpression);
+		PWatchCompiler.compileJpql(pwatchExpression, ValuePaperType.STOCK);
 	}
 
 	@Test(expected = NullPointerException.class)
@@ -52,7 +53,7 @@ public class PWatchCompilerTest {
 
 	@Test(expected = NullPointerException.class)
 	public void testNullExpressionJpql() {
-		PWatchCompiler.compileJpql(null);
+		PWatchCompiler.compileJpql(null, null);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -62,6 +63,6 @@ public class PWatchCompilerTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testEmptyExpressionJpql() {
-		PWatchCompiler.compileJpql("");
+		PWatchCompiler.compileJpql("", ValuePaperType.STOCK);
 	}
 }

@@ -4,10 +4,16 @@ import PWatch;
 
 @parser::members {
 private boolean stringExpressionAllowed;
+private boolean isStock;
+private boolean isFund;
+private boolean isBond;
 
-public PWatchParser(TokenStream input, boolean stringExpressionAllowed){
+public PWatchParser(TokenStream input, boolean stringExpressionAllowed, at.ac.tuwien.ase09.model.ValuePaperType valuePaperType){
        this(input);
        this.stringExpressionAllowed = stringExpressionAllowed;
+       isStock = valuePaperType == at.ac.tuwien.ase09.model.ValuePaperType.STOCK;
+       isFund = valuePaperType == at.ac.tuwien.ase09.model.ValuePaperType.FUND;
+       isBond = valuePaperType == at.ac.tuwien.ase09.model.ValuePaperType.BOND;
 }
 }
 
@@ -34,8 +40,8 @@ conditional_primary
 
 
 comparison_expression
-    : left=datetime_expression op=comparison_operator right=datetime_expression									#DateTimeComparisonExpression
-    | left=arithmetic_expression op=comparison_operator right=arithmetic_expression								#ArithmeticComparisonExpression
+    : {isStock}? left=datetime_expression op=comparison_operator right=datetime_expression						#DateTimeComparisonExpression
+    | {isStock}? left=arithmetic_expression op=comparison_operator right=arithmetic_expression					#ArithmeticComparisonExpression
     | {stringExpressionAllowed}? left=string_expression op=equality_comparison_operator right=string_expression	#StringComparisonExpression
     ;
 
@@ -59,9 +65,15 @@ datetime_expression
     | CURRENT_TIMESTAMP		#CurrentTimestamp
     | TIMESTAMP_LITERAL		#TimestampLiteral
     ;
+    
+string_attribute
+	: {isStock}? STRING_ATTRIBUTE
+	| {isFund}? FUND_STRING_ATTRIBUTE
+	| {isBond}? BOND_STRING_ATTRIBUTE
+	;
 
 string_expression
-	: STRING_ATTRIBUTE	#StringAttribute
+	: string_attribute	#StringAttribute
 	| STRING_LITERAL	#StringLiteral
 	;
 	

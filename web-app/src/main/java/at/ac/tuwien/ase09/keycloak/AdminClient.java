@@ -71,11 +71,11 @@ public class AdminClient {
     }
 
     public static UserInfo getCurrentUser(HttpServletRequest req) throws Failure {
-    	Principal principal = req.getUserPrincipal();
-    	if (principal == null) {
+    	if (req.getUserPrincipal() == null) {
     		return null;
     	}
-    	KeycloakSecurityContext session = ((KeycloakPrincipal) principal).getKeycloakSecurityContext();
+    	
+    	KeycloakSecurityContext session = ((KeycloakPrincipal) req.getUserPrincipal()).getKeycloakSecurityContext();
     	
     	if (session == null) {
         	return null;

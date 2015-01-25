@@ -20,13 +20,14 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.jpa.internal.EntityManagerImpl;
 
-import at.ac.tuwien.ase09.filter.AttributeFilter;
-import at.ac.tuwien.ase09.filter.AttributeType;
 import at.ac.tuwien.ase09.model.Fund;
 import at.ac.tuwien.ase09.model.Stock;
 import at.ac.tuwien.ase09.model.StockBond;
 import at.ac.tuwien.ase09.model.ValuePaper;
 import at.ac.tuwien.ase09.model.ValuePaperType;
+import at.ac.tuwien.ase09.model.filter.AttributeFilter;
+import at.ac.tuwien.ase09.model.filter.Attribute;
+import at.ac.tuwien.ase09.parser.PWatchCompiler;
 
 
 @Stateless
@@ -35,76 +36,21 @@ public class ValuePaperScreenerAccess {
 	@Inject
 	private EntityManager em;
 	
-	/*
-	 * Searchmethod used by AndroidApp
-	 * 
-	 * @param filters Suchfilter
-	 * @param type Wertpapiertyp
-	 * 
-	 * @return Liste der �bereinstimmenden Wertpapiere
-	 */
-	@SuppressWarnings("unchecked")
-	public List<ValuePaper> findByFilter(List<AttributeFilter> filters, ValuePaperType type)
-	{
-		Criteria crit = null;
-				
-				try{
-					crit=((Session)em.getDelegate()).createCriteria(ValuePaper.class, "valuePaper");
-				}
-				catch(ClassCastException e)
-				{
-					crit=((Session)((EntityManagerImpl)em.getDelegate()).getSession()).createCriteria(ValuePaper.class, "valuePaper");
-				}
-		
-		if(type!=null)
-		{
-			crit.add(Restrictions.eq("class", type.toString()));
-		}
-		if(filters!=null)
-		{
-		for(AttributeFilter filter:filters)
-		{
-			if (filter.getEnabled()&&filter.getAttribute()!=null) 
-			{
-				if (filter.getNumeric()) 
-				{
-					crit.add(filter.getOperator().createRestriction("valuePaper."+ filter.getAttribute().getParmName(),
-									filter.getNumericValue()));
-				}
-				else if (filter.getIndexValue() != null && filter.getAttribute().equals(AttributeType.INDEX))
-				{
-					crit.add(Restrictions.eq("valuePaper."+ filter.getAttribute().getParmName(), filter.getIndexValue()));
-				} 
-				else if (filter.getCurrencyValue() != null && filter.getAttribute().equals(AttributeType.CURRENCY))
-				{			
-					crit.add(Restrictions.eq("valuePaper."+ filter.getAttribute().getParmName(), Currency.getInstance(filter.getCurrencyValue())));
-				}
-				 else if (filter.getTextValue() != null) 
-				{
-					String textValue = filter.getTextValue().replace('*', '%').replace('?', '_');
-					crit.add(Restrictions.ilike("valuePaper."+ filter.getAttribute().getParmName(), textValue));
-				} 
-			}
-			
-		}
-		}
-		
-		return crit.list();
+	public List<ValuePaper> findByFilter(List<AttributeFilter> filters, ValuePaperType type) {
+		String jpql = PWatchCompiler.compileJpql(PWatchCompiler.attributeFiltersAsPWatch(filters), type);
+		return em.createQuery(jpql, ValuePaper.class).getResultList();
 	}
-	@SuppressWarnings("unchecked")
-	public List<Currency> getUsedCurrencyCodes()
-	{
-		return em.createQuery("SELECT s.currency FROM Stock s Group by s.currency UNION SELECT f.currency FROM Fund f Group by f.currency").getResultList();	
+	
+	public List<Currency> getUsedCurrencyCodes() {
+		return em.createQuery("SELECT s.currency FROM Stock s Group by s.currency UNION SELECT f.currency FROM Fund f Group by f.currency", Currency.class).getResultList();	
 	}
-	@SuppressWarnings("unchecked")
-	public List<String> getUsedIndexes()
-	{
-		return em.createQuery("SELECT s.index FROM Stock s Group by s.index").getResultList();	
+	
+	public List<String> getUsedIndexes() {
+		return em.createQuery("SELECT s.index FROM Stock s Group by s.index", String.class).getResultList();	
 	}	
-	@SuppressWarnings("unchecked")
-	public List<String> getUsedCountries()
-	{
-		return em.createQuery("SELECT s.country FROM Stock s Group by s.country").getResultList();	
+	
+	public List<String> getUsedCountries() {
+		return em.createQuery("SELECT s.country FROM Stock s Group by s.country", String.class).getResultList();	
 	}
 	
 	/*
@@ -236,8 +182,9 @@ public class ValuePaperScreenerAccess {
 		return crit.list();
 		
 	}
-	@SuppressWarnings("unchecked")
-	public List<ValuePaper> findByExpression(String expression){
-		return em.createQuery(expression,ValuePaper.class).getResultList();
+
+	public List<ValuePaper> findByExpression(String pwatchExpression, ValuePaperType valuePaperType){
+		String jpql = PWatchCompiler.compileJpql(pwatchExpression, valuePaperType);
+		return em.createQuery(jpql, ValuePaper.class).getResultList();
 	}
 }

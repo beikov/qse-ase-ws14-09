@@ -37,12 +37,12 @@
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>web-final</artifactId>
+			<artifactId>web-app</artifactId>
 			<type>war</type>
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>data-final</artifactId>
+			<artifactId>data-app</artifactId>
 			<type>war</type>
 		</dependency>
 		<dependency>
@@ -73,13 +73,13 @@
 						</webModule>
 						<webModule>
 							<groupId>${project.groupId}</groupId>
-							<artifactId>web-final</artifactId>
+							<artifactId>web-app</artifactId>
 							<bundleFileName>web-app.war</bundleFileName>
 							<contextRoot>/</contextRoot>
 						</webModule>
 						<webModule>
 							<groupId>${project.groupId}</groupId>
-							<artifactId>data-final</artifactId>
+							<artifactId>data-app</artifactId>
 							<bundleFileName>data-app.war</bundleFileName>
 							<contextRoot>/data</contextRoot>
 						</webModule>

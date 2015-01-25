@@ -20,14 +20,14 @@ import org.junit.Test;
 
 import at.ac.tuwien.ase09.data.ValuePaperPriceEntryDataAccess;
 import at.ac.tuwien.ase09.data.ValuePaperScreenerAccess;
-import at.ac.tuwien.ase09.filter.AttributeFilter;
-import at.ac.tuwien.ase09.filter.AttributeType;
-import at.ac.tuwien.ase09.filter.OperatorType;
 import at.ac.tuwien.ase09.model.Fund;
 import at.ac.tuwien.ase09.model.Stock;
 import at.ac.tuwien.ase09.model.StockBond;
 import at.ac.tuwien.ase09.model.ValuePaper;
 import at.ac.tuwien.ase09.model.ValuePaperType;
+import at.ac.tuwien.ase09.model.filter.AttributeFilter;
+import at.ac.tuwien.ase09.model.filter.Attribute;
+import at.ac.tuwien.ase09.model.filter.OperatorType;
 import at.ac.tuwien.ase09.test.AbstractServiceTest;
 import at.ac.tuwien.ase09.test.Assert;
 import at.ac.tuwien.ase09.test.DatabaseAware;
@@ -206,7 +206,7 @@ public class ValuePaperScreenerAccessTest extends AbstractServiceTest<ValuePaper
 	public void testNameFilter()
 	{
 		AttributeFilter atfilter=new AttributeFilter();
-		atfilter.setAttribute(AttributeType.NAME);
+		atfilter.setAttribute(Attribute.NAME);
 		atfilter.setTextValue("Andritz");
 		List<AttributeFilter> filterList=new ArrayList<AttributeFilter>();
 		filterList.add(atfilter);
@@ -223,7 +223,7 @@ public class ValuePaperScreenerAccessTest extends AbstractServiceTest<ValuePaper
 	public void testCurrencyFilter()
 	{
 		AttributeFilter atfilter=new AttributeFilter();
-		atfilter.setAttribute(AttributeType.CURRENCY);
+		atfilter.setAttribute(Attribute.CURRENCY);
 		atfilter.setCurrencyValue("EUR");
 		List<AttributeFilter> filterList=new ArrayList<AttributeFilter>();
 		filterList.add(atfilter);
@@ -240,7 +240,7 @@ public class ValuePaperScreenerAccessTest extends AbstractServiceTest<ValuePaper
 	public void testCurrencyFilterFund()
 	{
 		AttributeFilter atfilter=new AttributeFilter();
-		atfilter.setAttribute(AttributeType.CURRENCY);
+		atfilter.setAttribute(Attribute.CURRENCY);
 		atfilter.setCurrencyValue("EUR");
 		List<AttributeFilter> filterList=new ArrayList<AttributeFilter>();
 		filterList.add(atfilter);
@@ -257,7 +257,7 @@ public class ValuePaperScreenerAccessTest extends AbstractServiceTest<ValuePaper
 	public void testIndexFilter()
 	{
 		AttributeFilter atfilter=new AttributeFilter();
-		atfilter.setAttribute(AttributeType.INDEX);
+		atfilter.setAttribute(Attribute.INDEX);
 		atfilter.setIndexValue("ATX");
 		List<AttributeFilter> filterList=new ArrayList<AttributeFilter>();
 		filterList.add(atfilter);
@@ -314,7 +314,7 @@ public class ValuePaperScreenerAccessTest extends AbstractServiceTest<ValuePaper
 		em.clear();
 		
 		AttributeFilter atfilter=new AttributeFilter();
-		atfilter.setAttribute(AttributeType.COUNTRY);
+		atfilter.setAttribute(Attribute.COUNTRY);
 		atfilter.setTextValue("Österre?ch");
 		List<AttributeFilter> filterList=new ArrayList<AttributeFilter>();
 		filterList.add(atfilter);
@@ -328,7 +328,7 @@ public class ValuePaperScreenerAccessTest extends AbstractServiceTest<ValuePaper
 		}
 		
 		AttributeFilter atfilter2=new AttributeFilter();
-		atfilter2.setAttribute(AttributeType.COUNTRY);
+		atfilter2.setAttribute(Attribute.COUNTRY);
 		atfilter2.setTextValue("Öster*");
 		
 		filterList.clear();
@@ -348,154 +348,154 @@ public class ValuePaperScreenerAccessTest extends AbstractServiceTest<ValuePaper
 		List<AttributeFilter> filterList=new ArrayList<AttributeFilter>();
 		
 		AttributeFilter atfilter=new AttributeFilter();
-		atfilter.setAttribute(AttributeType.MARKETCAP);
+		atfilter.setAttribute(Attribute.MARKET_CAP);
 		atfilter.setNumericValue(new BigDecimal(71000000));
-		atfilter.setOperator(OperatorType.EQUAL);
+		atfilter.setOperatorType(OperatorType.EQUAL);
 		
 		AttributeFilter atfilter1=new AttributeFilter();
-		atfilter1.setAttribute(AttributeType.ENTERPRISEVALUE);
+		atfilter1.setAttribute(Attribute.ENTERPRISE_VALUE);
 		atfilter1.setNumericValue(new BigDecimal(1500000000));
-		atfilter1.setOperator(OperatorType.EQUAL);
+		atfilter1.setOperatorType(OperatorType.EQUAL);
 		
 		AttributeFilter atfilter2=new AttributeFilter();
-		atfilter2.setAttribute(AttributeType.PRICESALES);
+		atfilter2.setAttribute(Attribute.PRICE_SALES);
 		atfilter2.setNumericValue(new BigDecimal(3));
-		atfilter2.setOperator(OperatorType.EQUAL);
+		atfilter2.setOperatorType(OperatorType.EQUAL);
 		
 		AttributeFilter atfilter3=new AttributeFilter();
-		atfilter3.setAttribute(AttributeType.PRICEBOOK);
+		atfilter3.setAttribute(Attribute.PRICE_BOOK);
 		atfilter3.setNumericValue(new BigDecimal(2));
-		atfilter3.setOperator(OperatorType.EQUAL);
+		atfilter3.setOperatorType(OperatorType.EQUAL);
 		
 		AttributeFilter atfilter4=new AttributeFilter();
-		atfilter4.setAttribute(AttributeType.ENTERPRISEVALUEREVENUE);
+		atfilter4.setAttribute(Attribute.ENTERPRISE_VALUE_REVENUE);
 		atfilter4.setNumericValue(new BigDecimal(46.356));
-		atfilter4.setOperator(OperatorType.EQUAL);
+		atfilter4.setOperatorType(OperatorType.EQUAL);
 		
 		AttributeFilter atfilter5=new AttributeFilter();
-		atfilter5.setAttribute(AttributeType.ENTERPRISEVALUEEBITDA);
+		atfilter5.setAttribute(Attribute.ENTERPRISE_VALUE_EBITDA);
 		atfilter5.setNumericValue(new BigDecimal(64.17));
-		atfilter5.setOperator(OperatorType.EQUAL);
+		atfilter5.setOperatorType(OperatorType.EQUAL);
 		
 		AttributeFilter atfilter6=new AttributeFilter();
-		atfilter6.setAttribute(AttributeType.PROFITMARGIN);
+		atfilter6.setAttribute(Attribute.PROFIT_MARGIN);
 		atfilter6.setNumericValue(new BigDecimal(800000));
-		atfilter6.setOperator(OperatorType.EQUAL);
+		atfilter6.setOperatorType(OperatorType.EQUAL);
 		
 		AttributeFilter atfilter7=new AttributeFilter();
-		atfilter7.setAttribute(AttributeType.RETURNONASSETS);
+		atfilter7.setAttribute(Attribute.RETURN_ON_ASSETS);
 		atfilter7.setNumericValue(new BigDecimal(73));
-		atfilter7.setOperator(OperatorType.EQUAL);
+		atfilter7.setOperatorType(OperatorType.EQUAL);
 		
 		AttributeFilter atfilter8=new AttributeFilter();
-		atfilter8.setAttribute(AttributeType.RETURNONEQUITY);
+		atfilter8.setAttribute(Attribute.RETURN_ON_EQUITY);
 		atfilter8.setNumericValue(new BigDecimal(51));
-		atfilter8.setOperator(OperatorType.EQUAL);
+		atfilter8.setOperatorType(OperatorType.EQUAL);
 		
 		AttributeFilter atfilter9=new AttributeFilter();
-		atfilter9.setAttribute(AttributeType.REVENUE);
+		atfilter9.setAttribute(Attribute.REVENUE);
 		atfilter9.setNumericValue(new BigDecimal(2200000));
-		atfilter9.setOperator(OperatorType.EQUAL);
+		atfilter9.setOperatorType(OperatorType.EQUAL);
 		
 		AttributeFilter atfilter10=new AttributeFilter();
-		atfilter10.setAttribute(AttributeType.GROSSPROFIT);
+		atfilter10.setAttribute(Attribute.GROSS_PROFIT);
 		atfilter10.setNumericValue(new BigDecimal(820000));
-		atfilter10.setOperator(OperatorType.EQUAL);
+		atfilter10.setOperatorType(OperatorType.EQUAL);
 		
 		AttributeFilter atfilter11=new AttributeFilter();
-		atfilter11.setAttribute(AttributeType.EBITDA);
+		atfilter11.setAttribute(Attribute.EBITDA);
 		atfilter11.setNumericValue(new BigDecimal(590000));
-		atfilter11.setOperator(OperatorType.EQUAL);
+		atfilter11.setOperatorType(OperatorType.EQUAL);
 		
 		AttributeFilter atfilter12=new AttributeFilter();
-		atfilter12.setAttribute(AttributeType.TOTALCASH);
+		atfilter12.setAttribute(Attribute.TOTAL_CASH);
 		atfilter12.setNumericValue(new BigDecimal(770000));
-		atfilter12.setOperator(OperatorType.EQUAL);
+		atfilter12.setOperatorType(OperatorType.EQUAL);
 		
 		AttributeFilter atfilter13=new AttributeFilter();
-		atfilter13.setAttribute(AttributeType.TOTALCASHSHARE);
+		atfilter13.setAttribute(Attribute.TOTAL_CASH_PER_SHARE);
 		atfilter13.setNumericValue(new BigDecimal(2.212));
-		atfilter13.setOperator(OperatorType.EQUAL);
+		atfilter13.setOperatorType(OperatorType.EQUAL);
 		
 		AttributeFilter atfilter14=new AttributeFilter();
-		atfilter14.setAttribute(AttributeType.TOTALDEBT);
+		atfilter14.setAttribute(Attribute.TOTAL_DEBT);
 		atfilter14.setNumericValue(new BigDecimal(95000000));
-		atfilter14.setOperator(OperatorType.EQUAL);	
+		atfilter14.setOperatorType(OperatorType.EQUAL);	
 		
 		AttributeFilter atfilter15=new AttributeFilter();
-		atfilter15.setAttribute(AttributeType.TOTALDEBTEQUITY);
+		atfilter15.setAttribute(Attribute.TOTAL_DEBT_EQUITY);
 		atfilter15.setNumericValue(new BigDecimal(1.2));
-		atfilter15.setOperator(OperatorType.EQUAL);
+		atfilter15.setOperatorType(OperatorType.EQUAL);
 		
 		AttributeFilter atfilter16=new AttributeFilter();
-		atfilter16.setAttribute(AttributeType.OPERATINGCASHFLOW);
+		atfilter16.setAttribute(Attribute.OPERATING_CASH_FLOW);
 		atfilter16.setNumericValue(new BigDecimal(740000));
-		atfilter16.setOperator(OperatorType.EQUAL);
+		atfilter16.setOperatorType(OperatorType.EQUAL);
 		
 		AttributeFilter atfilter17=new AttributeFilter();
-		atfilter17.setAttribute(AttributeType.BETA);
+		atfilter17.setAttribute(Attribute.BETA);
 		atfilter17.setNumericValue(new BigDecimal(0.5));
-		atfilter17.setOperator(OperatorType.EQUAL);
+		atfilter17.setOperatorType(OperatorType.EQUAL);
 		
 		AttributeFilter atfilter18=new AttributeFilter();
-		atfilter18.setAttribute(AttributeType.WEEKCHANGE);
+		atfilter18.setAttribute(Attribute.P52_WEEK_CHANGE);
 		atfilter18.setNumericValue(new BigDecimal(2.67));
-		atfilter18.setOperator(OperatorType.EQUAL);
+		atfilter18.setOperatorType(OperatorType.EQUAL);
 		
 		AttributeFilter atfilter19=new AttributeFilter();
-		atfilter19.setAttribute(AttributeType.WEEKHIGH);
+		atfilter19.setAttribute(Attribute.P52_WEEK_HIGH);
 		atfilter19.setNumericValue(new BigDecimal(150.5));
-		atfilter19.setOperator(OperatorType.EQUAL);
+		atfilter19.setOperatorType(OperatorType.EQUAL);
 		
 		AttributeFilter atfilter20=new AttributeFilter();
-		atfilter20.setAttribute(AttributeType.WEEKLOW);
+		atfilter20.setAttribute(Attribute.P52_WEEK_LOW);
 		atfilter20.setNumericValue(new BigDecimal(133.45));
-		atfilter20.setOperator(OperatorType.EQUAL);
+		atfilter20.setOperatorType(OperatorType.EQUAL);
 		
 		AttributeFilter atfilter21=new AttributeFilter();
-		atfilter21.setAttribute(AttributeType.AVGVOLUME3M);
+		atfilter21.setAttribute(Attribute.AVG_VOL_3_MONTH);
 		atfilter21.setNumericValue(new BigDecimal(760000));
-		atfilter21.setOperator(OperatorType.EQUAL);
+		atfilter21.setOperatorType(OperatorType.EQUAL);
 		
 		AttributeFilter atfilter22=new AttributeFilter();
-		atfilter22.setAttribute(AttributeType.AVGVOLUME10D);
+		atfilter22.setAttribute(Attribute.AVG_VOL_10_DAY);
 		atfilter22.setNumericValue(new BigDecimal(95000));
-		atfilter22.setOperator(OperatorType.EQUAL);
+		atfilter22.setOperatorType(OperatorType.EQUAL);
 		
 		AttributeFilter atfilter23=new AttributeFilter();
-		atfilter23.setAttribute(AttributeType.SHARESOUTSTANDING);
+		atfilter23.setAttribute(Attribute.SHARES_OUTSTANDING);
 		atfilter23.setNumericValue(new BigDecimal(186000));
-		atfilter23.setOperator(OperatorType.EQUAL);
+		atfilter23.setOperatorType(OperatorType.EQUAL);
 		
 		AttributeFilter atfilter24=new AttributeFilter();
-		atfilter24.setAttribute(AttributeType.FLOATVALUE);
+		atfilter24.setAttribute(Attribute.FLOAT);
 		atfilter24.setNumericValue(new BigDecimal(29000));
-		atfilter24.setOperator(OperatorType.EQUAL);
+		atfilter24.setOperatorType(OperatorType.EQUAL);
 		
 		AttributeFilter atfilter25=new AttributeFilter();
-		atfilter25.setAttribute(AttributeType.PERCINSIDERS);
+		atfilter25.setAttribute(Attribute.PERCENTAGE_HELD_BY_INSIDERS);
 		atfilter25.setNumericValue(new BigDecimal(61));
-		atfilter25.setOperator(OperatorType.EQUAL);
+		atfilter25.setOperatorType(OperatorType.EQUAL);
 		
 		AttributeFilter atfilter26=new AttributeFilter();
-		atfilter26.setAttribute(AttributeType.PERCINSTIT);
+		atfilter26.setAttribute(Attribute.PERCENTAGE_HELD_BY_INSTITUTIONS);
 		atfilter26.setNumericValue(new BigDecimal(39));
-		atfilter26.setOperator(OperatorType.EQUAL);
+		atfilter26.setOperatorType(OperatorType.EQUAL);
 		
 		AttributeFilter atfilter27=new AttributeFilter();
-		atfilter27.setAttribute(AttributeType.SHARESSHORT);
+		atfilter27.setAttribute(Attribute.SHARES_SHORT_CURRENT_MONTH);
 		atfilter27.setNumericValue(new BigDecimal(55000));
-		atfilter27.setOperator(OperatorType.EQUAL);
+		atfilter27.setOperatorType(OperatorType.EQUAL);
 		
 		AttributeFilter atfilter28=new AttributeFilter();
-		atfilter28.setAttribute(AttributeType.DIVIDENDYIELD5);
+		atfilter28.setAttribute(Attribute.P5_YEAR_AVERAGE_DIVIDEND_YIELD);
 		atfilter28.setNumericValue(new BigDecimal(61.5));
-		atfilter28.setOperator(OperatorType.EQUAL);
+		atfilter28.setOperatorType(OperatorType.EQUAL);
 		
 		AttributeFilter atfilter29=new AttributeFilter();
-		atfilter29.setAttribute(AttributeType.PAYOUTRATIO);
+		atfilter29.setAttribute(Attribute.PAYOUT_RATIO);
 		atfilter29.setNumericValue(new BigDecimal(45.3));
-		atfilter29.setOperator(OperatorType.EQUAL);
+		atfilter29.setOperatorType(OperatorType.EQUAL);
 		
 		filterList.add(atfilter);
 		filterList.add(atfilter1);		
@@ -544,14 +544,14 @@ public class ValuePaperScreenerAccessTest extends AbstractServiceTest<ValuePaper
 		List<AttributeFilter> filterList=new ArrayList<AttributeFilter>();
 		
 		AttributeFilter atfilter1=new AttributeFilter();
-		atfilter1.setAttribute(AttributeType.MARKETCAP);
+		atfilter1.setAttribute(Attribute.MARKET_CAP);
 		atfilter1.setNumericValue(new BigDecimal(71000000.5));
-		atfilter1.setOperator(OperatorType.LOWER);
+		atfilter1.setOperatorType(OperatorType.LOWER);
 		
 		AttributeFilter atfilter2=new AttributeFilter();
-		atfilter2.setAttribute(AttributeType.WEEKHIGH);
+		atfilter2.setAttribute(Attribute.P52_WEEK_HIGH);
 		atfilter2.setNumericValue(new BigDecimal(60.5));
-		atfilter2.setOperator(OperatorType.GREATER);
+		atfilter2.setOperatorType(OperatorType.GREATER);
 		
 		filterList.add(atfilter1);
 		filterList.add(atfilter2);

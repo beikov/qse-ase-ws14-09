@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:cc="http://java.sun.com/jsf/composite">
+
+<cc:interface>
+	<cc:attribute name="value" type="java.lang.String" required="true" />
+	<cc:attribute name="expressionValidator" type="at.ac.tuwien.ase09.validator.PWatchExpressionValidator" required="true" />
+</cc:interface>
+
+<cc:implementation>
+	<h:outputStylesheet library="webjars" name="codemirror/4.8/lib/codemirror.css"/>
+	<h:outputStylesheet library="webjars" name="codemirror/4.8/addon/hint/show-hint.css"/>
+	<h:outputScript library="webjars" name="codemirror/4.8/lib/codemirror.js"/>
+	<h:outputScript library="webjars" name="codemirror/4.8/addon/mode/simple.js"/>
+	<h:outputScript library="webjars" name="codemirror/4.8/addon/hint/show-hint.js"/>
+	<h:outputScript library="portfolio" name="editor/pwatch.js"/>
+		
+	<div id="#{cc.clientId}">
+		<h:inputTextarea id="expressionEditor" value="#{watchBean.selectedWatch.expression}">
+			<f:validator binding="#{cc.attrs.expressionValidator}"/>
+		</h:inputTextarea>
+		
+		<script>
+			//<![CDATA[
+			
+			var editor = CodeMirror.fromTextArea(document.getElementById("#{cc.clientId}:expressionEditor"), {
+				lineNumbers: false,
+		        extraKeys: {"Ctrl-Space": "autocomplete"},
+				mode: "pwatch-#{cc.attrs.expressionValidator.valuePaperType == 'STOCK' ? (cc.attrs.expressionValidator.stringExpressionAllowed ? 'stock-string' : 'stock') : (cc.attrs.expressionValidator.valuePaperType == 'FUND' ? 'fund' : 'bond')}"
+			});
+
+			editor.on("change", function() {
+				editor.save();
+			});
+			
+			//]]>
+		</script>
+	</div>
+</cc:implementation>
+</html>

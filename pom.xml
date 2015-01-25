@@ -91,6 +91,14 @@
 						<groupId>org.antlr</groupId>
 						<artifactId>antlr4-maven-plugin</artifactId>
 					</exclusion>
+					<exclusion>
+					    <groupId>org.apache.deltaspike.core</groupId>
+					    <artifactId>deltaspike-core-api</artifactId>
+					</exclusion>
+					<exclusion>
+					    <groupId>org.apache.deltaspike.core</groupId>
+					    <artifactId>deltaspike-core-impl</artifactId>
+					</exclusion>
 				</exclusions>
 			</dependency>
 
