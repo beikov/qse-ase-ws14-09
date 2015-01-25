@@ -60,8 +60,10 @@
 				<h:outputText value="Keine Spiele gefunden" rendered="#{stockMarketGameSearchBean.games.size() == 0}" />
 				
 				<p:accordionPanel value="#{stockMarketGameSearchBean.games}" var="game" activeIndex="">
-			        <p:tab title="Spiel - #{game.name}" titleStyleClass="#{stockMarketGameSearchBean.isParticipatingInGame(game) ? 'participating' : ''}">
-			        	
+			        <p:tab>
+			        	<f:facet name="title">
+			        		Spiel - #{game.name} <h:panelGroup class="fa fa-check-circle" style="float: right" rendered="#{stockMarketGameSearchBean.isParticipatingInGame(game)}" />
+			        	</f:facet>	
 			        	<div>
 				        	<p:graphicImage value="#{logoBean.logo}" style="max-width: 100%;" rendered="#{game.logo == null and game.owner.admin.logo != null}">
 								<f:param name="username" value="#{game.owner.admin.username}" />
