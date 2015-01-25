@@ -7,13 +7,9 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Produces;
-import javax.faces.validator.Validator;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-
-import org.primefaces.event.TabChangeEvent;
-import org.primefaces.model.SelectableDataModel;
 
 import at.ac.tuwien.ase09.data.WatchDataAccess;
 import at.ac.tuwien.ase09.model.EntityDataModel;
