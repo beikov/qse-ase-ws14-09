@@ -107,7 +107,7 @@ public class StockMarketGameRankingBean implements Serializable{
 
 		if(stockMarketGame == null){
 			FacesContext context = FacesContext.getCurrentInstance();
-			context.getExternalContext().responseSendError(404, "Das Börsenspiel konnte nicht gefunden werden.");
+			context.getExternalContext().responseSendError(404, "Das Bï¿½rsenspiel konnte nicht gefunden werden.");
 			context.responseComplete();
 			return;
 		}
@@ -115,7 +115,7 @@ public class StockMarketGameRankingBean implements Serializable{
 		loadStockMarketGameRanking();
 
 		if(!isStockMarketGameAdmin() && !isStockMarketGameParticipant()){
-			FacesContext.getCurrentInstance().getExternalContext().responseSendError(403, "Nur die Teilnehmer und der Ersteller dieses Börsenspiels können das Teilnehmerranking aufrufen");
+			FacesContext.getCurrentInstance().getExternalContext().responseSendError(403, "Nur die Teilnehmer und der Ersteller dieses BÃ¶rsenspiels kÃ¶nnen das Teilnehmerranking aufrufen");
 			FacesContext.getCurrentInstance().responseComplete();
 		}
 

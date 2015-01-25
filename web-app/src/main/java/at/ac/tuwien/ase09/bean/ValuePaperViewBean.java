@@ -39,6 +39,7 @@ import at.ac.tuwien.ase09.model.ValuePaper;
 import at.ac.tuwien.ase09.model.ValuePaperHistoryEntry;
 import at.ac.tuwien.ase09.model.ValuePaperPriceEntry;
 import at.ac.tuwien.ase09.model.ValuePaperType;
+import at.ac.tuwien.ase09.model.filter.Attribute;
 import at.ac.tuwien.ase09.service.ValuePaperPriceEntryService;
 
 @ManagedBean
@@ -324,7 +325,7 @@ public class ValuePaperViewBean implements Serializable{
 			}
 
 			if(s.getCurrency() != null){
-				this.mainValuePaperAttributes.put("Währung:", s.getCurrency().getCurrencyCode());
+				this.mainValuePaperAttributes.put("WÃ¤hrung:", s.getCurrency().getCurrencyCode());
 			}
 
 			if(s.getMarketCap() != null){
@@ -590,15 +591,15 @@ public class ValuePaperViewBean implements Serializable{
 			if(f.getYieldType() != null){
 				switch (f.getYieldType()) {
 				case CUMULATIVE:
-					this.mainValuePaperAttributes.put("Ausschüttungsart:", "ausschüttend");
+					this.mainValuePaperAttributes.put("AusschÃ¼ttungsart:", "ausschÃ¼ttend");
 					break;
 				case DISTRIBUTING:
-					this.mainValuePaperAttributes.put("Ausschüttungsart:", "thesaurierend");
+					this.mainValuePaperAttributes.put("AusschÃ¼ttungsart:", "thesaurierend");
 				}
 			}
 			
 			if(f.getCurrency() != null){
-				this.mainValuePaperAttributes.put("Währung:", f.getCurrency().getCurrencyCode());
+				this.mainValuePaperAttributes.put("WÃ¤hrung:", f.getCurrency().getCurrencyCode());
 			}
 			
 			if(f.getCategory() != null){
@@ -606,11 +607,11 @@ public class ValuePaperViewBean implements Serializable{
 			}
 			
 			if(f.getDenomination() != null){
-				this.additionalValuePaperAttributes.put("Stückelung:", f.getDenomination().toString());
+				this.additionalValuePaperAttributes.put("StÃ¼ckelung:", f.getDenomination().toString());
 			}
 			
 			if(f.getBusinessYearStartDay() != null && f.getBusinessYearStartMonth() != null){
-				this.additionalValuePaperAttributes.put("Start des Geschäftsjahres:", f.getBusinessYearStartDay().toString() + "." + f.getBusinessYearStartMonth().toString() + ".");
+				this.additionalValuePaperAttributes.put("Start des GeschÃ¤ftsjahres:", f.getBusinessYearStartDay().toString() + "." + f.getBusinessYearStartMonth().toString() + ".");
 			}
 
 		}

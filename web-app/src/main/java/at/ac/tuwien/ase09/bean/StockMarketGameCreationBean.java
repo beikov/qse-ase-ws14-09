@@ -273,7 +273,7 @@ public class StockMarketGameCreationBean implements Serializable {
 			}
 			catch(EntityNotFoundException e){			
 				FacesContext context = FacesContext.getCurrentInstance();
-				context.getExternalContext().responseSendError(403, "Börsenspiele können nur von Institutionen erstellt/bearbeitet werden.");
+				context.getExternalContext().responseSendError(403, "BÃ¶rsenspiele kÃ¶nnen nur von Institutionen erstellt/bearbeitet werden.");
 				context.responseComplete();
 				return;
 			}
@@ -284,7 +284,7 @@ public class StockMarketGameCreationBean implements Serializable {
 		if(stockMarketGame != null){
 			if(!isStockMarketGameAdmin()){
 				FacesContext context = FacesContext.getCurrentInstance();
-				context.getExternalContext().responseSendError(403, "Dieses Börsenspiel kann nur von der Institution, die das Börsenspiel erstellt hat, bearbeitet werden.");
+				context.getExternalContext().responseSendError(403, "Dieses BÃ¶rsenspiel kann nur von der Institution, die das BÃ¶rsenspiel erstellt hat, bearbeitet werden.");
 				context.responseComplete();
 				return;
 			}
@@ -377,19 +377,19 @@ public class StockMarketGameCreationBean implements Serializable {
 		if( startCapital == null){
 			startCapital = new BigDecimal(0);
 		}else if( startCapital.compareTo(new BigDecimal(0)) == -1 ){
-			FacesMessage facesMessage = new FacesMessage("Fehler: Startkapital muss größer als 0 sein!");
+			FacesMessage facesMessage = new FacesMessage("Fehler: Startkapital muss grÃ¶ÃŸer als 0 sein!");
 			FacesContext.getCurrentInstance().addMessage("stockmarketgame_create:startCapital", facesMessage);
 			return;
 		}
 
 		if( orderFee.compareTo(new BigDecimal(0)) == -1){
-			FacesMessage facesMessage = new FacesMessage("Fehler: Ordergebühr muss größer gleich 0  sein!");
+			FacesMessage facesMessage = new FacesMessage("Fehler: Ordergebï¿½hr muss grÃ¶ÃŸer gleich 0  sein!");
 			FacesContext.getCurrentInstance().addMessage("stockmarketgame_create:orderFee", facesMessage);
 			return;
 		}
 
 		if( portfolioFee.compareTo(new BigDecimal(0)) == -1){
-			FacesMessage facesMessage = new FacesMessage("Fehler: Portfoliogebühr muss größer gleich 0  sein!");
+			FacesMessage facesMessage = new FacesMessage("Fehler: Portfoliogebï¿½hr muss grÃ¶ÃŸer gleich 0  sein!");
 			FacesContext.getCurrentInstance().addMessage("stockmarketgame_create:portfolioFee", facesMessage);
 			return;
 		}
@@ -407,13 +407,13 @@ public class StockMarketGameCreationBean implements Serializable {
 		}
 		
 		if(new Date(validFrom.getTime()+1).after(validTo)){
-			FacesMessage facesMessage = new FacesMessage("Fehler: Börsenspielbeginndatum muss vor Börsenspielenddatum liegen!");
+			FacesMessage facesMessage = new FacesMessage("Fehler: BÃ¶rsenspielbeginndatum muss vor BÃ¶rsenspielenddatum liegen!");
 			FacesContext.getCurrentInstance().addMessage("stockmarketgame_create:validFrom", facesMessage);
 			return;
 		}
 
 		if(new Date(registrationTo.getTime()+1).after(validFrom)){
-			FacesMessage facesMessage = new FacesMessage("Fehler: Registrierungsenddatum muss vor Börsenspielbeginndatum liegen!");
+			FacesMessage facesMessage = new FacesMessage("Fehler: Registrierungsenddatum muss vor BÃ¶rsenspielbeginndatum liegen!");
 			FacesContext.getCurrentInstance().addMessage("stockmarketgame_create:registrationTo", facesMessage);
 			return;
 		}
@@ -447,14 +447,14 @@ public class StockMarketGameCreationBean implements Serializable {
 
 			stockMarketGameService.saveStockMarketGame(stockMarketGame);
 
-			FacesMessage message = new FacesMessage("Börsenspiel erfolgreich gespeichert");
+			FacesMessage message = new FacesMessage("BÃ¶rsenspiel erfolgreich gespeichert");
 			FacesContext.getCurrentInstance().addMessage(null, message);
 
 			FacesContext.getCurrentInstance().getExternalContext().redirect("stockmarketgameview.xhtml?gameId="+stockMarketGame.getId());
 		}
 		catch (Exception e) {
 
-			FacesMessage message = new FacesMessage("Fehler beim Speichern des Börsenspieles");
+			FacesMessage message = new FacesMessage("Fehler beim Speichern des BÃ¶rsenspieles");
 			FacesContext.getCurrentInstance().addMessage(null, message);
 
 			e.printStackTrace();

@@ -7,11 +7,17 @@
 	xmlns:ase="http://java.sun.com/jsf/composite/portfoliosimcomponents">
 		
 	<h:panelGroup rendered="#{not empty user.id}">
-		<p:panelGrid columns="2" styleClass="no-border">
+		<p:panelGrid columns="2" styleClass="no-border-grid">
 			
 			<c:forEach items="#{portfolioBean.activeUserPortfolios}" var="portfolio">
-				<p:panel header="#{portfolio.name}">
-					<p:panelGrid columns="2">
+				<p:panel>
+					<f:facet name="header">
+						<h:link value="#{portfolio.name}" outcome="/portfolio/view.xhtml">
+							<f:param name="portfolioId" value="#{portfolio.id}"/>
+						</h:link>
+					</f:facet>
+				
+					<p:panelGrid columns="2" styleClass="no-border-grid">
 						<h:outputText value="Kapital" />
 						<h:outputText value="#{portfolio.currentCapital}" />
 						

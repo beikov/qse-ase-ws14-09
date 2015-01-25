@@ -4,18 +4,18 @@ package at.ac.tuwien.ase09.model.filter;
 public enum Attribute {
 	
 	PRICE(AttributeType.NUMERIC, "PRICE (Preis)"),
-	MARKET_CAP(AttributeType.NUMERIC, "MARKET_CAP (Börsenwert)"),
+	MARKET_CAP(AttributeType.NUMERIC, "MARKET_CAP (BÃ¶rsenwert)"),
 	ENTERPRISE_VALUE(AttributeType.NUMERIC, "ENTERPRISE_VALUE (Unternehmenswert)"),
 	TRAILING_PE(AttributeType.NUMERIC, ""),
 	FORWARD_PE(AttributeType.NUMERIC, ""),
 	PEG_RATIO(AttributeType.NUMERIC, ""),
-	PRICE_SALES(AttributeType.NUMERIC, "PRICE_SALES (Kurs-Umsatz-Verhältnis)"),
-	PRICE_BOOK(AttributeType.NUMERIC, "PRICE_BOOK (Kurs-Buchwert-Verhältnis)"),
+	PRICE_SALES(AttributeType.NUMERIC, "PRICE_SALES (Kurs-Umsatz-VerhÃ¤ltnis)"),
+	PRICE_BOOK(AttributeType.NUMERIC, "PRICE_BOOK (Kurs-Buchwert-VerhÃ¤ltnis)"),
 	ENTERPRISE_VALUE_REVENUE(AttributeType.NUMERIC, "ENTERPRISE_VALUE_REVENUE (Unternehmenswert zu Umsatz)"),
 	ENTERPRISE_VALUE_EBITDA(AttributeType.NUMERIC, "ENTERPRISE_VALUE_EBITDA (Unternehmenswert zu EBITDA)"),
 	PROFIT_MARGIN(AttributeType.NUMERIC, "PROFIT_MARGIN (Gewinnspanne)"),
 	OPERATING_MARGIN(AttributeType.NUMERIC, ""),
-	RETURN_ON_ASSETS(AttributeType.NUMERIC, "RETURN_ON_ASSETS (Vermögensrendite)"),
+	RETURN_ON_ASSETS(AttributeType.NUMERIC, "RETURN_ON_ASSETS (VermÃ¶gensrendite)"),
 	RETURN_ON_EQUITY(AttributeType.NUMERIC, "RETURN_ON_EQUITY (Eigenkapitalrendite)"),
 	REVENUE(AttributeType.NUMERIC, "REVENUE (Umsatz)"),
 	REVENUE_PER_SHARE(AttributeType.NUMERIC, ""),
@@ -28,13 +28,13 @@ public enum Attribute {
 	TOTAL_CASH(AttributeType.NUMERIC, "TOTAL_CASH (Totaler Cash-Flow)"),
 	TOTAL_CASH_PER_SHARE(AttributeType.NUMERIC, "TOTAL_CASH_PER_SHARE (Totaler Cash-Flow/Aktie)"),
 	TOTAL_DEBT(AttributeType.NUMERIC, "TOTAL_DEBT (Gesamtverschuldung)"),
-	TOTAL_DEBT_EQUITY(AttributeType.NUMERIC, "TOTAL_DEBT_EQUITY (Eigenkapitalüberdeckung)"),
+	TOTAL_DEBT_EQUITY(AttributeType.NUMERIC, "TOTAL_DEBT_EQUITY (EigenkapitalÃ¼berdeckung)"),
 	CURRENT_RATIO(AttributeType.NUMERIC, ""),
 	BOOK_VALUE_PER_SHARE(AttributeType.NUMERIC, ""),
 	OPERATING_CASH_FLOW(AttributeType.NUMERIC, "OPERATING_CASH_FLOW (Operativer Cash-Flow)"),
 	LEVERED_FREE_CASH_FLOW(AttributeType.NUMERIC, ""),
 	BETA(AttributeType.NUMERIC, "BETA (Betafaktor)"),
-	P52_WEEK_CHANGE(AttributeType.NUMERIC, "52_WEEK_CHANGE (52-Wochen-Änderung)"),
+	P52_WEEK_CHANGE(AttributeType.NUMERIC, "52_WEEK_CHANGE (52-Wochen-Ã„nderung)"),
 	P52_WEEK_HIGH(AttributeType.NUMERIC, "52_WEEK_HIGH (52-Wochen-Hoch)"),
 	P52_WEEK_LOW(AttributeType.NUMERIC, "52_WEEK_LOW (52-Wochen-Tief)"),
 	P50_DAY_MOVING_AVERAGE(AttributeType.NUMERIC, ""),
@@ -65,7 +65,7 @@ public enum Attribute {
 	CODE(AttributeType.STRING, "Code/ISIN"),
 	INDEX(AttributeType.STRING, "Aktienindex"),
 	COUNTRY(AttributeType.STRING, "Land"),
-	CURRENCY(AttributeType.STRING, "Währung");
+	CURRENCY(AttributeType.STRING, "WÃ¤hrung");
 
 	
 	private final AttributeType attributeType;
