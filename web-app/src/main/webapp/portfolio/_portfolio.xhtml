@@ -100,7 +100,7 @@
 		
 		<div class="row" style="margin-bottom: 15px;">
 			<div class="col-md-12">
-				<p:tabView>
+				<p:tabView rendered="#{portfolioViewBean.tabVisible}">
 					<p:tab rendered="#{portfolioViewBean.valuePapersVisible}">
 						<f:facet name="title">
 			               	<h:outputText value="Einzeltitel"/>

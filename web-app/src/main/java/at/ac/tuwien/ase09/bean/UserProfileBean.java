@@ -104,8 +104,11 @@ public class UserProfileBean implements Serializable {
 			return;
 		}
 		if (loadGames) {
+			if (institution == null) {
+				return;
+			}
 			try {
-				institutionGames = gameDataAccess.getByInstitution(institution);
+				institutionGames = gameDataAccess.getByInstitutionId(institution.getId());
 			} catch(EntityNotFoundException e) {
 			} catch(AppException e) {
 				FacesMessage message = new FacesMessage("Fehler beim Laden der Börsenspiele");
@@ -147,6 +150,18 @@ public class UserProfileBean implements Serializable {
 	        FacesContext.getCurrentInstance().addMessage(null, message);
 	        e.printStackTrace();
 		}
+	}
+	
+	public boolean allPortfoliosHidden() {
+		if (isOwner) {
+			return false;
+		}
+		for (Portfolio p : portfolios) {
+			if (p.getVisibility().getPublicVisible()) {
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	public void setUsername(String username) {

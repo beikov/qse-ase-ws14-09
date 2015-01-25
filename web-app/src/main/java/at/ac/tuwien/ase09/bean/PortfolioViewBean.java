@@ -290,11 +290,19 @@ public class PortfolioViewBean implements Serializable {
 	public boolean isHidden() {
 		if (isPortfolioOwner())
 			return false;
+		if (portfolio == null)
+			return true;
 		return !portfolio.getVisibility().getPublicVisible();
 	}
 	
 	public boolean isChangeButtonVisible() {
 		return isPortfolioOwner();
+	}
+	
+	public boolean isTabVisible() {
+		return isValuePapersVisible() || isOrdersVisible() 
+				|| isTransactionsVisible() || isNewsVisible()
+				|| isAnalystOpinionsVisible() || isChartsVisible();
 	}
 	
 	public boolean isValuePapersVisible() {
