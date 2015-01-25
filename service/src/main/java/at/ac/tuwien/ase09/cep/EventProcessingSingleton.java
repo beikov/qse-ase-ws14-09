@@ -1,32 +1,35 @@
 package at.ac.tuwien.ase09.cep;
 
+import java.util.Calendar;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.annotation.Resource;
 import javax.ejb.ConcurrencyManagement;
 import javax.ejb.ConcurrencyManagementType;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
-import javax.enterprise.event.Event;
+import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.inject.Inject;
 
 import at.ac.tuwien.ase09.data.WatchDataAccess;
-import at.ac.tuwien.ase09.event.Added;
 import at.ac.tuwien.ase09.exception.AppException;
 import at.ac.tuwien.ase09.model.Watch;
 import at.ac.tuwien.ase09.model.event.Constants;
 import at.ac.tuwien.ase09.model.event.StockDTO;
 import at.ac.tuwien.ase09.model.event.ValuePaperPriceEntryDTO;
+import at.ac.tuwien.ase09.model.notification.WatchTriggeredNotification;
 import at.ac.tuwien.ase09.parser.PWatchCompiler;
+import at.ac.tuwien.ase09.service.NotificationService;
 
 import com.espertech.esper.client.Configuration;
 import com.espertech.esper.client.EPServiceProvider;
 import com.espertech.esper.client.EPServiceProviderManager;
 import com.espertech.esper.client.EPStatement;
 import com.espertech.esper.client.EventBean;
-import com.espertech.esper.client.StatementAwareUpdateListener;
+import com.espertech.esper.client.UpdateListener;
 
 @Singleton
 @Startup
@@ -39,6 +42,10 @@ public class EventProcessingSingleton {
 	
 	@Inject
 	private WatchDataAccess watchDataAccess;
+	@Inject
+	private NotificationService notificationService;
+	@Resource
+	private ManagedExecutorService executorService;
 	
 	@PostConstruct
 	void init() {
@@ -100,7 +107,7 @@ public class EventProcessingSingleton {
 			throw new AppException("Illegal concurrent attempt to add the already existing watch statement with the id: " + watch.getId());
 		}
 		
-		watchStatement.addListener(new WatchFireListener());
+		watchStatement.addListener(new WatchFireListener(executorService, notificationService, watch));
 		watchStatement.start();
 	}
 	
@@ -109,14 +116,28 @@ public class EventProcessingSingleton {
 		epService.destroy();
 	}
 	
-	private static class WatchFireListener implements StatementAwareUpdateListener {
+	private static class WatchFireListener implements UpdateListener {
+		
+		private final ManagedExecutorService executorService;
+		private final NotificationService notificationService;
+		private final Watch watch;
+
+		public WatchFireListener(ManagedExecutorService executorService, NotificationService notificationService, Watch watch) {
+			this.executorService = executorService;
+			this.notificationService = notificationService;
+			this.watch = watch;
+		}
 
 		@Override
-		public void update(EventBean[] newEvents, EventBean[] oldEvents,
-				EPStatement statement, EPServiceProvider epServiceProvider) {
-			// TODO: fire event
-			for(int i = 0; i < newEvents.length; i++) {
-				System.out.println(newEvents[i]);
+		public void update(EventBean[] newEvents, EventBean[] oldEvents) {
+			for (int i = 0; i < newEvents.length; i++) {
+				executorService.submit(() -> {
+					WatchTriggeredNotification n = new WatchTriggeredNotification();
+					n.setCreated(Calendar.getInstance());
+					n.setUser(watch.getOwner());
+					n.setWatch(watch);
+					notificationService.addNotification(n);
+				});
 			}
 		}
 	}

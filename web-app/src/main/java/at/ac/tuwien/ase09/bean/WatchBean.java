@@ -3,13 +3,20 @@ package at.ac.tuwien.ase09.bean;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.spi.AlterableContext;
+import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.apache.deltaspike.core.api.provider.BeanProvider;
 
 import at.ac.tuwien.ase09.data.WatchDataAccess;
 import at.ac.tuwien.ase09.model.EntityDataModel;
@@ -21,6 +28,7 @@ import at.ac.tuwien.ase09.model.filter.Attribute;
 import at.ac.tuwien.ase09.model.filter.AttributeFilter;
 import at.ac.tuwien.ase09.parser.PWatchCompiler;
 import at.ac.tuwien.ase09.service.WatchService;
+import at.ac.tuwien.ase09.utils.BeanUtils;
 import at.ac.tuwien.ase09.validator.PWatchExpressionValidator;
 
 @Named
@@ -74,11 +82,14 @@ public class WatchBean implements Serializable {
 		} else {
 			selectedWatch = watchService.updateWatch(selectedWatch);
 		}
+
+		BeanUtils.removeInstance("watches");
 	}
 	
 	public void removeWatch() {
 		watchService.removeWatch(selectedWatch);
 		newWatch();
+		BeanUtils.removeInstance("watches");
 	}
 
 	public void setSelectedWatch(Watch selectedWatch) {

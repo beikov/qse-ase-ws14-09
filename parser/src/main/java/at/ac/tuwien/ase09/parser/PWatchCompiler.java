@@ -196,7 +196,7 @@ public class PWatchCompiler {
         	throw new IllegalArgumentException("The given expression does not reference any attributes!");
         }
         if (visitor.usesPrice()) {
-        	sb.append("ValuePaperPriceEntry(id = ");
+        	sb.append("ValuePaperPriceEntry(valuePaperId = ");
         	sb.append(valuePaperId);
         	sb.append(").std:lastevent() AS ");
         	sb.append(AdvancedPWatchCompiler.PRICE_ENTRY_ALIAS);
