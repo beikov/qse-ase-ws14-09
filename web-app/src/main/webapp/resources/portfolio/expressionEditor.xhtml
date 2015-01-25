@@ -23,7 +23,7 @@
 	<h:outputScript library="portfolio" name="editor/pwatch.js"/>
 		
 	<div id="#{cc.clientId}">
-		<h:inputTextarea id="expressionEditor" value="#{watchBean.selectedWatch.expression}">
+		<h:inputTextarea id="expressionEditor" value="#{cc.attrs.value}">
 			<f:validator binding="#{cc.attrs.expressionValidator}"/>
 		</h:inputTextarea>
 		
@@ -33,7 +33,7 @@
 			var editor = CodeMirror.fromTextArea(document.getElementById("#{cc.clientId}:expressionEditor"), {
 				lineNumbers: false,
 		        extraKeys: {"Ctrl-Space": "autocomplete"},
-				mode: "pwatch-#{cc.attrs.expressionValidator.valuePaperType == 'STOCK' ? (cc.attrs.expressionValidator.stringExpressionAllowed ? 'stock-string' : 'stock') : (cc.attrs.expressionValidator.valuePaperType == 'FUND' ? 'fund' : 'bond')}"
+				mode: "pwatch-#{empty cc.attrs.expressionValidator.valuePaperType or cc.attrs.expressionValidator.valuePaperType == 'STOCK' ? (cc.attrs.expressionValidator.stringExpressionAllowed ? 'stock-string' : 'stock') : (cc.attrs.expressionValidator.valuePaperType == 'FUND' ? 'fund' : 'bond')}"
 			});
 
 			editor.on("change", function() {

@@ -9,6 +9,21 @@
 <body>
 	<h:outputText value="Data-App Ctrl" />
 	<h:form>
+		<h:panelGrid columns="3">
+			<h:outputLabel value="Aktie: " for="stock" />
+			<h:selectOneMenu id="stock" value="#{testDataBean.code}" required="true">
+				<f:selectItems value="#{testDataStockItems}"/>
+			</h:selectOneMenu>
+			<h:message for="stock" showSummary="true" showDetail="false"/>
+			
+			<h:outputLabel value="Preis: " for="price" />
+			<h:inputText id="price" value="#{testDataBean.price}" required="true"/>
+			<h:message for="price" showSummary="true" showDetail="false"/>
+			
+			<h:commandButton actionListener="#{testDataBean.create()}" value="Anlegen" />
+		</h:panelGrid>
+	</h:form>
+	<h:form>
 		<p>
 			<h:commandButton value="Start ATX Stock Detail Extraction"
 				actionListener="#{ctrlBean.startATXStockDetailExtraction()}" />

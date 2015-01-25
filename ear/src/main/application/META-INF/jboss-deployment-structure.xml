@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jboss-deployment-structure>
+  <ear-subdeployments-isolated>true</ear-subdeployments-isolated>
 	<sub-deployment name="service.jar">
 		<dependencies>
+			<!-- Just for CDI purposes to access the user context -->
 			<module name="deployment.ear.ear.web-app.war"/>
 		</dependencies>
 	</sub-deployment>
@@ -9,6 +11,19 @@
 	<sub-deployment name="rest-impl.jar">
 		<dependencies>
 			<module name="deployment.ear.ear.web-app.war"/>
+			<module name="deployment.ear.ear.service.jar"/>
+		</dependencies>
+	</sub-deployment>
+	
+	<sub-deployment name="web-app.war">
+		<dependencies>
+			<module name="deployment.ear.ear.service.jar"/>
+		</dependencies>
+	</sub-deployment>
+	
+	<sub-deployment name="data-app.war">
+		<dependencies>
+			<module name="deployment.ear.ear.service.jar"/>
 		</dependencies>
 	</sub-deployment>
 
