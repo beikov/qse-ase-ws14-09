@@ -8,8 +8,10 @@ import java.util.Calendar;
 import java.util.Currency;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -365,7 +367,12 @@ public class PortfolioDataAccess {
 
 	public List<NewsItem> getNewsForPortfolio(Portfolio portfolio) {
 		List<NewsItem> news = new ArrayList<>();
+		Set<String> keys = new HashSet<>();
 		for (PortfolioValuePaper pvp : portfolio.getValuePapers()) {
+			if (keys.contains(pvp.getValuePaper().getName())) {
+				continue;
+			}
+			keys.add(pvp.getValuePaper().getName());
 			ValuePaper valuePaper = pvp.getValuePaper();
 			List<NewsItem> tmpNews = newsItemDataAccess.getNewsItemsByValuePaperCode(valuePaper.getCode());
 			news.addAll(tmpNews);
@@ -374,13 +381,18 @@ public class PortfolioDataAccess {
 	}
 	
 	public List<AnalystOpinion> getAnalystOpinionsForPortfolio(Portfolio portfolio) {
-		List<AnalystOpinion> opinions = new ArrayList<>();
+		List<AnalystOpinion> items = new ArrayList<>();
+		Set<String> keys = new HashSet<>();
 		for (PortfolioValuePaper pvp : portfolio.getValuePapers()) {
+			if (keys.contains(pvp.getValuePaper().getName())) {
+				continue;
+			}
+			keys.add(pvp.getValuePaper().getName());
 			ValuePaper valuePaper = pvp.getValuePaper();
 			List<AnalystOpinion> tmpOpinions = analystOpinionDataAccess.getAnalystOpinionsByValuePaperCode(valuePaper.getCode());
-			opinions.addAll(tmpOpinions);
+			items.addAll(tmpOpinions);
 		}
-		return opinions;
+		return items;
 	}
 
 	public double getChange(PortfolioValuePaper pvp) {

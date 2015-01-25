@@ -104,8 +104,11 @@ public class UserProfileBean implements Serializable {
 			return;
 		}
 		if (loadGames) {
+			if (institution == null) {
+				return;
+			}
 			try {
-				institutionGames = gameDataAccess.getByInstitution(institution);
+				institutionGames = gameDataAccess.getByInstitutionId(institution.getId());
 			} catch(EntityNotFoundException e) {
 			} catch(AppException e) {
 				FacesMessage message = new FacesMessage("Fehler beim Laden der Börsenspiele");

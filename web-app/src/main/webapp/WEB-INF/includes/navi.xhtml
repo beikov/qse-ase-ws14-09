@@ -40,7 +40,10 @@
 		            			</h:panelGroup>
 		            			
 								<li>
-									<p:link value="Erstellen" outcome="/protected/portfolio/create.xhtml" />	
+									<p:link outcome="/protected/portfolio/create.xhtml">
+										<span class="fa fa-plus" style="margin-right: 5px;" />
+										<h:outputText value="Erstellen" />
+									</p:link>	
 								</li>
 							</ul>
 						</li>
@@ -59,7 +62,10 @@
 									</p:link>
 								</li>
 								<li>
-									<p:link value="Erstellen" outcome="/protected/stockmarketgame/create.xhtml" />	
+									<p:link outcome="/protected/stockmarketgame/create.xhtml">
+										<span class="fa fa-plus" style="margin-right: 5px;" />
+										<h:outputText value="Erstellen" />
+									</p:link>	
 								</li>
 							</ul>
 						</li>
@@ -118,7 +124,10 @@
 	          				</a>
 	       				</li>
 				        <li>
-	          				<a href="#{navigationBean.registerUrl}">Registrieren</a>
+	          				<a href="#{navigationBean.registerUrl}">
+	          					<span class="fa fa-user-plus" style="margin-right: 5px;" />
+								<h:outputText value="Registrieren" />
+	          				</a>
 	       				</li>
 					</ul>
 				</h:panelGroup>

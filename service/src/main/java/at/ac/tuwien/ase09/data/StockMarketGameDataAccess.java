@@ -34,9 +34,9 @@ public class StockMarketGameDataAccess {
 		}
 	}
 	
-	public List<StockMarketGame> getByInstitution(Institution institution) {
+	public List<StockMarketGame> getByInstitutionId(Long institutionId) {
 		try{
-			return em.createQuery("FROM StockMarketGame g JOIN FETCH g.owner where g.owner.id = :institutionId and g.validTo > :now", StockMarketGame.class).setParameter("institutionId", institution.getId()).setParameter("now", Calendar.getInstance()).getResultList();
+			return em.createQuery("FROM StockMarketGame g JOIN FETCH g.owner where g.owner.id = :institutionId and g.validTo > :now", StockMarketGame.class).setParameter("institutionId", institutionId).setParameter("now", Calendar.getInstance()).getResultList();
 		}catch(Exception e){
 			throw new AppException(e);
 		}

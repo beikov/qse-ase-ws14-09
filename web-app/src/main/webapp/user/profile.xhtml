@@ -39,20 +39,18 @@
 					        </f:facet>
 					 
 					        <p:panel header="#{game.name}" style="text-align:center">
-					            <p:panelGrid style="width:100%" >
-					            	<p:row>
-					            		<p:column><h:outputText value="Start:" /></p:column>
-					            		<p:column><h:outputText value="#{dateUtil.formatCalendar(game.validFrom)}" /></p:column>
-					            	</p:row>
-					            	<p:row>
-					            		<p:column><h:outputText value="Ende:" /></p:column>
-					            		<p:column><h:outputText value="#{dateUtil.formatCalendar(game.validTo)}" /></p:column>
-					            	</p:row> 
-					            	<p:row>
-					            		<p:column><h:outputText value="Teilnehmer:" /></p:column>
-					            		<p:column><h:outputText value="#{stockMarketGameViewBean.getSubscribedUsersCount(game)}" /></p:column>
-					            	</p:row>
-					            </p:panelGrid>
+					        
+					        	<h:panelGrid columns="2" style="width:100%"> 
+					            	<h:outputText value="Start:" />
+					                <h:outputText value="#{dateUtil.formatCalendar(game.validFrom)}" />
+					                
+					                <h:outputText value="Ende:" />
+					                <h:outputText value="#{dateUtil.formatCalendar(game.validTo)}" />
+					                
+					                <h:outputText value="Teilnehmer:" />
+					                <h:outputText value="#{stockMarketGameViewBean.getSubscribedUsersCount(game)}" />
+					            </h:panelGrid>
+					            
 					            <p:link title="Details" outcome="/protected/stockmarketgame/stockmarketgameview" style="margin-top: 5px;">
 				                    <f:param name="gameId" value="#{game.id}" />
 				                    <span class="fa fa-search" style="margin:0 auto;" />

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.security.Principal;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
@@ -70,7 +71,11 @@ public class AdminClient {
     }
 
     public static UserInfo getCurrentUser(HttpServletRequest req) throws Failure {
-    	KeycloakSecurityContext session = ((KeycloakPrincipal) req.getUserPrincipal()).getKeycloakSecurityContext();
+    	Principal principal = req.getUserPrincipal();
+    	if (principal == null) {
+    		return null;
+    	}
+    	KeycloakSecurityContext session = ((KeycloakPrincipal) principal).getKeycloakSecurityContext();
     	
     	if (session == null) {
         	return null;
