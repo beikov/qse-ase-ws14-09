@@ -6,14 +6,14 @@
 	xmlns:p="http://primefaces.org/ui">
 	
 	<div>
-		<p:dataGrid var="portfolio" value="#{userProfileBean.portfolios}" columns="3" layout="grid"
-	        rows="2" paginator="true" id="portfolios" emptyMessage="Keine Portfolios vorhanden"
+		<p:dataGrid var="portfolio" value="#{userProfileBean.allPortfoliosHidden() ? [] : userProfileBean.portfolios}" columns="3" layout="grid"
+	        rows="2" paginator="true" id="portfolios" emptyMessage="Keine Portfolios sichtbar, oder vorhanden"
 	        paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}">
 	 
 	        <f:facet name="header">
 	            Portfolios
 	        </f:facet>
-	 
+	 			
 	        <p:panel header="#{portfolio.name}" style="text-align:center" rendered="#{portfolio.getVisibility().getPublicVisible() or user.username == portfolio.owner.username}">
 	            <h:panelGrid columns="2" style="width:100%"> 
 	            	<h:outputText value="Aktuelles Kapital:" />

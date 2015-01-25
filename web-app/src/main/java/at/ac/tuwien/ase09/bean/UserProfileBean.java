@@ -152,6 +152,18 @@ public class UserProfileBean implements Serializable {
 		}
 	}
 	
+	public boolean allPortfoliosHidden() {
+		if (isOwner) {
+			return false;
+		}
+		for (Portfolio p : portfolios) {
+			if (p.getVisibility().getPublicVisible()) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
 	public void setUsername(String username) {
 		this.username = username;
 	}
