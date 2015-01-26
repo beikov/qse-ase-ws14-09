@@ -110,7 +110,7 @@
 							style="margin-top:20px;margin-bottom:10px;float:right;width:32%">
 							<p:commandButton value="Reset" type="reset"
 								disabled="#{!stockMarketGameCreationBean.allowedToEditStockMarketGameSettings}"/>
-							<p:commandButton value="Speichern"
+							<p:commandButton value="#{stockMarketGameCreationBean.stockMarketGameId==null ? 'Erstellen' : 'Speichern'}"
 								action="#{stockMarketGameCreationBean.createStockMarketGame()}"
 								update=":allowed_ValuePapers:allowedValuePapersPickList stockmarketgame_create"
 								ajax="true" disabled="#{!stockMarketGameCreationBean.allowedToEditStockMarketGameSettings}"/>
