@@ -363,7 +363,14 @@ public class StockMarketGameCreationBean implements Serializable {
 		return valuePaperScreenerDataAccess.getUsedIndexes();
 	}
 	public List<String> getUsedCountries(){
-		return valuePaperScreenerDataAccess.getUsedCountries();
+		
+		List<String> countries = valuePaperScreenerDataAccess.getUsedCountries();
+		
+		if(countries.contains(null)){
+			countries.remove(null);
+		}
+		
+		return countries;
 	}
 
 	public void createStockMarketGame(){
