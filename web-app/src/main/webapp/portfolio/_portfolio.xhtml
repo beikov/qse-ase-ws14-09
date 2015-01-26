@@ -81,7 +81,7 @@
 					<f:facet name="header">
 						<h:outputText value="Portfolio: " /><h:outputText value="#{portfolioViewBean.portfolio.name}" />
 						
-						<p:commandButton id="followUnfollowButton" value="#{portfolioViewBean.followUnfollowButtonText}" rendered="#{not empty portfolioViewBean.followUnfollowButtonText}" actionListener="#{portfolioViewBean.followUnfollow()}" update="@this :portfolioViewForm:followerList" />
+						<p:commandButton id="followUnfollowButton" value="#{portfolioViewBean.followUnfollowButtonText}" rendered="#{not empty portfolioViewBean.followUnfollowButtonText}" actionListener="#{portfolioViewBean.followUnfollow()}" update="@this :portfolioViewForm:followerListWrapper" />
 						
 						<!-- <p:commandButton id="followUserButton" value="Folgen" rendered="#{portfolioViewBean.followable}" actionListener="#{portfolioViewBean.follow()}" update=":portfolioViewForm:stats, :portfolioViewForm:followerList" style="margin-left: 20px;" />
 						<p:commandButton id="unfollowUserButton" value="Nicht mehr folgen" rendered="#{portfolioViewBean.unfollowable}" actionListener="#{portfolioViewBean.unfollow()}" update=":portfolioViewForm:stats, :portfolioViewForm:followerList" style="margin-left: 20px;" /> -->
@@ -92,9 +92,9 @@
 			</div>
 			
 			<div class="col-md-4">
-				<ui:include src="/user/_followers.xhtml">
-					<ui:param name="followers" value="#{portfolioViewBean.getFollowerList()}" />
-				</ui:include>
+				<h:panelGroup id="followerListWrapper" layout="block">
+					<ase:followerList followers="#{portfolioViewBean.getFollowerList()}" />
+				</h:panelGroup>
 			</div>
 		</div>
 		
@@ -122,7 +122,7 @@
 			        </p:tab>
 			        
 			        <p:tab title="Meinungen" rendered="#{portfolioViewBean.analystOpinionsVisible}">
-			            <ui:include src="_analystOpinions.xhtml" />
+			           <ui:include src="_analystOpinions.xhtml" /> 
 			        </p:tab>
 		    	</p:tabView>
 			</div>
