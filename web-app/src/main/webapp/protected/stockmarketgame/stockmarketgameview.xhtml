@@ -34,18 +34,20 @@
 			<c:choose>
 				<c:when test="#{stockMarketGameViewBean.stockMarketGame != null}">
 		
-				<h3 style="margin-top: 0">Börsenspielseite</h3>
+				<h3 style="margin-top: 0;float: left;">Börsenspielseite</h3>
 				
-				<div align="right">
-					<div  class="fb-share-button" data-href="#{socialMediaBean.absoluteApplicationUrl}" data-layout="button"></div>
-					<div style="float:right; margin-left:5px;">
+				
+					<div style="float: right; margin-left:5px;">
 						<a  class="twitter-share-button" href="https://twitter.com/share"
   						data-text="#{stockMarketGameViewBean.stockMarketGame.text}"
   						data-count="none"
   						data-hashtags="#{stockMarketGameViewBean.stockMarketGame.name},#{stockMarketGameViewBean.stockMarketGame.owner.name},Börsenspiel"/>
   					</div>
-				</div>
-				<div class="row">
+  					<div style="float: right; " class="fb-share-button" data-href="#{socialMediaBean.absoluteApplicationUrl}" data-layout="button"></div>
+  					
+				
+				
+				<div style="clear: both;" class="row">
 					<div class="col-md-8">
 						<p:panel id="general" header="Allgemeine Informationen"
 								style="margin-bottom: 20px">
@@ -62,15 +64,18 @@
 									</div>
 								</div>
 								<div class="row">
-									<div class="col-md-5">
+									<div class="col-md-5">		
 										<p:outputLabel value="Ersteller: "
 												rendered="#{stockMarketGameViewBean.stockMarketGame.owner.name!=null}"
 												style="font-weight:bold; margin: 5px;" />
 									</div>
 									<div class="col-md-5">
+									<h:link outcome="/user/profile">
 										<p:outputLabel value="#{stockMarketGameViewBean.stockMarketGame.owner.name}"
 												rendered="#{stockMarketGameViewBean.stockMarketGame.owner.name!=null}"
 												style="font-weight:bold; margin: 5px;" />
+										<f:param name="user" value="#{stockMarketGameViewBean.stockMarketGame.owner.admin.username}"/>
+									</h:link>
 									</div>
 								</div>
 								<div class="row">
@@ -236,9 +241,10 @@
 							</p:button>
 		
 							<p:button value="Ranking" outcome="/protected/stockmarketgame/ranking" icon="fa fa-trophy"
-							style="margin-left:5px" >
+							style="margin-left:5px; margin-top:20px;" >
 								<f:param name="stockMarketGameId" value="#{stockMarketGameViewBean.gameID}" />
 							</p:button>
+						
 						</center>
 						
 				</div>
