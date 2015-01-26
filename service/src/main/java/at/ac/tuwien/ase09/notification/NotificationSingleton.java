@@ -86,6 +86,7 @@ public class NotificationSingleton {
 				n.setCreated(Calendar.getInstance());
 				n.setUser(portfolio.getOwner());
 				notificationService.addNotification(n);
+				
 			}
 		}
 	}
