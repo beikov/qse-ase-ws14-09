@@ -224,7 +224,7 @@
 				<div class="col-md-4">
 							
 						<center>
-							  <p:graphicImage value="#{stockMarketGameViewBean.image}" style="max-width:800px;max-height:400px;"
+							  <p:graphicImage cache="false" value="#{stockMarketGameViewBean.image}" style="max-width:400px;max-height:400px;"
 							  rendered="#{stockMarketGameViewBean.stockMarketGame.logo != null}">
 	    						<f:param name="gameIDLogo" value="#{stockMarketGameViewBean.stockMarketGame.id}" />
 	    					</p:graphicImage>
