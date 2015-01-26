@@ -1,6 +1,7 @@
 package at.ac.tuwien.ase09.data;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -90,8 +91,30 @@ public class PortfolioDataAccess {
 	
 	public BigDecimal getCostValueForPortfolio(long portfolioId) {
 		try{
-			Portfolio portfolio = em.getReference(Portfolio.class, portfolioId);
-			return em.createQuery("SELECT SUM(pvp.buyPrice * pvp.volume) FROM PortfolioValuePaper pvp WHERE pvp.portfolio=:portfolio", BigDecimal.class).setParameter("portfolio", portfolio).getSingleResult();
+			List<PortfolioValuePaper> valuePapers = em.createQuery("from PortfolioValuePaper pvp join fetch pvp.portfolio where pvp.portfolio.id = :portfolioId", PortfolioValuePaper.class).setParameter("portfolioId", portfolioId).getResultList();
+			if (valuePapers.isEmpty()) {
+				return new BigDecimal(0);
+			}
+			Portfolio portfolio = valuePapers.get(0).getPortfolio();
+			BigDecimal total = new BigDecimal(0);
+			Currency portfolioCurrency = portfolio.getCurrentCapital().getCurrency();
+			for (PortfolioValuePaper pvp : valuePapers) {
+				BigDecimal value = pvp.getBuyPrice().multiply(new BigDecimal(pvp.getVolume()));
+				ValuePaper vp = pvp.getValuePaper(); 
+				Currency currency;
+				if (vp instanceof Stock) {
+					currency = ((Stock) vp).getCurrency();
+				} else {
+					currency = ((Fund) vp).getCurrency();
+				}
+				
+				if (!portfolioCurrency.getCurrencyCode().equals(currency.getCurrencyCode())) {
+					BigDecimal conversionRate = currencyConversionService.getConversionRate(currency, portfolioCurrency);
+					value = CurrencyConversionService.convert(value, conversionRate);
+				}
+				total = total.add(value);
+			}
+			return total;
 		}catch(NoResultException e){
 			throw new EntityNotFoundException(e);
 		}catch(Exception e){
@@ -144,7 +167,7 @@ public class PortfolioDataAccess {
 		try{
 			BigDecimal old = getCostValueForPortfolio(portfolioId);
 			BigDecimal cur = getCurrentValueForPortfolio(portfolioId);
-			return cur.subtract(old).multiply(new BigDecimal(100)).divide(old);
+			return cur.subtract(old).multiply(new BigDecimal("100")).divide(old,4, RoundingMode.HALF_UP);
 		}catch(NoResultException e){
 			throw new EntityNotFoundException(e);
 		}catch(Exception e){
@@ -264,6 +287,8 @@ public class PortfolioDataAccess {
 	}*/
 
 	public Map<String, BigDecimal> getPortfolioChartEntries(Portfolio portfolio) {
+		long startTime = System.currentTimeMillis();
+		
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		BigDecimal startCapital = portfolio.getSetting().getStartCapital().getValue();
 		Map<String, BigDecimal> changeMap = new HashMap<>();
@@ -300,16 +325,34 @@ public class PortfolioDataAccess {
         		continue;
 			}
 			
-			BigDecimal change;
-			BigDecimal payedForTransaction = transaction.getValue().getValue();
-			
 			OrderTransactionEntry ot = (OrderTransactionEntry)transaction;
+			
+			if (ot.getOrder().getValuePaper().getType() == ValuePaperType.BOND) {
+				continue;
+				// FIX: is currency set inside transaction for bond orderTransactions ?
+			}
+			
+			BigDecimal change;
+			BigDecimal payedForTransaction = transaction.getValue().getValue().multiply(new BigDecimal(ot.getOrder().getVolume()));
+			
 			BigDecimal volume = new BigDecimal(ot.getOrder().getVolume());
 			List<ValuePaperHistoryEntry> historyEntries = priceDataAccess.getValuePaperHistoryEntriesForPortfolioAfterDate(portfolio, transaction.getCreated());
+			
+			Currency currency = transaction.getValue().getCurrency();
+			Currency portfolioCurrency = transaction.getPortfolio().getCurrentCapital().getCurrency();
+			BigDecimal conversionRate = null;
+			if (!currency.getCurrencyCode().equals(portfolioCurrency.getCurrencyCode())) {
+				conversionRate = currencyConversionService.getConversionRate(currency, portfolioCurrency);
+			}
 			
 			for (ValuePaperHistoryEntry he : historyEntries) {
 				BigDecimal closingPrice = he.getClosingPrice();
 				String historyDate = format.format(he.getDate().getTime());
+				
+				if (conversionRate != null) {
+					closingPrice = currencyConversionService.convert(closingPrice, conversionRate);
+				}
+				
 				
 				if (changeMap.containsKey(historyDate)) {
 	    			BigDecimal old = changeMap.get(historyDate);
@@ -361,7 +404,8 @@ public class PortfolioDataAccess {
 			
 			
 		}
-        
+		long estimatedTime = System.currentTimeMillis() - startTime;
+		System.out.println("################### "+ estimatedTime);
         return pointResult;
 	}
 	
@@ -400,9 +444,13 @@ public class PortfolioDataAccess {
 		//double payed = getTotalPayedForPortfolioValuePaper(pvp).doubleValue();
 		int volume = pvp.getVolume();
 		double payed = pvp.getBuyPrice().doubleValue()*volume;
-		double latestPrice = priceDataAccess.getLastPriceEntry(pvp.getValuePaper().getCode()).getPrice().doubleValue();
-		
-		return (latestPrice*volume - payed) * 100 / payed;
+		double latestPrice;
+		try {
+			latestPrice = priceDataAccess.getLatestPrice(pvp.getValuePaper().getCode()).doubleValue();
+			return (latestPrice*volume - payed) * 100 / payed;
+		} catch(Exception e) {
+			return 0;
+		}
 	}
 	
 	public double getProfit(PortfolioValuePaper pvp) {
@@ -411,12 +459,10 @@ public class PortfolioDataAccess {
 		double payed = pvp.getBuyPrice().doubleValue()*volume;
 		double latestPrice;
 		try {
-			latestPrice = priceDataAccess.getLastPriceEntry(pvp.getValuePaper().getCode()).getPrice().doubleValue();
+			latestPrice = priceDataAccess.getLatestPrice(pvp.getValuePaper().getCode()).doubleValue();
 			return latestPrice*volume - payed;
-		} catch(NoResultException e) {
-			throw new EntityNotFoundException(e);
 		} catch(Exception e) {
-			throw new AppException(e);
+			return 0;
 		}
 	}
 

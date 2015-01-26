@@ -18,7 +18,7 @@
 			<h:outputText value="#{userProfileBean.institution == null ? userBean.getEmailByUsername(userProfileBean.owner.username) : userProfileBean.institution.name}" />
 		</h3>
 		
-		<p:commandButton id="followUnfollowButton" value="#{userProfileBean.followUnfollowButtonText}" rendered="#{not empty userProfileBean.followUnfollowButtonText}" actionListener="#{userProfileBean.followUnfollow()}" update="@this :profileForm:followerList" />
+		<p:commandButton id="followUnfollowButton" value="#{userProfileBean.followUnfollowButtonText}" rendered="#{not empty userProfileBean.followUnfollowButtonText}" actionListener="#{userProfileBean.followUnfollow()}" update="@this :profileForm:followerListWrapper" />
 		
 		<!-- <p:commandButton id="followUserButton" value="Folgen" rendered="#{userProfileBean.followable}" actionListener="#{userProfileBean.follow()}" update="@this :profileForm:followerList" />
 		<p:commandButton id="unfollowUserButton" value="Nicht mehr folgen" rendered="#{userProfileBean.unfollowable}" actionListener="#{userProfileBean.unfollow()}" update="@this :profileForm:followerList" /> -->
