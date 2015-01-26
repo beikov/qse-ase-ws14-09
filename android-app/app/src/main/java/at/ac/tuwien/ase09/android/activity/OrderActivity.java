@@ -302,9 +302,52 @@ public class OrderActivity extends Activity implements TimePickerDialog.OnTimeSe
             if(limitEditText.getText().length() <= 0){
                 Toast.makeText(this, getString(R.string.required_message, "Limit"), Toast.LENGTH_LONG).show();
                 return false;
-            } else if(stopLimitEditText.getText().length() <= 0){
-                Toast.makeText(this, getString(R.string.required_message, "Stop Limit"), Toast.LENGTH_LONG).show();
-                return false;
+            }
+            BigDecimal limit = new BigDecimal(limitEditText.getText().toString());
+            if(stopLimitEditText.getText().length() > 0){
+                // we have a stop limit or a stop order
+                BigDecimal stopLimit = new BigDecimal(stopLimitEditText.getText().toString());
+
+                if(selectedOrderAction == OrderAction.BUY){
+                    // stop limit must be higher than the current price
+                    if(stopLimit.compareTo(valuePaper.getLastPrice()) <= 0){
+                        Toast.makeText(this, getString(R.string.stop_limit_equal_or_lower_than_price_message), Toast.LENGTH_LONG).show();
+                        return false;
+                    }
+
+                    // limit must be equal to or higher than the stop limit
+                    if(limit.compareTo(stopLimit) < 0){
+                        Toast.makeText(this, getString(R.string.limit_lower_than_stop_limit_message), Toast.LENGTH_LONG).show();
+                        return false;
+                    }
+                }else{
+                    // stop limit must be lower than the current price
+                    if(stopLimit.compareTo(valuePaper.getLastPrice()) >= 0){
+                        Toast.makeText(this, getString(R.string.stop_limit_equal_or_higher_than_price_message), Toast.LENGTH_LONG).show();
+                        return false;
+                    }
+
+                    // limit must be equal to or lower than the stop limit
+                    if(limit.compareTo(stopLimit) > 0){
+                        Toast.makeText(this, getString(R.string.limit_higher_than_stop_limit_message), Toast.LENGTH_LONG).show();
+                        return false;
+                    }
+                }
+            }else{
+                // we have a limit order
+                if(selectedOrderAction == OrderAction.BUY){
+                    // limit must be lower than the current price
+                    if(limit.compareTo(valuePaper.getLastPrice()) >= 0){
+                        Toast.makeText(this, getString(R.string.limit_equal_or_higher_than_price_message), Toast.LENGTH_LONG).show();
+                        return false;
+                    }
+                }else{
+                    // limit must be higher than the current price
+                    if(limit.compareTo(valuePaper.getLastPrice()) <= 0){
+                        Toast.makeText(this, getString(R.string.limit_equal_or_lower_than_price_message), Toast.LENGTH_LONG).show();
+                        return false;
+                    }
+                }
             }
         }
         return true;
