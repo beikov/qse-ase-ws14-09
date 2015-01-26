@@ -185,9 +185,5 @@ public class StockMarketGameRankingBean implements Serializable{
 			});
 		}
 	}
-	
-	public String getEmailByUsername(String username){
-		return userDataAccess.getEmailByUsername(username);
-	}
 
 }

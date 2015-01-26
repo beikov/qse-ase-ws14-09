@@ -76,5 +76,26 @@ public class StockMarketGameDataAccess {
 			throw new AppException(e);
 		}
 	}
+	
+	/**
+	 * 
+	 * @param portfolioId The StockMarketGame corresponding to this portfolio or null if there
+	 * is not StockMarketGame for this portfolio
+	 * @return
+	 */
+	public StockMarketGame getStockMarketGameForPortfolio(long portfolioId){
+		try{
+			List<StockMarketGame> stockMarketGames = em.createQuery("SELECT p.game FROM Portfolio p LEFT JOIN p.game g LEFT JOIN FETCH g.allowedValuePapers WHERE p.id = :portfolioId", StockMarketGame.class)
+					.setParameter("portfolioId", portfolioId)
+					.getResultList();
+			if(stockMarketGames.isEmpty()){
+				return null;
+			}else{
+				return stockMarketGames.get(0);
+			}
+		}catch(Exception e){
+			throw new AppException(e);
+		}
+	}
 
 }

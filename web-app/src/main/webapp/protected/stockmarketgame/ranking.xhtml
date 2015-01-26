@@ -66,7 +66,7 @@
 						<!--<h:outputText value="#{portfolio.owner.username}" />-->
 						<!--<h:outputText value="#{stockMarketGameRankingBean.getEmailByUsername(portfolio.owner.username)}" />-->
 						
-						<h:link value="#{stockMarketGameRankingBean.getEmailByUsername(portfolio.owner.username)}" outcome="/user/profile">
+						<h:link value="#{userBean.getEmailByUsername(portfolio.owner.username)}" outcome="/user/profile">
 							<f:param name="user" value="#{portfolio.owner.username}"/>
 						</h:link>
 						

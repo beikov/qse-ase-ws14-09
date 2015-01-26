@@ -159,6 +159,7 @@ public class PortfolioDataAccess {
 					+ "LEFT JOIN FETCH p.transactionEntries "
 					+ "LEFT JOIN FETCH p.orders o "
 					+ "LEFT JOIN FETCH o.valuePaper "
+					+ "LEFT JOIN FETCH p.game "
 					+ "JOIN FETCH p.owner "
 					+ "LEFT JOIN FETCH p.followers "
 					+ "WHERE p.id = :id and p.deleted=false", Portfolio.class).setParameter("id", id).getSingleResult();
