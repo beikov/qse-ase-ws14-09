@@ -25,7 +25,7 @@ public class StockMarketGameService extends AbstractService {
 		// check if already done
 		
 		Portfolio p = new Portfolio();
-		p.setName(game.getName() + "_Portfolio");
+		p.setName("Spiel_" + game.getName());
 		p.setCreated(game.getValidFrom());
 		p.setCurrentCapital(game.getSetting().getStartCapital());
 		p.setGame(game);

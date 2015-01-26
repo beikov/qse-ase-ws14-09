@@ -47,8 +47,8 @@
 			<p:panelGrid columns="2">
 				<c:if test="#{portfolioViewBean.portfolio.game != null}">
 					<h:outputText value="Zugehöriges Börsenspiel:" />
-					<p:link title="#{portfolioViewBean.portfolio.game.name}" outcome="/protected/stockmarketgame/stockmarketgameview">
-						<f:param name="gameId" value="#{game.id}" />
+					<p:link value="#{portfolioViewBean.portfolio.game.name}" title="#{portfolioViewBean.portfolio.game.name}" outcome="/protected/stockmarketgame/stockmarketgameview">
+						<f:param name="gameId" value="#{portfolioViewBean.portfolio.game.id}" />
 					</p:link>
 				</c:if>
 				
