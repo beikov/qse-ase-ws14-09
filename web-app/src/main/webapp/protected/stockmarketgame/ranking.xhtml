@@ -44,7 +44,7 @@
 						<h:commandLink style="float:right">
 							<p:graphicImage name="/images/export/pdf.png" width="24" style="margin-left:auto; margin-right:0"/>
 							<p:dataExporter type="pdf" target="ranking_table"
-								fileName="#{'Rangliste_'.concat(stockMarketGameRankingBean.stockMarketGame.name)}" />
+								fileName="#{'Rangliste_'.concat(stockMarketGameRankingBean.stockMarketGame.name).replace(' '.charAt(0),'_'.charAt(0))}" />
 							<f:param name="stockMarketGameId"
 								value="#{stockMarketGameRankingBean.stockMarketGameId}" />
 						</h:commandLink>
@@ -52,7 +52,7 @@
 						<h:commandLink style="float:right">
 							<p:graphicImage name="/images/export/csv.png" width="24" />
 							<p:dataExporter type="csv" target="ranking_table"
-								fileName="#{'Rangliste_'.concat(stockMarketGameRankingBean.stockMarketGame.name)}" />
+								fileName="#{'Rangliste_'.concat(stockMarketGameRankingBean.stockMarketGame.name).replace(' '.charAt(0),'_'.charAt(0))}" />
 							<f:param name="stockMarketGameId"
 								value="#{stockMarketGameRankingBean.stockMarketGameId}" />
 						</h:commandLink>
@@ -63,7 +63,13 @@
 					</p:column>
 
 					<p:column headerText="User">
-						<h:outputText value="#{portfolio.owner.username}" />
+						<!--<h:outputText value="#{portfolio.owner.username}" />-->
+						<!--<h:outputText value="#{stockMarketGameRankingBean.getEmailByUsername(portfolio.owner.username)}" />-->
+						
+						<h:link value="#{stockMarketGameRankingBean.getEmailByUsername(portfolio.owner.username)}" outcome="/user/profile">
+							<f:param name="user" value="#{portfolio.owner.username}"/>
+						</h:link>
+						
 					</p:column>
 
 					<p:column headerText="Portfoliowert">

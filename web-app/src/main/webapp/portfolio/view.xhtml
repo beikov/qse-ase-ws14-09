@@ -60,6 +60,7 @@
   					data-hashtags="#{portfolioViewBean.portfolio.name},#{portfolioViewBean.portfolio.owner.username},Börsenspiel"/>
   			</div>
 		</div>
+		<div style="clear: both;"/>
 		<c:choose>
 			<c:when test="#{portfolioViewBean.isHidden()}"><ui:include src="_hidden.xhtml" /></c:when>
 			<c:otherwise><ui:include src="_portfolio.xhtml" /></c:otherwise>

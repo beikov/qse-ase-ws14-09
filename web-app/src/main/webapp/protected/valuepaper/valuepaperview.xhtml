@@ -38,20 +38,21 @@
 
 		<h:form id="einzeltitelansicht">
 
-			<h3 style="margin-top: 0">Einzeltitelansicht</h3>
-			<div align="right">
-				<div class="fb-share-button"
-					data-href="#{socialMediaBean.absoluteApplicationUrl}"
-					data-layout="button"></div>
+			<h3 style="margin-top: 0; float: left;">Einzeltitelansicht</h3>
+			
+				
 				<div style="float: right; margin-left: 5px;">
 					<a class="twitter-share-button" href="https://twitter.com/share"
 						data-text="Die #{valuePaperViewBean.valuePaper.type.label} von #{valuePaperViewBean.valuePaper.name} mit einem aktuellen Wert von #{valuePaperViewBean.lastPriceEntryString}!"
 						data-count="none"
 						data-hashtags="#{valuePaperViewBean.valuePaper.name},#{valuePaperViewBean.valuePaper.type.label},Börsenspiel" />
 				</div>
-			</div>
+				<div style="float: right;" class="fb-share-button"
+					data-href="#{socialMediaBean.absoluteApplicationUrl}"
+					data-layout="button"></div>
+			
 
-			<div class="row">
+			<div style="clear: both;" class="row">
 				<div class="col-md-7">
 
 					<p:panel id="allgemein" header="Allgemeine Informationen"

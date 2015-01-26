@@ -7,6 +7,7 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 
+import at.ac.tuwien.ase09.context.UserAccount;
 import at.ac.tuwien.ase09.exception.AppException;
 import at.ac.tuwien.ase09.exception.EntityNotFoundException;
 import at.ac.tuwien.ase09.model.Portfolio;
@@ -43,6 +44,16 @@ public class UserDataAccess {
 	public User loadUserForProfile(String username) {
 		try {
 			return em.createQuery("SELECT u FROM User u LEFT JOIN FETCH u.followers WHERE u.username = :username", User.class).setParameter("username", username).getSingleResult();
+		} catch (NoResultException e) {
+			throw new EntityNotFoundException(e);
+		} catch (Exception e) {
+			throw new AppException(e);
+		}
+	}
+	
+	public String getEmailByUsername(String username){
+		try {
+			return (String) em.createNativeQuery("SELECT ue.email FROM user_entity ue WHERE ue.username = :username").setParameter("username", username).getSingleResult();
 		} catch (NoResultException e) {
 			throw new EntityNotFoundException(e);
 		} catch (Exception e) {
