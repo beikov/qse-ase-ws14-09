@@ -132,14 +132,7 @@ public class NotificationBean implements Serializable{
 	public void onRowSelect(SelectEvent event) {
 		try {
 			updateNotification(selectedNotification);
-			if(selectedNotification.getType().equals(NotificationType.FOLLOWER_ADDED)
-					|| selectedNotification.getType().equals(NotificationType.PORTFOLIO_FOLLOWER_ADDED)
-					|| selectedNotification.getType().equals(NotificationType.WATCH_TRIGGERED)){
-				FacesContext.getCurrentInstance().getExternalContext().redirect("../"+getNotificationRedirectionUrl(selectedNotification));
-			
-			//TODO: remove
-//				String uri = ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getRequestURI();
-			}
+				FacesContext.getCurrentInstance().getExternalContext().redirect("/"+getNotificationRedirectionUrl(selectedNotification));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -151,8 +144,8 @@ public class NotificationBean implements Serializable{
 		case PORTFOLIO_FOLLOWER_ADDED:
 		case FOLLOWER_ADDED: return "user/profile.xhtml?user="+((FollowerAddedNotification)n).getFollower().getUsername();
 		case FOLLOWER_TRANSACTION_ADDED: return "transaction"+((FollowerTransactionAddedNotification)n).getTransactionEntry().getId()+".xhtml"; 
-		case GAME_STARTED: return "game"+((GameStartedNotification)n).getGame().getId()+".xhtml"; 
-		case WATCH_TRIGGERED: return "valuepaper/valuepaperview.xhtml?valuePaperCode="+((WatchTriggeredNotification)n).getWatch().getValuePaper().getCode() ; 
+		case GAME_STARTED: return "protected/stockmarketgame/stockmarketgameview.xhtml?gameId="+((GameStartedNotification)n).getGame().getId();
+		case WATCH_TRIGGERED: return "protected/valuepaper/valuepaperview.xhtml?valuePaperCode="+((WatchTriggeredNotification)n).getWatch().getValuePaper().getCode() ; 
 		default: 
 			//this should never happen
 			throw new RuntimeException("Unsupported NotificationType");

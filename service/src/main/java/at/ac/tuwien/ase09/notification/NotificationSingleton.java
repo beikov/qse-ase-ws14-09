@@ -61,7 +61,7 @@ public class NotificationSingleton {
 		}
 		TimerTask t = new NotifyStockMarketGamePlayersTask(stockMarketGame);
 		gameTasks.put(stockMarketGame.getId(), t);
-		timer.schedule(t, stockMarketGame.getRegistrationTo().getTime());
+		timer.schedule(t, stockMarketGame.getValidFrom().getTime());
 	}
 
 	private List<StockMarketGame> loadUnstartedGames() {

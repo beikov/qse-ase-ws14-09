@@ -36,7 +36,7 @@ public class StockMarketGameDataAccess {
 
 	public List<StockMarketGame> getUnstartedStockMarketGames() {
 		try{
-			return em.createQuery("FROM StockMarketGame g JOIN FETCH g.owner WHERE g.registrationTo > NOW()", StockMarketGame.class).getResultList();
+			return em.createQuery("FROM StockMarketGame g JOIN FETCH g.owner WHERE g.validFrom > NOW()", StockMarketGame.class).getResultList();
 		}catch(Exception e){
 			throw new AppException(e);
 		}
