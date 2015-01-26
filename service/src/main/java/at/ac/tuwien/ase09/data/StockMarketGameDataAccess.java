@@ -24,8 +24,8 @@ public class StockMarketGameDataAccess {
 
 	@Inject
 	private EntityManager em;
-	
-	
+
+
 	public List<StockMarketGame> getStockMargetGames() {
 		try{
 			return em.createQuery("FROM StockMarketGame g JOIN FETCH g.owner", StockMarketGame.class).getResultList();
@@ -33,7 +33,15 @@ public class StockMarketGameDataAccess {
 			throw new AppException(e);
 		}
 	}
-	
+
+	public List<StockMarketGame> getUnstartedStockMarketGames() {
+		try{
+			return em.createQuery("FROM StockMarketGame g JOIN FETCH g.owner WHERE g.validFrom > NOW()", StockMarketGame.class).getResultList();
+		}catch(Exception e){
+			throw new AppException(e);
+		}
+	}
+
 	public List<StockMarketGame> getByInstitutionId(Long institutionId) {
 		try{
 			return em.createQuery("FROM StockMarketGame g JOIN FETCH g.owner where g.owner.id = :institutionId and g.validTo > :now", StockMarketGame.class).setParameter("institutionId", institutionId).setParameter("now", Calendar.getInstance()).getResultList();
@@ -62,17 +70,38 @@ public class StockMarketGameDataAccess {
 			name = name == null ? "" : name.toUpperCase();
 			text = text == null ? "" : text.toUpperCase();
 			owner = owner == null ? "" : owner.toUpperCase();
-			
+
 			return em.createQuery("FROM StockMarketGame g JOIN FETCH g.owner JOIN FETCH g.owner.admin where UPPER(g.name) like :name and UPPER(g.text) like :text and UPPER(g.owner.name) like :owner", StockMarketGame.class).setParameter("name", "%"+name+"%").setParameter("text", "%"+text+"%").setParameter("owner", "%"+owner+"%").getResultList();
 		} catch(Exception e) {
 			throw new AppException(e);
 		}
 	}
-	
+
 	public Long getSubscribedUsersCount(StockMarketGame game) {
 		try {
 			return em.createQuery("SELECT count(*) from Portfolio p where p.game.id = :gameId and p.deleted=false", Long.class).setParameter("gameId", game.getId()).getSingleResult();
 		} catch(Exception e) {
+			throw new AppException(e);
+		}
+	}
+	
+	/**
+	 * 
+	 * @param portfolioId The StockMarketGame corresponding to this portfolio or null if there
+	 * is not StockMarketGame for this portfolio
+	 * @return
+	 */
+	public StockMarketGame getStockMarketGameForPortfolio(long portfolioId){
+		try{
+			List<StockMarketGame> stockMarketGames = em.createQuery("SELECT p.game FROM Portfolio p LEFT JOIN p.game g LEFT JOIN FETCH g.allowedValuePapers WHERE p.id = :portfolioId", StockMarketGame.class)
+					.setParameter("portfolioId", portfolioId)
+					.getResultList();
+			if(stockMarketGames.isEmpty()){
+				return null;
+			}else{
+				return stockMarketGames.get(0);
+			}
+		}catch(Exception e){
 			throw new AppException(e);
 		}
 	}

@@ -73,7 +73,7 @@
 							</p:graphicImage>
 			        	</div>
 			        	<div class="row" style="margin-top: 5px; margin-bottom: 5px;">
-			        		<div class="col-md-1">
+			        		<div class="col-md-2">
 			        			<h:outputText value="Institution:" style="font-weight: bold" />
 			        		</div>
 			        		<div class="col-md-9">
@@ -83,7 +83,15 @@
 				            </div>
 				       	</div>
 				       	<div class="row">
-				       		<div class="col-md-1">
+				       		<div class="col-md-2">
+			                	<h:outputText value="Registrierungsende:" style="font-weight: bold" />
+			                </div>
+			                <div class="col-md-9">
+			                	<h:outputText value="#{dateUtil.formatCalendar(game.registrationTo)}" />
+			                </div>
+			        	</div>
+				       	<div class="row">
+				       		<div class="col-md-2">
 			                	<h:outputText value="Spielstart:" style="font-weight: bold" />
 			                </div>
 			                <div class="col-md-9">
@@ -96,16 +104,18 @@
 			            <p:button value="Details" outcome="stockmarketgameview">
 		                	<f:param name="gameId" value="#{game.id}" />
 		                </p:button>
-                		<p:commandButton value="Abmelden" update=":searchGamesForm:messages :searchGamesForm:games" actionListener="#{stockMarketGameSearchBean.participate(game)}" rendered="#{stockMarketGameSearchBean.hasAlreadyOrderedPapers(game)}">
-					        <p:confirm header="Bestätigung" message="Sie haben bereits Orders erstellt. Sind Sie Sicher, dass sie sich von diesem Spiel abmelden wollen? Kann nicht rückgängig gemacht werden" icon="fa fa-warning" />
-					    </p:commandButton>
-							 
-					    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" rendered="#{stockMarketGameSearchBean.hasAlreadyOrderedPapers(game)}">
-					        <p:commandButton value="Ja" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
-					        <p:commandButton value="Nein" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-					    </p:confirmDialog>
-	                	
-	                	<p:commandButton value="#{stockMarketGameSearchBean.getParticipateButtonText(game)}" update=":searchGamesForm:messages :searchGamesForm:games" actionListener="#{stockMarketGameSearchBean.participate(game)}" rendered="#{not stockMarketGameSearchBean.hasAlreadyOrderedPapers(game)}"/>
+		                <h:panelGroup rendered="#{stockMarketGameSearchBean.isRegistrationOpen(game)}">
+	                		<p:commandButton value="Abmelden" update=":searchGamesForm:messages :searchGamesForm:games" actionListener="#{stockMarketGameSearchBean.participate(game)}" rendered="#{stockMarketGameSearchBean.hasAlreadyOrderedPapers(game)}">
+						        <p:confirm header="Bestätigung" message="Sie haben bereits Orders erstellt. Sind Sie Sicher, dass sie sich von diesem Spiel abmelden wollen? Kann nicht rückgängig gemacht werden" icon="fa fa-warning" />
+						    </p:commandButton>
+								 
+						    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" rendered="#{stockMarketGameSearchBean.hasAlreadyOrderedPapers(game)}">
+						        <p:commandButton value="Ja" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+						        <p:commandButton value="Nein" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+						    </p:confirmDialog>
+		                	
+		                	<p:commandButton value="#{stockMarketGameSearchBean.getParticipateButtonText(game)}" update=":searchGamesForm:messages :searchGamesForm:games" actionListener="#{stockMarketGameSearchBean.participate(game)}" rendered="#{not stockMarketGameSearchBean.hasAlreadyOrderedPapers(game)}"/>
+		                </h:panelGroup>
 		                	
 			        </p:tab>
 			    </p:accordionPanel>

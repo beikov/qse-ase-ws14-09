@@ -1,17 +1,23 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:ase="http://java.sun.com/jsf/composite/portfoliosimcomponents">
-	                     
-		<p:dataList id="followerList" value="#{followers}" var="follower" type="unordered" itemType="none" 
+<ui:component xmlns="http://www.w3.org/1999/xhtml"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:cc="http://java.sun.com/jsf/composite"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:c="http://java.sun.com/jsp/jstl/core"
+		xmlns:p="http://primefaces.org/ui"
+		xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+		
+	<cc:interface>
+		<cc:attribute name="followers" required="true" />
+	</cc:interface>
+		
+	<cc:implementation>
+		<p:dataList id="followerList" value="#{cc.attrs.followers}" var="follower" type="unordered" itemType="none" 
 			paginator="true" rows="10" styleClass="paginated"
 			emptyMessage="Keine Followers vorhanden">
 			
 			<f:facet name="header">
-	            Followers <span class="badge">#{followers.size()}</span>
+	            Followers <span class="badge">#{cc.attrs.followers.size()}</span>
 	        </f:facet>
 	        <div style="display: inline-block; width: 60px;">
 	        	<h:link outcome="/user/profile">
@@ -29,10 +35,10 @@
 	        <div style="display: inline-block;">
 	        	<h:link outcome="/user/profile">
 					<f:param name="user" value="#{follower.username}"/>
-	        		<h:outputText value="#{userBean.getFollowerName(follower)}" style="margin-left: 5px;" />
+	        		<!-- <h:outputText value="#{userBean.getFollowerName(follower)}" style="margin-left: 5px;" /> -->
+	        		<h:outputText value="#{userBean.getEmailByUsername(follower.username)}" style="margin-left: 5px;" />
 	        	</h:link>
-	        </div>
-			
+	        </div>	
 	    </p:dataList>
-	    
-</ui:composition>
+	</cc:implementation>
+</ui:component>

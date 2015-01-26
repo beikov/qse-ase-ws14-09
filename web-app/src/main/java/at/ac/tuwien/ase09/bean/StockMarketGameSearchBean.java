@@ -3,6 +3,7 @@ package at.ac.tuwien.ase09.bean;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -92,6 +93,9 @@ public class StockMarketGameSearchBean implements Serializable{
 		return "Teilnehmen";
 	}
 	
+	public boolean isRegistrationOpen(StockMarketGame game) {
+		return game.getRegistrationTo().after(Calendar.getInstance());
+	}
 	
 	public String getFilterGameName() {
 		return filterGameName;
@@ -190,18 +194,8 @@ public class StockMarketGameSearchBean implements Serializable{
     }
     
 	private void loadStockMarketGames() {
-		try {
-			//games = stockMarketGameAccess.getStockMargetGames();
-			
-			/*Institution institution = new Institution();
-			institution.setName(filterGameInstitutionName);
-			StockMarketGame searchExample = new StockMarketGame();
-			searchExample.setName(filterGameName);
-			searchExample.setText(filterGameText);
-			searchExample.setOwner(institution);*/
-			
+		try {			
 			games = stockMarketGameAccess.findByNameTextOwner(filterGameName, filterGameText, filterGameInstitutionName);
-			//System.out.println(games);
 		} catch(AppException e) {
 			FacesMessage message = new FacesMessage("Fehler beim Laden der Börsenspiele");
 	        FacesContext.getCurrentInstance().addMessage(null, message);

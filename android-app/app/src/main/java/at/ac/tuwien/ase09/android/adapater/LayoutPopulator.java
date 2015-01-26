@@ -36,7 +36,12 @@ public class LayoutPopulator {
 
             if(previousDayPrice != null) {
                 BigDecimal absolutePriceChange = lastPrice.subtract(previousDayPrice);
-                BigDecimal relativePriceChange = absolutePriceChange.divide(previousDayPrice, RoundingMode.HALF_DOWN);
+                BigDecimal relativePriceChange;
+                if(previousDayPrice.compareTo(BigDecimal.ZERO) == 0){
+                    relativePriceChange = BigDecimal.ZERO;
+                }else {
+                    relativePriceChange = absolutePriceChange.divide(previousDayPrice, RoundingMode.HALF_DOWN);
+                }
 
                 relativePriceChangeTextView.setText(percentDf.format(relativePriceChange.floatValue() * 100) + " %");
 
@@ -79,7 +84,14 @@ public class LayoutPopulator {
         if(lastPrice != null) {
             if(previousDayPrice != null) {
                 BigDecimal absolutePriceChange = lastPrice.subtract(previousDayPrice);
-                BigDecimal relativePriceChange = absolutePriceChange.divide(previousDayPrice, RoundingMode.HALF_DOWN);
+
+                BigDecimal relativePriceChange;
+                if(previousDayPrice.compareTo(BigDecimal.ZERO) == 0){
+                    relativePriceChange = BigDecimal.ZERO;
+                }else {
+                    relativePriceChange = absolutePriceChange.divide(previousDayPrice, RoundingMode.HALF_DOWN);
+                }
+
                 relativePriceChangeTextView.setText(percentDf.format(relativePriceChange.floatValue() * 100) + " %");
                 setColorBySignum(relativeBuyPriceChangeTextView, absolutePriceChange.signum());
             }else{
@@ -88,7 +100,13 @@ public class LayoutPopulator {
 
             lastPriceTextView.setText(formatMoney(portfolioValuePaper.getValuePaperDto().getLastPrice(), currency));
 
-            BigDecimal relativeBuyPriceChange = lastPrice.divide(buyPrice, RoundingMode.HALF_DOWN).subtract(new BigDecimal(1));
+            BigDecimal relativeBuyPriceChange;
+            if(lastPrice.compareTo(BigDecimal.ZERO) == 0){
+                relativeBuyPriceChange = BigDecimal.ZERO;
+            }else {
+                relativeBuyPriceChange = lastPrice.divide(buyPrice, RoundingMode.HALF_DOWN).subtract(new BigDecimal(1));
+            }
+
             relativeBuyPriceChangeTextView.setText(percentDf.format(relativeBuyPriceChange.floatValue() * 100) + " %");
             setColorBySignum(relativeBuyPriceChangeTextView, relativeBuyPriceChange.signum());
         }else{
