@@ -71,17 +71,20 @@ public class WebserviceFactory {
         Account[] accounts = am.getAccountsByType(KeyCloak.ACCOUNT_TYPE);
         Account account;
         Bundle b = new Bundle();
-        Bundle addAccountResult;
+        Bundle addAccountResult=null;
         if(accounts.length == 0){
+            // workaround for weird account creation problem
             AccountManagerFuture<Bundle> future = am.addAccount(KeyCloak.ACCOUNT_TYPE, KeyCloak.ACCOUNT_AUTHTOKEN_TYPE, null, null, mainContext, null, null);
             try {
                 addAccountResult = future.getResult();
+                if(addAccountResult.containsKey(AccountManager.KEY_AUTHTOKEN)){
+                    return b.getString(AccountManager.KEY_AUTHTOKEN);
+                }
                 accounts = am.getAccountsByType(KeyCloak.ACCOUNT_TYPE);
-            }catch(Exception e){
+            } catch (Exception e) {
                 Log.i(WebserviceFactory.class.getName(), "Error during authentication", e);
                 throw new RuntimeException(e);
             }
-            addAccountResult.getSerializable("afd");
         }
         account = accounts[0];
         UserContext.getInstance().setAccount(account);

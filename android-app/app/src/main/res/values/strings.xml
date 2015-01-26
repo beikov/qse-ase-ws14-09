@@ -47,5 +47,7 @@
     <string name="limit_higher_than_stop_limit_message">Ihr Limit muss kleiner oder gleich Ihrem Stop Limit sein</string>
     <string name="limit_equal_or_higher_than_price_message">Ihr Limit muss unter dem aktuellen Preis liegen</string>
     <string name="limit_equal_or_lower_than_price_message">Ihr Limit muss über dem aktuellen Preis liegen</string>
+    <string name="valid_to_before_now_message">\'%1$s\' muss bevor \'%2$s\' liegen</string>
+    <string name="valid_to_before_now">\'%1$s\' muss nach dem heutigen Datum liegen</string>
 
 </resources>
