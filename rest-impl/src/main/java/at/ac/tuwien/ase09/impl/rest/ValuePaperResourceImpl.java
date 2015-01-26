@@ -6,10 +6,14 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import at.ac.tuwien.ase09.data.PortfolioDataAccess;
+import at.ac.tuwien.ase09.data.StockMarketGameDataAccess;
 import at.ac.tuwien.ase09.data.ValuePaperScreenerAccess;
 import at.ac.tuwien.ase09.model.Fund;
+import at.ac.tuwien.ase09.model.Portfolio;
 import at.ac.tuwien.ase09.model.Stock;
 import at.ac.tuwien.ase09.model.StockBond;
+import at.ac.tuwien.ase09.model.StockMarketGame;
 import at.ac.tuwien.ase09.model.ValuePaper;
 import at.ac.tuwien.ase09.model.ValuePaperType;
 import at.ac.tuwien.ase09.rest.ValuePaperResource;
@@ -21,9 +25,9 @@ public class ValuePaperResourceImpl extends AbstractResource implements ValuePap
 	@Inject
 	private ValuePaperScreenerAccess valuePaperScreenerDataAccess;
 	
-	/**
-	 * TODO: deliver only such value papers that are allowed for the current portfolioId
-	 */
+	@Inject
+	private StockMarketGameDataAccess stockMarketGameDataAccess;
+	
 	@Override
 	public List<ValuePaperDto> getValuePapers(long portfolioId, String filter,
 			ValuePaperType valuePaperType) {
@@ -43,8 +47,10 @@ public class ValuePaperResourceImpl extends AbstractResource implements ValuePap
 		valuePaper.setName(filter);
 		valuePaper.setCode(filter);
 		
+		StockMarketGame stockMarketGame = stockMarketGameDataAccess.getStockMarketGameForPortfolio(portfolioId);
+		
 		List<ValuePaperDto> results = new ArrayList<>();
-		List<ValuePaper> matchingValuePapers = valuePaperScreenerDataAccess.findByValuePaper(valuePaperType, valuePaper);
+		List<ValuePaper> matchingValuePapers = valuePaperScreenerDataAccess.findByValuePaper(stockMarketGame.getAllowedValuePapers(), valuePaperType, valuePaper);
 		for(ValuePaper vp : matchingValuePapers){
 			results.add(createFromEntity(vp));
 		}

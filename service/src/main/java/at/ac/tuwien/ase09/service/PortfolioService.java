@@ -33,19 +33,19 @@ public class PortfolioService extends AbstractService {
 		return em.merge(portfolio);
 	}
 
-	public void removePortfolio(Portfolio portfolio) {
+	public Portfolio removePortfolio(Portfolio portfolio) {
 		portfolio.setDeleted(true);
-		updatePortfolio(portfolio);
+		return updatePortfolio(portfolio);
 		//em.remove(em.contains(portfolio) ? portfolio : em.merge(portfolio));
 	}
 	
-	public Portfolio followPortfolio(Portfolio portfolioToFollow, Long followerId) {
+	public Portfolio followPortfolio(Portfolio portfolioToFollow, User follower) {
     	Set<User> followers = portfolioToFollow.getFollowers();
-    	followers.add(em.getReference(User.class, followerId));
+    	followers.add(follower);
     	portfolioToFollow.setFollowers(followers);
     	PortfolioFollowerAddedNotification fan = new PortfolioFollowerAddedNotification();
     	fan.setCreated(Calendar.getInstance());
-    	fan.setFollower(em.getReference(User.class, followerId));
+    	fan.setFollower(follower);
     	fan.setUser(portfolioToFollow.getOwner());
     	fan.setPortfolio(portfolioToFollow);
     	notificationService.addNotification(fan);
@@ -58,8 +58,10 @@ public class PortfolioService extends AbstractService {
     	return updatePortfolio(portfolioToFollow);
     }
     
-    public Portfolio unfollowPortfolio(Portfolio portfolioToUnfollow, Long followerId) {
-    	portfolioToUnfollow.getFollowers().remove(em.getReference(User.class, followerId));
+    public Portfolio unfollowPortfolio(Portfolio portfolioToUnfollow, User follower) {
+    	Set<User> followers = portfolioToUnfollow.getFollowers();
+    	followers.remove(follower);
+    	portfolioToUnfollow.setFollowers(followers);
     	//savePortfolio(portfolioToUnfollow);
     	return updatePortfolio(portfolioToUnfollow);
     }
