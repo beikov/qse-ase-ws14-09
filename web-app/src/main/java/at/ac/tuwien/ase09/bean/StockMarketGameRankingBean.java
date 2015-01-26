@@ -23,6 +23,7 @@ import at.ac.tuwien.ase09.context.WebUserContext;
 import at.ac.tuwien.ase09.data.InstitutionDataAccess;
 import at.ac.tuwien.ase09.data.PortfolioDataAccess;
 import at.ac.tuwien.ase09.data.StockMarketGameDataAccess;
+import at.ac.tuwien.ase09.data.UserDataAccess;
 import at.ac.tuwien.ase09.exception.EntityNotFoundException;
 import at.ac.tuwien.ase09.model.Institution;
 import at.ac.tuwien.ase09.model.Portfolio;
@@ -46,6 +47,9 @@ public class StockMarketGameRankingBean implements Serializable{
 
 	@Inject
 	private PortfolioDataAccess portfolioDataAccess;
+	
+	@Inject
+	private UserDataAccess userDataAccess;
 
 	private Long stockMarketGameId;
 

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Currency;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -30,10 +31,12 @@ import at.ac.tuwien.ase09.data.ValuePaperPriceEntryDataAccess;
 import at.ac.tuwien.ase09.exception.AppException;
 import at.ac.tuwien.ase09.exception.EntityNotFoundException;
 import at.ac.tuwien.ase09.model.AnalystOpinion;
+import at.ac.tuwien.ase09.model.Fund;
 import at.ac.tuwien.ase09.model.Money;
 import at.ac.tuwien.ase09.model.NewsItem;
 import at.ac.tuwien.ase09.model.Portfolio;
 import at.ac.tuwien.ase09.model.PortfolioValuePaper;
+import at.ac.tuwien.ase09.model.Stock;
 import at.ac.tuwien.ase09.model.User;
 import at.ac.tuwien.ase09.model.ValuePaper;
 import at.ac.tuwien.ase09.model.ValuePaperType;
@@ -66,16 +69,16 @@ public class PortfolioViewBean implements Serializable {
 	private User user;
 	private boolean isOwner;
 	
-	private List<User> followers;
+	private List<User> followers = new ArrayList<>();
 	
-	private List<PortfolioValuePaper> portfolioValuePapers;
+	private List<PortfolioValuePaper> portfolioValuePapers = new ArrayList<>();
 	
-	private List<Order> orders;
-	private List<TransactionEntry> transactions;
+	private List<Order> orders = new ArrayList<>();
+	private List<TransactionEntry> transactions = new ArrayList<>();
 	
-	private List<NewsItem> news;
+	private List<NewsItem> news = new ArrayList<>();
 	
-	private List<AnalystOpinion> opinions;
+	private List<AnalystOpinion> opinions = new ArrayList<>();
 
 	
 	private Long portfolioId;
@@ -84,9 +87,12 @@ public class PortfolioViewBean implements Serializable {
 	
 	private List<Order> filteredOrders;
 	
+	private Money costValueForPortfolio;
+	private Money currentValueForPortfolio;
+	private Double portfolioPerformance = null;
 	//private Map<String,Money> totalPayedMap = new HashMap<>();
-	//private Map<String,Money> profitMap = new HashMap<>();
-	//private Map<String, Double> changeMap = new HashMap<>();
+	private Map<PortfolioValuePaper,BigDecimal> profitMap = new HashMap<>();
+	private Map<PortfolioValuePaper, Double> performanceMap = new HashMap<>();
 	
 	
 	private PieChartModel valuePaperTypePie;
@@ -124,10 +130,10 @@ public class PortfolioViewBean implements Serializable {
     	isOwner = owner.getId().equals(userContext.getUserId());
         createPieModels();
         createPortfolioChart();
-        followers = new LinkedList<User>(portfolio.getFollowers());
+        followers = new ArrayList<User>(portfolio.getFollowers());
         portfolioValuePapers = new ArrayList<>(portfolio.getValuePapers());
-        orders = new LinkedList<Order>(portfolio.getOrders());
-        transactions = new LinkedList<TransactionEntry>(portfolio.getTransactionEntries());
+        orders = new ArrayList<Order>(portfolio.getOrders());
+        transactions = new ArrayList<TransactionEntry>(portfolio.getTransactionEntries());
         news = portfolioDataAccess.getNewsForPortfolio(portfolio);
         opinions = portfolioDataAccess.getAnalystOpinionsForPortfolio(portfolio);
         
@@ -151,11 +157,11 @@ public class PortfolioViewBean implements Serializable {
     }
     
     public boolean isFollowable(){
-		return (userContext.getUserId() != null && !portfolio.getFollowers().contains(user) && !isPortfolioOwner());
+		return (userContext.getUserId() != null && !followers.contains(user) && !isPortfolioOwner());
 	}
 	
 	public boolean isUnfollowable(){
-		return (portfolio.getFollowers().contains(user));
+		return (followers.contains(user));
 	}
 	
 	public String getFollowUnfollowButtonText() {
@@ -169,11 +175,32 @@ public class PortfolioViewBean implements Serializable {
 	
 	public void followUnfollow() {
 		if (isFollowable()) {
-			portfolio = portfolioService.followPortfolio(portfolio, userContext.getUserId());
+			portfolio = portfolioService.followPortfolio(portfolio, user);
 		} else if (isUnfollowable()) {
-			portfolio = portfolioService.unfollowPortfolio(portfolio, userContext.getUserId());
+			portfolio = portfolioService.unfollowPortfolio(portfolio, user);
 		}
-		followers = new LinkedList<User>(portfolio.getFollowers());
+		portfolio = portfolioDataAccess.getPortfolioById(portfolio.getId());
+		followers = new ArrayList<User>(portfolio.getFollowers());
+	}
+	
+	/*public String getBuyPrice(PortfolioValuePaper pvp) {
+		ValuePaper vp = pvp.getValuePaper();
+		if (vp.getType() == ValuePaperType.TYPE_BOND)
+			return pvp.getBuyPrice().multiply(new BigDecimal(pvp.getVolume()));
+		if (vp.getType() == ValuePaperType.TYPE_BOND)
+			return ""
+	}*/
+	
+	public String getCurrency(ValuePaper vp) {
+		if (vp.getType() == ValuePaperType.BOND) {
+			return "";
+		} 
+		if (vp.getType() == ValuePaperType.FUND) {
+			return ((Fund) vp).getCurrency().getCurrencyCode();
+		}
+		else {
+			return ((Stock) vp).getCurrency().getCurrencyCode();
+		}
 	}
 	    
     public Portfolio getPortfolio() {
@@ -241,9 +268,13 @@ public class PortfolioViewBean implements Serializable {
 		return totalPayedMap.get(code);
 	}*/
 	
-	public Money getProfit(PortfolioValuePaper pvp) {
-		double profit = portfolioDataAccess.getProfit(pvp);
-		return createMoney(new BigDecimal(profit));
+	
+	public BigDecimal getProfit(PortfolioValuePaper pvp) {
+		if (profitMap.containsKey(pvp))
+			return profitMap.get(pvp);
+		BigDecimal profit = new BigDecimal(portfolioDataAccess.getProfit(pvp));
+		profitMap.put(pvp, profit);
+		return profit;
 	}
 	
 	
@@ -261,16 +292,27 @@ public class PortfolioViewBean implements Serializable {
 	}
 	
 	public Money getCostValueForPortfolio() {
+		if (costValueForPortfolio != null) {
+			return costValueForPortfolio;
+		}
 		BigDecimal cost = portfolioDataAccess.getCostValueForPortfolio(portfolioId);
-		return createMoney(cost);
+		costValueForPortfolio = createMoney(cost, portfolio.getCurrentCapital().getCurrency());
+		return costValueForPortfolio;
 	}
 	
 	public Money getCurrentValueForPortfolio() {
+		if (currentValueForPortfolio != null) {
+			return currentValueForPortfolio;
+		}
 		BigDecimal value = portfolioDataAccess.getCurrentValueForPortfolio(portfolioId);
-		return createMoney(value);
+		currentValueForPortfolio = createMoney(value, portfolio.getCurrentCapital().getCurrency());
+		return currentValueForPortfolio;
 	}
 	
-	public double getPortfolioPerformance() {
+	public Double getPortfolioPerformance() {
+		if (portfolioPerformance != null) {
+			return portfolioPerformance;
+		}
 		BigDecimal performance;
 		try {
 			performance = portfolioDataAccess.getPortfolioPerformance(portfolioId); 
@@ -279,12 +321,18 @@ public class PortfolioViewBean implements Serializable {
 		} catch(AppException e) {
 			performance = new BigDecimal(0);
 		}
-		return performance.doubleValue();
+		portfolioPerformance = performance.doubleValue();
+		return portfolioPerformance;
 	}
 	
 	
 	public double getChange(PortfolioValuePaper pvp) {
-    	return portfolioDataAccess.getChange(pvp);
+		if (performanceMap.containsKey(pvp)) {
+			return performanceMap.get(pvp);
+		}
+		double performance = portfolioDataAccess.getChange(pvp);
+		performanceMap.put(pvp, performance);
+    	return performance;
 	}
 	
 	public boolean isHidden() {
@@ -385,12 +433,16 @@ public class PortfolioViewBean implements Serializable {
     }
 	
 	private void createPortfolioChart() {
+		long startTime = System.currentTimeMillis();
 		Map<String, BigDecimal> pointResult = portfolioDataAccess.getPortfolioChartEntries(portfolio);
 		if (pointResult.size() == 1) {
 			// only portfolio creation entry
 			return;
 		}
+		long estimatedTime = System.currentTimeMillis() - startTime;
+		System.out.println("################### getPortfolioChartEntries " + estimatedTime);
 		
+		startTime = System.currentTimeMillis();
 		portfolioChart = new LineChartModel();
 		portfolioChart.setTitle("Portfoliochart mit Gebühren, etc.");
         portfolioChart.setZoom(true);
@@ -411,12 +463,17 @@ public class PortfolioViewBean implements Serializable {
         }
         
         portfolioChart.addSeries(series);
-        
+        estimatedTime = System.currentTimeMillis() - startTime;
+		System.out.println("################### addSeries " + estimatedTime);
 	}
 	
-	private Money createMoney(BigDecimal value) {
+	private Money createMoney(BigDecimal value, Currency currency) {
+		return createMoney(value, currency.getCurrencyCode());
+	}
+	
+	private Money createMoney(BigDecimal value, String currencyCode) {
 		Money m = new Money();
-		m.setCurrency(portfolio.getSetting().getStartCapital().getCurrency());
+		m.setCurrency(Currency.getInstance(currencyCode));
 		if (value == null)
 			value = new BigDecimal(0);
 		m.setValue(value);

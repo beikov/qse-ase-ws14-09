@@ -1,6 +1,5 @@
 package at.ac.tuwien.ase09.data;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -10,7 +9,7 @@ import javax.persistence.EntityManager;
 import org.hibernate.Hibernate;
 
 import at.ac.tuwien.ase09.exception.AppException;
-import at.ac.tuwien.ase09.model.User;
+import at.ac.tuwien.ase09.model.Watch;
 import at.ac.tuwien.ase09.model.notification.FollowerAddedNotification;
 import at.ac.tuwien.ase09.model.notification.FollowerTransactionAddedNotification;
 import at.ac.tuwien.ase09.model.notification.GameStartedNotification;
@@ -24,6 +23,12 @@ public class NotificationDataAccess {
 	@Inject
 	private EntityManager em;
 
+	public boolean existsNotificationForWatch(Watch w){
+		Long count = em.createQuery("SELECT count(n) FROM WatchTriggeredNotification n WHERE n.watch = :watch",Long.class).setParameter("watch", w).getSingleResult();
+		return count > 0;
+	}
+
+	
 	public List<? extends Notification> getNotificationsForUser(Long userId){
 		try{
 			List<Notification> ret = em.createQuery("FROM Notification n WHERE n.user.id = :userId ORDER BY n.created DESC", Notification.class).setParameter("userId", userId).getResultList();
@@ -41,6 +46,7 @@ public class NotificationDataAccess {
 					break;
 				case WATCH_TRIGGERED: 
 					Hibernate.initialize(((WatchTriggeredNotification)notification).getWatch());
+					Hibernate.initialize(((WatchTriggeredNotification)notification).getWatch().getValuePaper());
 					break;
 				case PORTFOLIO_FOLLOWER_ADDED:
 					Hibernate.initialize(((PortfolioFollowerAddedNotification)notification).getPortfolio());
@@ -75,6 +81,7 @@ public class NotificationDataAccess {
 					break;
 				case WATCH_TRIGGERED: 
 					Hibernate.initialize(((WatchTriggeredNotification)notification).getWatch());
+					Hibernate.initialize(((WatchTriggeredNotification)notification).getWatch().getValuePaper());
 					break;
 				case PORTFOLIO_FOLLOWER_ADDED:
 					Hibernate.initialize(((PortfolioFollowerAddedNotification)notification).getPortfolio());
@@ -138,5 +145,6 @@ public class NotificationDataAccess {
 			Hibernate.initialize(notification.getUser());
 		}
 	}
+	
 
 }

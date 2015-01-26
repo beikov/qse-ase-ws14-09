@@ -3,6 +3,7 @@ package at.ac.tuwien.ase09.data;
 import java.util.ArrayList;
 import java.util.Currency;
 import java.util.List;
+import java.util.Set;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -23,6 +24,7 @@ import org.hibernate.jpa.internal.EntityManagerImpl;
 import at.ac.tuwien.ase09.model.Fund;
 import at.ac.tuwien.ase09.model.Stock;
 import at.ac.tuwien.ase09.model.StockBond;
+import at.ac.tuwien.ase09.model.StockMarketGame;
 import at.ac.tuwien.ase09.model.ValuePaper;
 import at.ac.tuwien.ase09.model.ValuePaperType;
 import at.ac.tuwien.ase09.model.filter.AttributeFilter;
@@ -58,11 +60,12 @@ public class ValuePaperScreenerAccess {
 	 * 
 	 * @param valuePaperType
 	 * @param template
+	 * @param allowedValuePapers may be null
 	 * 
 	 * @return List of matching value papers
 	 */
 	@SuppressWarnings("unchecked")
-	public List<ValuePaper> findByValuePaper(ValuePaperType valuePaperType, ValuePaper template) {
+	public List<ValuePaper> findByValuePaper(Set<ValuePaper> allowedValuePapers, ValuePaperType valuePaperType, ValuePaper template) {
 		if(template == null){
 			throw new NullPointerException("template");
 		}
@@ -107,8 +110,15 @@ public class ValuePaperScreenerAccess {
 				disjunctivePredicates.add(cb.like(cb.lower(valuePaperRoot.get((SingularAttribute<ValuePaper, String>) stockMetamodel.getSingularAttribute("tickerSymbol", String.class))), tickerSymbol.toLowerCase()));
 			}
 		}
-		
-		cq.where(cb.or(disjunctivePredicates.toArray(new Predicate[0])));
+
+		Predicate disjunctivePredicate = cb.or(disjunctivePredicates.toArray(new Predicate[0]));
+		if(allowedValuePapers != null){
+			cq.where(cb.and(
+					valuePaperRoot.in(allowedValuePapers)), 
+					disjunctivePredicate);
+		}else{
+			cq.where(disjunctivePredicate);
+		}
 		cq.select(valuePaperRoot);
 		return em.createQuery(cq).getResultList();
 	}
@@ -125,8 +135,6 @@ public class ValuePaperScreenerAccess {
 	
 	@SuppressWarnings("unchecked")
 	public List<ValuePaper> findByValuePaper(ValuePaper valuePaper, Boolean isTypeSecificated) {
-		
-		
 		Criteria crit = null;
 		
 		try{

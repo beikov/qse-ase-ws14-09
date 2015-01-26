@@ -10,6 +10,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
@@ -131,10 +132,7 @@ public class NotificationBean implements Serializable{
 	public void onRowSelect(SelectEvent event) {
 		try {
 			updateNotification(selectedNotification);
-			if(selectedNotification.getType().equals(NotificationType.FOLLOWER_ADDED)
-					|| selectedNotification.getType().equals(NotificationType.PORTFOLIO_FOLLOWER_ADDED)){
-				FacesContext.getCurrentInstance().getExternalContext().redirect("../"+getNotificationRedirectionUrl(selectedNotification));
-			}
+				FacesContext.getCurrentInstance().getExternalContext().redirect("/"+getNotificationRedirectionUrl(selectedNotification));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -146,8 +144,8 @@ public class NotificationBean implements Serializable{
 		case PORTFOLIO_FOLLOWER_ADDED:
 		case FOLLOWER_ADDED: return "user/profile.xhtml?user="+((FollowerAddedNotification)n).getFollower().getUsername();
 		case FOLLOWER_TRANSACTION_ADDED: return "transaction"+((FollowerTransactionAddedNotification)n).getTransactionEntry().getId()+".xhtml"; 
-		case GAME_STARTED: return "game"+((GameStartedNotification)n).getGame().getId()+".xhtml"; 
-		case WATCH_TRIGGERED: return "watches/watch.xhtml"; 
+		case GAME_STARTED: return "protected/stockmarketgame/stockmarketgameview.xhtml?gameId="+((GameStartedNotification)n).getGame().getId();
+		case WATCH_TRIGGERED: return "protected/valuepaper/valuepaperview.xhtml?valuePaperCode="+((WatchTriggeredNotification)n).getWatch().getValuePaper().getCode() ; 
 		default: 
 			//this should never happen
 			throw new RuntimeException("Unsupported NotificationType");
