@@ -9,8 +9,10 @@ import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 
 import at.ac.tuwien.ase09.context.UserAccount;
+import at.ac.tuwien.ase09.context.UserContext;
 import at.ac.tuwien.ase09.context.WebUserContext;
 import at.ac.tuwien.ase09.data.InstitutionDataAccess;
+import at.ac.tuwien.ase09.data.UserDataAccess;
 import at.ac.tuwien.ase09.exception.EntityNotFoundException;
 import at.ac.tuwien.ase09.keycloak.AdminClient;
 import at.ac.tuwien.ase09.model.Institution;
@@ -27,7 +29,10 @@ public class UserBean {
 	private InstitutionDataAccess institutionDataAccess;
 	
 	@Inject
-	private WebUserContext userContext;
+	private UserDataAccess userDataAccess;
+	
+	@Inject
+	private UserContext userContext;
 	
 	public String logout() {
 		// Invalidate old session
@@ -85,5 +90,9 @@ public class UserBean {
 		if (followerUsername.equals(currentUsername))
 			return "Ich";
 		return followerUsername;
+	}
+	
+	public String getEmailByUsername(String username){
+		return userDataAccess.getEmailByUsername(username);
 	}
 }

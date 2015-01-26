@@ -35,8 +35,6 @@ public class UserFilter implements Filter {
 	@Inject
 	private UserDataAccess userDataAccess;
 	@Inject
-	private PortfolioDataAccess portfolioDataAccess;
-	@Inject
 	private UserService userService;
 
 	@Override

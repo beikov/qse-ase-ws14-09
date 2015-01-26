@@ -7,17 +7,24 @@ import javax.persistence.EntityManager;
 import at.ac.tuwien.ase09.model.Portfolio;
 import at.ac.tuwien.ase09.model.StockMarketGame;
 import at.ac.tuwien.ase09.model.User;
+import at.ac.tuwien.ase09.notification.NotificationSingleton;
 
 @Stateless
 public class StockMarketGameService extends AbstractService {
 	
+	@Inject
+	NotificationSingleton notificationSingleton;
+	
 	public StockMarketGame saveStockMarketGame(StockMarketGame stockMarketGame){
 		if(stockMarketGame.getId() != null){
 			if(em.find(StockMarketGame.class, stockMarketGame.getId()) != null){
-				return em.merge(stockMarketGame);
+				StockMarketGame ret = em.merge(stockMarketGame);
+				notificationSingleton.addGame(ret);
+				return ret;
 			}
 		}
 		em.persist(stockMarketGame);
+		notificationSingleton.addGame(stockMarketGame);
 		return stockMarketGame;	
 	}
 

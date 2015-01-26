@@ -29,7 +29,7 @@
 	        <div style="display: inline-block;">
 	        	<h:link outcome="/user/profile">
 					<f:param name="user" value="#{follower.username}"/>
-	        		<h:outputText value="#{userBean.getFollowerName(follower)}" style="margin-left: 5px;" />
+	        		<h:outputText value="#{userBean.getEmailByUsername(follower.username)}" style="margin-left: 5px;" />
 	        	</h:link>
 	        </div>
 			
