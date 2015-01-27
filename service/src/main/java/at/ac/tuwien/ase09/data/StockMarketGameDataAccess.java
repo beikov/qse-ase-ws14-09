@@ -116,12 +116,12 @@ public class StockMarketGameDataAccess {
 		}
 	}
 
-	public long getRankByStockMarketGamePortfolio(long stockMarketGameId, long portfolioId){
+	public long getRankByPortfolio(long portfolioId){
 
 		List<Portfolio> portfolioList = new ArrayList<Portfolio>();
 		Map<Long, BigDecimal>portfolioRankingMap = new HashMap<Long, BigDecimal>();
 
-		portfolioList = portfolioDataAccess.getPortfoliosByStockMarketGame(stockMarketGameId);
+		portfolioList = portfolioDataAccess.getPortfoliosByStockMarketGame(portfolioDataAccess.getPortfolioById(portfolioId).getGame().getId());
 
 		for(Portfolio p : portfolioList){
 
@@ -144,14 +144,13 @@ public class StockMarketGameDataAccess {
 			}
 		});
 		
-		List<Long> keys = new ArrayList<Long>(portfolioRankingMap.keySet());
-		for (int i = 0; i < keys.size(); i++) {
-			if(keys.get(i).equals(portfolioId))
-				return i+1;
+		for(int i = 0; i < portfolioList.size(); i++){
+			if(portfolioList.get(i).getId().equals(portfolioId)){
+				return i + 1;
+			}
 		}
-		
+	
 		return 0;
-
 	}
 
 }
