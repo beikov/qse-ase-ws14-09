@@ -92,12 +92,12 @@
 						<artifactId>antlr4-maven-plugin</artifactId>
 					</exclusion>
 					<exclusion>
-					    <groupId>org.apache.deltaspike.core</groupId>
-					    <artifactId>deltaspike-core-api</artifactId>
+						<groupId>org.apache.deltaspike.core</groupId>
+						<artifactId>deltaspike-core-api</artifactId>
 					</exclusion>
 					<exclusion>
-					    <groupId>org.apache.deltaspike.core</groupId>
-					    <artifactId>deltaspike-core-impl</artifactId>
+						<groupId>org.apache.deltaspike.core</groupId>
+						<artifactId>deltaspike-core-impl</artifactId>
 					</exclusion>
 				</exclusions>
 			</dependency>
@@ -127,6 +127,11 @@
 				<groupId>org.primefaces</groupId>
 				<artifactId>primefaces</artifactId>
 				<version>5.1</version>
+			</dependency>
+			<dependency>
+				<groupId>org.primefaces.extensions</groupId>
+				<artifactId>primefaces-extensions</artifactId>
+				<version>3.0.0</version>
 			</dependency>
 
 			<!-- Project dependencies -->

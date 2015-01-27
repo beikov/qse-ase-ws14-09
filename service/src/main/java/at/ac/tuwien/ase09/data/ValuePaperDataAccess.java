@@ -25,6 +25,14 @@ import at.ac.tuwien.ase09.model.ValuePaperType;
 public class ValuePaperDataAccess {
 	@Inject
 	private EntityManager em;
+	
+	public <T extends ValuePaper> T getValuePaperById(long valuePaperId, Class<T> clazz){
+		if(clazz != null){
+			return em.find(clazz, valuePaperId);
+		}else{
+			return (T) em.find(ValuePaper.class, valuePaperId);
+		}
+	}
 
 	public <T extends ValuePaper> T getValuePaperByCode(String code, Class<T> clazz){
 		try{
