@@ -40,20 +40,23 @@
 		    		<f:param name="valuePaperCode" value="#{pvp.valuePaper.code}" />
 		    	</p:link>
 		    </div>
-		    <div>	
-		    	<p:link styleClass="btn-buy" outcome="/index.xhtml" title="Kaufen">
-		    		<span class="inline fa fa-shopping-cart" />
-		    		<span class="inline fa fa-plus" />
-		    		<f:param name="valuePaperCode" value="#{pvp.valuePaper.code}" />
-		    	</p:link>
-		    </div>
 		    <div>
-		    	<p:link styleClass="btn-sell" outcome="/index.xhtml" title="Verkaufen">
-		    		<span class="inline fa fa-shopping-cart" />
-		    		<span class="inline fa fa-minus" />
-		    		<f:param name="valuePaperCode" value="#{pvp.valuePaper.code}" />
-		    	</p:link>
-	    	</div>
+				<p:link styleClass="btn-buy" outcome="/protected/order/create.xhtml" title="Kaufen">
+					<span class="inline fa fa-shopping-cart" />
+					<span class="inline fa fa-plus" />
+					<f:param name="valuePaper" value="#{pvp.valuePaper.id}" />
+					<f:param name="action" value="BUY" />
+				</p:link>
+			</div>
+			<div>
+				<p:link styleClass="btn-sell" outcome="/protected/order/create.xhtml"
+					title="Verkaufen">
+					<span class="inline fa fa-shopping-cart" />
+					<span class="inline fa fa-minus" />
+					<f:param name="valuePaper" value="#{pvp.valuePaper.id}" />
+					<f:param name="action" value="SELL" />
+				</p:link>
+			</div>
 		</p:column>
 	</p:dataTable>
 
