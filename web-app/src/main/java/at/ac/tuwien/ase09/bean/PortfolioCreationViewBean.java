@@ -107,7 +107,7 @@ public class PortfolioCreationViewBean implements Serializable{
 		portfolioService.createPortfolio(portfolio);
 
 		try {
-			FacesContext.getCurrentInstance().getExternalContext().redirect("list.xhtml");
+			FacesContext.getCurrentInstance().getExternalContext().redirect("../../portfolio/view.xhtml?portfolioId="+portfolio.getId());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
