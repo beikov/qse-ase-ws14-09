@@ -166,7 +166,7 @@ public class PortfolioDataAccess {
 	}
 	
 	public BigDecimal getCurrentValueForPortfolio(long portfolioId, Map<Currency, BigDecimal> conversionRateMap) {
-		Portfolio portfolio = em.createQuery("from Portfolio p left join fetch p.valuePapers where p.id = :id", Portfolio.class).setParameter("id", portfolioId).getSingleResult();
+		/*Portfolio portfolio = em.createQuery("from Portfolio p left join fetch p.valuePapers where p.id = :id", Portfolio.class).setParameter("id", portfolioId).getSingleResult();
 		Set<PortfolioValuePaper> valuePapers = portfolio.getValuePapers();
 		if (valuePapers.isEmpty()) {
 			return new BigDecimal(0);
@@ -207,11 +207,11 @@ public class PortfolioDataAccess {
 			total = total.add(value);
 		}
 		return total;
+		*/
 		
 		
 		
-		
-		/*try{
+		try{
 			Portfolio portfolio = em.find(Portfolio.class, portfolioId);
 			List<Object[]> valuePapersAndCurrentPrices = em.createQuery("SELECT vp, pe.price * pvp.volume FROM PortfolioValuePaper pvp, ValuePaperPriceEntry pe JOIN pe.valuePaper vp WHERE pvp.valuePaper = pe.valuePaper AND pvp.portfolio = :portfolio AND vp.class != 'BOND' AND pe.created >= ALL(SELECT pe2.created FROM ValuePaperPriceEntry pe2 WHERE pe2.valuePaper = pe.valuePaper)", Object[].class).setParameter("portfolio", portfolio).getResultList();
 		
@@ -248,7 +248,7 @@ public class PortfolioDataAccess {
 			
 		}catch(Exception e){
 			throw new AppException(e);
-		}*/
+		}
 	}
 	
 	public BigDecimal getPortfolioPerformance(long portfolioId) {

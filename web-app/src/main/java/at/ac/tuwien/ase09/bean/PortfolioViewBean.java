@@ -318,6 +318,7 @@ public class PortfolioViewBean implements Serializable {
 	
 	private void initCurrentValueForPortfolio() {
 		BigDecimal value = portfolioDataAccess.getCurrentValueForPortfolio(portfolioId, conversionRateMap);
+		value = value.add(portfolio.getCurrentCapital().getValue());
 		currentValueForPortfolio = createMoney(value, portfolio.getCurrentCapital().getCurrency());
 	}
 	
