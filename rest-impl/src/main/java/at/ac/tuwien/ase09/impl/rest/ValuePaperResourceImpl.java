@@ -50,7 +50,7 @@ public class ValuePaperResourceImpl extends AbstractResource implements ValuePap
 		StockMarketGame stockMarketGame = stockMarketGameDataAccess.getStockMarketGameForPortfolio(portfolioId);
 		
 		List<ValuePaperDto> results = new ArrayList<>();
-		List<ValuePaper> matchingValuePapers = valuePaperScreenerDataAccess.findByValuePaper(stockMarketGame.getAllowedValuePapers(), valuePaperType, valuePaper);
+		List<ValuePaper> matchingValuePapers = valuePaperScreenerDataAccess.findByValuePaper(stockMarketGame == null ? null : stockMarketGame.getAllowedValuePapers(), valuePaperType, valuePaper);
 		for(ValuePaper vp : matchingValuePapers){
 			results.add(createFromEntity(vp));
 		}

@@ -204,9 +204,12 @@ public class ValuePaperSearchFragment extends Fragment implements AbsListView.On
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         if (null != mListener) {
-            // Notify the active callbacks interface (the activity, if the
-            // fragment is attached to one) that an item has been selected.
-            mListener.onValuePaperSelected(mAdapter.getItem(position));
+            // currently we do not support actions on bonds so do not fire the listener if it is a bond
+            if(selectedValuePaperType != ValuePaperType.BOND) {
+                // Notify the active callbacks interface (the activity, if the
+                // fragment is attached to one) that an item has been selected.
+                mListener.onValuePaperSelected(mAdapter.getItem(position));
+            }
         }
     }
 

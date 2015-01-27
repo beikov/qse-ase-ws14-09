@@ -38,6 +38,7 @@ import at.ac.tuwien.ase09.model.order.OrderAction;
 import at.ac.tuwien.ase09.model.order.OrderType;
 import at.ac.tuwien.ase09.rest.model.PortfolioDto;
 import at.ac.tuwien.ase09.rest.model.ValuePaperDto;
+import at.ac.tuwien.ase09.validator.OrderValidator;
 
 public class OrderActivity extends Activity implements TimePickerDialog.OnTimeSetListener, DatePickerDialog.OnDateSetListener, TextWatcher, View.OnClickListener, RestResultReceiver.Receiver {
     // the activity parameters
@@ -267,7 +268,6 @@ public class OrderActivity extends Activity implements TimePickerDialog.OnTimeSe
                 progressBar.setVisibility(View.VISIBLE);
                 break;
             case RestService.STATUS_FINISHED:
-                //TODO: redirect to previous fragment or to portfolio view order tab
                 Intent result = new Intent();
                 String orderActionString;
                 switch(selectedOrderAction){
@@ -298,59 +298,43 @@ public class OrderActivity extends Activity implements TimePickerDialog.OnTimeSe
     }
 
     private boolean validateInput(OrderType orderType){
-        if(orderType == OrderType.LIMIT) {
-            if(limitEditText.getText().length() <= 0){
-                Toast.makeText(this, getString(R.string.required_message, "Limit"), Toast.LENGTH_LONG).show();
-                return false;
-            }
-            BigDecimal limit = new BigDecimal(limitEditText.getText().toString());
-            if(stopLimitEditText.getText().length() > 0){
-                // we have a stop limit or a stop order
-                BigDecimal stopLimit = new BigDecimal(stopLimitEditText.getText().toString());
-
-                if(selectedOrderAction == OrderAction.BUY){
-                    // stop limit must be higher than the current price
-                    if(stopLimit.compareTo(valuePaper.getLastPrice()) <= 0){
-                        Toast.makeText(this, getString(R.string.stop_limit_equal_or_lower_than_price_message), Toast.LENGTH_LONG).show();
-                        return false;
-                    }
-
-                    // limit must be equal to or higher than the stop limit
-                    if(limit.compareTo(stopLimit) < 0){
-                        Toast.makeText(this, getString(R.string.limit_lower_than_stop_limit_message), Toast.LENGTH_LONG).show();
-                        return false;
-                    }
-                }else{
-                    // stop limit must be lower than the current price
-                    if(stopLimit.compareTo(valuePaper.getLastPrice()) >= 0){
-                        Toast.makeText(this, getString(R.string.stop_limit_equal_or_higher_than_price_message), Toast.LENGTH_LONG).show();
-                        return false;
-                    }
-
-                    // limit must be equal to or lower than the stop limit
-                    if(limit.compareTo(stopLimit) > 0){
-                        Toast.makeText(this, getString(R.string.limit_higher_than_stop_limit_message), Toast.LENGTH_LONG).show();
-                        return false;
-                    }
-                }
-            }else{
-                // we have a limit order
-                if(selectedOrderAction == OrderAction.BUY){
-                    // limit must be lower than the current price
-                    if(limit.compareTo(valuePaper.getLastPrice()) >= 0){
-                        Toast.makeText(this, getString(R.string.limit_equal_or_higher_than_price_message), Toast.LENGTH_LONG).show();
-                        return false;
-                    }
-                }else{
-                    // limit must be higher than the current price
-                    if(limit.compareTo(valuePaper.getLastPrice()) <= 0){
-                        Toast.makeText(this, getString(R.string.limit_equal_or_lower_than_price_message), Toast.LENGTH_LONG).show();
-                        return false;
-                    }
-                }
-            }
+        BigDecimal limit = null;
+        if(limitEditText.getText().length() > 0){
+            limit = new BigDecimal(limitEditText.getText().toString());
         }
-        return true;
+
+        BigDecimal stopLimit = null;
+        if(stopLimitEditText.getText().length() > 0){
+            stopLimit = new BigDecimal(stopLimitEditText.getText().toString());
+        }
+
+        Calendar actualValidTo = validTo;
+        if(!validToCheckbox.isChecked()) {
+            actualValidTo = null;
+        }
+
+        int result = OrderValidator.validateOrder(orderType, selectedOrderAction, valuePaper.getLastPrice(), limit, stopLimit, validFrom, actualValidTo);
+
+        if(result != OrderValidator.OK) {
+            String message;
+            switch (result) {
+                case OrderValidator.LIMIT_REQUIRED: message = getString(R.string.required_message, "Limit"); break;
+                case OrderValidator.LIMIT_EQUAL_OR_HIGHER_THAN_PRICE: message = getString(R.string.limit_equal_or_higher_than_price_message); break;
+                case OrderValidator.LIMIT_EQUAL_OR_LOWER_THAN_PRICE: message = getString(R.string.limit_equal_or_lower_than_price_message); break;
+                case OrderValidator.LIMIT_HIGHER_THAN_STOP_LIMIT: message = getString(R.string.limit_higher_than_stop_limit_message); break;
+                case OrderValidator.LIMIT_LOWER_THAN_STOP_LIMIT: message = getString(R.string.limit_lower_than_stop_limit_message); break;
+                case OrderValidator.STOP_LIMIT_EQUAL_OR_HIGHER_THAN_PRICE: message = getString(R.string.stop_limit_equal_or_higher_than_price_message); break;
+                case OrderValidator.STOP_LIMIT_EQUAL_OR_LOWER_THAN_PRICE: message = getString(R.string.stop_limit_equal_or_lower_than_price_message); break;
+                case OrderValidator.VALID_FROM_REQUIRED: message = getString(R.string.required_message, "Valid from"); break;
+                case OrderValidator.VALID_TO_BEFORE_VALID_FROM: message = getString(R.string.valid_to_before_now_message, getString(R.string.valid_from), getString(R.string.valid_to)); break;
+                case OrderValidator.VALID_TO_BEFORE_NOW: message = getString(R.string.valid_to_before_now, getString(R.string.valid_to)); break;
+                default: throw new IllegalArgumentException("Unknown validation code [" + result + "]");
+            }
+            Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+            return false;
+        }else{
+            return true;
+        }
     }
 
     @Override
@@ -378,7 +362,11 @@ public class OrderActivity extends Activity implements TimePickerDialog.OnTimeSe
 
         if(orderType == OrderType.LIMIT) {
             restQueryIntent.putExtra(RestService.COMMAND_CREATE_ORDER_LIMIT_ARG, new BigDecimal(limitEditText.getText().toString()));
-            restQueryIntent.putExtra(RestService.COMMAND_CREATE_ORDER_STOP_LIMIT_ARG, new BigDecimal(stopLimitEditText.getText().toString()));
+            BigDecimal stopLimit = null;
+            if(stopLimitEditText.getText().toString().length() <= 0){
+                stopLimit = new BigDecimal(stopLimitEditText.getText().toString());
+            }
+            restQueryIntent.putExtra(RestService.COMMAND_CREATE_ORDER_STOP_LIMIT_ARG, stopLimit);
         }
 
         restQueryIntent.putExtra("receiver", receiver);

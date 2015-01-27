@@ -114,8 +114,8 @@ public class ValuePaperScreenerAccess {
 		Predicate disjunctivePredicate = cb.or(disjunctivePredicates.toArray(new Predicate[0]));
 		if(allowedValuePapers != null){
 			cq.where(cb.and(
-					valuePaperRoot.in(allowedValuePapers)), 
-					disjunctivePredicate);
+					valuePaperRoot.in(allowedValuePapers),
+					disjunctivePredicate));
 		}else{
 			cq.where(disjunctivePredicate);
 		}
