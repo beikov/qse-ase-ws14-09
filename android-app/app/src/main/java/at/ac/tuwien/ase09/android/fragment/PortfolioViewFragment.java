@@ -89,7 +89,8 @@ public class PortfolioViewFragment extends Fragment implements RestResultReceive
         receiver.setReceiver(this);
 
         PortfolioDto portfolio;
-        if(savedInstanceState != null && (portfolio = (PortfolioDto) savedInstanceState.getSerializable(ARG_PORTFOLIO)) != null){
+        Bundle arguments = getArguments();
+        if(arguments != null && (portfolio = (PortfolioDto) arguments.getSerializable(ARG_PORTFOLIO)) != null){
             showPortfolio(portfolio);
             loadValuePapers(portfolio);
         } else {

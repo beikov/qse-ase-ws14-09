@@ -77,8 +77,8 @@ public class WebserviceFactory {
             AccountManagerFuture<Bundle> future = am.addAccount(KeyCloak.ACCOUNT_TYPE, KeyCloak.ACCOUNT_AUTHTOKEN_TYPE, null, null, mainContext, null, null);
             try {
                 addAccountResult = future.getResult();
-                if(addAccountResult.containsKey(AccountManager.KEY_AUTHTOKEN)){
-                    return b.getString(AccountManager.KEY_AUTHTOKEN);
+                if(addAccountResult.containsKey("accessToken")){
+                    return b.getString("accessToken");
                 }
                 accounts = am.getAccountsByType(KeyCloak.ACCOUNT_TYPE);
             } catch (Exception e) {

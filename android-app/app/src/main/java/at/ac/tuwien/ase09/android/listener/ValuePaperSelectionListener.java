@@ -1,5 +1,6 @@
 package at.ac.tuwien.ase09.android.listener;
 
+import at.ac.tuwien.ase09.model.ValuePaperType;
 import at.ac.tuwien.ase09.rest.model.ValuePaperDto;
 
 /**
