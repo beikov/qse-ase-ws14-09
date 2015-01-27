@@ -464,11 +464,16 @@ public class PortfolioViewBean implements Serializable {
         
         LineChartSeries series = new LineChartSeries();
         series.setLabel("Series");
+        series.setShowMarker(false);
         
         for (String date: pointResult.keySet()) {
         	BigDecimal value = pointResult.get(date);
         	series.set(date, value);
         }
+        
+        if(pointResult.size() <= 15){
+			series.setShowMarker(true);
+		}
         
         portfolioChart.addSeries(series);
         estimatedTime = System.currentTimeMillis() - startTime;
