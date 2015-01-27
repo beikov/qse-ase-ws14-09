@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,7 +64,7 @@ public class ValuePaperViewBean implements Serializable{
 
 	@Inject
 	private AnalystOpinionDataAccess analystOpinionDataAccess;
-	
+
 	private ValuePaper valuePaper = null;
 	private NewsItem selectedNewsItem = null;
 	private AnalystOpinion selectedAnalystOpinion = null;
@@ -194,34 +195,34 @@ public class ValuePaperViewBean implements Serializable{
 			return null;
 		}
 	}
-	
+
 	public String getLastPriceEntryString() {
-		
+
 		if(getLastPriceEntry() == null){
 			return "-";
 		}
-			
+
 		switch(valuePaper.getType()){
-			case STOCK:
-				if(((Stock)valuePaper).getCurrency() != null){
-					return getLastPriceEntry().getPrice().toString() + "" + ((Stock)valuePaper).getCurrency().getSymbol();
-				}
-				else{
-					return getLastPriceEntry().getPrice().toString();
-				}
-				
-			case FUND:
-				if(((Fund)valuePaper).getCurrency() != null){
-					return getLastPriceEntry().getPrice().toString() + " " + ((Fund)valuePaper).getCurrency().getSymbol();
-				}
-				else{
-					return getLastPriceEntry().getPrice().toString();
-				}
-				
-			default:			
-				return getLastPriceEntry().getPrice().toString()+"%";
+		case STOCK:
+			if(((Stock)valuePaper).getCurrency() != null){
+				return getLastPriceEntry().getPrice().toString() + "" + ((Stock)valuePaper).getCurrency().getSymbol();
+			}
+			else{
+				return getLastPriceEntry().getPrice().toString();
+			}
+
+		case FUND:
+			if(((Fund)valuePaper).getCurrency() != null){
+				return getLastPriceEntry().getPrice().toString() + " " + ((Fund)valuePaper).getCurrency().getSymbol();
+			}
+			else{
+				return getLastPriceEntry().getPrice().toString();
+			}
+
+		default:			
+			return getLastPriceEntry().getPrice().toString()+"%";
 		}
-		
+
 	}
 
 	public List<NewsItem> getNewsItems(){		
@@ -574,7 +575,7 @@ public class ValuePaperViewBean implements Serializable{
 			if(sb.getEmitter() != null){
 				this.additionalValuePaperAttributes.put("Emittent", sb.getEmitter());
 			}
-			
+
 			if(sb.getEmissionDate() != null){
 				this.additionalValuePaperAttributes.put("Emissionsdatum:", format.format(sb.getEmissionDate().getTime()));
 			}
@@ -601,19 +602,19 @@ public class ValuePaperViewBean implements Serializable{
 					this.mainValuePaperAttributes.put("Ausschüttungsart:", "thesaurierend");
 				}
 			}
-			
+
 			if(f.getCurrency() != null){
 				this.mainValuePaperAttributes.put("Währung:", f.getCurrency().getCurrencyCode());
 			}
-			
+
 			if(f.getCategory() != null){
 				this.additionalValuePaperAttributes.put("Kategorie:", f.getCategory());
 			}
-			
+
 			if(f.getDenomination() != null){
 				this.additionalValuePaperAttributes.put("Stückelung:", f.getDenomination().toString());
 			}
-			
+
 			if(f.getBusinessYearStartDay() != null && f.getBusinessYearStartMonth() != null){
 				this.additionalValuePaperAttributes.put("Start des Geschäftsjahres:", f.getBusinessYearStartDay().toString() + "." + f.getBusinessYearStartMonth().toString() + ".");
 			}
@@ -659,46 +660,65 @@ public class ValuePaperViewBean implements Serializable{
 		series1.setLabel(valuePaper.getName());
 		series1.setShowMarker(false);
 
-		try{
 
-			List<ValuePaperHistoryEntry> historyPriceList = valuePaperPriceEntryDataAccess.getValuePaperPriceHistoryEntries(valuePaper.getCode());
+		List<ValuePaperHistoryEntry> historyPriceList = valuePaperPriceEntryDataAccess.getValuePaperPriceHistoryEntries(valuePaper.getCode());
+		Calendar lastHistoryEntryDate = null;
 
-			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 
-			for (ValuePaperHistoryEntry vphe : historyPriceList) {
-				String date = format.format(vphe.getDate().getTime());
-				BigDecimal value = (vphe.getDayHighPrice().add(vphe.getDayLowPrice())).divide(new BigDecimal(2));
-				series1.set(date, value);
+		for (ValuePaperHistoryEntry vphe : historyPriceList) {
+			String date = format.format(vphe.getDate().getTime());
+			BigDecimal value = (vphe.getDayHighPrice().add(vphe.getDayLowPrice())).divide(new BigDecimal(2));
+			series1.set(date, value);
+
+			if(lastHistoryEntryDate == null){
+				lastHistoryEntryDate = vphe.getDate();
 			}
+			else{
+				if(lastHistoryEntryDate.before(vphe.getDate())){
+					lastHistoryEntryDate = vphe.getDate();
+				}
+			}
+		}
 
-			ValuePaperPriceEntry currentPriceEntry = valuePaperPriceEntryDataAccess.getLastPriceEntry(valuePaper.getCode());
+		ValuePaperPriceEntry currentPriceEntry = null;
+
+		try{
+			currentPriceEntry = valuePaperPriceEntryDataAccess.getLastPriceEntry(valuePaper.getCode());
 
 			series1.set(format.format(currentPriceEntry.getCreated().getTime()), currentPriceEntry.getPrice());
-
-			if(series1.getData().size() == 1){
-				series1.setShowMarker(true);
-			}
-
-			valuePaperHistoricPriceLineChartModel.addSeries(series1);
-			valuePaperHistoricPriceLineChartModel.setTitle("Kursverlauf");
-			valuePaperHistoricPriceLineChartModel.setZoom(true);
-			valuePaperHistoricPriceLineChartModel.getAxis(AxisType.Y).setLabel("Wert");
-
-			DateAxis axis = new DateAxis("Datum");
-			axis.setTickAngle(-50);
-			//axis.setTickInterval("0");
-
-			currentPriceEntry.getCreated().add(Calendar.DATE, 5);
-
-			axis.setMax(format.format(currentPriceEntry.getCreated().getTime()));
-			axis.setTickFormat("%b %#d, %y");
-
-			valuePaperHistoricPriceLineChartModel.getAxes().put(AxisType.X, axis);
-
 		}
 		catch(EntityNotFoundException e){
-			valuePaperHistoricPriceLineChartModel = null;
+			if(historyPriceList.isEmpty()){
+				valuePaperHistoricPriceLineChartModel = null;
+				return;
+			}
 		}
+
+		if(series1.getData().size() == 1){
+			series1.setShowMarker(true);
+		}
+
+		valuePaperHistoricPriceLineChartModel.addSeries(series1);
+		valuePaperHistoricPriceLineChartModel.setTitle("Kursverlauf");
+		valuePaperHistoricPriceLineChartModel.setZoom(true);
+		valuePaperHistoricPriceLineChartModel.getAxis(AxisType.Y).setLabel("Wert");
+
+		DateAxis axis = new DateAxis("Datum");
+		axis.setTickAngle(-50);
+
+		if(currentPriceEntry != null){
+			currentPriceEntry.getCreated().add(Calendar.DATE, 5);
+			axis.setMax(format.format(currentPriceEntry.getCreated().getTime()));
+		}
+		else{
+			lastHistoryEntryDate.add(Calendar.DATE, 5);
+			axis.setMax(format.format(lastHistoryEntryDate.getTime()));
+		}
+		
+		axis.setTickFormat("%b %#d, %y");
+
+		valuePaperHistoricPriceLineChartModel.getAxes().put(AxisType.X, axis);
 
 	}
 
