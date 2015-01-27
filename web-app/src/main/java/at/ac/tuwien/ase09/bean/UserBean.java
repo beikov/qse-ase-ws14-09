@@ -12,6 +12,7 @@ import at.ac.tuwien.ase09.context.UserAccount;
 import at.ac.tuwien.ase09.context.UserContext;
 import at.ac.tuwien.ase09.context.WebUserContext;
 import at.ac.tuwien.ase09.data.InstitutionDataAccess;
+import at.ac.tuwien.ase09.data.StockMarketGameDataAccess;
 import at.ac.tuwien.ase09.data.UserDataAccess;
 import at.ac.tuwien.ase09.exception.EntityNotFoundException;
 import at.ac.tuwien.ase09.keycloak.AdminClient;
@@ -27,6 +28,9 @@ public class UserBean {
 	
 	@Inject
 	private InstitutionDataAccess institutionDataAccess;
+	
+	@Inject
+	private StockMarketGameDataAccess gameDataAccess;
 	
 	@Inject
 	private UserDataAccess userDataAccess;
@@ -94,5 +98,9 @@ public class UserBean {
 	
 	public String getEmailByUsername(String username){
 		return userDataAccess.getEmailByUsername(username);
+	}
+	
+	public long getRanking(Long portfolioId) {
+		return gameDataAccess.getRankByPortfolio(portfolioId);
 	}
 }

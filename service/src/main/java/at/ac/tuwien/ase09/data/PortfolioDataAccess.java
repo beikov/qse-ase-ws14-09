@@ -577,6 +577,7 @@ public class PortfolioDataAccess {
 					+ "FROM Portfolio p "
 					+ "LEFT JOIN FETCH p.game game "
 					+ "JOIN FETCH p.owner owner "
+					+ "LEFT JOIN FETCH p.followers "
 					+ "WHERE owner.id = :userId "
 					+ "AND (game IS NULL OR game.validTo > :now) and p.deleted=false "
 					+ "ORDER BY p.name", Portfolio.class)

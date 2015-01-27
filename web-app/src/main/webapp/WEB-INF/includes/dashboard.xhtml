@@ -12,18 +12,39 @@
 			<c:forEach items="#{portfolioBean.activeUserPortfolios}" var="portfolio">
 				<p:panel>
 					<f:facet name="header">
-						<h:link value="#{portfolio.name}" outcome="/portfolio/view.xhtml">
+						<h:link value="#{portfolio.name}" title="Börsenspiel-Details" outcome="/portfolio/view.xhtml" style="text-decoration: none;">
 							<f:param name="portfolioId" value="#{portfolio.id}"/>
 						</h:link>
 					</f:facet>
 				
 					<p:panelGrid columns="2" styleClass="no-border-grid">
+						<h:outputText value="Erstellt:" />
+						<h:outputText value="#{dateUtil.formatCalendar(portfolio.created)}" />
+						
 						<h:outputText value="Kapital" />
 						<h:outputText value="#{portfolio.currentCapital}" />
 						
 						<h:outputText value="Gewinn seit gestern" />
 						<h:outputText value="???" />
 					</p:panelGrid>
+					
+					<f:facet name="footer">
+						<c:if test="#{not empty portfolio.game}">
+							<h:link value="#{portfolio.game.name}" title="Zugehöriges Börsenspiel" outcome="/protected/stockmarketgame/stockmarketgameview.xhtml" style="text-decoration: none;">
+								<f:param name="gameId" value="#{portfolio.game.id}"/>
+							</h:link>
+							<h:link title="Rangliste" outcome="/protected/stockmarketgame/ranking" style="margin-left: 15px; text-decoration: none;">
+								<f:param name="stockMarketGameId" value="#{portfolio.game.id}"/>
+								<span class="fa fa-trophy" style="margin-right:2px;" />
+								#{userBean.getRanking(portfolio.id)}
+							</h:link>
+						</c:if>
+					
+						<h:panelGroup class="rank" layout="block" style="float: right;">
+							Followers: #{portfolio.followers.size()}
+						</h:panelGroup>
+						<div style="clear: both;" />
+					</f:facet>
 				</p:panel>
 			</c:forEach>
 			
