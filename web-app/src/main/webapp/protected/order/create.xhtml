@@ -4,12 +4,103 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:ase="http://java.sun.com/jsf/composite/portfoliosimcomponents"
 	template="/WEB-INF/templates/template.xhtml">
 
-	<ui:define name="body">
-		
+	<ui:define name="head">
+		<style type="text/css">
+			.selectRadio label {
+				margin-right: 30px;
+			}
+			
+			.selectRadio div.ui-radiobutton {
+				margin-right: 10px;
+			}
+			
+			.form-control {
+				height: 43px;
+			}
+		</style>
 	</ui:define>
-	
+
+	<ui:define name="metadata">
+		<f:metadata>
+			<f:viewParam name="action"
+				value="#{orderCreationViewBean.orderAction}" />
+			<f:viewParam name="valuePaper"
+				value="#{orderCreationViewBean.valuePaper}"
+				converter="valuePaperConverter" />
+		</f:metadata>
+	</ui:define>
+
+	<ui:define name="body">
+		<h:form id="orderForm">
+			<div class="row">
+				<h:panelGroup styleClass="col-md-8 form-group">
+					<p:outputLabel for="valuePaper" value="Wertpapier" />
+					<h:outputText id="valuePaper" styleClass="form-control"
+						value="#{orderCreationViewBean.valuePaper.name}" />
+				</h:panelGroup>
+			</div>
+			<div class="row">
+				<h:panelGroup styleClass="col-md-8 form-group">
+					<p:outputLabel for="orderAction" value="Orderart" />
+					<h:outputText id="orderAction" styleClass="form-control"
+						value="#{orderCreationViewBean.orderActionStr}" />
+				</h:panelGroup>
+			</div>
+			<div class="row">
+				<h:panelGroup styleClass="col-md-8 form-group">
+					<p:outputLabel for="orderType" value="Ordertyp" />
+					<p:selectOneRadio id="orderType"
+						value="#{orderCreationViewBean.orderType}" styleClass="form-control selectRadio">
+						<f:selectItems value="#{orderCreationViewBean.orderTypes}"
+							var="orderType" itemValue="#{orderType}"
+							itemLabel="#{orderType.displayName}" />
+						<p:ajax event="valueChange" update="limitArea" />
+					</p:selectOneRadio>
+				</h:panelGroup>
+			</div>
+			<div class="row">
+				<h:panelGroup styleClass="col-md-8 form-group">
+					<p:outputLabel for="validFrom" value="Ordertyp" />
+					<p:calendar id="validFrom" styleClass="form-control"
+									value="#{orderCreationViewBean.validFrom}"
+									required="true" />
+				</h:panelGroup>
+			</div>
+			<div class="row">
+				<h:panelGroup styleClass="col-md-8 form-group">
+					<p:outputLabel for="validTo" value="Ordertyp" />
+					<p:calendar id="validTo" styleClass="form-control"
+									value="#{orderCreationViewBean.validFrom}" />
+				</h:panelGroup>
+			</div>
+			<div class="container" style="padding-left: 0px; padding-right: 0px;" >
+				<div class="row">
+					<h:panelGroup styleClass="col-md-4 form-group" >
+						<p:outputLabel for="volume" value="Stück"/>
+						<pe:inputNumber id="volume" styleClass="form-control" value="#{orderCreationViewBean.volume}" />
+						
+						<p:outputLabel for="costs" value="Geschätzte Orderkosten"/>
+						<h:outputText id="costs" value="" styleClass="form-control" />
+					</h:panelGroup>
+					<h:panelGroup id="limitArea" styleClass="col-md-4">
+						<h:panelGroup styleClass="form-group" rendered="#{orderCreationViewBean.isLimitOrder()}" >
+							<p:outputLabel for="limit" value="Limit"/>
+							<pe:inputNumber id="limit" styleClass="form-control" value="#{orderCreationViewBean.limit}" symbol=" #{orderCreationViewBean.currencySymbol}" symbolPosition="s" />
+						</h:panelGroup>
+						<h:panelGroup styleClass="form-group" rendered="#{orderCreationViewBean.isLimitOrder()}" >
+							<p:outputLabel for="stopLimit" value="Limit"/>
+							<pe:inputNumber id="stopLimit" styleClass="form-control" value="#{orderCreationViewBean.stopLimit}" symbol=" #{orderCreationViewBean.currencySymbol}" symbolPosition="s" />
+						</h:panelGroup>
+					</h:panelGroup>
+				</div>
+			</div>
+			<p:commandButton value="Erstellen" action="#{orderCreationViewBean.create()}"/>
+			
+		</h:form>
+	</ui:define>
+
 </ui:composition>

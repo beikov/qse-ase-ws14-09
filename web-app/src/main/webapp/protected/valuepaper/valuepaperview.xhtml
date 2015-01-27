@@ -39,18 +39,18 @@
 		<h:form id="einzeltitelansicht">
 
 			<h3 style="margin-top: 0; float: left;">Einzeltitelansicht</h3>
-			
-				
-				<div style="float: right; margin-left: 5px;">
-					<a class="twitter-share-button" href="https://twitter.com/share"
-						data-text="Die #{valuePaperViewBean.valuePaper.type.label} von #{valuePaperViewBean.valuePaper.name} mit einem aktuellen Wert von #{valuePaperViewBean.lastPriceEntryString}!"
-						data-count="none"
-						data-hashtags="#{valuePaperViewBean.valuePaper.name},#{valuePaperViewBean.valuePaper.type.label},Börsenspiel" />
-				</div>
-				<div style="float: right;" class="fb-share-button"
-					data-href="#{socialMediaBean.absoluteApplicationUrl}"
-					data-layout="button"></div>
-			
+
+
+			<div style="float: right; margin-left: 5px;">
+				<a class="twitter-share-button" href="https://twitter.com/share"
+					data-text="Die #{valuePaperViewBean.valuePaper.type.label} von #{valuePaperViewBean.valuePaper.name} mit einem aktuellen Wert von #{valuePaperViewBean.lastPriceEntryString}!"
+					data-count="none"
+					data-hashtags="#{valuePaperViewBean.valuePaper.name},#{valuePaperViewBean.valuePaper.type.label},Börsenspiel" />
+			</div>
+			<div style="float: right;" class="fb-share-button"
+				data-href="#{socialMediaBean.absoluteApplicationUrl}"
+				data-layout="button"></div>
+
 
 			<div style="clear: both;" class="row">
 				<div class="col-md-7">
@@ -79,6 +79,24 @@
 						</p:panelGrid>
 
 					</p:panel>
+
+					<div>
+						<p:link styleClass="btn-buy" outcome="/protected/order/create.xhtml" title="Kaufen">
+							<span class="inline fa fa-shopping-cart" />
+							<span class="inline fa fa-plus" />
+							<f:param name="valuePaper" value="#{valuePaperViewBean.valuePaper.id}" />
+							<f:param name="action" value="BUY" />
+						</p:link>
+					</div>
+					<div>
+						<p:link styleClass="btn-sell" outcome="/protected/order/create.xhtml"
+							title="Verkaufen">
+							<span class="inline fa fa-shopping-cart" />
+							<span class="inline fa fa-minus" />
+							<f:param name="valuePaper" value="#{valuePaperViewBean.valuePaper.id}" />
+							<f:param name="action" value="SELL" />
+						</p:link>
+					</div>
 
 					<p:panel id="zusaetzlich" header="Zusätzliche Informationen"
 						toggleable="true" collapsed="true"
