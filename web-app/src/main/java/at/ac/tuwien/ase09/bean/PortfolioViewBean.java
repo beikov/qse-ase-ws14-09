@@ -318,7 +318,7 @@ public class PortfolioViewBean implements Serializable {
 	
 	private void initCurrentValueForPortfolio() {
 		BigDecimal value = portfolioDataAccess.getCurrentValueForPortfolio(portfolioId, conversionRateMap);
-		value = value.add(portfolio.getCurrentCapital().getValue());
+		//value = value.add(portfolio.getCurrentCapital().getValue());
 		currentValueForPortfolio = createMoney(value, portfolio.getCurrentCapital().getCurrency());
 	}
 	
@@ -336,7 +336,7 @@ public class PortfolioViewBean implements Serializable {
 			if (old.compareTo( BigDecimal.ZERO) == 0 || cur.compareTo( BigDecimal.ZERO) == 0) {
 				throw new AppException();
 			}
-			cur = cur.subtract(portfolio.getCurrentCapital().getValue());
+			//cur = cur.subtract(portfolio.getCurrentCapital().getValue());
 			performance = cur.subtract(old).multiply(new BigDecimal("100")).divide(old,4, RoundingMode.HALF_UP);
 		} catch(EntityNotFoundException e) {
 			throw new AppException();
