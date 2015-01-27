@@ -69,7 +69,7 @@ public class ValuePaperPriceEntryDataAccess {
 	public ValuePaperPriceEntry getLastPriceEntry(String code){
 		List<ValuePaperPriceEntry> priceEntryList = null;
 		try{
-			return em.createQuery("SELECT price FROM ValuePaperPriceEntry price JOIN price.valuePaper vp WHERE vp.code=:code ORDER BY price.created DESC", ValuePaperPriceEntry.class)
+			return em.createQuery("FROM ValuePaperPriceEntry price JOIN FETCH price.valuePaper vp WHERE vp.code=:code ORDER BY price.created DESC", ValuePaperPriceEntry.class)
 				.setParameter("code", code)
 				.setMaxResults(1)
 				.getSingleResult();

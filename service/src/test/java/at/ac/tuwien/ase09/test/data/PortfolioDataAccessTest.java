@@ -354,8 +354,9 @@ public class PortfolioDataAccessTest extends AbstractServiceTest<PortfolioDataAc
 		Map<String, BigDecimal> entries = new HashMap<>();
 		entries.put("2014-12-01", new BigDecimal("1000.00"));
 		
+		Map<Currency, BigDecimal> conversionRateMap = new HashMap<>();
 		// When
-		Map<String, BigDecimal> actual = portfolioDataAccess.getPortfolioChartEntries(portfolio);
+		Map<String, BigDecimal> actual = portfolioDataAccess.getPortfolioChartEntries(portfolio, conversionRateMap);
 		
 		// Then
 		assertEquals(entries, actual);
@@ -377,7 +378,8 @@ public class PortfolioDataAccessTest extends AbstractServiceTest<PortfolioDataAc
 		entries.put("2014-12-05", new BigDecimal("1015.00"));
 		
 		// When
-		Map<String, BigDecimal> actual = portfolioDataAccess.getPortfolioChartEntries(portfolio);
+		Map<Currency, BigDecimal> conversionRateMap = new HashMap<>();
+		Map<String, BigDecimal> actual = portfolioDataAccess.getPortfolioChartEntries(portfolio, conversionRateMap);
 		
 		// Then
 		assertEquals(entries, actual);

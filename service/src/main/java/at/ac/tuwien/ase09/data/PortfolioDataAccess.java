@@ -62,6 +62,29 @@ public class PortfolioDataAccess {
 	@Inject
 	private CurrencyConversionService currencyConversionService;
 	
+	public Map<Currency, BigDecimal> getConversionRateMapForPortfolio(Portfolio portfolio) {
+		Map<Currency, BigDecimal> conversionRateMap = new HashMap<>();
+		for (PortfolioValuePaper pvp : portfolio.getValuePapers()) {
+    		ValuePaper vp = pvp.getValuePaper();
+    		Currency currency = null;
+    		if (vp.getType() == ValuePaperType.BOND) {
+    			continue;
+    		} else if (vp.getType() == ValuePaperType.FUND) {
+    			currency = ((Fund) vp).getCurrency();
+    		} else if (vp.getType() == ValuePaperType.STOCK) {
+    			currency = ((Stock) vp).getCurrency();	
+    		}
+    		
+    		Currency portfolioCurrency = portfolio.getCurrentCapital().getCurrency(); 
+    		if (currency.getCurrencyCode().equals(portfolioCurrency.getCurrencyCode())) {
+    			continue;
+    		}
+    		BigDecimal conversionRate = currencyConversionService.getConversionRate(currency, portfolioCurrency);
+    		conversionRateMap.put(currency, conversionRate);
+    	}
+		return conversionRateMap;
+	}
+	
 	public List<Portfolio> getPortfolios() {
 		try{
 			return em.createQuery("FROM Portfolio", Portfolio.class).getResultList();
@@ -91,6 +114,10 @@ public class PortfolioDataAccess {
 	}
 	
 	public BigDecimal getCostValueForPortfolio(long portfolioId) {
+		return getCostValueForPortfolio(portfolioId, null);
+	}
+	
+	public BigDecimal getCostValueForPortfolio(long portfolioId, Map<Currency, BigDecimal> conversionRateMap) {
 		try{
 			List<PortfolioValuePaper> valuePapers = em.createQuery("from PortfolioValuePaper pvp join fetch pvp.portfolio where pvp.portfolio.id = :portfolioId", PortfolioValuePaper.class).setParameter("portfolioId", portfolioId).getResultList();
 			if (valuePapers.isEmpty()) {
@@ -99,6 +126,10 @@ public class PortfolioDataAccess {
 			Portfolio portfolio = valuePapers.get(0).getPortfolio();
 			BigDecimal total = new BigDecimal(0);
 			Currency portfolioCurrency = portfolio.getCurrentCapital().getCurrency();
+			if (conversionRateMap == null) {
+				conversionRateMap = new HashMap<>();
+			}
+			
 			for (PortfolioValuePaper pvp : valuePapers) {
 				BigDecimal value = pvp.getBuyPrice().multiply(new BigDecimal(pvp.getVolume()));
 				ValuePaper vp = pvp.getValuePaper(); 
@@ -110,7 +141,14 @@ public class PortfolioDataAccess {
 				}
 				
 				if (!portfolioCurrency.getCurrencyCode().equals(currency.getCurrencyCode())) {
-					BigDecimal conversionRate = currencyConversionService.getConversionRate(currency, portfolioCurrency);
+					BigDecimal conversionRate;
+					if (conversionRateMap.containsKey(currency)) {
+						conversionRate = conversionRateMap.get(currency);
+					}
+					else {
+						conversionRate = currencyConversionService.getConversionRate(currency, portfolioCurrency);
+						conversionRateMap.put(currency, conversionRate);
+					}
 					value = CurrencyConversionService.convert(value, conversionRate);
 				}
 				total = total.add(value);
@@ -124,13 +162,21 @@ public class PortfolioDataAccess {
 	}
 	
 	public BigDecimal getCurrentValueForPortfolio(long portfolioId) {
-		List<PortfolioValuePaper> valuePapers = em.createQuery("from PortfolioValuePaper pvp join fetch pvp.portfolio where pvp.portfolio.id = :portfolioId", PortfolioValuePaper.class).setParameter("portfolioId", portfolioId).getResultList();
+		return getCurrentValueForPortfolio(portfolioId, null);
+	}
+	
+	public BigDecimal getCurrentValueForPortfolio(long portfolioId, Map<Currency, BigDecimal> conversionRateMap) {
+		Portfolio portfolio = em.createQuery("from Portfolio p left join fetch p.valuePapers where p.id = :id", Portfolio.class).setParameter("id", portfolioId).getSingleResult();
+		Set<PortfolioValuePaper> valuePapers = portfolio.getValuePapers();
 		if (valuePapers.isEmpty()) {
 			return new BigDecimal(0);
 		}
-		Portfolio portfolio = valuePapers.get(0).getPortfolio();
 		BigDecimal total = portfolio.getCurrentCapital().getValue();
 		Currency portfolioCurrency = portfolio.getCurrentCapital().getCurrency();
+		if (conversionRateMap == null) {
+			conversionRateMap = new HashMap<>();
+		}
+		
 		for (PortfolioValuePaper pvp : valuePapers) {
 			BigDecimal latestPrice;
 			try {
@@ -149,7 +195,13 @@ public class PortfolioDataAccess {
 			}
 			
 			if (!portfolioCurrency.getCurrencyCode().equals(currency.getCurrencyCode())) {
-				BigDecimal conversionRate = currencyConversionService.getConversionRate(currency, portfolioCurrency);
+				BigDecimal conversionRate;
+				if (conversionRateMap.containsKey(currency)) {
+					conversionRate = conversionRateMap.get(currency);
+				} else {
+					conversionRate = currencyConversionService.getConversionRate(currency, portfolioCurrency);
+					conversionRateMap.put(currency, conversionRate);
+				}
 				value = CurrencyConversionService.convert(value, conversionRate);
 			}
 			total = total.add(value);
@@ -325,7 +377,7 @@ public class PortfolioDataAccess {
 		return payed;
 	}*/
 
-	public Map<String, BigDecimal> getPortfolioChartEntries(Portfolio portfolio) {
+	public Map<String, BigDecimal> getPortfolioChartEntries(Portfolio portfolio, Map<Currency, BigDecimal> conversionRateMap) {
 		long startTime = System.currentTimeMillis();
 		
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
@@ -335,7 +387,7 @@ public class PortfolioDataAccess {
 		Map<String, BigDecimal> changeCarryMap = new HashMap<>(); 
 		BigDecimal changeCarry = new BigDecimal(0);
 		Map<String, BigDecimal> pointResult = new HashMap<>();
-		Map<Currency, BigDecimal> conversionRateMap = new HashMap<>();
+		//Map<Currency, BigDecimal> conversionRateMap = new HashMap<>();
 		Set<TransactionEntry> transactions = portfolio.getTransactionEntries();
 		
 		for (Iterator<TransactionEntry> iterator = transactions.iterator(); iterator.hasNext();) {

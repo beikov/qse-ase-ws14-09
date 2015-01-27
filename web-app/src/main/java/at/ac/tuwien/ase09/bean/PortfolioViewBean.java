@@ -26,6 +26,7 @@ import org.primefaces.model.chart.PieChartModel;
 
 import at.ac.tuwien.ase09.context.UserContext;
 import at.ac.tuwien.ase09.context.WebUserContext;
+import at.ac.tuwien.ase09.currency.CurrencyConversionService;
 import at.ac.tuwien.ase09.data.PortfolioDataAccess;
 import at.ac.tuwien.ase09.data.UserDataAccess;
 import at.ac.tuwien.ase09.data.ValuePaperPriceEntryDataAccess;
@@ -92,6 +93,9 @@ public class PortfolioViewBean implements Serializable {
 	private Money currentValueForPortfolio;
 	private Double portfolioPerformance = null;
 	//private Map<String,Money> totalPayedMap = new HashMap<>();
+	
+	private Map<Currency, BigDecimal> conversionRateMap = new HashMap<>();
+	
 	private Map<PortfolioValuePaper,BigDecimal> profitMap = new HashMap<>();
 	private Map<PortfolioValuePaper, Double> performanceMap = new HashMap<>();
 	
@@ -125,6 +129,7 @@ public class PortfolioViewBean implements Serializable {
 			context.responseComplete();
 			return;
 		}
+    	conversionRateMap = portfolioDataAccess.getConversionRateMapForPortfolio(portfolio);
     	
     	owner = portfolio.getOwner();
     	user = userContext.getUserId() == null ? null : userDataAccess.getUserById(userContext.getUserId());
@@ -137,6 +142,12 @@ public class PortfolioViewBean implements Serializable {
         transactions = new ArrayList<TransactionEntry>(portfolio.getTransactionEntries());
         news = portfolioDataAccess.getNewsForPortfolio(portfolio);
         opinions = portfolioDataAccess.getAnalystOpinionsForPortfolio(portfolio);
+        
+        initProfitMap();
+        initCostValueForPortfolio(); //
+        initCurrentValueForPortfolio();
+        initPortfolioPerformance();
+        initPerformanceMap();
         
         /*for (PortfolioValuePaper pvp : portfolio.getValuePapers()) {
         	String code = pvp.getValuePaper().getCode();
@@ -269,13 +280,17 @@ public class PortfolioViewBean implements Serializable {
 		return totalPayedMap.get(code);
 	}*/
 	
+	private void initProfitMap() {
+		for (PortfolioValuePaper pvp : portfolio.getValuePapers()) {
+			if (profitMap.containsKey(pvp))
+				continue;
+			BigDecimal profit = new BigDecimal(portfolioDataAccess.getProfit(pvp));
+			profitMap.put(pvp, profit);
+		}
+	}
 	
 	public BigDecimal getProfit(PortfolioValuePaper pvp) {
-		if (profitMap.containsKey(pvp))
-			return profitMap.get(pvp);
-		BigDecimal profit = new BigDecimal(portfolioDataAccess.getProfit(pvp));
-		profitMap.put(pvp, profit);
-		return profit;
+		return profitMap.get(pvp);
 	}
 	
 	
@@ -292,31 +307,29 @@ public class PortfolioViewBean implements Serializable {
 		return filteredOrders;
 	}
 	
-	public Money getCostValueForPortfolio() {
-		if (costValueForPortfolio != null) {
-			return costValueForPortfolio;
-		}
-		BigDecimal cost = portfolioDataAccess.getCostValueForPortfolio(portfolioId);
+	private void initCostValueForPortfolio() {
+		BigDecimal cost = portfolioDataAccess.getCostValueForPortfolio(portfolioId, conversionRateMap);
 		costValueForPortfolio = createMoney(cost, portfolio.getCurrentCapital().getCurrency());
+	}
+	
+	public Money getCostValueForPortfolio() {
 		return costValueForPortfolio;
 	}
 	
-	public Money getCurrentValueForPortfolio() {
-		if (currentValueForPortfolio != null) {
-			return currentValueForPortfolio;
-		}
-		BigDecimal value = portfolioDataAccess.getCurrentValueForPortfolio(portfolioId);
+	private void initCurrentValueForPortfolio() {
+		BigDecimal value = portfolioDataAccess.getCurrentValueForPortfolio(portfolioId, conversionRateMap);
 		currentValueForPortfolio = createMoney(value, portfolio.getCurrentCapital().getCurrency());
+	}
+	
+	public Money getCurrentValueForPortfolio() {
 		return currentValueForPortfolio;
 	}
 	
-	public Double getPortfolioPerformance() {
-		if (portfolioPerformance != null) {
-			return portfolioPerformance;
-		}
+	
+	private void initPortfolioPerformance() {
 		BigDecimal performance;
 		try {
-			performance = portfolioDataAccess.getPortfolioPerformance(portfolioId);
+			//performance = portfolioDataAccess.getPortfolioPerformance(portfolioId);
 			BigDecimal old = getCostValueForPortfolio().getValue();
 			BigDecimal cur = getCurrentValueForPortfolio().getValue();
 			if (old.compareTo( BigDecimal.ZERO) == 0 || cur.compareTo( BigDecimal.ZERO) == 0) {
@@ -330,17 +343,20 @@ public class PortfolioViewBean implements Serializable {
 			performance = new BigDecimal(0);
 		}
 		portfolioPerformance = performance.doubleValue();
+	}
+	public Double getPortfolioPerformance() {
 		return portfolioPerformance;
 	}
 	
+	private void initPerformanceMap() {
+		for (PortfolioValuePaper pvp : portfolio.getValuePapers()) {
+			double performance = portfolioDataAccess.getChange(pvp);
+			performanceMap.put(pvp, performance);
+		}
+	}
 	
 	public double getChange(PortfolioValuePaper pvp) {
-		if (performanceMap.containsKey(pvp)) {
-			return performanceMap.get(pvp);
-		}
-		double performance = portfolioDataAccess.getChange(pvp);
-		performanceMap.put(pvp, performance);
-    	return performance;
+		return performanceMap.get(pvp);
 	}
 	
 	public boolean isHidden() {
@@ -442,7 +458,7 @@ public class PortfolioViewBean implements Serializable {
 	
 	private void createPortfolioChart() {
 		long startTime = System.currentTimeMillis();
-		Map<String, BigDecimal> pointResult = portfolioDataAccess.getPortfolioChartEntries(portfolio);
+		Map<String, BigDecimal> pointResult = portfolioDataAccess.getPortfolioChartEntries(portfolio, conversionRateMap);
 		if (pointResult.size() == 1) {
 			// only portfolio creation entry
 			return;
