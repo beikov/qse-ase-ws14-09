@@ -4,6 +4,12 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.Transient;
 
+/**
+ * KeSt
+ * 
+ * @author Christian
+ *
+ */
 @Entity
 @DiscriminatorValue(TransactionType.TYPE_TAX)
 public class TaxTransactionEntry extends TransactionEntry {

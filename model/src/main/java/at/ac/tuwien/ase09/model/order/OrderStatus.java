@@ -4,5 +4,7 @@ public enum OrderStatus {
 
 	OPEN,
 	CLOSED,
-	EXPIRED;
+	EXPIRED,
+	CANCELED,
+	ERROR;
 }

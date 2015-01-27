@@ -8,6 +8,12 @@ import javax.persistence.Transient;
 
 import at.ac.tuwien.ase09.model.order.Order;
 
+/**
+ * Ordergebühren
+ * 
+ * @author Christian
+ *
+ */
 @Entity
 @DiscriminatorValue(TransactionType.TYPE_ORDER_FEE)
 public class OrderFeeTransactionEntry extends TransactionEntry {

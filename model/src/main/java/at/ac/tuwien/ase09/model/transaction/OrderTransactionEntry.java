@@ -8,6 +8,12 @@ import javax.persistence.Transient;
 
 import at.ac.tuwien.ase09.model.order.Order;
 
+/**
+ * Durchführung der Order, Verkauf erzeugt TaxTransactionEntry für KeSt
+ * 
+ * @author Christian
+ *
+ */
 @Entity
 @DiscriminatorValue(TransactionType.TYPE_ORDER)
 public class OrderTransactionEntry extends TransactionEntry {

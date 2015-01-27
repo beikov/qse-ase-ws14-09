@@ -8,6 +8,11 @@ import javax.persistence.Transient;
 
 import at.ac.tuwien.ase09.model.ValuePaper;
 
+/**
+ * Dividende erzeugt PayoutTransactionEntry und TaxTransactionEntry für KeSt
+ * 
+ * @author Christian
+ */
 @Entity
 @DiscriminatorValue(TransactionType.TYPE_PAYOUT)
 public class PayoutTransactionEntry extends TransactionEntry {

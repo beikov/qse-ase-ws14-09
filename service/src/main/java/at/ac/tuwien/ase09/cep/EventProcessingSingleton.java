@@ -1,35 +1,26 @@
 package at.ac.tuwien.ase09.cep;
 
-import java.util.Calendar;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.annotation.Resource;
 import javax.ejb.ConcurrencyManagement;
 import javax.ejb.ConcurrencyManagementType;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
-import javax.enterprise.concurrent.ManagedExecutorService;
-import javax.inject.Inject;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
+import javax.enterprise.event.TransactionPhase;
+import javax.enterprise.inject.Produces;
 
-import at.ac.tuwien.ase09.data.WatchDataAccess;
-import at.ac.tuwien.ase09.exception.AppException;
-import at.ac.tuwien.ase09.model.Watch;
+import at.ac.tuwien.ase09.event.Added;
+import at.ac.tuwien.ase09.model.Stock;
+import at.ac.tuwien.ase09.model.ValuePaperPriceEntry;
 import at.ac.tuwien.ase09.model.event.Constants;
 import at.ac.tuwien.ase09.model.event.StockDTO;
 import at.ac.tuwien.ase09.model.event.ValuePaperPriceEntryDTO;
-import at.ac.tuwien.ase09.model.notification.WatchTriggeredNotification;
-import at.ac.tuwien.ase09.parser.PWatchCompiler;
-import at.ac.tuwien.ase09.service.NotificationService;
 
 import com.espertech.esper.client.Configuration;
 import com.espertech.esper.client.EPServiceProvider;
 import com.espertech.esper.client.EPServiceProviderManager;
-import com.espertech.esper.client.EPStatement;
-import com.espertech.esper.client.EventBean;
-import com.espertech.esper.client.UpdateListener;
 
 @Singleton
 @Startup
@@ -37,15 +28,7 @@ import com.espertech.esper.client.UpdateListener;
 public class EventProcessingSingleton {
 
 	private static final boolean DEBUG = true;
-	private final ConcurrentMap<Long, EPStatement> statements = new ConcurrentHashMap<>();
 	private EPServiceProvider epService;
-	
-	@Inject
-	private WatchDataAccess watchDataAccess;
-	@Inject
-	private NotificationService notificationService;
-	@Resource
-	private ManagedExecutorService executorService;
 	
 	@PostConstruct
 	void init() {
@@ -67,48 +50,6 @@ public class EventProcessingSingleton {
 		}
 		
 		epService = EPServiceProviderManager.getDefaultProvider(config);
-		
-		for (Watch w : watchDataAccess.getWatches()) {
-			addWatch(w);
-		}
-	}
-	
-	public void addEvent(ValuePaperPriceEntryDTO event) {
-		epService.getEPRuntime().sendEvent(event);
-	}
-	
-	public void addEvent(StockDTO event) {
-		epService.getEPRuntime().sendEvent(event);
-	}
-	
-	public void removeWatch(Long watchId) {
-		if (watchId == null) {
-			throw new NullPointerException("watchId");
-		}
-		
-		EPStatement watchStatement = statements.remove(watchId);
-		
-		if (watchStatement == null) {
-			throw new AppException("Illegal concurrent attempt to remove the already removed watch statement with the id: " + watchId);
-		}
-		
-		watchStatement.destroy();
-	}
-	
-	public void addWatch(Watch watch) {
-		if (statements.containsKey(watch.getId())) {
-			throw new AppException("A watch statement for the id '" + watch.getId() + "' already exists!");
-		}
-		
-		String eplExpression = PWatchCompiler.compileEpl(watch.getExpression(), watch.getValuePaper().getId());
-		EPStatement watchStatement = epService.getEPAdministrator().createEPL(eplExpression);
-		
-		if (statements.putIfAbsent(watch.getId(), watchStatement) != null) {
-			throw new AppException("Illegal concurrent attempt to add the already existing watch statement with the id: " + watch.getId());
-		}
-		
-		watchStatement.addListener(new WatchFireListener(executorService, notificationService, watch));
-		watchStatement.start();
 	}
 	
 	@PreDestroy
@@ -116,29 +57,17 @@ public class EventProcessingSingleton {
 		epService.destroy();
 	}
 	
-	private static class WatchFireListener implements UpdateListener {
-		
-		private final ManagedExecutorService executorService;
-		private final NotificationService notificationService;
-		private final Watch watch;
+	@Produces
+	@ApplicationScoped
+	public EPServiceProvider getEPServiceProvider() {
+		return epService;
+	}
 
-		public WatchFireListener(ManagedExecutorService executorService, NotificationService notificationService, Watch watch) {
-			this.executorService = executorService;
-			this.notificationService = notificationService;
-			this.watch = watch;
-		}
+	public void onPriceEntryAdded(@Observes(during = TransactionPhase.AFTER_COMPLETION) @Added ValuePaperPriceEntryDTO event) {
+		epService.getEPRuntime().sendEvent(event);
+	}
 
-		@Override
-		public void update(EventBean[] newEvents, EventBean[] oldEvents) {
-			for (int i = 0; i < newEvents.length; i++) {
-				executorService.submit(() -> {
-					WatchTriggeredNotification n = new WatchTriggeredNotification();
-					n.setCreated(Calendar.getInstance());
-					n.setUser(watch.getOwner());
-					n.setWatch(watch);
-					notificationService.addNotification(n);
-				});
-			}
-		}
+	public void onStockUpdated(@Observes(during = TransactionPhase.AFTER_COMPLETION) @Added StockDTO event) {
+		epService.getEPRuntime().sendEvent(event);
 	}
 }

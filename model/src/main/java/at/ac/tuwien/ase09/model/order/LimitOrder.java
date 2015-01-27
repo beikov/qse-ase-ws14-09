@@ -2,15 +2,11 @@ package at.ac.tuwien.ase09.model.order;
 
 import java.math.BigDecimal;
 
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
-import javax.persistence.Column;
+import javax.persistence.Basic;
 import javax.persistence.DiscriminatorValue;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Transient;
-
-import at.ac.tuwien.ase09.model.Money;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @DiscriminatorValue(OrderType.TYPE_LIMIT)
@@ -26,6 +22,8 @@ public class LimitOrder extends Order {
 		return OrderType.LIMIT;
 	}
 
+	@NotNull
+	@Basic(optional = false)
 	public BigDecimal getLimit() {
 		return limit;
 	}

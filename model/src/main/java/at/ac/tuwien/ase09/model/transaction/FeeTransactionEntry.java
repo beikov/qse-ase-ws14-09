@@ -4,6 +4,12 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.Transient;
 
+/**
+ * Portfoliogebühr
+ * 
+ * @author Christian
+ *
+ */
 @Entity
 @DiscriminatorValue(TransactionType.TYPE_FEE)
 public class FeeTransactionEntry extends TransactionEntry {

@@ -2,12 +2,8 @@ package at.ac.tuwien.ase09.service;
 
 import javax.ejb.Stateless;
 import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.enterprise.event.TransactionPhase;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
 
-import at.ac.tuwien.ase09.cep.EventProcessingSingleton;
 import at.ac.tuwien.ase09.data.WatchDataAccess;
 import at.ac.tuwien.ase09.event.Added;
 import at.ac.tuwien.ase09.event.Deleted;
@@ -27,8 +23,6 @@ public class WatchService extends AbstractService {
 	@Inject
 	@Deleted
 	private Event<Watch> watchDeleted;
-	@Inject
-	private EventProcessingSingleton epService;
 	@Inject
 	private WatchDataAccess watchDataAccess;
 	
@@ -53,18 +47,5 @@ public class WatchService extends AbstractService {
 		em.remove(em.getReference(Watch.class, watch.getId()));
 		em.flush();
 		watchDeleted.fire(watch);
-	}
-	
-	public void onWatchAdded(@Observes(during = TransactionPhase.AFTER_COMPLETION) @Added Watch watch) {
-		epService.addWatch(watch);
-	}
-	
-	public void onWatchUpdated(@Observes(during = TransactionPhase.AFTER_COMPLETION) @Updated Watch watch) {
-		epService.removeWatch(watch.getId());
-		epService.addWatch(watch);
-	}
-	
-	public void onWatchDeleted(@Observes(during = TransactionPhase.AFTER_COMPLETION) @Deleted Watch watch) {
-		epService.removeWatch(watch.getId());
 	}
 }

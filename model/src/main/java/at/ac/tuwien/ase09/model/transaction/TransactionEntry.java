@@ -9,6 +9,7 @@ import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
+import javax.persistence.PrePersist;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
@@ -62,5 +63,10 @@ public abstract class TransactionEntry extends BaseEntity<Long> {
 
 	public void setCreated(Calendar created) {
 		this.created = created;
+	}
+	
+	@PrePersist
+	private void onPrePersist(){
+		created = Calendar.getInstance();
 	}
 }
