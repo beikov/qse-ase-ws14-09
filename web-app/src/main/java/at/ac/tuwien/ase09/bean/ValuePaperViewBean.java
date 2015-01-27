@@ -334,11 +334,11 @@ public class ValuePaperViewBean implements Serializable{
 			}
 
 			if(s.getMarketCap() != null){
-				this.additionalValuePaperAttributes.put("Market Cap:", s.getMarketCap().toString());
+				this.additionalValuePaperAttributes.put("Börsenwert:", s.getMarketCap().toString());
 			}
 
 			if(s.getEnterpriseValue() != null){
-				this.additionalValuePaperAttributes.put("Enterprise Value:", s.getEnterpriseValue().toString());
+				this.additionalValuePaperAttributes.put("Unternehmenswert:", s.getEnterpriseValue().toString());
 			}
 
 			if(s.getTrailingPE() != null){
@@ -354,19 +354,19 @@ public class ValuePaperViewBean implements Serializable{
 			}
 
 			if(s.getPriceSales() != null){
-				this.additionalValuePaperAttributes.put("Price Sales:", s.getPriceSales().toString());
+				this.additionalValuePaperAttributes.put("Kurs-Umsatz-Verhältnis:", s.getPriceSales().toString());
 			}
 
 			if(s.getPriceBook() != null){
-				this.additionalValuePaperAttributes.put("Price Book:", s.getPriceBook().toString());
+				this.additionalValuePaperAttributes.put("Kurs-Buchwert-Verhältnis:", s.getPriceBook().toString());
 			}
 
 			if(s.getEnterpriseValueRevenue() != null){
-				this.additionalValuePaperAttributes.put("Enterprise Value Revenue:", s.getEnterpriseValueRevenue().toString());
+				this.additionalValuePaperAttributes.put("Unternehmenswert zu Umsatz:", s.getEnterpriseValueRevenue().toString());
 			}
 
 			if(s.getEnterpriseValueEBITDA() != null){
-				this.additionalValuePaperAttributes.put("Enterprise Value EBITDA:", s.getEnterpriseValueEBITDA().toString());
+				this.additionalValuePaperAttributes.put("Unternehmenswert zu EBITDA:", s.getEnterpriseValueEBITDA().toString());
 			}
 
 			if(s.getFiscalYearEnds() != null){
@@ -378,7 +378,7 @@ public class ValuePaperViewBean implements Serializable{
 			}
 
 			if(s.getProfitMargin() != null){
-				this.additionalValuePaperAttributes.put("Profit Margin:", s.getProfitMargin().toString());
+				this.additionalValuePaperAttributes.put("Gewinnspanne:", s.getProfitMargin().toString());
 			}
 
 			if(s.getOperatingMargin() != null){
@@ -386,15 +386,15 @@ public class ValuePaperViewBean implements Serializable{
 			}
 
 			if(s.getReturnonAssets() != null){
-				this.additionalValuePaperAttributes.put("Return on Assets:", s.getReturnonAssets().toString());
+				this.additionalValuePaperAttributes.put("Vermögensrendite:", s.getReturnonAssets().toString());
 			}
 
 			if(s.getReturnonEquity() != null){
-				this.additionalValuePaperAttributes.put("Return on Equity:", s.getReturnonEquity().toString());
+				this.additionalValuePaperAttributes.put("Eigenkapitalrendite:", s.getReturnonEquity().toString());
 			}
 
 			if(s.getRevenue() != null){
-				this.additionalValuePaperAttributes.put("Revenue:", s.getRevenue().toString());
+				this.additionalValuePaperAttributes.put("Umsatz:", s.getRevenue().toString());
 			}
 
 			if(s.getRevenuePerShare() != null){
@@ -406,11 +406,11 @@ public class ValuePaperViewBean implements Serializable{
 			}
 
 			if(s.getGrossProfit() != null){
-				this.additionalValuePaperAttributes.put("Gross Profit:", s.getGrossProfit().toString());
+				this.additionalValuePaperAttributes.put("Bruttogewinn:", s.getGrossProfit().toString());
 			}
 
 			if(s.getEbitda() != null){
-				this.additionalValuePaperAttributes.put("Ebitda:", s.getEbitda().toString());
+				this.additionalValuePaperAttributes.put("operativer Gewinn:", s.getEbitda().toString());
 			}
 
 			if(s.getNetIncomeAvltoCommon() != null){
@@ -426,19 +426,19 @@ public class ValuePaperViewBean implements Serializable{
 			}
 
 			if(s.getTotalCash() != null){
-				this.additionalValuePaperAttributes.put("Total Cash:", s.getTotalCash().toString());
+				this.additionalValuePaperAttributes.put("Totaler Cash-Flow:", s.getTotalCash().toString());
 			}
 
 			if(s.getTotalCashPerShare() != null){
-				this.additionalValuePaperAttributes.put("Total Cash per Share:", s.getTotalCashPerShare().toString());
+				this.additionalValuePaperAttributes.put("Totaler Cash-Flow/Aktie:", s.getTotalCashPerShare().toString());
 			}
 
 			if(s.getTotalDebt() != null){
-				this.additionalValuePaperAttributes.put("Total Debt:", s.getTotalDebt().toString());
+				this.additionalValuePaperAttributes.put("Gesamtverschuldung:", s.getTotalDebt().toString());
 			}
 
 			if(s.getTotalDebtEquity() != null){
-				this.additionalValuePaperAttributes.put("Total Debt Equity:", s.getTotalDebtEquity().toString());
+				this.additionalValuePaperAttributes.put("Eigenkapitalüberdeckung:", s.getTotalDebtEquity().toString());
 			}
 
 			if(s.getCurrentRatio() != null){
@@ -450,7 +450,7 @@ public class ValuePaperViewBean implements Serializable{
 			}
 
 			if(s.getOperatingCashFlow() != null){
-				this.additionalValuePaperAttributes.put("Operatin Cashflow:", s.getOperatingCashFlow().toString());
+				this.additionalValuePaperAttributes.put("Operativer Cash-Flow:", s.getOperatingCashFlow().toString());
 			}
 
 			if(s.getLeveredFreeCashFlow() != null){
@@ -458,11 +458,11 @@ public class ValuePaperViewBean implements Serializable{
 			}
 
 			if(s.getBeta() != null){
-				this.additionalValuePaperAttributes.put("Beta:", s.getBeta().toString());
+				this.additionalValuePaperAttributes.put("Betafaktor:", s.getBeta().toString());
 			}
 
 			if(s.getP_52_WeekChange() != null){
-				this.additionalValuePaperAttributes.put("P 52 Week Change:", s.getP_52_WeekChange().toString());
+				this.additionalValuePaperAttributes.put("52-Wochen-Änderung:", s.getP_52_WeekChange().toString());
 			}
 
 			if(s.getsP50052_WeekChange() != null){
@@ -470,11 +470,11 @@ public class ValuePaperViewBean implements Serializable{
 			}
 
 			if(s.getP_52_WeekHigh() != null){
-				this.additionalValuePaperAttributes.put("P 52 Week High:", s.getP_52_WeekHigh().toString());
+				this.additionalValuePaperAttributes.put("52-Wochen-Hoch:", s.getP_52_WeekHigh().toString());
 			}
 
 			if(s.getP_52_WeekLow() != null){
-				this.additionalValuePaperAttributes.put("P 52 Week Low:", s.getP_52_WeekLow().toString());
+				this.additionalValuePaperAttributes.put("52-Wochen-Tief:", s.getP_52_WeekLow().toString());
 			}
 
 			if(s.getP_50_DayMovingAverage() != null){
@@ -486,31 +486,31 @@ public class ValuePaperViewBean implements Serializable{
 			}
 
 			if(s.getAvgVol_3month() != null){
-				this.additionalValuePaperAttributes.put("Average Volume 3 Month:", s.getAvgVol_3month().toString());
+				this.additionalValuePaperAttributes.put("Durchschn. Handelsvolumen(3 Monate):", s.getAvgVol_3month().toString());
 			}
 
 			if(s.getAvgVol_10day() != null){
-				this.additionalValuePaperAttributes.put("Average Volume 10 days:", s.getAvgVol_10day().toString());
+				this.additionalValuePaperAttributes.put("Durchschn. Handelsvolumen(10 Tage):", s.getAvgVol_10day().toString());
 			}
 
 			if(s.getSharesOutstanding() != null){
-				this.additionalValuePaperAttributes.put("Shares Outstanding:", s.getSharesOutstanding().toString());
+				this.additionalValuePaperAttributes.put("Aktien im Umlauf:", s.getSharesOutstanding().toString());
 			}
 
 			if(s.getFloatVal() != null){
-				this.additionalValuePaperAttributes.put("Float Val:", s.getFloatVal().toString());
+				this.additionalValuePaperAttributes.put("Wert der Aktien in Streubesitz:", s.getFloatVal().toString());
 			}
 
 			if(s.getPercentageHeldbyInsiders() != null){
-				this.additionalValuePaperAttributes.put("Percentage held by Insiders:", s.getPercentageHeldbyInsiders().toString());
+				this.additionalValuePaperAttributes.put("% gehalten von Insidern:", s.getPercentageHeldbyInsiders().toString());
 			}
 
 			if(s.getPercentageHeldbyInstitutions() != null){
-				this.additionalValuePaperAttributes.put("Percentage held by Institutions:", s.getPercentageHeldbyInstitutions().toString());
+				this.additionalValuePaperAttributes.put("% gehlaten von Institutionen:", s.getPercentageHeldbyInstitutions().toString());
 			}
 
 			if(s.getSharesShortCurrentMonth() != null){
-				this.additionalValuePaperAttributes.put("Shares Short Current Month:", s.getSharesShortCurrentMonth().toString());
+				this.additionalValuePaperAttributes.put("Aktien im Shortverkauf(akt. Monat):", s.getSharesShortCurrentMonth().toString());
 			}
 
 			if(s.getShortRatio() != null){
@@ -542,11 +542,11 @@ public class ValuePaperViewBean implements Serializable{
 			}
 
 			if(s.getP_5YearAverageDividendYield() != null){
-				this.additionalValuePaperAttributes.put("P 5 Year Average Dividend Yield:", s.getP_5YearAverageDividendYield().toString());
+				this.additionalValuePaperAttributes.put("Durchschn. Dividendenrendite(5 Jahre):", s.getP_5YearAverageDividendYield().toString());
 			}
 
 			if(s.getPayoutRatio() != null){
-				this.additionalValuePaperAttributes.put("Payout Ratio:", s.getPayoutRatio().toString());
+				this.additionalValuePaperAttributes.put("Auszahlungskurs:", s.getPayoutRatio().toString());
 			}
 
 			if(s.getDividendDate() != null){
