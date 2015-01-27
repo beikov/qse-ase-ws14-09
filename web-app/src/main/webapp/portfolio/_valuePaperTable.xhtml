@@ -25,9 +25,6 @@
 	    </p:column>
 	    <p:column headerText="Einstandswert *">
 	        <h:outputText value="#{pvp.buyPrice}" /><h:outputText value=" #{portfolioViewBean.getCurrency(pvp.valuePaper)}" />
-	    	<!-- <c:set var="payedLong" value="#{portfolioViewBean.getTotalPayed(pvp.valuePaper.code).value.longValue()}" />
-	        <h:outputText value="#{portfolioViewBean.portfolio.currentCapital.currency.symbol}" />
-	        <h:outputText value="#{payedLong/pvp.volume}" /> -->
 	    </p:column>
 	    <p:column headerText="Gewinn/Verlust *">
 	        <h:outputText value="#{portfolioViewBean.getProfit(pvp)}" /><h:outputText value=" #{portfolioViewBean.getCurrency(pvp.valuePaper)}" />
@@ -38,31 +35,25 @@
 	    
 	    <p:column width="180" styleClass="links">
 	    	<div>
-		    	<p:link styleClass="btn-details" outcome="/protected/valuepaper/valuepaperview.xhtml" >
+		    	<p:link styleClass="btn-details" outcome="/protected/valuepaper/valuepaperview.xhtml" title="Details">
 		    		<span class="fa fa-search" />
 		    		<f:param name="valuePaperCode" value="#{pvp.valuePaper.code}" />
 		    	</p:link>
-		    	<!-- <p:tooltip for="btn-details" value="Details" /> -->
 		    </div>
 		    <div>	
-		    	<p:link styleClass="btn-buy" outcome="/index.xhtml">
+		    	<p:link styleClass="btn-buy" outcome="/index.xhtml" title="Kaufen">
 		    		<span class="inline fa fa-shopping-cart" />
 		    		<span class="inline fa fa-plus" />
 		    		<f:param name="valuePaperCode" value="#{pvp.valuePaper.code}" />
 		    	</p:link>
-		    	<!-- <p:tooltip for="btn-buy" value="Kaufen" /> -->
 		    </div>
 		    <div>
-		    	<p:link styleClass="btn-sell" outcome="/index.xhtml">
+		    	<p:link styleClass="btn-sell" outcome="/index.xhtml" title="Verkaufen">
 		    		<span class="inline fa fa-shopping-cart" />
 		    		<span class="inline fa fa-minus" />
 		    		<f:param name="valuePaperCode" value="#{pvp.valuePaper.code}" />
 		    	</p:link>
-		    	<!-- <p:tooltip for="btn-sell" value="Verkaufen" /> -->
 	    	</div>
-		    	
-		    	<!-- <a href="/valuepaper/valuepaperview.xhtml?valuePaperCode=#{pvp.valuePaper.code}" class="btn btn-default btn-md"><span class="glyphicon glyphicon-search" aria-hidden="true" /></a>
-				<a href="/protected/portfolio/list.xhtml?valuePaperId=#{pvp.valuePaper.id}" class="btn btn-default btn-md"><span class="glyphicon glyphicon glyphicon-usd" aria-hidden="true" /></a> -->
 		</p:column>
 	</p:dataTable>
 
