@@ -196,8 +196,12 @@ public class ValuePaperViewBean implements Serializable{
 	}
 	
 	public String getLastPriceEntryString() {
+		
+		if(getLastPriceEntry() == null){
+			return "-";
+		}
 			
-			switch(valuePaper.getType()){
+		switch(valuePaper.getType()){
 			case STOCK:
 				if(((Stock)valuePaper).getCurrency() != null){
 					return getLastPriceEntry().getPrice().toString() + "" + ((Stock)valuePaper).getCurrency().getSymbol();
@@ -216,7 +220,7 @@ public class ValuePaperViewBean implements Serializable{
 				
 			default:			
 				return getLastPriceEntry().getPrice().toString()+"%";
-			}
+		}
 		
 	}
 
