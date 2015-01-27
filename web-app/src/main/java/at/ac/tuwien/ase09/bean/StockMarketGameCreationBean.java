@@ -10,7 +10,6 @@ import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 
-import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseId;
@@ -41,7 +40,6 @@ import at.ac.tuwien.ase09.model.PortfolioSetting;
 import at.ac.tuwien.ase09.model.Stock;
 import at.ac.tuwien.ase09.model.StockBond;
 import at.ac.tuwien.ase09.model.StockMarketGame;
-import at.ac.tuwien.ase09.model.User;
 import at.ac.tuwien.ase09.model.ValuePaper;
 import at.ac.tuwien.ase09.model.ValuePaperType;
 import at.ac.tuwien.ase09.service.StockMarketGameService;
@@ -365,7 +363,14 @@ public class StockMarketGameCreationBean implements Serializable {
 		return valuePaperScreenerDataAccess.getUsedIndexes();
 	}
 	public List<String> getUsedCountries(){
-		return valuePaperScreenerDataAccess.getUsedCountries();
+		
+		List<String> countries = valuePaperScreenerDataAccess.getUsedCountries();
+		
+		if(countries.contains(null)){
+			countries.remove(null);
+		}
+		
+		return countries;
 	}
 
 	public void createStockMarketGame(){

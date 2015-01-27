@@ -61,12 +61,16 @@
 										<h:outputText value="Suchen" />
 									</p:link>
 								</li>
-								<li>
-									<p:link outcome="/protected/stockmarketgame/create.xhtml">
-										<span class="fa fa-plus" style="margin-right: 5px;" />
-										<h:outputText value="Erstellen" />
-									</p:link>	
-								</li>
+								<c:choose>
+									<c:when test="#{userBean.isInstitutionAdmin(user)}">
+										<li>
+											<p:link outcome="/protected/stockmarketgame/create.xhtml">
+												<span class="fa fa-plus" style="margin-right: 5px;" />
+												<h:outputText value="Erstellen" />
+											</p:link>	
+										</li>
+									</c:when>
+								</c:choose>
 							</ul>
 						</li>                   
                          <li style="margin-top:5px">

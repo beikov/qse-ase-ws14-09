@@ -24,13 +24,13 @@
 	        <h:outputText value="#{pvp.volume}"></h:outputText>
 	    </p:column>
 	    <p:column headerText="Einstandswert *">
-	        <h:outputText value="#{pvp.buyPrice}" />
+	        <h:outputText value="#{pvp.buyPrice}" /><h:outputText value=" #{portfolioViewBean.getCurrency(pvp.valuePaper)}" />
 	    	<!-- <c:set var="payedLong" value="#{portfolioViewBean.getTotalPayed(pvp.valuePaper.code).value.longValue()}" />
 	        <h:outputText value="#{portfolioViewBean.portfolio.currentCapital.currency.symbol}" />
 	        <h:outputText value="#{payedLong/pvp.volume}" /> -->
 	    </p:column>
 	    <p:column headerText="Gewinn/Verlust *">
-	        <h:outputText value="#{portfolioViewBean.getProfit(pvp)}" />
+	        <h:outputText value="#{portfolioViewBean.getProfit(pvp)}" /><h:outputText value=" #{portfolioViewBean.getCurrency(pvp.valuePaper)}" />
 	    </p:column>
 	    <p:column headerText="Performance *">
 	        <ase:valuePaperPerformance pvp="#{pvp}" />
@@ -38,27 +38,27 @@
 	    
 	    <p:column width="180" styleClass="links">
 	    	<div>
-		    	<p:link id="btn-details" outcome="/protected/valuepaper/valuepaperview" >
+		    	<p:link styleClass="btn-details" outcome="/protected/valuepaper/valuepaperview.xhtml" >
 		    		<span class="fa fa-search" />
 		    		<f:param name="valuePaperCode" value="#{pvp.valuePaper.code}" />
 		    	</p:link>
-		    	<p:tooltip for="btn-details" value="Details" />
+		    	<!-- <p:tooltip for="btn-details" value="Details" /> -->
 		    </div>
 		    <div>	
-		    	<p:link id="btn-buy" outcome="/protected/valuepaper/valuepaperview">
+		    	<p:link styleClass="btn-buy" outcome="/index.xhtml">
 		    		<span class="inline fa fa-shopping-cart" />
 		    		<span class="inline fa fa-plus" />
 		    		<f:param name="valuePaperCode" value="#{pvp.valuePaper.code}" />
 		    	</p:link>
-		    	<p:tooltip for="btn-buy" value="Kaufen" />
+		    	<!-- <p:tooltip for="btn-buy" value="Kaufen" /> -->
 		    </div>
 		    <div>
-		    	<p:link id="btn-sell" outcome="/protected/valuepaper/valuepaperview">
+		    	<p:link styleClass="btn-sell" outcome="/index.xhtml">
 		    		<span class="inline fa fa-shopping-cart" />
 		    		<span class="inline fa fa-minus" />
 		    		<f:param name="valuePaperCode" value="#{pvp.valuePaper.code}" />
 		    	</p:link>
-		    	<p:tooltip for="btn-sell" value="Verkaufen" />
+		    	<!-- <p:tooltip for="btn-sell" value="Verkaufen" /> -->
 	    	</div>
 		    	
 		    	<!-- <a href="/valuepaper/valuepaperview.xhtml?valuePaperCode=#{pvp.valuePaper.code}" class="btn btn-default btn-md"><span class="glyphicon glyphicon-search" aria-hidden="true" /></a>

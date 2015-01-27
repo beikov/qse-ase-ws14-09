@@ -21,7 +21,7 @@
 		<style type="text/css">
 			.ui-picklist .ui-picklist-list {
 				height: 300px;
-				width: 400px;
+				width: 525px;
 			}
 
 			.ui-fileupload .ui-progressbar {
@@ -43,7 +43,7 @@
 			<div class="row" style="margin-bottom: 15px;">
 				<div class="col-md-7">
 
-					<p:panel header="Börsenspiel-Einstellungen">
+					<p:panel header="Börsenspiel-Einstellungen" style="overflow:hidden">
 						<h:panelGrid columns="2" cellpadding="5">
 							<p:outputLabel for="name" value="Börsenspielbezeichnung:"
 								style="margin-right:5px" />
@@ -106,6 +106,15 @@
 									</p:graphicImage>  -->
 
 						</h:panelGrid>
+						<h:panelGrid columns="2" cellpadding="10"
+							style="margin-top:20px;margin-bottom:10px;float:right;width:32%">
+							<p:commandButton value="Reset" type="reset"
+								disabled="#{!stockMarketGameCreationBean.allowedToEditStockMarketGameSettings}"/>
+							<p:commandButton value="#{stockMarketGameCreationBean.stockMarketGameId==null ? 'Erstellen' : 'Speichern'}"
+								action="#{stockMarketGameCreationBean.createStockMarketGame()}"
+								update=":allowed_ValuePapers:allowedValuePapersPickList stockmarketgame_create"
+								ajax="true" disabled="#{!stockMarketGameCreationBean.allowedToEditStockMarketGameSettings}"/>
+						</h:panelGrid>
 					</p:panel>
 
 				</div>
@@ -145,16 +154,6 @@
 								required="true" style="width:220px" 
 								disabled="#{!stockMarketGameCreationBean.allowedToEditStockMarketGameSettings}"/>
 
-						</h:panelGrid>
-
-						<h:panelGrid columns="2" cellpadding="10"
-							style="width: 40%;margin-top:20px">
-							<p:commandButton value="Reset" type="reset"
-							disabled="#{!stockMarketGameCreationBean.allowedToEditStockMarketGameSettings}"/>
-							<p:commandButton value="Erstellen"
-								action="#{stockMarketGameCreationBean.createStockMarketGame()}"
-								update=":allowed_ValuePapers:allowedValuePapersPickList stockmarketgame_create"
-								ajax="true" disabled="#{!stockMarketGameCreationBean.allowedToEditStockMarketGameSettings}"/>
 						</h:panelGrid>
 
 					</p:panel>
@@ -251,7 +250,7 @@
 
 						<p:pickList id="allowedValuePapersPickList"
 							value="#{stockMarketGameCreationBean.allowedValuePapersListModel}"
-							var="vp" itemValue="#{vp}" itemLabel=" #{vp.name}"
+							var="vp" itemValue="#{vp}" itemLabel="#{' '.concat(vp.name)}"
 							showCheckbox="true" showSourceFilter="true"
 							showTargetFilter="true" filterMatchMode="contains"
 							converter="valuePaperPickListConverter" 
@@ -263,6 +262,14 @@
 							<p:ajax event="transfer"
 								listener="#{stockMarketGameCreationBean.onTransfer}"
 								update="allowedValuePapersPickList" />
+								
+							<p:column style="width:75%">
+            					<h:outputText value="#{' '.concat(vp.name)}" />
+        					</p:column>
+
+							<p:column style="width:25%">
+            					<h:outputText value="#{vp.code}" />
+        					</p:column>
 
 						</p:pickList>
 

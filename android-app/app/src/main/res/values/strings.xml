@@ -41,5 +41,11 @@
     <string name="remaining_cash">Kapital verbleibend</string>
     <string name="price">Kurs</string>
     <string name="add_account_label">KeyCloak Secured Account</string>
+    <string name="stop_limit_equal_or_lower_than_price_message">Ihr Stop Limit muss über dem aktuellen Preis liegen</string>
+    <string name="stop_limit_equal_or_higher_than_price_message">Ihr Stop Limit muss unter dem aktuellen Preis liegen</string>
+    <string name="limit_lower_than_stop_limit_message">Ihr Limit muss größer oder gleich Ihrem Stop Limit sein</string>
+    <string name="limit_higher_than_stop_limit_message">Ihr Limit muss kleiner oder gleich Ihrem Stop Limit sein</string>
+    <string name="limit_equal_or_higher_than_price_message">Ihr Limit muss unter dem aktuellen Preis liegen</string>
+    <string name="limit_equal_or_lower_than_price_message">Ihr Limit muss über dem aktuellen Preis liegen</string>
 
 </resources>

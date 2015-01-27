@@ -108,7 +108,13 @@ public class PortfolioViewFragment extends Fragment implements RestResultReceive
         DecimalFormat moneyFormat = LayoutPopulator.getMoneyFormat(currency);
         costValueTextView.setText(moneyFormat.format(portfolio.getCostValue()) + " " + currency.getCurrencyCode());
         currentValueTextView.setText(moneyFormat.format(portfolio.getCurrentValue()) + " " + currency.getCurrencyCode());
-        BigDecimal relativeCurrentValueChange = portfolio.getCurrentValue().divide(portfolio.getCostValue(), RoundingMode.HALF_DOWN).subtract(new BigDecimal(1));
+        BigDecimal relativeCurrentValueChange;
+        if(portfolio.getCurrentValue().compareTo(BigDecimal.ZERO) == 0) {
+            relativeCurrentValueChange = BigDecimal.ZERO;
+        }else{
+            relativeCurrentValueChange = portfolio.getCurrentValue().divide(portfolio.getCostValue(), RoundingMode.HALF_DOWN).subtract(new BigDecimal(1));
+        }
+
         relativeCurrentValueChangeTextView.setText(LayoutPopulator.getPercentFormat().format(relativeCurrentValueChange.floatValue() * 100) + " %");
         LayoutPopulator.setColorBySignum(relativeCurrentValueChangeTextView, relativeCurrentValueChange.signum());
         remainingCapitalTextView.setText(moneyFormat.format(portfolio.getCurrentCapital()) + " " + currency.getCurrencyCode());
