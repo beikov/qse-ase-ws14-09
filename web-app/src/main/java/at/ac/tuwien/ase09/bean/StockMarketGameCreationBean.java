@@ -336,9 +336,9 @@ public class StockMarketGameCreationBean implements Serializable {
 		}
 	}
 	
-	public boolean isStockMarketGameAdmin(){
+	public boolean isStockMarketGameAdmin(){	
 		if(stockMarketGame != null && stockMarketGame.getOwner() != null){
-			return stockMarketGame.getOwner().getId() == userInstitution.getId();
+			return stockMarketGame.getOwner().getId().equals(userInstitution.getId());
 		}
 		return true;
 	}
