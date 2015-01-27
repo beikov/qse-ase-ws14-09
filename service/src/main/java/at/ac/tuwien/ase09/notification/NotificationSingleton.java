@@ -56,7 +56,7 @@ public class NotificationSingleton {
 
 	public void addGame(StockMarketGame stockMarketGame) {
 		if(gameTasks.containsKey(stockMarketGame.getId())){
-			gameTasks.get(stockMarketGame).cancel();
+			gameTasks.get(stockMarketGame.getId()).cancel();
 			gameTasks.remove(stockMarketGame.getId());
 		}
 		TimerTask t = new NotifyStockMarketGamePlayersTask(stockMarketGame);
