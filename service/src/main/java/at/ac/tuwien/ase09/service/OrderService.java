@@ -11,6 +11,7 @@ import javax.persistence.FlushModeType;
 import javax.persistence.LockModeType;
 
 import at.ac.tuwien.ase09.currency.CurrencyConversionService;
+import at.ac.tuwien.ase09.data.ValuePaperPriceEntryDataAccess;
 import at.ac.tuwien.ase09.event.Added;
 import at.ac.tuwien.ase09.event.Deleted;
 import at.ac.tuwien.ase09.exception.AppException;
@@ -24,10 +25,12 @@ import at.ac.tuwien.ase09.model.order.MarketOrder;
 import at.ac.tuwien.ase09.model.order.Order;
 import at.ac.tuwien.ase09.model.order.OrderAction;
 import at.ac.tuwien.ase09.model.order.OrderStatus;
+import at.ac.tuwien.ase09.model.order.OrderType;
 import at.ac.tuwien.ase09.model.transaction.OrderFeeTransactionEntry;
 import at.ac.tuwien.ase09.model.transaction.OrderTransactionEntry;
 import at.ac.tuwien.ase09.model.transaction.TaxTransactionEntry;
 import at.ac.tuwien.ase09.model.transaction.TransactionEntry;
+import at.ac.tuwien.ase09.validator.OrderValidator;
 
 /**
  * @author Moritz
@@ -47,14 +50,20 @@ public class OrderService extends AbstractService {
 	private Event<TransactionEntry> transactionAdded;
 	@Inject
 	private CurrencyConversionService currencyConversionService;
+	@Inject
+	private ValuePaperPriceEntryDataAccess valuePaperPriceEntryDataAccess;
 	
 	public MarketOrder createMarketOrder(OrderAction orderAction, Calendar validFrom, Calendar validTo, long portfolioId, int volume, long valuePaperId) {
+		BigDecimal currentPrice = valuePaperPriceEntryDataAccess.getLatestPrice(valuePaperId);
+		OrderValidator.validateOrder(OrderType.MARKET, orderAction, currentPrice, null, null, validFrom, validTo);
 		MarketOrder marketOrder = createOrder(new MarketOrder(), orderAction, validFrom, validTo, portfolioId, volume, valuePaperId);
 		persistOrder(marketOrder);
 		return marketOrder;
 	}
 	
 	public LimitOrder createLimitOrder(OrderAction orderAction, Calendar validFrom, Calendar validTo, long portfolioId, int volume, long valuePaperId, BigDecimal stopLimit, BigDecimal limit) {
+		BigDecimal currentPrice = valuePaperPriceEntryDataAccess.getLatestPrice(valuePaperId);
+		OrderValidator.validateOrder(OrderType.LIMIT, orderAction, currentPrice, limit, stopLimit, validFrom, validTo);
 		LimitOrder limitOrder = createOrder(new LimitOrder(), orderAction, validFrom, validTo, portfolioId, volume, valuePaperId);
 		limitOrder.setStopLimit(stopLimit);
 		limitOrder.setLimit(limit);

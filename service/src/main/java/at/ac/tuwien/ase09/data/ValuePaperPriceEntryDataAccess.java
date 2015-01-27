@@ -22,6 +22,41 @@ public class ValuePaperPriceEntryDataAccess {
 	@Inject
 	private EntityManager em;
 	
+	public BigDecimal getLatestPrice(long id) {
+		try {
+			return getLastPriceEntry(id).getPrice();
+		} catch(EntityNotFoundException e) {
+			return getLatestHistoryEntry(id).getClosingPrice();
+		}
+	}
+	
+	public ValuePaperPriceEntry getLastPriceEntry(long id){
+		List<ValuePaperPriceEntry> priceEntryList = null;
+		try{
+			return em.createQuery("SELECT price FROM ValuePaperPriceEntry price JOIN price.valuePaper vp WHERE vp.id=:id ORDER BY price.created DESC", ValuePaperPriceEntry.class)
+				.setParameter("id", id)
+				.setMaxResults(1)
+				.getSingleResult();
+		}catch(NoResultException e){
+			throw new EntityNotFoundException(e);
+		}catch(Exception e){
+			throw new AppException(e);
+		}
+	}
+	
+	public ValuePaperHistoryEntry getLatestHistoryEntry(long id) {
+		try {
+			return em.createQuery("FROM ValuePaperHistoryEntry he JOIN FETCH he.valuePaper WHERE he.valuePaper.id=:id ORDER BY he.date DESC", ValuePaperHistoryEntry.class)
+				.setParameter("id", id)
+				.setMaxResults(1)
+				.getSingleResult();
+		} catch(NoResultException e) {
+			throw new EntityNotFoundException(e);
+		} catch(Exception e) {
+			throw new AppException(e);
+		}
+	}
+	
 	public BigDecimal getLatestPrice(String code) {
 		try {
 			return getLastPriceEntry(code).getPrice();
