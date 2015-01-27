@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Currency;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -621,26 +622,62 @@ public class ValuePaperViewBean implements Serializable{
 
 		}
 
-		if(getLastPriceEntry() != null){
+		BigDecimal price = null;
+		Date date = null;
+		SimpleDateFormat sdf = null;
+
+		ValuePaperPriceEntry currentPrice;
+		try{
+			currentPrice = valuePaperPriceEntryDataAccess.getLastPriceEntry(valuePaper.getCode());
+		}
+		catch(EntityNotFoundException e)
+		{
+			currentPrice = null;
+		}
+
+		ValuePaperHistoryEntry historyPrice;
+		try{
+			historyPrice = valuePaperPriceEntryDataAccess.getLatestHistoryEntry(valuePaper.getCode());
+		}
+		catch(EntityNotFoundException e){
+			historyPrice = null;
+		}
+
+		if(currentPrice != null){
+			price = currentPrice.getPrice();
+			date = currentPrice.getCreated().getTime();
+			sdf = new SimpleDateFormat("(dd.MM.yyyy HH:mm)");
+		}
+		else if(historyPrice != null){
+			price = historyPrice.getClosingPrice();
+			date = historyPrice.getDate().getTime();
+			sdf = new SimpleDateFormat("(dd.MM.yyyy)");
+		}
+
+		if(price != null && date != null){
 			switch(valuePaper.getType()){
 			case STOCK:
 				if(((Stock)valuePaper).getCurrency() != null){
-					this.mainValuePaperAttributes.put("Aktueller Kurs:", getLastPriceEntry().getPrice().toString() + " " + ((Stock)valuePaper).getCurrency().getCurrencyCode());
+					this.mainValuePaperAttributes.put("Aktueller Kurs:", price.toString() + " " + ((Stock)valuePaper).getCurrency().getCurrencyCode() + " " + sdf.format(date));
 				}
-				else{
-					this.mainValuePaperAttributes.put("Aktueller Kurs:", getLastPriceEntry().getPrice().toString());
+				else{		
+					this.mainValuePaperAttributes.put("Aktueller Kurs:", price.toString() + " " + sdf.format(date));
 				}
 				break;
 			case FUND:
-				if(((Fund)valuePaper).getCurrency() != null){
-					this.mainValuePaperAttributes.put("Aktueller Kurs:", getLastPriceEntry().getPrice().toString() + " " + ((Fund)valuePaper).getCurrency().getCurrencyCode());
+				if(((Fund)valuePaper).getCurrency() != null){			
+
+					this.mainValuePaperAttributes.put("Aktueller Kurs:", price.toString() + " " + ((Fund)valuePaper).getCurrency().getCurrencyCode() + " " + sdf.format(date));
 				}
-				else{
-					this.mainValuePaperAttributes.put("Aktueller Kurs:", getLastPriceEntry().getPrice().toString());
+				else{			
+
+					this.mainValuePaperAttributes.put("Aktueller Kurs:", price.toString() + " " + sdf.format(date));
 				}
 				break;
-			case BOND:			
-				this.mainValuePaperAttributes.put("Aktueller Kurs:", getLastPriceEntry().getPrice().toString()+"%");
+			case BOND:							
+
+				this.mainValuePaperAttributes.put("Aktueller Kurs:", price.toString()+"%" + " " + sdf.format(date));
+
 			}
 		}
 		else{
@@ -715,7 +752,7 @@ public class ValuePaperViewBean implements Serializable{
 			lastHistoryEntryDate.add(Calendar.DATE, 5);
 			axis.setMax(format.format(lastHistoryEntryDate.getTime()));
 		}
-		
+
 		axis.setTickFormat("%b %#d, %y");
 
 		valuePaperHistoricPriceLineChartModel.getAxes().put(AxisType.X, axis);
