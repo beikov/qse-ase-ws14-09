@@ -123,7 +123,42 @@ public class PortfolioDataAccess {
 	}
 	
 	public BigDecimal getCurrentValueForPortfolio(long portfolioId) {
-		try{
+		List<PortfolioValuePaper> valuePapers = em.createQuery("from PortfolioValuePaper pvp join fetch pvp.portfolio where pvp.portfolio.id = :portfolioId", PortfolioValuePaper.class).setParameter("portfolioId", portfolioId).getResultList();
+		if (valuePapers.isEmpty()) {
+			return new BigDecimal(0);
+		}
+		Portfolio portfolio = valuePapers.get(0).getPortfolio();
+		BigDecimal total = portfolio.getCurrentCapital().getValue();
+		Currency portfolioCurrency = portfolio.getCurrentCapital().getCurrency();
+		for (PortfolioValuePaper pvp : valuePapers) {
+			BigDecimal latestPrice;
+			try {
+				latestPrice = priceDataAccess.getLatestPrice(pvp.getValuePaper().getCode());
+			} catch(Exception e) {
+				continue;
+			}
+			
+			BigDecimal value = latestPrice.multiply(new BigDecimal(pvp.getVolume()));
+			ValuePaper vp = pvp.getValuePaper(); 
+			Currency currency;
+			if (vp instanceof Stock) {
+				currency = ((Stock) vp).getCurrency();
+			} else {
+				currency = ((Fund) vp).getCurrency();
+			}
+			
+			if (!portfolioCurrency.getCurrencyCode().equals(currency.getCurrencyCode())) {
+				BigDecimal conversionRate = currencyConversionService.getConversionRate(currency, portfolioCurrency);
+				value = CurrencyConversionService.convert(value, conversionRate);
+			}
+			total = total.add(value);
+		}
+		return total;
+		
+		
+		
+		
+		/*try{
 			Portfolio portfolio = em.find(Portfolio.class, portfolioId);
 			List<Object[]> valuePapersAndCurrentPrices = em.createQuery("SELECT vp, pe.price * pvp.volume FROM PortfolioValuePaper pvp, ValuePaperPriceEntry pe JOIN pe.valuePaper vp WHERE pvp.valuePaper = pe.valuePaper AND pvp.portfolio = :portfolio AND vp.class != 'BOND' AND pe.created >= ALL(SELECT pe2.created FROM ValuePaperPriceEntry pe2 WHERE pe2.valuePaper = pe.valuePaper)", Object[].class).setParameter("portfolio", portfolio).getResultList();
 		
@@ -160,13 +195,15 @@ public class PortfolioDataAccess {
 			
 		}catch(Exception e){
 			throw new AppException(e);
-		}
+		}*/
 	}
 	
 	public BigDecimal getPortfolioPerformance(long portfolioId) {
 		try{
 			BigDecimal old = getCostValueForPortfolio(portfolioId);
 			BigDecimal cur = getCurrentValueForPortfolio(portfolioId);
+			Portfolio p = em.getReference(Portfolio.class, portfolioId);
+			cur = cur.subtract(p.getCurrentCapital().getValue());
 			return cur.subtract(old).multiply(new BigDecimal("100")).divide(old,4, RoundingMode.HALF_UP);
 		}catch(NoResultException e){
 			throw new EntityNotFoundException(e);

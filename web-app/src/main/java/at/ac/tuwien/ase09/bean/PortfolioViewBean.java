@@ -3,6 +3,7 @@ package at.ac.tuwien.ase09.bean;
 import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Currency;
 import java.util.HashMap;
@@ -315,7 +316,11 @@ public class PortfolioViewBean implements Serializable {
 		}
 		BigDecimal performance;
 		try {
-			performance = portfolioDataAccess.getPortfolioPerformance(portfolioId); 
+			//performance = portfolioDataAccess.getPortfolioPerformance(portfolioId);
+			BigDecimal old = getCostValueForPortfolio().getValue();
+			BigDecimal cur = getCurrentValueForPortfolio().getValue();
+			cur = cur.subtract(portfolio.getCurrentCapital().getValue());
+			performance = cur.subtract(old).multiply(new BigDecimal("100")).divide(old,4, RoundingMode.HALF_UP);
 		} catch(EntityNotFoundException e) {
 			performance = new BigDecimal(0);
 		} catch(AppException e) {
