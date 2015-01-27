@@ -13,6 +13,7 @@ import javax.persistence.NoResultException;
 import at.ac.tuwien.ase09.exception.AppException;
 import at.ac.tuwien.ase09.exception.EntityNotFoundException;
 import at.ac.tuwien.ase09.model.Portfolio;
+import at.ac.tuwien.ase09.model.ValuePaper;
 import at.ac.tuwien.ase09.model.ValuePaperHistoryEntry;
 import at.ac.tuwien.ase09.model.ValuePaperPriceEntry;
 
@@ -124,6 +125,21 @@ public class ValuePaperPriceEntryDataAccess {
 					+ "ORDER BY he.date";
 			List<ValuePaperHistoryEntry> result = em.createQuery(query, ValuePaperHistoryEntry.class)
 					.setParameter("portfolio", portfolio).setParameter("date", date).getResultList(); 
+			return result;
+		} catch(Exception e) {
+			throw new AppException(e);
+		}
+	}
+	
+	public List<ValuePaperHistoryEntry> getValuePaperHistoryEntriesForPortfolioValuePaperAfterDate(Portfolio portfolio, ValuePaper vp, Calendar date) {
+		try {
+			String query = "SELECT he "
+					+ "FROM PortfolioValuePaper pvp, ValuePaperHistoryEntry he "
+					+ "WHERE pvp.valuePaper = he.valuePaper AND he.valuePaper = :valuePaper AND "
+					+ "pvp.portfolio = :portfolio AND he.date >= :date "
+					+ "ORDER BY he.date";
+			List<ValuePaperHistoryEntry> result = em.createQuery(query, ValuePaperHistoryEntry.class)
+					.setParameter("portfolio", portfolio).setParameter("valuePaper", vp).setParameter("date", date).getResultList(); 
 			return result;
 		} catch(Exception e) {
 			throw new AppException(e);

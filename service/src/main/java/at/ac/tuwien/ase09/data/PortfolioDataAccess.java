@@ -10,6 +10,7 @@ import java.util.Currency;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -329,12 +330,16 @@ public class PortfolioDataAccess {
 		
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		BigDecimal startCapital = portfolio.getSetting().getStartCapital().getValue();
+		Currency portfolioCurrency = portfolio.getCurrentCapital().getCurrency();
 		Map<String, BigDecimal> changeMap = new HashMap<>();
 		Map<String, BigDecimal> changeCarryMap = new HashMap<>(); 
 		BigDecimal changeCarry = new BigDecimal(0);
 		Map<String, BigDecimal> pointResult = new HashMap<>();
+		Map<Currency, BigDecimal> conversionRateMap = new HashMap<>();
+		Set<TransactionEntry> transactions = portfolio.getTransactionEntries();
 		
-		for (TransactionEntry transaction : portfolio.getTransactionEntries()) {
+		for (Iterator<TransactionEntry> iterator = transactions.iterator(); iterator.hasNext();) {
+			TransactionEntry transaction = iterator.next();
 			if (transaction.getType() == TransactionType.ORDER) {
 				continue;
 			}
@@ -356,12 +361,13 @@ public class PortfolioDataAccess {
         	//changeMap.put(transactionDate, change);
         	changeCarryMap.put(transactionDate, changeCarry);
         	pointResult.put(transactionDate, startCapital.add(changeCarry));
+        	
+        	iterator.remove();
         }
 		
-		for (TransactionEntry transaction : portfolio.getTransactionEntries()) {
-			if (transaction.getType() != TransactionType.ORDER) {
-        		continue;
-			}
+		for (Iterator<TransactionEntry> iterator = transactions.iterator(); iterator.hasNext();) {
+			TransactionEntry transaction = iterator.next();
+			// only OrderTransactions possible
 			
 			OrderTransactionEntry ot = (OrderTransactionEntry)transaction;
 			
@@ -371,16 +377,24 @@ public class PortfolioDataAccess {
 			}
 			
 			BigDecimal change;
-			BigDecimal payedForTransaction = transaction.getValue().getValue().multiply(new BigDecimal(ot.getOrder().getVolume()));
-			
 			BigDecimal volume = new BigDecimal(ot.getOrder().getVolume());
-			List<ValuePaperHistoryEntry> historyEntries = priceDataAccess.getValuePaperHistoryEntriesForPortfolioAfterDate(portfolio, transaction.getCreated());
+			BigDecimal payedForTransaction = transaction.getValue().getValue().multiply(volume);
+			
+			List<ValuePaperHistoryEntry> historyEntries = new ArrayList<>();
+			try {
+				//historyEntries = priceDataAccess.getValuePaperHistoryEntriesForPortfolioAfterDate(portfolio, transaction.getCreated());
+				historyEntries = priceDataAccess.getValuePaperHistoryEntriesForPortfolioValuePaperAfterDate(portfolio, ot.getOrder().getValuePaper(), transaction.getCreated());
+			} catch (Exception e) {}
 			
 			Currency currency = transaction.getValue().getCurrency();
-			Currency portfolioCurrency = transaction.getPortfolio().getCurrentCapital().getCurrency();
 			BigDecimal conversionRate = null;
 			if (!currency.getCurrencyCode().equals(portfolioCurrency.getCurrencyCode())) {
-				conversionRate = currencyConversionService.getConversionRate(currency, portfolioCurrency);
+				if (conversionRateMap.containsKey(currency)) {
+					conversionRate = conversionRateMap.get(currency);
+				} else {
+					conversionRate = currencyConversionService.getConversionRate(currency, portfolioCurrency);
+					conversionRateMap.put(currency, conversionRate);
+				}
 			}
 			
 			for (ValuePaperHistoryEntry he : historyEntries) {
