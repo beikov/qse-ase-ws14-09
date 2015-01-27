@@ -316,13 +316,16 @@ public class PortfolioViewBean implements Serializable {
 		}
 		BigDecimal performance;
 		try {
-			//performance = portfolioDataAccess.getPortfolioPerformance(portfolioId);
+			performance = portfolioDataAccess.getPortfolioPerformance(portfolioId);
 			BigDecimal old = getCostValueForPortfolio().getValue();
 			BigDecimal cur = getCurrentValueForPortfolio().getValue();
+			if (old.compareTo( BigDecimal.ZERO) == 0 || cur.compareTo( BigDecimal.ZERO) == 0) {
+				throw new AppException();
+			}
 			cur = cur.subtract(portfolio.getCurrentCapital().getValue());
 			performance = cur.subtract(old).multiply(new BigDecimal("100")).divide(old,4, RoundingMode.HALF_UP);
 		} catch(EntityNotFoundException e) {
-			performance = new BigDecimal(0);
+			throw new AppException();
 		} catch(AppException e) {
 			performance = new BigDecimal(0);
 		}
