@@ -390,7 +390,7 @@ public class PortfolioDataAccess {
 		BigDecimal changeCarry = new BigDecimal(0);
 		Map<String, BigDecimal> pointResult = new HashMap<>();
 		//Map<Currency, BigDecimal> conversionRateMap = new HashMap<>();
-		Set<TransactionEntry> transactions = portfolio.getTransactionEntries();
+		Set<TransactionEntry> transactions = new HashSet<TransactionEntry>(portfolio.getTransactionEntries());
 		
 		for (Iterator<TransactionEntry> iterator = transactions.iterator(); iterator.hasNext();) {
 			TransactionEntry transaction = iterator.next();
@@ -400,6 +400,12 @@ public class PortfolioDataAccess {
 			
 			BigDecimal change;
 			BigDecimal payedForTransaction = transaction.getValue().getValue();
+			
+			if (payedForTransaction.compareTo(BigDecimal.ZERO) == 0) {
+				iterator.remove();
+				continue;
+			}
+			
         	String transactionDate = format.format(transaction.getCreated().getTime());
         	
         	if (transaction.getType() == TransactionType.PAYOUT) {
