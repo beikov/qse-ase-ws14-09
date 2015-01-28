@@ -47,7 +47,7 @@ public class OrderService extends AbstractService {
 	@Deleted
 	private Event<Order> orderDeleted;
 	@Inject
-	@Deleted
+	@Added
 	private Event<TransactionEntry> transactionAdded;
 	@Inject
 	private CurrencyConversionService currencyConversionService;
