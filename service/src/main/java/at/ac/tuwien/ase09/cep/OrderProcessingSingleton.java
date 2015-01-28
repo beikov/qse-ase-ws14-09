@@ -69,6 +69,9 @@ public class OrderProcessingSingleton {
 				addLimitOrder((LimitOrder) o);
 			}
 		}
+		for (Order o : orderDataAccess.getOpenInactiveOrders()) {
+			orderService.expireOrder(o.getId());
+		}
 	}
 
 	public void onMarketOrderAdded(@Observes(during = TransactionPhase.AFTER_COMPLETION) @Added MarketOrder order) {

@@ -45,7 +45,10 @@ public class ValuePaperScreenerAccessTest extends AbstractServiceTest<ValuePaper
 
 	@Deployment
 	public static Archive<?> createDeployment() {
-		return createServiceTestBaseDeployment().addPackage("at.ac.tuwien.ase09.filter").addClass(ValuePaperScreenerAccess.class);
+		return createServiceTestBaseDeployment()
+				.addPackage("at.ac.tuwien.ase09.filter")
+				.addClass(ValuePaperScreenerAccess.class)
+				.addAsLibraries(resolver.resolve("at.ac.tuwien.ase09:app").withTransitivity().asFile());
 	}
 
 	@Before
