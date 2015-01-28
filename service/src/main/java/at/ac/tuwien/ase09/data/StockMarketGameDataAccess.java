@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Currency;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +23,7 @@ import org.hibernate.criterion.Example;
 import at.ac.tuwien.ase09.exception.AppException;
 import at.ac.tuwien.ase09.exception.EntityNotFoundException;
 import at.ac.tuwien.ase09.model.Institution;
+import at.ac.tuwien.ase09.model.Money;
 import at.ac.tuwien.ase09.model.Portfolio;
 import at.ac.tuwien.ase09.model.StockMarketGame;
 import at.ac.tuwien.ase09.model.User;
@@ -118,29 +120,39 @@ public class StockMarketGameDataAccess {
 
 	public long getRankByPortfolio(long portfolioId){
 
+		Map<Currency, BigDecimal> conversionRateMap = new HashMap<>();
+		
 		List<Portfolio> portfolioList = new ArrayList<Portfolio>();
-		Map<Long, BigDecimal>portfolioRankingMap = new HashMap<Long, BigDecimal>();
+		Map<Long, Money>portfolioRankingMap = new HashMap<Long, Money>();
 
 		portfolioList = portfolioDataAccess.getPortfoliosByStockMarketGame(portfolioDataAccess.getPortfolioById(portfolioId).getGame().getId());
 
 		for(Portfolio p : portfolioList){
+			
+			p = portfolioDataAccess.getPortfolioById(p.getId());
 
-			BigDecimal sum = p.getCurrentCapital().getValue();
+			conversionRateMap = portfolioDataAccess.getConversionRateMapForPortfolio(p);
+			
+			Money sum = createMoney(p.getCurrentCapital().getValue(), p.getCurrentCapital().getCurrency());
 
-			BigDecimal currentValue = portfolioDataAccess.getCurrentValueForPortfolio(p.getId());
+			BigDecimal currentValue = portfolioDataAccess.getCurrentValueForPortfolio(p.getId(), conversionRateMap);
+			
+			Money currentValueForPortfolio;
 
 			if(currentValue != null){
-				sum.add(currentValue);
+				currentValueForPortfolio = createMoney(currentValue, p.getCurrentCapital().getCurrency());
+				sum.setValue(sum.getValue().add(currentValueForPortfolio.getValue()));
 			}
 
-			portfolioRankingMap.put(p.getId(), sum);
+			portfolioRankingMap.put(p.getId(), sum);					
+			
 		}
 
 		Collections.sort(portfolioList, new Comparator<Portfolio>() {
 			@Override
 			public int compare(Portfolio p1, Portfolio p2)
 			{
-				return portfolioRankingMap.get(p2.getId()).subtract(portfolioRankingMap.get(p1.getId())).intValue();
+				return portfolioRankingMap.get(p2.getId()).getValue().subtract(portfolioRankingMap.get(p1.getId()).getValue()).intValue();
 			}
 		});
 		
@@ -151,6 +163,20 @@ public class StockMarketGameDataAccess {
 		}
 	
 		return 0;
+	}
+	
+	private Money createMoney(BigDecimal value, String currencyCode) {
+		Money m = new Money();
+		m.setCurrency(Currency.getInstance(currencyCode));
+		if (value == null)
+			value = new BigDecimal(0);
+		m.setValue(value);
+		return m;
+		
+	}
+	
+	private Money createMoney(BigDecimal value, Currency currency) {
+		return createMoney(value, currency.getCurrencyCode());
 	}
 
 }
