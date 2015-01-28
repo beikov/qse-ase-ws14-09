@@ -96,7 +96,9 @@ public class PortfolioDataAccess {
 	public List<Portfolio> getPortfoliosByUser(long userId) {
 		try{
 			User user = em.getReference(User.class, userId);
-			return em.createQuery("FROM Portfolio p WHERE p.owner = :user and p.deleted=false", Portfolio.class).setParameter("user", user).getResultList();
+			return em.createQuery("FROM Portfolio p "
+					+ "LEFT JOIN FETCH p.game game "
+					+ "JOIN FETCH p.owner owner WHERE p.owner = :user and p.deleted=false", Portfolio.class).setParameter("user", user).getResultList();
 		}catch(Exception e){
 			throw new AppException(e);
 		}

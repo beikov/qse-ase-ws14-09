@@ -23,7 +23,7 @@ public class DateUtil {
 	}
 	
 	public static String formatDateWithTime(Date date) {
-		return DateUtil.formatDate(date, "dd.MM.yyyy - hh:mm:ss");
+		return DateUtil.formatDate(date, "dd.MM.yyyy - HH:mm:ss");
 	}
 	
 	public static String formatCalendar(Calendar calendar, String pattern) {

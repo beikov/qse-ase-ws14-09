@@ -20,6 +20,7 @@ import at.ac.tuwien.ase09.model.Money;
 import at.ac.tuwien.ase09.model.Portfolio;
 import at.ac.tuwien.ase09.model.Stock;
 import at.ac.tuwien.ase09.model.ValuePaper;
+import at.ac.tuwien.ase09.model.ValuePaperType;
 import at.ac.tuwien.ase09.model.order.LimitOrder;
 import at.ac.tuwien.ase09.model.order.MarketOrder;
 import at.ac.tuwien.ase09.model.order.Order;
@@ -154,6 +155,16 @@ public class OrderService extends AbstractService {
 
 		em.setFlushMode(FlushModeType.COMMIT);
 		
+		ValuePaper valuePaper;
+		
+		if (order.getValuePaper().getType() == ValuePaperType.STOCK) {
+			valuePaper = em.find(Stock.class, order.getValuePaper().getId());
+		} else if (order.getValuePaper().getType() == ValuePaperType.FUND) {
+			valuePaper = em.find(Fund.class, order.getValuePaper().getId());
+		} else {
+			throw new IllegalArgumentException("Can not buy stock bonds!");
+		}
+		
 		Portfolio portfolio = em.find(Portfolio.class, order.getPortfolio().getId(), LockModeType.PESSIMISTIC_WRITE);
 		BigDecimal capitalDelta = BigDecimal.ZERO;
 		OrderTransactionEntry entry = new OrderTransactionEntry();
@@ -163,10 +174,10 @@ public class OrderService extends AbstractService {
 		BigDecimal entryMoneyValue = price.multiply(BigDecimal.valueOf(order.getVolume()));
 		Money entryValue;
 		
-		if (order.getValuePaper() instanceof Stock) {
-			entryValue = new Money(entryMoneyValue, ((Stock) order.getValuePaper()).getCurrency());
-		} else if (order.getValuePaper() instanceof Fund) {
-			entryValue = new Money(entryMoneyValue, ((Fund) order.getValuePaper()).getCurrency());
+		if (valuePaper instanceof Stock) {
+			entryValue = new Money(entryMoneyValue, ((Stock) valuePaper).getCurrency());
+		} else if (valuePaper instanceof Fund) {
+			entryValue = new Money(entryMoneyValue, ((Fund) valuePaper).getCurrency());
 		} else {
 			throw new IllegalArgumentException("Can not buy stock bonds!");
 		}

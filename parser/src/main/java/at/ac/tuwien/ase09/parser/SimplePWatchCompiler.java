@@ -121,7 +121,8 @@ public class SimplePWatchCompiler extends SimplePWatchBaseVisitor<List<Attribute
 		matcher.matches();
 		
 		Calendar calendar = Calendar.getInstance();
-		calendar.set(trim(matcher.group(1)), trim(matcher.group(2)), trim(matcher.group(3)));
+		// Esper month starts a 0, so we need to adapt here
+		calendar.set(trim(matcher.group(1)), Integer.valueOf(trim(matcher.group(2))) - 1, trim(matcher.group(3)));
 		return null;
 	}
 	

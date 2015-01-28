@@ -91,9 +91,9 @@ public class NotificationBean implements Serializable{
 	private void updateNotification(Notification notification){
 		notification.setRead(true);
 		service.setRead(notification);
-		if(showOnlyNew){
-			notifications.remove(notification);
-		}
+//		if(showOnlyNew){
+//			notifications.remove(notification);
+//		}
 	}
 
 	public int getUnreadCount(){
