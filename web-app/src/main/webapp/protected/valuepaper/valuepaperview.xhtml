@@ -60,7 +60,7 @@
 
 						<div style="float: right; top: -35px; position: relative;">
 							<span style="margin: 5px;">
-								<p:link style="top: 200px;" styleClass="btn-buy" outcome="/protected/order/create.xhtml" title="Kaufen" rendered="#{valuePaperViewBean.valuePaper.type != 'BOND' and portfolioContext.contextId != null}">
+								<p:link style="top: 200px;" styleClass="btn-buy" outcome="/protected/order/create.xhtml" title="Kaufen" rendered="#{valuePaperViewBean.orderCreationRendered}">
 									<span class="inline fa fa-shopping-cart" />
 									<span class="inline fa fa-plus" />
 									<f:param name="valuePaper" value="#{valuePaperViewBean.valuePaper.id}" />
@@ -68,7 +68,7 @@
 								</p:link>
 							</span>
 							<span style="margin: 5px;">
-								<p:link styleClass="btn-sell" outcome="/protected/order/create.xhtml" title="Verkaufen" rendered="#{valuePaperViewBean.valuePaper.type != 'BOND' and portfolioContext.contextId != null}">
+								<p:link styleClass="btn-sell" outcome="/protected/order/create.xhtml" title="Verkaufen" rendered="#{valuePaperViewBean.orderCreationRendered}">
 									<span class="inline fa fa-shopping-cart" />
 									<span class="inline fa fa-minus" />
 									<f:param name="valuePaper" value="#{valuePaperViewBean.valuePaper.id}" />
