@@ -58,6 +58,25 @@
 					<p:panel id="allgemein" header="Allgemeine Informationen"
 						style="margin-bottom: 20px">
 
+						<div style="float: right; top: -35px; position: relative;">
+							<span style="margin: 5px;">
+								<p:link style="top: 200px;" styleClass="btn-buy" outcome="/protected/order/create.xhtml" title="Kaufen" rendered="#{valuePaperViewBean.valuePaper.type != 'BOND' and portfolioContext.contextId != null}">
+									<span class="inline fa fa-shopping-cart" />
+									<span class="inline fa fa-plus" />
+									<f:param name="valuePaper" value="#{valuePaperViewBean.valuePaper.id}" />
+									<f:param name="action" value="BUY" />
+								</p:link>
+							</span>
+							<span style="margin: 5px;">
+								<p:link styleClass="btn-sell" outcome="/protected/order/create.xhtml" title="Verkaufen" rendered="#{valuePaperViewBean.valuePaper.type != 'BOND' and portfolioContext.contextId != null}">
+									<span class="inline fa fa-shopping-cart" />
+									<span class="inline fa fa-minus" />
+									<f:param name="valuePaper" value="#{valuePaperViewBean.valuePaper.id}" />
+									<f:param name="action" value="SELL" />
+								</p:link>
+							</span>
+						</div>
+
 						<p:panelGrid columns="2">
 
 							<c:forEach var="attribute"
@@ -79,24 +98,6 @@
 						</p:panelGrid>
 
 					</p:panel>
-
-					<div>
-						<p:link styleClass="btn-buy" outcome="/protected/order/create.xhtml" title="Kaufen">
-							<span class="inline fa fa-shopping-cart" />
-							<span class="inline fa fa-plus" />
-							<f:param name="valuePaper" value="#{valuePaperViewBean.valuePaper.id}" />
-							<f:param name="action" value="BUY" />
-						</p:link>
-					</div>
-					<div>
-						<p:link styleClass="btn-sell" outcome="/protected/order/create.xhtml"
-							title="Verkaufen">
-							<span class="inline fa fa-shopping-cart" />
-							<span class="inline fa fa-minus" />
-							<f:param name="valuePaper" value="#{valuePaperViewBean.valuePaper.id}" />
-							<f:param name="action" value="SELL" />
-						</p:link>
-					</div>
 
 					<p:panel id="zusaetzlich" header="Zusätzliche Informationen"
 						toggleable="true" collapsed="true"

@@ -21,7 +21,7 @@
 	        <h:outputText value="#{pvp.valuePaper.type}" />
 	    </p:column>
 	    <p:column headerText="Stück" sortBy="#{pvp.volume}" width="90">
-	        <h:outputText value="#{pvp.volume}"></h:outputText>
+	        <h:outputText value="#{pvp.volume}" />
 	    </p:column>
 	    <p:column headerText="Einstandswert *">
 	        <h:outputText value="#{pvp.buyPrice}" /><h:outputText value=" #{portfolioViewBean.getCurrency(pvp.valuePaper)}" />
@@ -41,7 +41,7 @@
 		    	</p:link>
 		    </div>
 		    <div>
-				<p:link styleClass="btn-buy" outcome="/protected/order/create.xhtml" title="Kaufen">
+				<p:link styleClass="btn-buy" outcome="/protected/order/create.xhtml" title="Kaufen" rendered="#{pvp.valuePaper.type != 'BOND' and portfolioContext.contextId != null}">
 					<span class="inline fa fa-shopping-cart" />
 					<span class="inline fa fa-plus" />
 					<f:param name="valuePaper" value="#{pvp.valuePaper.id}" />
@@ -49,8 +49,7 @@
 				</p:link>
 			</div>
 			<div>
-				<p:link styleClass="btn-sell" outcome="/protected/order/create.xhtml"
-					title="Verkaufen">
+				<p:link styleClass="btn-sell" outcome="/protected/order/create.xhtml" title="Verkaufen" rendered="#{pvp.valuePaper.type != 'BOND' and portfolioContext.contextId != null}">
 					<span class="inline fa fa-shopping-cart" />
 					<span class="inline fa fa-minus" />
 					<f:param name="valuePaper" value="#{pvp.valuePaper.id}" />
