@@ -4,7 +4,9 @@ package at.ac.tuwien.ase09.service;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.annotation.Resource;
 import javax.ejb.Stateless;
+import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.TransactionPhase;
 import javax.inject.Inject;
@@ -20,20 +22,24 @@ public class TransactionEntryService extends AbstractService {
 	
 	@Inject
 	private NotificationService notificationService;
+	@Resource
+	private ManagedExecutorService managedExecutorService;
 
 	public void onPriceEntryAdded(@Observes(during = TransactionPhase.AFTER_COMPLETION) @Added TransactionEntry entry) {
-		Portfolio p = em.createQuery("SELECT p FROM Portfolio p LEFT JOIN FETCH p.followers JOIN FETCH p.owner o LEFT JOIN FETCH o.followers WHERE p.id = :portfolioId", Portfolio.class)
-			.setParameter("portfolioId", entry.getPortfolio().getId())
-			.getSingleResult();
-		Set<User> receipents = new HashSet<>();
-		receipents.addAll(p.getFollowers());
-		receipents.addAll(p.getOwner().getFollowers());
-		
-		for (User u : receipents) {
-			FollowerTransactionAddedNotification n = new FollowerTransactionAddedNotification();
-			n.setTransactionEntry(entry);
-			n.setUser(u);
-			notificationService.addNotification(n);
-		}
+		managedExecutorService.submit(() -> {
+			Portfolio p = em.createQuery("SELECT p FROM Portfolio p LEFT JOIN FETCH p.followers JOIN FETCH p.owner o LEFT JOIN FETCH o.followers WHERE p.id = :portfolioId", Portfolio.class)
+				.setParameter("portfolioId", entry.getPortfolio().getId())
+				.getSingleResult();
+			Set<User> receipents = new HashSet<>();
+			receipents.addAll(p.getFollowers());
+			receipents.addAll(p.getOwner().getFollowers());
+			
+			for (User u : receipents) {
+				FollowerTransactionAddedNotification n = new FollowerTransactionAddedNotification();
+				n.setTransactionEntry(entry);
+				n.setUser(u);
+				notificationService.addNotification(n);
+			}
+		});
 	}
 }
