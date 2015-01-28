@@ -180,6 +180,12 @@ public class PortfolioViewBean implements Serializable {
         }*/
     }
     
+    public boolean isOrderCreationRendered(PortfolioValuePaper pvp){
+    	boolean isValuePaperAllowed = portfolioDataAccess.isValuePaperAllowedForPortfolio(portfolio.getId(), pvp.getValuePaper().getId());
+	    return pvp.getValuePaper().getType() != ValuePaperType.BOND 
+				&& isValuePaperAllowed;
+    }
+    
     public boolean isOrderCancelable(Order order) {
 		if (order.getStatus() == OrderStatus.OPEN && isOwner) {
 			if (order.getValidTo() == null) {
@@ -486,16 +492,12 @@ public class PortfolioViewBean implements Serializable {
     }
 	
 	private void createPortfolioChart() {
-		long startTime = System.currentTimeMillis();
 		Map<String, BigDecimal> pointResult = portfolioDataAccess.getPortfolioChartEntries(portfolio, conversionRateMap);
-		if (pointResult.size() == 1) {
+		/*if (pointResult.size() == 1) {
 			// only portfolio creation entry
 			return;
-		}
-		long estimatedTime = System.currentTimeMillis() - startTime;
-		System.out.println("################### getPortfolioChartEntries " + estimatedTime);
+		}*/
 		
-		startTime = System.currentTimeMillis();
 		portfolioChart = new LineChartModel();
 		portfolioChart.setTitle("Portfoliochart mit Gebühren, etc.");
         portfolioChart.setZoom(true);
@@ -521,8 +523,6 @@ public class PortfolioViewBean implements Serializable {
 		}
         
         portfolioChart.addSeries(series);
-        estimatedTime = System.currentTimeMillis() - startTime;
-		System.out.println("################### addSeries " + estimatedTime);
 	}
 	
 	private Money createMoney(BigDecimal value, Currency currency) {

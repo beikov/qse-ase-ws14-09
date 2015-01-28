@@ -6,6 +6,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Currency;
 import java.util.Date;
 import java.util.HashMap;
@@ -99,6 +100,19 @@ public class PortfolioDataAccess {
 			return em.createQuery("FROM Portfolio p "
 					+ "LEFT JOIN FETCH p.game game "
 					+ "JOIN FETCH p.owner owner WHERE p.owner = :user and p.deleted=false", Portfolio.class).setParameter("user", user).getResultList();
+		}catch(Exception e){
+			throw new AppException(e);
+		}
+	}
+	
+	public boolean isValuePaperAllowedForPortfolio(long portfolioId, long valuePaperId){
+		try{
+			List<Long> allowedValuePapers = em.createQuery("SELECT allowedValuePapers.id FROM Portfolio p LEFT JOIN p.game game LEFT JOIN game.allowedValuePapers allowedValuePapers WHERE p = :p", Long.class)
+					.setParameter("p", em.getReference(Portfolio.class, portfolioId))
+					.getResultList();
+			return allowedValuePapers.contains(valuePaperId);
+		}catch(NoResultException e){
+			return false;
 		}catch(Exception e){
 			throw new AppException(e);
 		}
@@ -338,6 +352,9 @@ public class PortfolioDataAccess {
 	public Map<ValuePaperType, Integer> getValuePaperTypeCountMap(Portfolio portfolio) {
 		Map<ValuePaperType, Integer> valuePaperTypeCounterMap = new HashMap<ValuePaperType, Integer>();
 		for (PortfolioValuePaper pvp : portfolio.getValuePapers()) {
+			if (pvp.getVolume() == 0) {
+				continue;
+			}
 			ValuePaper paper = pvp.getValuePaper();
 			ValuePaperType type = paper.getType();
 			int old = 0;
@@ -351,6 +368,9 @@ public class PortfolioDataAccess {
 	public Map<String, Integer> getValuePaperCountryCountMap(Portfolio portfolio) {
 		Map<String, Integer> valuePaperCountryCountMap = new HashMap<String, Integer>(); 
 		for (PortfolioValuePaper pvp : portfolio.getValuePapers()) {
+			if (pvp.getVolume() == 0) {
+				continue;
+			}
 			ValuePaper paper = pvp.getValuePaper();
 			if (!(paper instanceof Stock)) {
 				continue;
@@ -388,6 +408,7 @@ public class PortfolioDataAccess {
 		Map<String, BigDecimal> changeCarryMap = new HashMap<>(); 
 		BigDecimal changeCarry = new BigDecimal(0);
 		Map<String, BigDecimal> pointResult = new HashMap<>();
+		pointResult.put(format.format(portfolio.getCreated().getTime()), startCapital);
 		//Map<Currency, BigDecimal> conversionRateMap = new HashMap<>();
 		Set<TransactionEntry> transactions = new HashSet<TransactionEntry>(portfolio.getTransactionEntries());
 		
@@ -476,7 +497,7 @@ public class PortfolioDataAccess {
 			}
 		}
 		
-		pointResult.put(format.format(portfolio.getCreated().getTime()), startCapital);
+		
 		
 		for (String date : changeMap.keySet()) {
 			BigDecimal change = changeMap.get(date);
@@ -524,6 +545,8 @@ public class PortfolioDataAccess {
 		List<NewsItem> news = new ArrayList<>();
 		Set<String> keys = new HashSet<>();
 		for (PortfolioValuePaper pvp : portfolio.getValuePapers()) {
+			if (pvp.getVolume() == 0)
+				continue;
 			if (keys.contains(pvp.getValuePaper().getName())) {
 				continue;
 			}
@@ -539,6 +562,8 @@ public class PortfolioDataAccess {
 		List<AnalystOpinion> items = new ArrayList<>();
 		Set<String> keys = new HashSet<>();
 		for (PortfolioValuePaper pvp : portfolio.getValuePapers()) {
+			if (pvp.getVolume() == 0)
+				continue;
 			if (keys.contains(pvp.getValuePaper().getName())) {
 				continue;
 			}
