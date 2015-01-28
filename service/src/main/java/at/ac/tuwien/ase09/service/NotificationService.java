@@ -38,10 +38,6 @@ public class NotificationService {
 		n.setPushed(true);
 		em.merge(n);
 	}
-
 	
-	public void addGame(StockMarketGame ret) {
-		
-	}
 
 }
