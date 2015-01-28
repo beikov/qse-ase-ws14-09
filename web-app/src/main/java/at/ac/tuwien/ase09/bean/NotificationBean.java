@@ -17,6 +17,7 @@ import org.primefaces.event.SelectEvent;
 
 import at.ac.tuwien.ase09.context.WebUserContext;
 import at.ac.tuwien.ase09.data.NotificationDataAccess;
+import at.ac.tuwien.ase09.data.UserDataAccess;
 import at.ac.tuwien.ase09.model.notification.FollowerAddedNotification;
 import at.ac.tuwien.ase09.model.notification.FollowerTransactionAddedNotification;
 import at.ac.tuwien.ase09.model.notification.GameStartedNotification;
@@ -43,6 +44,9 @@ public class NotificationBean implements Serializable{
 
 	@Inject
 	WebUserContext userContext;
+	
+	@Inject
+	private UserDataAccess userDataAccess;
 
 
 	@PostConstruct
@@ -69,12 +73,13 @@ public class NotificationBean implements Serializable{
 	}
 
 	public String getTextForNotification(PortfolioFollowerAddedNotification notification) {
-		return "Benutzer: '"+notification.getFollower().getUsername()+"' folgt nun Ihrem Portfolio: "+notification.getPortfolio().getName()+".";
+		return "Benutzer: '"+userDataAccess.getEmailByUsername(notification.getFollower().getUsername())+"' folgt nun Ihrem Portfolio: "+notification.getPortfolio().getName()+".";
 	}
 
 	public String getTextForNotification(FollowerAddedNotification notification) {
-		return "Benutzer: '"+notification.getFollower().getUsername()+"' folgt Ihnen nun.";
+		return "Benutzer: '"+userDataAccess.getEmailByUsername(notification.getFollower().getUsername())+"' folgt Ihnen nun.";
 	}
+
 
 	public String getTextForNotification(GameStartedNotification notification) {
 		return "Das Spiel: '"+notification.getGame().getName()+"' hat begonnen.";
@@ -91,9 +96,6 @@ public class NotificationBean implements Serializable{
 	private void updateNotification(Notification notification){
 		notification.setRead(true);
 		service.setRead(notification);
-//		if(showOnlyNew){
-//			notifications.remove(notification);
-//		}
 	}
 
 	public int getUnreadCount(){
