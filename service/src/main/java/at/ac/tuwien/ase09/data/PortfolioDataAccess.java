@@ -395,6 +395,7 @@ public class PortfolioDataAccess {
 		Map<String, BigDecimal> changeCarryMap = new HashMap<>(); 
 		BigDecimal changeCarry = new BigDecimal(0);
 		Map<String, BigDecimal> pointResult = new HashMap<>();
+		pointResult.put(format.format(portfolio.getCreated().getTime()), startCapital);
 		//Map<Currency, BigDecimal> conversionRateMap = new HashMap<>();
 		Set<TransactionEntry> transactions = new HashSet<TransactionEntry>(portfolio.getTransactionEntries());
 		
@@ -483,7 +484,7 @@ public class PortfolioDataAccess {
 			}
 		}
 		
-		pointResult.put(format.format(portfolio.getCreated().getTime()), startCapital);
+		
 		
 		for (String date : changeMap.keySet()) {
 			BigDecimal change = changeMap.get(date);
