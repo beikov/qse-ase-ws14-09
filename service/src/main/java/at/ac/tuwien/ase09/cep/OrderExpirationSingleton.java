@@ -29,6 +29,10 @@ public class OrderExpirationSingleton {
 	private EPServiceProvider epService;
 	
 	public Timer scheduleExpiration(Order order, String... statementNames) {
+		if (order.getValidTo() == null) {
+			return null;
+		}
+		
 		Serializable info = new Object[] { order.getId(), statementNames };
 		return timerService.createSingleActionTimer(order.getValidTo().getTime(), new TimerConfig(info, true));
 	}

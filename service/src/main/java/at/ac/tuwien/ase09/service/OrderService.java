@@ -192,7 +192,7 @@ public class OrderService extends AbstractService {
 			TaxTransactionEntry tax = new TaxTransactionEntry();
 			tax.setPortfolio(order.getPortfolio());
 			BigDecimal taxPercent = order.getPortfolio().getSetting().getCapitalReturnTax();
-			BigDecimal taxMoneyValue = taxPercent.multiply(entry.getValue().getValue());
+			BigDecimal taxMoneyValue = taxPercent.multiply(entry.getValue().getValue()).divide(BigDecimal.valueOf(100L));
 			Money taxValue = new Money(taxMoneyValue, entry.getValue().getCurrency());
 			tax.setValue(taxValue);
 			capitalDelta = capitalDelta.add(entry.getValue().getValue());
