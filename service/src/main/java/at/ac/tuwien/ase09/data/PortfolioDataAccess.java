@@ -133,7 +133,8 @@ public class PortfolioDataAccess {
 			}
 			
 			for (PortfolioValuePaper pvp : valuePapers) {
-				BigDecimal value = pvp.getBuyPrice().multiply(new BigDecimal(pvp.getVolume()));
+				//BigDecimal value = pvp.getBuyPrice().multiply(new BigDecimal(pvp.getVolume()));
+				BigDecimal value = pvp.getBuyPrice();
 				ValuePaper vp = pvp.getValuePaper(); 
 				Currency currency;
 				if (vp instanceof Stock) {
@@ -380,8 +381,6 @@ public class PortfolioDataAccess {
 	}*/
 
 	public Map<String, BigDecimal> getPortfolioChartEntries(Portfolio portfolio, Map<Currency, BigDecimal> conversionRateMap) {
-		long startTime = System.currentTimeMillis();
-		
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		BigDecimal startCapital = portfolio.getSetting().getStartCapital().getValue();
 		Currency portfolioCurrency = portfolio.getCurrentCapital().getCurrency();
@@ -517,8 +516,6 @@ public class PortfolioDataAccess {
 			
 			
 		}
-		long estimatedTime = System.currentTimeMillis() - startTime;
-		System.out.println("################### "+ estimatedTime);
         return pointResult;
 	}
 	
@@ -556,7 +553,7 @@ public class PortfolioDataAccess {
 	public double getChange(PortfolioValuePaper pvp) {
 		//double payed = getTotalPayedForPortfolioValuePaper(pvp).doubleValue();
 		int volume = pvp.getVolume();
-		double payed = pvp.getBuyPrice().doubleValue()*volume;
+		double payed = pvp.getBuyPrice().doubleValue();
 		double latestPrice;
 		try {
 			latestPrice = priceDataAccess.getLatestPrice(pvp.getValuePaper().getCode()).doubleValue();
@@ -569,7 +566,7 @@ public class PortfolioDataAccess {
 	public double getProfit(PortfolioValuePaper pvp) {
 		//double payed = getTotalPayedForPortfolioValuePaper(pvp).doubleValue();
 		int volume = pvp.getVolume();
-		double payed = pvp.getBuyPrice().doubleValue()*volume;
+		double payed = pvp.getBuyPrice().doubleValue();
 		double latestPrice;
 		try {
 			latestPrice = priceDataAccess.getLatestPrice(pvp.getValuePaper().getCode()).doubleValue();

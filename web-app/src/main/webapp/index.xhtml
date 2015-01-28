@@ -18,23 +18,65 @@
 		<meta property="og:site_name" content="Börsensimulator" />
 
 		<meta property="og:type" content="website" />
+		
+		<style type="text/css">
+		    #why .row div {
+		    	margin-bottom: 30px;
+		    	padding-left: 20px;
+		    	padding-right: 20px;
+		    }
+		</style>
 	</ui:define>
 	<ui:define name="body">
 		<ui:include src="/resources/socialmedia/_fbsdk.xhtml" />
 		<ui:include src="/resources/socialmedia/_twsdk.xhtml" />
 		
-	
-		Willkommen zum Börsenspiel
-		<br/>
 		<div align="right">
-		<div  class="fb-share-button" data-href="#{socialMediaBean.absoluteApplicationUrl}" data-layout="button"></div>
-		<div style="float:right; margin-left:5px;">
-		<a  class="twitter-share-button" href="https://twitter.com/share"
-  			data-text="Besuche unseren Börsensimulator"
-  			data-count="none"
-  			data-hashtags="ASE,GR09,Simulator"/>
-  		</div>
+			<div  class="fb-share-button" data-href="#{socialMediaBean.absoluteApplicationUrl}" data-layout="button" />
+			<div style="float:right; margin-left:5px;">
+				<a class="twitter-share-button" href="https://twitter.com/share"
+	  				data-text="Besuche unseren Börsensimulator"
+	  				data-count="none"
+	  				data-hashtags="ASE,GR09,Simulator"/>
+	  		</div>
 		</div>
+		<div class="page-header">
+		  <h1>Willkommen zum Börsenspiel <small>Subtext for header</small></h1>
+		</div>
+		
+		<section id="why">
+			<div class="row">
+				<div class="col-md-4" style="margin-bottom: ">
+					<h4>
+						<span class="fa fa-line-chart" style="margin-right: 5px;" />Portfoliosimulation
+					</h4>
+					Die Portfoliosimulation ist für jedermann kostenlos nutzbar und soll unter Nutzung von Realdaten den Handel mit Wertpapieren erfahrbar machen.
+					 
+				</div>
+				<div class="col-md-4">
+					<h4>
+						<span class="fa fa-search" style="margin-right: 5px;" />Screening
+					</h4>
+					Im einfachen Screeningmodus können hier die Benutzer in mittels vordefinierter Kriterien nach Wertpapieren suchen.
+					Zusätzlich wird ein erweiterter Screeningmodus angeboten, der die Angabe benutzerdefinierte Ausdrücke für die Suche erlaubt. Dadurch können die Benutzer auch komplexe Formeln abbilden, die aus eigenen Strategien stammen. 
+				</div>
+				<div class="col-md-4">
+					<h4>
+						<span class="fa fa-eye" style="margin-right: 5px;" />Watches
+					</h4>
+					Mittels Watches kann sich ein Benutzer über bestimmte Ereignisse benachrichtigen lassen. 
+					Im simplen Modus kann der Benutzer eine Aktie auswählen, für welches er einen Watch definieren will. Anschließend erstellt der Benutzer unter Verwendung einer begrenzten Anzahl an vordefinierten Kriterien eine Watchbedingung. 
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-4">
+					<h4>
+						<span class="fa fa-gamepad" style="margin-right: 5px;" />Börsenspiele
+					</h4>
+					Institutionen können Börsenspiele mit individuellen Einstellungen, wie zum Beispiel erlaubte Wertpapiere, erstellen.  
+				</div>
+			</div>
+		</section>
 		<ui:include src="/WEB-INF/includes/dashboard.xhtml" />
 	</ui:define>
 	
