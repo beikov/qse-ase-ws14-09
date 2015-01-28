@@ -15,6 +15,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Version;
@@ -131,6 +132,7 @@ public class Portfolio extends BaseEntity<Long> {
 	}
 
 	@OneToMany(mappedBy = "portfolio")
+	@OrderBy("created desc")
 	public Set<TransactionEntry> getTransactionEntries() {
 		return transactionEntries;
 	}
@@ -140,6 +142,7 @@ public class Portfolio extends BaseEntity<Long> {
 	}
 
 	@OneToMany(mappedBy = "portfolio")
+	@OrderBy("created desc")
 	public Set<Order> getOrders() {
 		return orders;
 	}

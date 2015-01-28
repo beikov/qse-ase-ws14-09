@@ -110,9 +110,6 @@ public class PWatchCompiler {
 		if (pwatchExpression == null) {
             throw new NullPointerException("pwatchExpression");
         }
-    	if (valuePaperType == null) {
-    		valuePaperType = ValuePaperType.STOCK;
-    	}
         
         StringBuilder sb = new StringBuilder(100);
         sb.append("SELECT ");
@@ -124,9 +121,15 @@ public class PWatchCompiler {
     	}
     	sb.append(AdvancedPWatchCompiler.VALUE_PAPER_ALIAS);
     	
+    	if (valuePaperType == null) {
+    		valuePaperType = ValuePaperType.STOCK;
+    	}
+    	
         if (pwatchExpression.isEmpty()) {
-        	sb.append(" WHERE ");
-        	appendPortfolioCondition(sb, portfolioId);
+            if (portfolioId != null) {
+	        	sb.append(" WHERE ");
+	        	appendPortfolioCondition(sb, portfolioId);
+            }
         	return sb.toString();
         }
         
@@ -176,7 +179,7 @@ public class PWatchCompiler {
     	sb.append("EXISTS(");
     	sb.append("SELECT portfolio FROM Portfolio portfolio LEFT JOIN portfolio.game g WHERE portfolio.id = " + portfolioId + " AND (g IS NULL OR ");
     	sb.append(AdvancedPWatchCompiler.VALUE_PAPER_ALIAS);
-    	sb.append(" MEMBER OF portfolio.game.allowedValuePapers");
+    	sb.append(" MEMBER OF g.allowedValuePapers");
     	sb.append("))");
     }
 

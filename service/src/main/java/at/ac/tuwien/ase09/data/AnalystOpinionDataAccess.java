@@ -19,7 +19,7 @@ public class AnalystOpinionDataAccess {
 		List<AnalystOpinion> analysOpinionList;
 		
 		try{
-			analysOpinionList = em.createQuery("SELECT ao FROM AnalystOpinion ao JOIN FETCH ao.stock WHERE ao.stock.code = :code", AnalystOpinion.class).setParameter("code", code).getResultList();
+			analysOpinionList = em.createQuery("SELECT ao FROM AnalystOpinion ao JOIN FETCH ao.stock WHERE ao.stock.code = :code  order by ao.created desc", AnalystOpinion.class).setParameter("code", code).getResultList();
 		}catch(Exception e){
 			throw new AppException(e);
 		}

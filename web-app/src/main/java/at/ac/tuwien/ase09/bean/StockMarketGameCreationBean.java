@@ -278,7 +278,7 @@ public class StockMarketGameCreationBean implements Serializable {
 		}
 
 		loadStockMarketGame();
-		
+
 		if(stockMarketGame != null){
 			if(!isStockMarketGameAdmin()){
 				FacesContext context = FacesContext.getCurrentInstance();
@@ -335,7 +335,7 @@ public class StockMarketGameCreationBean implements Serializable {
 			return true;
 		}
 	}
-	
+
 	public boolean isStockMarketGameAdmin(){	
 		if(stockMarketGame != null && stockMarketGame.getOwner() != null){
 			return stockMarketGame.getOwner().getId().equals(userInstitution.getId());
@@ -363,18 +363,18 @@ public class StockMarketGameCreationBean implements Serializable {
 		return valuePaperScreenerDataAccess.getUsedIndexes();
 	}
 	public List<String> getUsedCountries(){
-		
+
 		List<String> countries = valuePaperScreenerDataAccess.getUsedCountries();
-		
+
 		if(countries.contains(null)){
 			countries.remove(null);
 		}
-		
+
 		return countries;
 	}
 
 	public void createStockMarketGame(){
-		
+
 		if(!isAllowedToEditStockMarketGameSettings()){
 			return;
 		}
@@ -404,13 +404,13 @@ public class StockMarketGameCreationBean implements Serializable {
 			FacesContext.getCurrentInstance().addMessage("stockmarketgame_create:capitalReturnTax", facesMessage);
 			return;
 		}
-		
+
 		if(new Date(registrationFrom.getTime()+1).after(registrationTo)){
 			FacesMessage facesMessage = new FacesMessage("Fehler: Registrierungsbeginndatum muss vor Registrierungsenddatum liegen!");
 			FacesContext.getCurrentInstance().addMessage("stockmarketgame_create:registrationFrom", facesMessage);
 			return;
 		}
-		
+
 		if(new Date(validFrom.getTime()+1).after(validTo)){
 			FacesMessage facesMessage = new FacesMessage("Fehler: Börsenspielbeginndatum muss vor Börsenspielenddatum liegen!");
 			FacesContext.getCurrentInstance().addMessage("stockmarketgame_create:validFrom", facesMessage);
@@ -422,8 +422,8 @@ public class StockMarketGameCreationBean implements Serializable {
 			FacesContext.getCurrentInstance().addMessage("stockmarketgame_create:registrationTo", facesMessage);
 			return;
 		}
-		
-		
+
+
 		if(stockMarketGame == null){
 			stockMarketGame = new StockMarketGame();
 		}
@@ -548,7 +548,12 @@ public class StockMarketGameCreationBean implements Serializable {
 
 		if((searchValuePaper.getType() == ValuePaperType.STOCK || searchValuePaper.getType() == ValuePaperType.FUND) && valuePaperCurrencyCode != null && !valuePaperCurrencyCode.isEmpty()) {
 			try{
-				((Stock)searchValuePaper).setCurrency(Currency.getInstance(valuePaperCurrencyCode));
+				if(searchValuePaper.getType() == ValuePaperType.STOCK){
+					((Stock)searchValuePaper).setCurrency(Currency.getInstance(valuePaperCurrencyCode));
+				}
+				else if(searchValuePaper.getType() == ValuePaperType.FUND){
+					((Fund)searchValuePaper).setCurrency(Currency.getInstance(valuePaperCurrencyCode));
+				}
 			}
 
 			catch(IllegalArgumentException e){
