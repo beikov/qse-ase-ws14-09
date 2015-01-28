@@ -6,6 +6,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Currency;
 import java.util.Date;
 import java.util.HashMap;
@@ -338,6 +339,9 @@ public class PortfolioDataAccess {
 	public Map<ValuePaperType, Integer> getValuePaperTypeCountMap(Portfolio portfolio) {
 		Map<ValuePaperType, Integer> valuePaperTypeCounterMap = new HashMap<ValuePaperType, Integer>();
 		for (PortfolioValuePaper pvp : portfolio.getValuePapers()) {
+			if (pvp.getVolume() == 0) {
+				continue;
+			}
 			ValuePaper paper = pvp.getValuePaper();
 			ValuePaperType type = paper.getType();
 			int old = 0;
@@ -351,6 +355,9 @@ public class PortfolioDataAccess {
 	public Map<String, Integer> getValuePaperCountryCountMap(Portfolio portfolio) {
 		Map<String, Integer> valuePaperCountryCountMap = new HashMap<String, Integer>(); 
 		for (PortfolioValuePaper pvp : portfolio.getValuePapers()) {
+			if (pvp.getVolume() == 0) {
+				continue;
+			}
 			ValuePaper paper = pvp.getValuePaper();
 			if (!(paper instanceof Stock)) {
 				continue;
@@ -524,6 +531,8 @@ public class PortfolioDataAccess {
 		List<NewsItem> news = new ArrayList<>();
 		Set<String> keys = new HashSet<>();
 		for (PortfolioValuePaper pvp : portfolio.getValuePapers()) {
+			if (pvp.getVolume() == 0)
+				continue;
 			if (keys.contains(pvp.getValuePaper().getName())) {
 				continue;
 			}
@@ -539,6 +548,8 @@ public class PortfolioDataAccess {
 		List<AnalystOpinion> items = new ArrayList<>();
 		Set<String> keys = new HashSet<>();
 		for (PortfolioValuePaper pvp : portfolio.getValuePapers()) {
+			if (pvp.getVolume() == 0)
+				continue;
 			if (keys.contains(pvp.getValuePaper().getName())) {
 				continue;
 			}
