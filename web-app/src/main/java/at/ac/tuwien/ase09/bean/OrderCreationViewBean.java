@@ -112,7 +112,7 @@ public class OrderCreationViewBean implements Serializable {
 		this.limit = new BigDecimal(lastPrice.floatValue());
 		this.stopLimit = new BigDecimal(lastPrice.floatValue());
 		
-		if(portfolio != null){
+		if(portfolio != null && !portfolio.getCurrentCapital().getCurrency().equals(getCurrency())) {
 			conversionRate = currencyConversionService.getConversionRate(getCurrency(), portfolio.getCurrentCapital().getCurrency());
 		}
 	}

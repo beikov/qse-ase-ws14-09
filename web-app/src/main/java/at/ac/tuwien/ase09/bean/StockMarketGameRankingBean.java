@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Currency;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +33,7 @@ import at.ac.tuwien.ase09.data.StockMarketGameDataAccess;
 import at.ac.tuwien.ase09.data.UserDataAccess;
 import at.ac.tuwien.ase09.exception.EntityNotFoundException;
 import at.ac.tuwien.ase09.model.Institution;
+import at.ac.tuwien.ase09.model.Money;
 import at.ac.tuwien.ase09.model.Portfolio;
 import at.ac.tuwien.ase09.model.StockMarketGame;
 
@@ -64,21 +66,23 @@ public class StockMarketGameRankingBean implements Serializable{
 	private Institution userInstitution;
 
 	private List<Portfolio> portfolioRankingList;
-	private Map<Long, BigDecimal> portfolioRankingMap;
+	private Map<Long, Money> portfolioRankingMap;
 
+	private Map<Currency, BigDecimal> conversionRateMap = new HashMap<>();
 
-
+	
+	
+	public Map<Long, Money> getPortfolioRankingMap() {
+		return portfolioRankingMap;
+	}
+	public void setPortfolioRankingMap(Map<Long, Money> portfolioRankingMap) {
+		this.portfolioRankingMap = portfolioRankingMap;
+	}
 	public List<Portfolio> getPortfolioRankingList() {
 		return portfolioRankingList;
 	}
 	public void setPortfolioRankingList(List<Portfolio> portfolioRankingList) {
 		this.portfolioRankingList = portfolioRankingList;
-	}
-	public Map<Long, BigDecimal> getPortfolioRankingMap() {
-		return portfolioRankingMap;
-	}
-	public void setPortfolioRankingMap(Map<Long, BigDecimal> portfolioRankingMap) {
-		this.portfolioRankingMap = portfolioRankingMap;
 	}
 	public Long getStockMarketGameId() {
 		return stockMarketGameId;
@@ -162,20 +166,27 @@ public class StockMarketGameRankingBean implements Serializable{
 		if(stockMarketGame != null){
 
 			portfolioRankingList = new ArrayList<Portfolio>();
-			portfolioRankingMap = new HashMap<Long, BigDecimal>();
+			portfolioRankingMap = new HashMap<Long, Money>();
 
 
 			portfolioRankingList = portfolioDataAccess.getPortfoliosByStockMarketGame(stockMarketGame.getId());
 
 
 			for(Portfolio p : portfolioRankingList){
+				
+				p = portfolioDataAccess.getPortfolioById(p.getId());
+				
+				conversionRateMap = portfolioDataAccess.getConversionRateMapForPortfolio(p);
+								
+				Money sum = createMoney(p.getCurrentCapital().getValue(), p.getCurrentCapital().getCurrency());
 
-				BigDecimal sum = p.getCurrentCapital().getValue();
-
-				BigDecimal currentValue = portfolioDataAccess.getCurrentValueForPortfolio(p.getId());
+				BigDecimal currentValue = portfolioDataAccess.getCurrentValueForPortfolio(p.getId(), conversionRateMap);
+				
+				Money currentValueForPortfolio;
 
 				if(currentValue != null){
-					sum.add(currentValue);
+					currentValueForPortfolio = createMoney(currentValue, p.getCurrentCapital().getCurrency());
+					sum.setValue(sum.getValue().add(currentValueForPortfolio.getValue()));
 				}
 
 				portfolioRankingMap.put(p.getId(), sum);
@@ -185,7 +196,7 @@ public class StockMarketGameRankingBean implements Serializable{
 				@Override
 				public int compare(Portfolio p1, Portfolio p2)
 				{
-					return portfolioRankingMap.get(p2.getId()).subtract(portfolioRankingMap.get(p1.getId())).intValue();
+					return portfolioRankingMap.get(p2.getId()).getValue().subtract(portfolioRankingMap.get(p1.getId()).getValue()).intValue();
 				}
 			});
 		}
@@ -234,5 +245,19 @@ public class StockMarketGameRankingBean implements Serializable{
 
         pdf.add(table);
     }
+    
+	private Money createMoney(BigDecimal value, String currencyCode) {
+		Money m = new Money();
+		m.setCurrency(Currency.getInstance(currencyCode));
+		if (value == null)
+			value = new BigDecimal(0);
+		m.setValue(value);
+		return m;
+		
+	}
+	
+	private Money createMoney(BigDecimal value, Currency currency) {
+		return createMoney(value, currency.getCurrencyCode());
+	}
 
 }

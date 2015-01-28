@@ -24,7 +24,7 @@
 	        <h:outputText value="#{pvp.volume}" />
 	    </p:column>
 	    <p:column headerText="Einstandswert *">
-	        <h:outputText value="#{pvp.buyPrice * pvp.volume}" /><h:outputText value=" #{portfolioViewBean.getCurrency(pvp.valuePaper)}" />
+	        <h:outputText value="#{pvp.buyPrice}" /><h:outputText value=" #{portfolioViewBean.getCurrency(pvp.valuePaper)}" />
 	    </p:column>
 	    <p:column headerText="Gewinn/Verlust *">
 	        <h:outputText value="#{portfolioViewBean.getProfit(pvp)}" /><h:outputText value=" #{portfolioViewBean.getCurrency(pvp.valuePaper)}" />

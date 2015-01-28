@@ -69,6 +69,9 @@ public class OrderProcessingSingleton {
 				addLimitOrder((LimitOrder) o);
 			}
 		}
+		for (Order o : orderDataAccess.getOpenInactiveOrders()) {
+			orderService.expireOrder(o.getId());
+		}
 	}
 
 	public void onMarketOrderAdded(@Observes(during = TransactionPhase.AFTER_COMPLETION) @Added MarketOrder order) {
@@ -89,7 +92,10 @@ public class OrderProcessingSingleton {
 			return;
 		}
 		
-		entry.timer.cancel();
+		if (entry.timer != null) {
+			entry.timer.cancel();
+		}
+		
 		for (EPStatement s : entry.statements) {
 			s.destroy();
 		}
@@ -122,7 +128,7 @@ public class OrderProcessingSingleton {
 		if (order.getStopLimit() == null || order.getStopLimit().compareTo(BigDecimal.ZERO) < 1) {
 			String epl = "SELECT paper.price AS price "
 					+ "FROM ValuePaperPriceEntry(valuePaperId = " + paperId + ").std:lastevent() AS paper "
-					+ "WHERE CURRENT_TIMESTAMP >= " + getEplDateTime(order.getValidFrom()) + " AND CURRENT_TIMESTAMP <= " + getEplDateTime(order.getValidTo())
+					+ "WHERE CURRENT_TIMESTAMP >= " + getEplDateTime(order.getValidFrom()) + (order.getValidTo() == null ? "" : " AND CURRENT_TIMESTAMP <= " + getEplDateTime(order.getValidTo()))
 					+ " AND paper.price " + (isBuy ? "<= " : ">= ") + order.getLimit();
 			
 			EPStatement orderStatement = epService.getEPAdministrator().createEPL(epl);
@@ -136,7 +142,9 @@ public class OrderProcessingSingleton {
 			BigDecimal latestPrice = valuePaperPriceEntryDataAccess.getLatestPrice(paperId);
 			if (isBuy && latestPrice.compareTo(order.getLimit()) < 1 || !isBuy && latestPrice.compareTo(order.getLimit()) > -1) {
 				orderService.closeOrder(order.getId(), latestPrice);
-				expirationTimer.cancel();
+				if (expirationTimer != null) {
+					expirationTimer.cancel();
+				}
 				orderEntries.remove(order.getId());
 				orderStatement.destroy();
 			}
@@ -144,12 +152,12 @@ public class OrderProcessingSingleton {
 			String stopEpl = "INSERT INTO StopLimitEvent "
 					+ "SELECT " + order.getId() + " AS orderId "
 					+ "FROM ValuePaperPriceEntry(valuePaperId = " + paperId + ").std:lastevent() AS paper "
-					+ "WHERE CURRENT_TIMESTAMP >= " + getEplDateTime(order.getValidFrom()) + " AND CURRENT_TIMESTAMP <= " + getEplDateTime(order.getValidTo())
+					+ "WHERE CURRENT_TIMESTAMP >= " + getEplDateTime(order.getValidFrom()) + (order.getValidTo() == null ? "" : " AND CURRENT_TIMESTAMP <= " + getEplDateTime(order.getValidTo()))
 					+ " AND paper.price " + (isBuy ? ">= " : "<= ") + order.getStopLimit();
 			String limitEpl = "SELECT paper.price AS price "
 					+ "FROM StopLimitEvent(orderId = " + order.getId() + ").std:lastevent() AS e, "
 					+ "ValuePaperPriceEntry(valuePaperId = " + paperId + ").std:lastevent() AS paper "
-					+ "WHERE CURRENT_TIMESTAMP >= " + getEplDateTime(order.getValidFrom()) + " AND CURRENT_TIMESTAMP <= " + getEplDateTime(order.getValidTo())
+					+ "WHERE CURRENT_TIMESTAMP >= " + getEplDateTime(order.getValidFrom()) + (order.getValidTo() == null ? "" : " AND CURRENT_TIMESTAMP <= " + getEplDateTime(order.getValidTo()))
 					+ " AND paper.price " + (isBuy ? "<= " : ">= ") + order.getLimit();
 
 			EPStatement stopStatement = epService.getEPAdministrator().createEPL(stopEpl);
@@ -172,7 +180,9 @@ public class OrderProcessingSingleton {
 				latestPrice = valuePaperPriceEntryDataAccess.getLatestPrice(paperId);
 				if (isBuy && latestPrice.compareTo(order.getLimit()) < 1 || !isBuy && latestPrice.compareTo(order.getLimit()) > -1) {
 					orderService.closeOrder(order.getId(), latestPrice);
-					expirationTimer.cancel();
+					if (expirationTimer != null) {
+						expirationTimer.cancel();
+					}
 					orderEntries.remove(order.getId());
 					orderStatement.destroy();
 					stopStatement.destroy();
@@ -235,7 +245,9 @@ public class OrderProcessingSingleton {
 			BigDecimal price = (BigDecimal) latest.get("price");
 			
 			executorService.submit(() -> {
-				expirationTimer.cancel();
+				if (expirationTimer != null) {
+					expirationTimer.cancel();
+				}
 				orderService.closeOrder(order.getId(), price);
 			});
 

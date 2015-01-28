@@ -16,20 +16,13 @@
 			<h:outputText value="#{change}" rendered="#{change lt 0}" style="color:red;">
 				<f:convertNumber pattern="#0.00" />
 			</h:outputText>
-			<h:outputText value="#{change}" rendered="#{change ge 0}" style="color:green;">
+			<h:outputText value="#{change}" rendered="#{change gt 0}" style="color:green;">
 				<f:convertNumber pattern="#0.00" />
 			</h:outputText>
 			<h:outputText value="%" rendered="#{change lt 0}" style="color:red;" />
-			<h:outputText value="%" rendered="#{change ge 0}" style="color:green;" />
+			<h:outputText value="%" rendered="#{change gt 0}" style="color:green;" />
 			
-			<!-- <c:choose>
-				<c:when test="#{change > 0}">
-					green 
-				</c:when>
-				<c:otherwise>
-					red
-				</c:otherwise>
-			</c:choose> -->
+			<h:outputText value="0%" rendered="#{change eq 0}" />
 		</cc:implementation>
 		
 </ui:component>

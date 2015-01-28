@@ -3,6 +3,7 @@ package at.ac.tuwien.ase09.service;
 import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Currency;
+import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.enterprise.event.Event;
@@ -18,6 +19,7 @@ import at.ac.tuwien.ase09.exception.AppException;
 import at.ac.tuwien.ase09.model.Fund;
 import at.ac.tuwien.ase09.model.Money;
 import at.ac.tuwien.ase09.model.Portfolio;
+import at.ac.tuwien.ase09.model.PortfolioValuePaper;
 import at.ac.tuwien.ase09.model.Stock;
 import at.ac.tuwien.ase09.model.ValuePaper;
 import at.ac.tuwien.ase09.model.ValuePaperType;
@@ -186,11 +188,13 @@ public class OrderService extends AbstractService {
 		em.persist(entry);
 		transactionAdded.fire(entry);
 		
+		boolean success;
+		
 		if (order.getOrderAction() == OrderAction.SELL) {
 			TaxTransactionEntry tax = new TaxTransactionEntry();
 			tax.setPortfolio(order.getPortfolio());
 			BigDecimal taxPercent = order.getPortfolio().getSetting().getCapitalReturnTax();
-			BigDecimal taxMoneyValue = taxPercent.multiply(entry.getValue().getValue());
+			BigDecimal taxMoneyValue = taxPercent.multiply(entry.getValue().getValue()).divide(BigDecimal.valueOf(100L));
 			Money taxValue = new Money(taxMoneyValue, entry.getValue().getCurrency());
 			tax.setValue(taxValue);
 			capitalDelta = capitalDelta.add(entry.getValue().getValue());
@@ -198,13 +202,23 @@ public class OrderService extends AbstractService {
 			em.persist(tax);
 			// TODO: for taxes too?
 //			transactionAdded.fire(tax);
+			
+			success = subtractVolumes(portfolio, valuePaper, order.getVolume());
 		} else {
 			capitalDelta = capitalDelta.subtract(entry.getValue().getValue());
+
+			PortfolioValuePaper portfolioValuePaper = new PortfolioValuePaper();
+			portfolioValuePaper.setBuyPrice(entry.getValue().getValue());
+			portfolioValuePaper.setPortfolio(portfolio);
+			portfolioValuePaper.setValuePaper(valuePaper);
+			portfolioValuePaper.setVolume(order.getVolume());
+			em.persist(portfolioValuePaper);
+			success = true;
 		}
 		
 		portfolio.getCurrentCapital().setValue(portfolio.getCurrentCapital().getValue().add(capitalDelta));
 		
-		if (portfolio.getCurrentCapital().getValue().compareTo(BigDecimal.ZERO) < 0) {
+		if (!success || portfolio.getCurrentCapital().getValue().compareTo(BigDecimal.ZERO) < 0) {
 			em.clear();
 			order.setStatus(OrderStatus.CANCELED);
 		} else {
@@ -215,6 +229,27 @@ public class OrderService extends AbstractService {
 		em.flush();
 	}
 	
+	private boolean subtractVolumes(Portfolio portfolio, ValuePaper valuePaper, int volume) {
+		List<PortfolioValuePaper> entries = em.createQuery(
+				"FROM PortfolioValuePaper v WHERE v.portfolio.id = :portfolioId AND v.valuePaper.id = :valuePaperId AND v.volume > 0 ORDER BY v.volume", PortfolioValuePaper.class)
+			.setParameter("portfolioId", portfolio.getId())
+			.setParameter("valuePaperId", valuePaper.getId())
+			.setLockMode(LockModeType.PESSIMISTIC_WRITE)
+			.getResultList();
+		
+		int i = 0;
+		
+		while (volume > 0 && i < entries.size()) {
+			PortfolioValuePaper entry = entries.get(i);
+			int diff = Math.min(volume, entry.getVolume());
+			volume -= diff;
+			entry.setVolume(entry.getVolume() - diff);
+			em.merge(entry);
+		}
+
+		return volume == 0;
+	}
+
 	private Money convertCurrency(Money foreignValue, Currency targetCurrency) {
 		if (foreignValue.getCurrency().equals(targetCurrency)) {
 			return foreignValue;
