@@ -18,7 +18,7 @@ public class WatchDataAccess {
 
 	public List<Watch> getWatches() {
 		try {
-			return em.createQuery("FROM Watch w JOIN FETCH w.valuePaper", Watch.class).getResultList();
+			return em.createQuery("FROM Watch w JOIN FETCH w.valuePaper WHERE w.deleted = false", Watch.class).getResultList();
 		} catch (Exception e) {
 			throw new AppException(e);
 		}
@@ -26,7 +26,7 @@ public class WatchDataAccess {
 
 	public Watch getWatch(Long id) {
 		try {
-			return em.createQuery("FROM Watch w JOIN FETCH w.valuePaper WHERE w.id = :id", Watch.class).setParameter("id", id).getSingleResult();
+			return em.createQuery("FROM Watch w JOIN FETCH w.valuePaper WHERE w.id = :id AND w.deleted = false", Watch.class).setParameter("id", id).getSingleResult();
 		} catch (NoResultException e) {
 			return null;
 		}
