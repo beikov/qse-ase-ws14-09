@@ -13,6 +13,7 @@ import javax.ejb.TimerService;
 import javax.inject.Inject;
 
 import com.espertech.esper.client.EPServiceProvider;
+import com.espertech.esper.client.EPStatement;
 
 import at.ac.tuwien.ase09.model.order.Order;
 import at.ac.tuwien.ase09.service.OrderService;
@@ -44,7 +45,10 @@ public class OrderExpirationSingleton {
 		String[] statementNames = (String[]) info[1];
 		
 		for (String statementName : statementNames) {
-			epService.getEPAdministrator().getStatement(statementName).destroy();
+			EPStatement s = epService.getEPAdministrator().getStatement(statementName);
+			if (s != null) {
+				s.destroy();
+			}
 		}
 		
 		orderService.expireOrder(orderId);

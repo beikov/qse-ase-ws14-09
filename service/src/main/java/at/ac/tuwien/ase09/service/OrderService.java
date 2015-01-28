@@ -188,6 +188,8 @@ public class OrderService extends AbstractService {
 		em.persist(entry);
 		transactionAdded.fire(entry);
 		
+		boolean success;
+		
 		if (order.getOrderAction() == OrderAction.SELL) {
 			TaxTransactionEntry tax = new TaxTransactionEntry();
 			tax.setPortfolio(order.getPortfolio());
@@ -201,7 +203,7 @@ public class OrderService extends AbstractService {
 			// TODO: for taxes too?
 //			transactionAdded.fire(tax);
 			
-			subtractVolumes(portfolio, valuePaper, order.getVolume());
+			success = subtractVolumes(portfolio, valuePaper, order.getVolume());
 		} else {
 			capitalDelta = capitalDelta.subtract(entry.getValue().getValue());
 
@@ -211,11 +213,12 @@ public class OrderService extends AbstractService {
 			portfolioValuePaper.setValuePaper(valuePaper);
 			portfolioValuePaper.setVolume(order.getVolume());
 			em.persist(portfolioValuePaper);
+			success = true;
 		}
 		
 		portfolio.getCurrentCapital().setValue(portfolio.getCurrentCapital().getValue().add(capitalDelta));
 		
-		if (portfolio.getCurrentCapital().getValue().compareTo(BigDecimal.ZERO) < 0) {
+		if (!success || portfolio.getCurrentCapital().getValue().compareTo(BigDecimal.ZERO) < 0) {
 			em.clear();
 			order.setStatus(OrderStatus.CANCELED);
 		} else {
@@ -226,7 +229,7 @@ public class OrderService extends AbstractService {
 		em.flush();
 	}
 	
-	private void subtractVolumes(Portfolio portfolio, ValuePaper valuePaper, int volume) {
+	private boolean subtractVolumes(Portfolio portfolio, ValuePaper valuePaper, int volume) {
 		List<PortfolioValuePaper> entries = em.createQuery(
 				"FROM PortfolioValuePaper v WHERE v.portfolio.id = :portfolioId AND v.valuePaper.id = :valuePaperId AND v.volume > 0 ORDER BY v.volume", PortfolioValuePaper.class)
 			.setParameter("portfolioId", portfolio.getId())
@@ -243,6 +246,8 @@ public class OrderService extends AbstractService {
 			entry.setVolume(entry.getVolume() - diff);
 			em.merge(entry);
 		}
+
+		return volume == 0;
 	}
 
 	private Money convertCurrency(Money foreignValue, Currency targetCurrency) {
