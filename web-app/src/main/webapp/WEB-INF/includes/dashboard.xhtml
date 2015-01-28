@@ -7,7 +7,7 @@
 	xmlns:ase="http://java.sun.com/jsf/composite/portfoliosimcomponents">
 		
 	<h:panelGroup rendered="#{not empty user.id}">
-		<p:panelGrid columns="2" styleClass="no-border-grid">
+		<p:panelGrid columns="3" styleClass="no-border-grid">
 			
 			<c:forEach items="#{portfolioBean.activeUserPortfolios}" var="portfolio">
 				<p:panel>
@@ -24,8 +24,8 @@
 						<h:outputText value="Kapital" />
 						<h:outputText value="#{portfolioBean.getCapital(portfolio.currentCapital)}" />
 						
-						<h:outputText value="Gewinn seit gestern" />
-						<h:outputText value="???" />
+						<!-- <h:outputText value="Gewinn seit gestern" />
+						<h:outputText value="???" /> -->
 					</p:panelGrid>
 					
 					<f:facet name="footer">
