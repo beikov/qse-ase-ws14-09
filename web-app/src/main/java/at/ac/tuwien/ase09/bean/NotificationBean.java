@@ -145,7 +145,7 @@ public class NotificationBean implements Serializable{
 		switch(n.getType()){
 		case PORTFOLIO_FOLLOWER_ADDED:
 		case FOLLOWER_ADDED: return "user/profile.xhtml?user="+((FollowerAddedNotification)n).getFollower().getUsername();
-		case FOLLOWER_TRANSACTION_ADDED: return "transaction"+((FollowerTransactionAddedNotification)n).getTransactionEntry().getId()+".xhtml"; 
+		case FOLLOWER_TRANSACTION_ADDED: return "portfolio/view.xhtml?portfolioId="+((FollowerTransactionAddedNotification)n).getTransactionEntry().getPortfolio().getId();
 		case GAME_STARTED: return "protected/stockmarketgame/stockmarketgameview.xhtml?gameId="+((GameStartedNotification)n).getGame().getId();
 		case WATCH_TRIGGERED: return "protected/valuepaper/valuepaperview.xhtml?valuePaperCode="+((WatchTriggeredNotification)n).getWatch().getValuePaper().getCode() ; 
 		default: 
