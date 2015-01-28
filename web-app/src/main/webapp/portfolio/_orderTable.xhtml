@@ -4,7 +4,7 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:p="http://primefaces.org/ui">
 	
-	<p:dataTable var="order" value="#{portfolioViewBean.orderList}" rows="10"
+	<p:dataTable id="ordersTable" var="order" value="#{portfolioViewBean.orderList}" rows="10"
                          paginator="true"
                          paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                          rowsPerPageTemplate="5,10,15"
@@ -29,7 +29,8 @@
 	    </p:column>
 	    <p:column headerText="Beschreibung">
 	    	<small>
-	        	<h:outputText value="Gültig bis: #{dateUtil.formatDateWithTime(order.validTo.time)}" rendered="#{order.type == 'LIMIT'}" />
+	        	<h:outputText value="Gültig bis: #{dateUtil.formatDateWithTime(order.validTo.time)} " rendered="#{order.type == 'LIMIT'}" />
+	        	<p:commandButton value="Abbrechen" update="@this :portfolioViewForm:messages" actionListener="#{portfolioViewBean.cancelOrder(order)}" rendered="#{portfolioViewBean.isOrderCancelable(order)}" />
 	    	</small>
 	    </p:column>
 	    <!-- <p:column headerText="Limit">
