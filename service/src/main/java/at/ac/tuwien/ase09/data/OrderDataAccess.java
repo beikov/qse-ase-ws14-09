@@ -13,7 +13,7 @@ public class OrderDataAccess extends AbstractDataAccess {
 
 	public List<Order> getActiveOrders() {
 		try {
-			return em.createQuery("FROM Order o WHERE o.status = :openState AND o.validFrom >= CURRENT_TIMESTAMP AND o.validTo <= CURRENT_TIMESTAMP", Order.class)
+			return em.createQuery("FROM Order o WHERE o.status = :openState AND CURRENT_TIMESTAMP BETWEEN o.validFrom AND o.validTo", Order.class)
 					.setParameter("openState", OrderStatus.OPEN)
 					.getResultList();
 		} catch (Exception e) {

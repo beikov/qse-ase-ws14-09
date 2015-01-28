@@ -191,7 +191,8 @@ public class AdvancedPWatchCompiler extends PWatchBaseVisitor<CharSequence> {
 		StringBuilder sb = new StringBuilder();
 		sb.append("CURRENT_TIMESTAMP.withDate(");
 		sb.append(trim(matcher.group(1))).append(',');
-		sb.append(trim(matcher.group(2))).append(',');
+		// Esper month starts a 0, so we need to adapt here
+		sb.append(Integer.valueOf(trim(matcher.group(2))) - 1).append(',');
 		sb.append(trim(matcher.group(3))).append(')');
 		
 		if (matcher.group(4) != null) {

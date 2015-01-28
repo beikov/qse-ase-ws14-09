@@ -94,7 +94,7 @@ public class UserProfileBean implements Serializable {
 		isOwner = owner.getId().equals(userContext.getUserId());
 		user = userContext.getUserId() == null ? null : userDataAccess.getUserById(userContext.getUserId());
     	followers = new ArrayList<>(owner.getFollowers());
-		portfolios = portfolioDataAccess.getActiveUserPortfolios(owner.getId());
+		portfolios = portfolioDataAccess.getPortfoliosByUser(owner.getId());
 		//createPortfolioDashboard();
 		
 	}
