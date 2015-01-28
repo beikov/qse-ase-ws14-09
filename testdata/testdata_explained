@@ -1,0 +1,33 @@
+passwort fuer alle benutzer: password
+
+
+aktive benutzer:
+Roger
+	folgt niemanden
+	Spiel_Raiffeisen Portfolio ist öffentlich
+	hat ein portfolio mit dem er seit einem jahr handelt
+Marie
+	folgt Roger und Ethel
+	Spiel_Raiffeisen Portfolio ist privat
+Ethel
+	folgt Roger
+	Spiel_Raiffeisen Portfolio ist öffentlich
+
+
+benutzer ohne portfolios:
+Andre
+	folgt Marie
+Janice
+	folgt Roger, Marie, Ethel
+Cecil
+	folgt Roger, Marie, Ethel
+
+institutional users:
+*)Raiffeisenbank
+	- besitzt ein logo
+	- hat ein aktives börsenspiel an dem Roger, Marie und Ethel teilnehmen.
+
+*)Bawag
+	-ist gerade erst als institutionsbenutzer freigeschaltet worden
+
+
