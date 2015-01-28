@@ -22,7 +22,7 @@
 						<h:outputText value="#{dateUtil.formatCalendar(portfolio.created)}" />
 						
 						<h:outputText value="Kapital" />
-						<h:outputText value="#{portfolio.currentCapital}" />
+						<h:outputText value="#{portfolioBean.getCapital(portfolio.currentCapital)}" />
 						
 						<h:outputText value="Gewinn seit gestern" />
 						<h:outputText value="???" />

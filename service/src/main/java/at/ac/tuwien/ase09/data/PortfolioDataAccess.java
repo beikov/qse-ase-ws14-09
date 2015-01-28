@@ -432,7 +432,8 @@ public class PortfolioDataAccess {
 			
 			BigDecimal change;
 			BigDecimal volume = new BigDecimal(ot.getOrder().getVolume());
-			BigDecimal payedForTransaction = transaction.getValue().getValue().multiply(volume);
+			//BigDecimal payedForTransaction = transaction.getValue().getValue().multiply(volume);
+			BigDecimal payedForTransaction = transaction.getValue().getValue();
 			
 			List<ValuePaperHistoryEntry> historyEntries = new ArrayList<>();
 			try {

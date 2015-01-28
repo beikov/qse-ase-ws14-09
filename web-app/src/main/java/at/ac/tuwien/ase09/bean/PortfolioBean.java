@@ -1,6 +1,7 @@
 package at.ac.tuwien.ase09.bean;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
@@ -10,6 +11,7 @@ import javax.inject.Named;
 import at.ac.tuwien.ase09.context.PortfolioContext;
 import at.ac.tuwien.ase09.context.UserContext;
 import at.ac.tuwien.ase09.data.PortfolioDataAccess;
+import at.ac.tuwien.ase09.model.Money;
 import at.ac.tuwien.ase09.model.Portfolio;
 
 @Named
@@ -65,5 +67,12 @@ public class PortfolioBean implements Serializable {
 			portfolios = portfolioDataAccess.getActiveUserPortfolios(userContext.getUserId());
 		}
 		return portfolios;
+	}
+	
+	public String getCapital(Money m) {
+		if (m.getValue().compareTo(BigDecimal.ZERO) == 0) {
+			return "unbegrenzt";
+		}
+		return m.toString();
 	}
 }

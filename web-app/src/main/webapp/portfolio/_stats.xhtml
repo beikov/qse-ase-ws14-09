@@ -31,7 +31,7 @@
 				</h:link>
 				
 				<h:outputText value="Aktuelles Kapital:" />
-				<h:outputText value="#{portfolioViewBean.portfolio.currentCapital}" />
+				<h:outputText value="#{portfolioBean.getCapital(portfolioViewBean.portfolio.currentCapital)}" />
 				
 				<h:outputText value="Einstandswert:" />
 				<h:outputText value="#{portfolioViewBean.costValueForPortfolio}" />
@@ -39,8 +39,13 @@
 				<h:outputText value="Aktueller Wert:" />
 				<h:outputText value="#{portfolioViewBean.currentValueForPortfolio}" />
 				
-				<h:outputText value="Performance:" />				
-				<h:outputText value="#{portfolioViewBean.portfolioPerformance}%" />
+				<h:outputText value="Performance:" />
+				<h:panelGroup>
+					<h:outputText value="#{portfolioViewBean.portfolioPerformance}">
+						<f:convertNumber pattern="#0.00" />
+					</h:outputText>
+					<h:outputText value="%" />
+				</h:panelGroup>
 			</p:panelGrid>
 		</div>
 		<div class="col-md-6">
@@ -56,7 +61,7 @@
 				<h:outputText value="#{dateUtil.formatDate( portfolioViewBean.portfolio.created.time )}" />
 				
 				<h:outputText value="Startkapital:" />
-				<h:outputText value="#{portfolioViewBean.portfolio.setting.startCapital}" />
+				<h:outputText value="#{portfolioBean.getCapital(portfolioViewBean.portfolio.setting.startCapital)}" />
 				
 				<h:outputText value="Ordergebühr:" />
 				<h:outputText value="#{portfolioViewBean.portfolio.setting.orderFee}" />
