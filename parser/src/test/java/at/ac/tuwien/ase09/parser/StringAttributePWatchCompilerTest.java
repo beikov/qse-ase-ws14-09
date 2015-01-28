@@ -64,7 +64,7 @@ public class StringAttributePWatchCompilerTest {
 	public void comparisonWithLiteralTest() {
 		String logicalExpr = " AND (1 < 1 OR (NOT (1 > 1) AND 1 = 1))";
 		String pwatchExpression = attribute + " " + operator + " " + literal + logicalExpr;
-		String actualExpression = PWatchCompiler.compileJpql(pwatchExpression, ValuePaperType.STOCK);
+		String actualExpression = PWatchCompiler.compileJpql(pwatchExpression, ValuePaperType.STOCK, null);
 
 		String expectedExpression = "SELECT " + STOCK_ALIAS + " FROM Stock " + STOCK_ALIAS;
 		expectedExpression += " WHERE ";

@@ -19,6 +19,7 @@ public class Watch extends BaseEntity<Long> {
 	private ValuePaper valuePaper;
 	private User owner;
 	private Calendar created;
+	private Boolean deleted = false;
 
 	@PrePersist
 	protected void onCreate() {
@@ -55,6 +56,15 @@ public class Watch extends BaseEntity<Long> {
 	}
 	public void setCreated(Calendar created) {
 		this.created = created;
+	}
+
+	@NotNull
+	public Boolean getDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(Boolean deleted) {
+		this.deleted = deleted;
 	}
 
 }

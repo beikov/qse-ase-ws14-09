@@ -21,6 +21,7 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.jpa.internal.EntityManagerImpl;
 
+import at.ac.tuwien.ase09.context.UserContext;
 import at.ac.tuwien.ase09.model.Fund;
 import at.ac.tuwien.ase09.model.Stock;
 import at.ac.tuwien.ase09.model.StockBond;
@@ -37,9 +38,16 @@ public class ValuePaperScreenerAccess {
 
 	@Inject
 	private EntityManager em;
+	@Inject
+	private UserContext userContext;
 	
 	public List<ValuePaper> findByFilter(List<AttributeFilter> filters, ValuePaperType type) {
-		String jpql = PWatchCompiler.compileJpql(PWatchCompiler.attributeFiltersAsPWatch(filters), type);
+		String jpql = PWatchCompiler.compileJpql(PWatchCompiler.attributeFiltersAsPWatch(filters), type, userContext.getContextId());
+		return em.createQuery(jpql, ValuePaper.class).getResultList();
+	}
+
+	public List<ValuePaper> findByExpression(String pwatchExpression, ValuePaperType valuePaperType){
+		String jpql = PWatchCompiler.compileJpql(pwatchExpression, valuePaperType, userContext.getContextId());
 		return em.createQuery(jpql, ValuePaper.class).getResultList();
 	}
 	
@@ -188,11 +196,5 @@ public class ValuePaperScreenerAccess {
 			}
 		}
 		return crit.list();
-		
-	}
-
-	public List<ValuePaper> findByExpression(String pwatchExpression, ValuePaperType valuePaperType){
-		String jpql = PWatchCompiler.compileJpql(pwatchExpression, valuePaperType);
-		return em.createQuery(jpql, ValuePaper.class).getResultList();
 	}
 }
