@@ -317,13 +317,13 @@ public class OrderActivity extends Activity implements TimePickerDialog.OnTimeSe
 
         if(result != OrderValidator.OK) {
             String message;
-            switch (result) {
-                case OrderValidator.LIMIT_REQUIRED: message = getString(R.string.required_message, "Limit"); break;
-                case OrderValidator.LIMIT_EQUAL_OR_HIGHER_THAN_PRICE: message = getString(R.string.limit_equal_or_higher_than_price_message); break;
-                case OrderValidator.LIMIT_EQUAL_OR_LOWER_THAN_PRICE: message = getString(R.string.limit_equal_or_lower_than_price_message); break;
-                case OrderValidator.LIMIT_HIGHER_THAN_STOP_LIMIT: message = getString(R.string.limit_higher_than_stop_limit_message); break;
-                case OrderValidator.LIMIT_LOWER_THAN_STOP_LIMIT: message = getString(R.string.limit_lower_than_stop_limit_message); break;
-                case OrderValidator.STOP_LIMIT_EQUAL_OR_HIGHER_THAN_PRICE: message = getString(R.string.stop_limit_equal_or_higher_than_price_message); break;
+                switch (result) {
+                    case OrderValidator.LIMIT_REQUIRED: message = getString(R.string.required_message, "Limit"); break;
+                    case OrderValidator.LIMIT_EQUAL_OR_HIGHER_THAN_PRICE: message = getString(R.string.limit_equal_or_higher_than_price_message); break;
+                    case OrderValidator.LIMIT_EQUAL_OR_LOWER_THAN_PRICE: message = getString(R.string.limit_equal_or_lower_than_price_message); break;
+                    case OrderValidator.LIMIT_HIGHER_THAN_STOP_LIMIT: message = getString(R.string.limit_higher_than_stop_limit_message); break;
+                    case OrderValidator.LIMIT_LOWER_THAN_STOP_LIMIT: message = getString(R.string.limit_lower_than_stop_limit_message); break;
+                    case OrderValidator.STOP_LIMIT_EQUAL_OR_HIGHER_THAN_PRICE: message = getString(R.string.stop_limit_equal_or_higher_than_price_message); break;
                 case OrderValidator.STOP_LIMIT_EQUAL_OR_LOWER_THAN_PRICE: message = getString(R.string.stop_limit_equal_or_lower_than_price_message); break;
                 case OrderValidator.VALID_FROM_REQUIRED: message = getString(R.string.required_message, "Valid from"); break;
                 case OrderValidator.VALID_TO_BEFORE_VALID_FROM: message = getString(R.string.valid_to_before_now_message, getString(R.string.valid_from), getString(R.string.valid_to)); break;

@@ -23,7 +23,7 @@
     <string name="market_order">Market Order</string>
     <string name="limit_order">Limit Order</string>
     <string name="volume">Stück</string>
-    <string name="estimated_order_value">Geschätzter Orderwert</string>
+    <string name="estimated_order_value">Orderwert nach aktuellem Kurs</string>
     <string name="order_fee">Ordergebühr</string>
     <string name="confirm_order">Order bestätigen</string>
     <string name="order_type">Ordertyp</string>

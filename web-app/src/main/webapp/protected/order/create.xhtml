@@ -1,105 +1,122 @@
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:pe="http://primefaces.org/ui/extensions"
-	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	template="/WEB-INF/templates/template.xhtml">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" template="/WEB-INF/templates/template.xhtml">
 
 	<ui:define name="head">
 		<style type="text/css">
-			.selectRadio label {
-				margin-right: 30px;
-			}
-			
-			.selectRadio div.ui-radiobutton {
-				margin-right: 10px;
-			}
-			
-			.form-control {
-				height: 43px;
-			}
-		</style>
+.selectRadio label {
+	margin-right: 30px;
+}
+
+.selectRadio div.ui-radiobutton {
+	margin-right: 10px;
+}
+
+.form-control {
+	height: 43px;
+}
+</style>
 	</ui:define>
 
 	<ui:define name="metadata">
 		<f:metadata>
-			<f:viewParam name="action"
-				value="#{orderCreationViewBean.orderAction}" />
-			<f:viewParam name="valuePaper"
-				value="#{orderCreationViewBean.valuePaper}"
-				converter="valuePaperConverter" />
+			<f:viewParam name="action" value="#{orderCreationViewBean.orderAction}" />
+			<f:viewParam name="valuePaper" value="#{orderCreationViewBean.valuePaper}" converter="valuePaperConverter" />
 		</f:metadata>
 	</ui:define>
 
 	<ui:define name="body">
 		<h:form id="orderForm">
-			<div class="row">
-				<h:panelGroup styleClass="col-md-8 form-group">
-					<p:outputLabel for="valuePaper" value="Wertpapier" />
-					<h:outputText id="valuePaper" styleClass="form-control"
-						value="#{orderCreationViewBean.valuePaper.name}" />
-				</h:panelGroup>
-			</div>
-			<div class="row">
-				<h:panelGroup styleClass="col-md-8 form-group">
-					<p:outputLabel for="orderAction" value="Orderart" />
-					<h:outputText id="orderAction" styleClass="form-control"
-						value="#{orderCreationViewBean.orderActionStr}" />
-				</h:panelGroup>
-			</div>
-			<div class="row">
-				<h:panelGroup styleClass="col-md-8 form-group">
-					<p:outputLabel for="orderType" value="Ordertyp" />
-					<p:selectOneRadio id="orderType"
-						value="#{orderCreationViewBean.orderType}" styleClass="form-control selectRadio">
-						<f:selectItems value="#{orderCreationViewBean.orderTypes}"
-							var="orderType" itemValue="#{orderType}"
-							itemLabel="#{orderType.displayName}" />
-						<p:ajax event="valueChange" update="limitArea" />
-					</p:selectOneRadio>
-				</h:panelGroup>
-			</div>
-			<div class="row">
-				<h:panelGroup styleClass="col-md-8 form-group">
-					<p:outputLabel for="validFrom" value="Ordertyp" />
-					<p:calendar id="validFrom" styleClass="form-control"
-									value="#{orderCreationViewBean.validFrom}"
-									required="true" />
-				</h:panelGroup>
-			</div>
-			<div class="row">
-				<h:panelGroup styleClass="col-md-8 form-group">
-					<p:outputLabel for="validTo" value="Ordertyp" />
-					<p:calendar id="validTo" styleClass="form-control"
-									value="#{orderCreationViewBean.validFrom}" />
-				</h:panelGroup>
-			</div>
-			<div class="container" style="padding-left: 0px; padding-right: 0px;" >
+			<div class="container">
 				<div class="row">
-					<h:panelGroup styleClass="col-md-4 form-group" >
-						<p:outputLabel for="volume" value="Stück"/>
-						<pe:inputNumber id="volume" styleClass="form-control" value="#{orderCreationViewBean.volume}" />
-						
-						<p:outputLabel for="costs" value="Geschätzte Orderkosten"/>
-						<h:outputText id="costs" value="" styleClass="form-control" />
-					</h:panelGroup>
-					<h:panelGroup id="limitArea" styleClass="col-md-4">
-						<h:panelGroup styleClass="form-group" rendered="#{orderCreationViewBean.isLimitOrder()}" >
-							<p:outputLabel for="limit" value="Limit"/>
-							<pe:inputNumber id="limit" styleClass="form-control" value="#{orderCreationViewBean.limit}" symbol=" #{orderCreationViewBean.currencySymbol}" symbolPosition="s" />
-						</h:panelGroup>
-						<h:panelGroup styleClass="form-group" rendered="#{orderCreationViewBean.isLimitOrder()}" >
-							<p:outputLabel for="stopLimit" value="Limit"/>
-							<pe:inputNumber id="stopLimit" styleClass="form-control" value="#{orderCreationViewBean.stopLimit}" symbol=" #{orderCreationViewBean.currencySymbol}" symbolPosition="s" />
+					<h:panelGroup styleClass="col-md-8 form-group">
+						<p:outputLabel for="valuePaperInfo" value="Wertpapier" />
+						<h:panelGroup id="valuePaperInfo" styleClass="form-control" style="height:50px;"> 
+							<div class="col-md-4">
+								<div>
+									<h:outputText id="valuePaperName" value="#{orderCreationViewBean.valuePaper.name}" />
+								</div>
+								<div>	
+									<h:outputText id="valuePaperCode" value="#{orderCreationViewBean.valuePaper.code}" />
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div>
+									<h:outputText id="valuePaperPrice" value="#{orderCreationViewBean.lastPrice}" >
+										<f:convertNumber currencyCode="#{orderCreationViewBean.currency.currencyCode}" type="currency" />
+									</h:outputText>
+								</div>
+								<div>	
+									<h:outputText id="valuePaperCode2" value="#{orderCreationViewBean.relativePriceChange}" style="color : #{orderCreationViewBean.relativePriceChange lt 0 ? 'red' : 'green'};" >
+										<f:convertNumber type="percent" maxFractionDigits="2" />
+									</h:outputText>
+								</div>
+							</div>
 						</h:panelGroup>
 					</h:panelGroup>
 				</div>
+				<div class="row">
+					<h:panelGroup styleClass="col-md-8 form-group">
+						<p:outputLabel for="orderAction" value="Orderart" />
+						<h:outputText id="orderAction" styleClass="form-control" value="#{orderCreationViewBean.orderActionStr}" />
+					</h:panelGroup>
+				</div>
+				<div class="row">
+					<h:panelGroup styleClass="col-md-8 form-group">
+						<p:outputLabel for="orderType" value="Ordertyp" />
+						<p:selectOneRadio id="orderType" value="#{orderCreationViewBean.orderType}" styleClass="form-control selectRadio">
+							<f:selectItems value="#{orderCreationViewBean.orderTypes}" var="orderType" itemValue="#{orderType}" itemLabel="#{orderType.displayName}" />
+							<p:ajax event="valueChange" update="limitArea" />
+						</p:selectOneRadio>
+					</h:panelGroup>
+				</div>
+				<div class="row">
+					<h:panelGroup styleClass="col-md-8 form-group">
+						<p:outputLabel for="validFrom" value="Gültig von" />
+						<p:calendar id="validFrom" styleClass="form-control" value="#{orderCreationViewBean.validFrom}" required="true" />
+					</h:panelGroup>
+				</div>
+				<div class="row">
+					<h:panelGroup styleClass="col-md-8 form-group">
+						<p:outputLabel for="validTo" value="Gültig bis" />
+						<p:calendar id="validTo" styleClass="form-control" value="#{orderCreationViewBean.validTo}" />
+					</h:panelGroup>
+				</div>
+				<div class="row">
+					<h:panelGroup styleClass="col-md-4 form-group">
+						<p:outputLabel for="volume" value="Stück" />
+						<pe:inputNumber id="volume" styleClass="form-control" value="#{orderCreationViewBean.volume}" decimalPlaces="0" required="true">
+							<p:ajax event="change" update="estimatedCosts" />
+							<f:validateLongRange minimum="1" />
+						</pe:inputNumber>
+
+						<p:outputLabel for="estimatedCosts" value="Orderwert nach aktuellem Kurs" />
+						<h:outputText id="estimatedCosts" styleClass="form-control" value="#{orderCreationViewBean.estimatedCosts}">
+							<f:convertNumber currencyCode="#{orderCreationViewBean.portfolio.currentCapital.currency.currencyCode}" type="currency" />
+						</h:outputText>
+						
+						<p:outputLabel for="orderFee" value="Ordergebühr" />
+						<h:outputText id="orderFee" styleClass="form-control" value="#{orderCreationViewBean.portfolio.setting.orderFee.value}">
+							<f:convertNumber currencyCode="#{orderCreationViewBean.portfolio.currentCapital.currency.currencyCode}" type="currency" />
+						</h:outputText>
+					</h:panelGroup>
+					<h:panelGroup id="limitArea" styleClass="col-md-4">
+						<h:panelGroup styleClass="form-group" rendered="#{orderCreationViewBean.isLimitOrder()}">
+							<p:outputLabel for="limit" value="Limit" />
+							<pe:inputNumber id="limit" styleClass="form-control" value="#{orderCreationViewBean.limit}" symbol=" #{orderCreationViewBean.currency.currencyCode}"
+								symbolPosition="s" />
+						</h:panelGroup>
+						<h:panelGroup styleClass="form-group" rendered="#{orderCreationViewBean.isLimitOrder()}">
+							<p:outputLabel for="stopLimit" value="Stop Limit" />
+							<pe:inputNumber id="stopLimit" styleClass="form-control" value="#{orderCreationViewBean.stopLimit}" symbol=" #{orderCreationViewBean.currency.currencyCode}"
+								symbolPosition="s" />
+						</h:panelGroup>
+					</h:panelGroup>
+				</div>
+				<p:messages autoUpdate="true" />
+				<p:commandButton value="Erstellen" action="#{orderCreationViewBean.create()}" />
 			</div>
-			<p:commandButton value="Erstellen" action="#{orderCreationViewBean.create()}"/>
-			
 		</h:form>
 	</ui:define>
 

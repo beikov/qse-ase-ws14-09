@@ -1,6 +1,7 @@
 package at.ac.tuwien.ase09.currency;
 
 import java.io.InputStream;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
@@ -19,7 +20,9 @@ import javax.ws.rs.core.Response;
 import at.ac.tuwien.ase09.exception.AppException;
 
 @Stateless
-public class CurrencyConversionService {
+public class CurrencyConversionService implements Serializable {
+	private static final long serialVersionUID = 1L;
+
 	private static final String YAHOO_CURRENCY_CONVERSION_QUERY_TEMPLATE = "select%20*%20from%20yahoo.finance.xchange%20where%20pair%20in%20(%22#{conversion}%22)";
 	private static final String YAHOO_CURRENCY_CONVERSION_ENDPOINT_URI = "https://query.yahooapis.com/v1/public/yql";
 
