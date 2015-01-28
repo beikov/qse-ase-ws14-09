@@ -11,11 +11,11 @@
 	
 	<h:form id="portfolioViewForm">
 		<h:messages errorStyle="color:red" />
-		<p:growl id="growl" life="3000"/>
+		<p:growl id="messages" life="3000"/>
 		
 		<p:dialog id="visibilityDialog" header="Sichtbarkeitseinstellungen" widgetVar="visibilityDialog" modal="true" >
 		    <pa:portfolioVisibility visibilitySettings="#{portfolioViewBean.portfolio.visibility}" />
-		    <p:commandButton value="Speichern" actionListener="#{portfolioViewBean.changeVisibility()}" process=":portfolioViewForm:visibilityDialog"  update=":portfolioViewForm:growl" icon="fa fa-save" oncomplete="PF('visibilityDialog').hide();"></p:commandButton>
+		    <p:commandButton value="Speichern" actionListener="#{portfolioViewBean.changeVisibility()}" process=":portfolioViewForm:visibilityDialog"  update=":portfolioViewForm:messages" icon="fa fa-save" oncomplete="PF('visibilityDialog').hide();"></p:commandButton>
 		</p:dialog>
 		
 		<p:dialog header="News Info" widgetVar="newsDialog" modal="false" id="newsDialog"

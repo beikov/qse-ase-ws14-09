@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Currency;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -44,7 +45,9 @@ import at.ac.tuwien.ase09.model.ValuePaper;
 import at.ac.tuwien.ase09.model.ValuePaperType;
 import at.ac.tuwien.ase09.model.order.Order;
 import at.ac.tuwien.ase09.model.order.OrderStatus;
+import at.ac.tuwien.ase09.model.order.OrderType;
 import at.ac.tuwien.ase09.model.transaction.TransactionEntry;
+import at.ac.tuwien.ase09.service.OrderService;
 import at.ac.tuwien.ase09.service.PortfolioService;
 
 @Named
@@ -66,6 +69,9 @@ public class PortfolioViewBean implements Serializable {
 	
 	@Inject
 	private UserContext userContext;
+	
+	@Inject
+	private OrderService orderService;
 	
 	private User owner;
 	private User user;
@@ -137,7 +143,13 @@ public class PortfolioViewBean implements Serializable {
         createPieModels();
         createPortfolioChart();
         followers = new ArrayList<User>(portfolio.getFollowers());
-        portfolioValuePapers = new ArrayList<>(portfolio.getValuePapers());
+        portfolioValuePapers = new ArrayList<>();
+        for (PortfolioValuePaper pvp : portfolio.getValuePapers()) {
+        	if (pvp.getVolume() > 0) {
+        		portfolioValuePapers.add(pvp);
+        	}
+        }
+        
         orders = new ArrayList<Order>(portfolio.getOrders());
         transactions = new ArrayList<TransactionEntry>(portfolio.getTransactionEntries());
         news = portfolioDataAccess.getNewsForPortfolio(portfolio);
@@ -166,6 +178,22 @@ public class PortfolioViewBean implements Serializable {
         	profitMap.put(code, profit);
         	changeMap.put(code, change);
         }*/
+    }
+    
+    public boolean isOrderCancelable(Order order) {
+		if (order.getStatus() == OrderStatus.OPEN && isOwner) {
+			if (order.getValidTo() == null) {
+				return true;
+			}
+			return order.getValidTo().after(Calendar.getInstance());
+		}
+		return false;
+	}
+    
+    public void cancelOrder(Order order) {
+    	orderService.cancelOrder(order.getId());
+    	FacesMessage message = new FacesMessage("Order wird abgebrochen");
+        FacesContext.getCurrentInstance().addMessage(null, message);
     }
     
     public boolean isFollowable(){
