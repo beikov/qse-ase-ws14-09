@@ -24,6 +24,7 @@
 	<entity class="at.ac.tuwien.ase09.model.notification.FollowerTransactionAddedNotification" />
 	<entity class="at.ac.tuwien.ase09.model.notification.GameStartedNotification" />
 	<entity class="at.ac.tuwien.ase09.model.notification.WatchTriggeredNotification" />
+	<entity class="at.ac.tuwien.ase09.model.notification.PortfolioFollowerAddedNotification" />
 	<entity class="at.ac.tuwien.ase09.model.order.LimitOrder" />
 	<entity class="at.ac.tuwien.ase09.model.order.MarketOrder" />
 	<entity class="at.ac.tuwien.ase09.model.order.Order" />
