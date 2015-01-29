@@ -2,6 +2,7 @@ package at.ac.tuwien.ase09.bean;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.Calendar;
 import java.util.Currency;
@@ -237,5 +238,5 @@ public class OrderCreationViewBean implements Serializable {
 			return "/portfolio/view?faces-redirect=true&portfolioId=" + portfolioContext.getContextId();
 		}
 	}
-
+	
 }

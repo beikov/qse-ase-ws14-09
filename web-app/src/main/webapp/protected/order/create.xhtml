@@ -69,7 +69,17 @@
 							<f:selectItems value="#{orderCreationViewBean.orderTypes}" var="orderType" itemValue="#{orderType}" itemLabel="#{orderType.displayName}" />
 							<p:ajax event="valueChange" update="limitArea" />
 						</p:selectOneRadio>
+						<div class=".col-md-4">
+							<h:outputLabel value="Market Order" />
+							<br />
+							<h:outputText value="Die Order wird zum nächstmöglichen Kurs ausgeführt." />
+							<br/>
+							<h:outputLabel value="Limit Order" />
+							<br/>
+							<h:outputText value="Die Order wird nur zu einem Kurs ausgeführt, der gleich oder günstiger als ein angegebenes Limit ist." />
+						</div>
 					</h:panelGroup>
+					
 				</div>
 				<div class="row">
 					<h:panelGroup styleClass="col-md-8 form-group">
