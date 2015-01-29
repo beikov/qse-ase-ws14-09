@@ -371,7 +371,7 @@ public class PortfolioViewBean implements Serializable {
 				throw new AppException();
 			}
 			//cur = cur.subtract(portfolio.getCurrentCapital().getValue());
-			performance = cur.subtract(old).multiply(new BigDecimal("100")).divide(old,4, RoundingMode.HALF_UP);
+			performance = cur.subtract(old).multiply(new BigDecimal("100")).divide(old,2, RoundingMode.HALF_UP);
 		} catch(EntityNotFoundException e) {
 			throw new AppException();
 		} catch(AppException e) {

@@ -105,7 +105,7 @@ public class StockMarketGameDataAccess {
 	 */
 	public StockMarketGame getStockMarketGameForPortfolio(long portfolioId){
 		try{
-			List<StockMarketGame> stockMarketGames = em.createQuery("SELECT p.game FROM Portfolio p LEFT JOIN p.game g LEFT JOIN FETCH g.allowedValuePapers WHERE p.id = :portfolioId", StockMarketGame.class)
+			List<StockMarketGame> stockMarketGames = em.createQuery("SELECT g FROM Portfolio p LEFT JOIN p.game g LEFT JOIN FETCH g.allowedValuePapers WHERE p.id = :portfolioId", StockMarketGame.class)
 					.setParameter("portfolioId", portfolioId)
 					.getResultList();
 			if(stockMarketGames.isEmpty()){
