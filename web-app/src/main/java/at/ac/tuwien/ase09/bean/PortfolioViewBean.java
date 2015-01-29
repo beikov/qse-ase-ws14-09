@@ -324,7 +324,7 @@ public class PortfolioViewBean implements Serializable {
 	}
 	
 	public BigDecimal getProfit(PortfolioValuePaper pvp) {
-		return profitMap.get(pvp);
+		return profitMap.get(pvp).setScale(2, RoundingMode.CEILING);
 	}
 	
 	

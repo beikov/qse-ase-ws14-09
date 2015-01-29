@@ -277,9 +277,16 @@ public class PortfolioDataAccess {
 		try{
 			BigDecimal old = getCostValueForPortfolio(portfolioId);
 			BigDecimal cur = getCurrentValueForPortfolio(portfolioId);
+			if (old.compareTo( BigDecimal.ZERO) == 0 || cur.compareTo( BigDecimal.ZERO) == 0) {
+				return new BigDecimal(0);
+			}
 			Portfolio p = em.getReference(Portfolio.class, portfolioId);
-			cur = cur.subtract(p.getCurrentCapital().getValue());
-			return cur.subtract(old).multiply(new BigDecimal("100")).divide(old,4, RoundingMode.HALF_UP);
+			//cur = cur.subtract(p.getCurrentCapital().getValue());
+			BigDecimal performance = cur.subtract(old).multiply(new BigDecimal("100")).divide(old,2, RoundingMode.HALF_UP);
+			if (performance.compareTo(BigDecimal.ZERO) == 0) {
+				return new BigDecimal(0);
+			}
+			return performance;
 		}catch(NoResultException e){
 			throw new EntityNotFoundException(e);
 		}catch(Exception e){
