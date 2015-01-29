@@ -15,11 +15,14 @@ import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.resolver.api.maven.Maven;
+import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStage;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import at.ac.tuwien.ase09.context.UserAccount;
 import at.ac.tuwien.ase09.data.ValuePaperPriceEntryDataAccess;
 import at.ac.tuwien.ase09.data.ValuePaperScreenerAccess;
 import at.ac.tuwien.ase09.model.Fund;
@@ -34,6 +37,7 @@ import at.ac.tuwien.ase09.model.filter.OperatorType;
 import at.ac.tuwien.ase09.test.AbstractServiceTest;
 import at.ac.tuwien.ase09.test.Assert;
 import at.ac.tuwien.ase09.test.DatabaseAware;
+import at.ac.tuwien.ase09.test.TestUserContext;
 
 @DatabaseAware
 public class ValuePaperScreenerAccessTest extends AbstractServiceTest<ValuePaperScreenerAccessTest> {
@@ -45,10 +49,14 @@ public class ValuePaperScreenerAccessTest extends AbstractServiceTest<ValuePaper
 
 	@Deployment
 	public static Archive<?> createDeployment() {
+		PomEquippedResolveStage resolver = Maven.resolver().loadPomFromFile("pom.xml");
 		return createServiceTestBaseDeployment()
 				.addPackage("at.ac.tuwien.ase09.filter")
 				.addClass(ValuePaperScreenerAccess.class)
-				.addAsLibraries(resolver.resolve("at.ac.tuwien.ase09:app").withTransitivity().asFile());
+				.addClass(TestUserContext.class)
+				.addClass(UserAccount.class)
+				.addAsLibraries(resolver.resolve("at.ac.tuwien.ase09:parser").withoutTransitivity().asFile())
+				.addAsLibraries(resolver.resolve("org.antlr:antlr4-runtime:4.3").withoutTransitivity().asFile());
 	}
 
 	@Before

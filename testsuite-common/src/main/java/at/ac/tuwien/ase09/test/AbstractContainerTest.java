@@ -29,8 +29,6 @@ public abstract class AbstractContainerTest<T extends AbstractContainerTest<T>> 
 
     private static final long serialVersionUID = -7248288932170947951L;
     
-    protected static PomEquippedResolveStage resolver = Maven.resolver().loadPomFromFile("pom.xml");
-
     protected static WebArchive createContainerTestBaseDeployment() {
     	PomEquippedResolveStage resolver = Maven.resolver().loadPomFromFile("pom.xml");
     	

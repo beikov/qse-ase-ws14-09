@@ -58,7 +58,7 @@ public class PortfolioDataAccess {
 	private AnalystOpinionDataAccess analystOpinionDataAccess;
 	
 	@Inject
-	private TransactionEntryDataAccess transactionDataAccess;
+	private StockMarketGameDataAccess stockMarketGameDataAccess;
 	
 	@Inject
 	private CurrencyConversionService currencyConversionService;
@@ -107,10 +107,15 @@ public class PortfolioDataAccess {
 	
 	public boolean isValuePaperAllowedForPortfolio(long portfolioId, long valuePaperId){
 		try{
-			List<Long> allowedValuePapers = em.createQuery("SELECT allowedValuePapers.id FROM Portfolio p LEFT JOIN p.game game LEFT JOIN game.allowedValuePapers allowedValuePapers WHERE p = :p", Long.class)
-					.setParameter("p", em.getReference(Portfolio.class, portfolioId))
-					.getResultList();
-			return allowedValuePapers.contains(valuePaperId);
+			StockMarketGame stockMarketGame = stockMarketGameDataAccess.getStockMarketGameForPortfolio(portfolioId);
+			if(stockMarketGame != null){
+				List<Long> allowedValuePapers = em.createQuery("SELECT allowedValuePapers.id FROM StockMarketGame game LEFT JOIN game.allowedValuePapers allowedValuePapers WHERE game = :game", Long.class)
+						.setParameter("game", stockMarketGame)
+						.getResultList();
+				return allowedValuePapers.contains(valuePaperId);
+			}else{
+				return true;
+			}
 		}catch(NoResultException e){
 			return false;
 		}catch(Exception e){

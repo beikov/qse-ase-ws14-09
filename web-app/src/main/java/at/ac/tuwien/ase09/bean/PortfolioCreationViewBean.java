@@ -48,6 +48,7 @@ public class PortfolioCreationViewBean implements Serializable{
 			portfolio = new Portfolio();
 			portfolio.setVisibility(new PortfolioVisibility());
 			portfolio.setSetting(new PortfolioSetting());
+			startCapital = new BigDecimal(0);
 			orderFee = new BigDecimal(0);
 			portfolioFee = new BigDecimal(0);
 			capitalReturnTax = new BigDecimal(0);
@@ -70,9 +71,7 @@ public class PortfolioCreationViewBean implements Serializable{
 			FacesContext.getCurrentInstance().addMessage("createForm:name", facesMessage);
 			return;
 		}
-		if( startCapital == null){
-			startCapital = new BigDecimal(0);
-		}else if( startCapital.compareTo(new BigDecimal(0)) == -1 ){
+		if( startCapital.compareTo(new BigDecimal(0)) <= 0 ){
 			FacesMessage facesMessage = new FacesMessage("Fehler: Startkapital muss größer als 0 sein!");
 			FacesContext.getCurrentInstance().addMessage("createForm:startCapital", facesMessage);
 			return;
