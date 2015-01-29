@@ -12,6 +12,8 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.transaction.UserTransaction;
 
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,10 +26,11 @@ import at.ac.tuwien.ase09.model.notification.Notification;
 import at.ac.tuwien.ase09.service.NotificationService;
 import at.ac.tuwien.ase09.service.UserService;
 import at.ac.tuwien.ase09.test.AbstractContainerTest;
+import at.ac.tuwien.ase09.test.AbstractServiceTest;
 import at.ac.tuwien.ase09.test.DatabaseAware;
 
 @DatabaseAware
-public class NotificationDataAccessTest extends AbstractContainerTest<NotificationDataAccessTest>{
+public class NotificationDataAccessTest extends AbstractServiceTest<NotificationDataAccessTest>{
 	private static final long serialVersionUID = 1L;
 
 	@Inject
@@ -38,6 +41,14 @@ public class NotificationDataAccessTest extends AbstractContainerTest<Notificati
 
 	@Inject
 	private NotificationService notiService;
+	
+	@Deployment
+	protected static WebArchive createContainerTestBaseDeployment() {
+		return createServiceTestBaseDeployment()
+				.addClass(UserService.class)
+				.addClass(NotificationService.class)
+				.addClass(NotificationDataAccess.class);
+	}
 	
 	private User u1,u2;
 

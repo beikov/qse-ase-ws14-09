@@ -230,9 +230,12 @@ public class ValuePaperPriceEntryDataAccessTest extends AbstractServiceTest<Valu
 		Portfolio portfolio = new Portfolio();
 		portfolio.setCreated(Calendar.getInstance());
 		portfolio.setOwner(u);
+		portfolio.setCurrentCapital(new Money(BigDecimal.ZERO, Currency.getInstance("EUR")));
 		
 		PortfolioValuePaper pvp = new PortfolioValuePaper();
 		pvp.setPortfolio(portfolio);
+		pvp.setBuyPrice(BigDecimal.ZERO);
+		pvp.setVolume(0);
 		
 		Stock s = new Stock();
 		s.setCode("AT123456");
