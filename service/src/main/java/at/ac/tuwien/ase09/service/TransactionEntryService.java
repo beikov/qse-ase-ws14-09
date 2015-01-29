@@ -1,6 +1,7 @@
 package at.ac.tuwien.ase09.service;
 
 
+import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -17,10 +18,11 @@ import at.ac.tuwien.ase09.model.Portfolio;
 import at.ac.tuwien.ase09.model.User;
 import at.ac.tuwien.ase09.model.notification.FollowerTransactionAddedNotification;
 import at.ac.tuwien.ase09.model.transaction.TransactionEntry;
+import at.ac.tuwien.ase09.model.transaction.TransactionType;
 
 @Stateless
 public class TransactionEntryService extends AbstractService {
-	
+
 	@Inject
 	private NotificationService notificationService;
 	@Resource
@@ -33,20 +35,23 @@ public class TransactionEntryService extends AbstractService {
 			self.get().notifyFollowers(entry);
 		});
 	}
-	
+
 	public void notifyFollowers(TransactionEntry entry) {
 		Portfolio p = em.createQuery("SELECT p FROM Portfolio p LEFT JOIN FETCH p.followers JOIN FETCH p.owner o LEFT JOIN FETCH o.followers WHERE p.id = :portfolioId", Portfolio.class)
-			.setParameter("portfolioId", entry.getPortfolio().getId())
-			.getSingleResult();
+				.setParameter("portfolioId", entry.getPortfolio().getId())
+				.getSingleResult();
 		Set<User> receipents = new HashSet<>();
 		receipents.addAll(p.getFollowers());
 		receipents.addAll(p.getOwner().getFollowers());
-		
+
 		for (User u : receipents) {
-			FollowerTransactionAddedNotification n = new FollowerTransactionAddedNotification();
-			n.setTransactionEntry(entry);
-			n.setUser(u);
-			notificationService.addNotification(n);
+			if(entry.getType().equals(TransactionType.ORDER)){
+				FollowerTransactionAddedNotification n = new FollowerTransactionAddedNotification();
+				n.setTransactionEntry(entry);
+				n.setUser(u);
+				n.setCreated(Calendar.getInstance());
+				notificationService.addNotification(n);
+			}
 		}
 	}
 }
