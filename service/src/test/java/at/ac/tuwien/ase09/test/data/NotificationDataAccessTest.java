@@ -65,6 +65,8 @@ public class NotificationDataAccessTest extends AbstractServiceTest<Notification
 
 	@Test
 	public void testGetNotificationsForUserReturnsNotifications(){
+		int i = data.getNotificationsForUser(u1.getId()).size();
+		
 		FollowerAddedNotification fn = new FollowerAddedNotification();
 		fn.setCreated(Calendar.getInstance());
 		fn.setFollower(u2);
@@ -77,7 +79,7 @@ public class NotificationDataAccessTest extends AbstractServiceTest<Notification
 		fn.setUser(u1);
 		notiService.addNotification(fn);
 
-		assertTrue(data.getNotificationsForUser(u1.getId()).size() == 2);
+		assertTrue(data.getNotificationsForUser(u1.getId()).size() == i+2);
 	}
 
 	@Test
@@ -107,7 +109,6 @@ public class NotificationDataAccessTest extends AbstractServiceTest<Notification
 		for(int i=0; i<3; i++){
 			fn = new FollowerAddedNotification();
 			Calendar created = Calendar.getInstance();
-			created.setTime(new Date(i));
 			fn.setCreated(created);
 			fn.setFollower(u2);
 			fn.setUser(u1);
@@ -116,8 +117,8 @@ public class NotificationDataAccessTest extends AbstractServiceTest<Notification
 		}
 		
 		List<? extends Notification> received = data.getNotificationsForUser(u1.getId());
-		for(int i=2; i>=0; i--){
-			assertEquals(received.get(i),notifications.get(i));
+		for(int i=2,j=0; i>=0; i--,j++){
+			assertEquals(received.get(j),notifications.get(i));
 		}
 	}
 
