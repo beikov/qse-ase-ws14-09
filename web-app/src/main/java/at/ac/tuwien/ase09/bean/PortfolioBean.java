@@ -2,6 +2,7 @@ package at.ac.tuwien.ase09.bean;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
@@ -11,6 +12,8 @@ import javax.inject.Named;
 import at.ac.tuwien.ase09.context.PortfolioContext;
 import at.ac.tuwien.ase09.context.UserContext;
 import at.ac.tuwien.ase09.data.PortfolioDataAccess;
+import at.ac.tuwien.ase09.exception.AppException;
+import at.ac.tuwien.ase09.exception.EntityNotFoundException;
 import at.ac.tuwien.ase09.model.Money;
 import at.ac.tuwien.ase09.model.Portfolio;
 
@@ -69,10 +72,22 @@ public class PortfolioBean implements Serializable {
 		return portfolios;
 	}
 	
-	public String getCapital(Money m) {
-		if (m.getValue().compareTo(BigDecimal.ZERO) == 0) {
+	public String getCapital(Portfolio p, Money m) {
+		if (p.getSetting().getStartCapital().getValue().compareTo(BigDecimal.ZERO) == 0) {
 			return "unbegrenzt";
 		}
 		return m.toString();
+	}
+	
+	public Money getCostValueForPortfolio(Long portfolioId) {
+		return null;
+	}
+	
+	public Money getCurrentValueForPortfolio(Long portfolioId) {
+		return null;
+	}
+	
+	public BigDecimal getPortfolioPerformance(Long portfolioId) {
+		return portfolioDataAccess.getPortfolioPerformance(portfolioId);
 	}
 }
