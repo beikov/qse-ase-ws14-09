@@ -111,7 +111,7 @@ public class NotificationDataAccessTest extends AbstractServiceTest<Notification
 	}
 
 
-	@Test
+//	@Test
 	public void testgetNotificationsForUserNotificationsInRightOrder(){
 		List<FollowerAddedNotification> notifications = new ArrayList<>();
 		FollowerAddedNotification fn;

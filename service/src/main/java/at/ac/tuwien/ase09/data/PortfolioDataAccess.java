@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -57,7 +58,7 @@ public class PortfolioDataAccess {
 	@Inject
 	private AnalystOpinionDataAccess analystOpinionDataAccess;
 	
-	@Inject
+	@EJB
 	private StockMarketGameDataAccess stockMarketGameDataAccess;
 	
 	@Inject
