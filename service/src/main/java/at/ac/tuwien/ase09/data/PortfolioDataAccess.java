@@ -105,6 +105,19 @@ public class PortfolioDataAccess {
 		}
 	}
 	
+	public boolean isValuePaperAllowedForPortfolio(long portfolioId, long valuePaperId){
+		try{
+			List<Long> allowedValuePapers = em.createQuery("SELECT allowedValuePapers.id FROM Portfolio p LEFT JOIN p.game game LEFT JOIN game.allowedValuePapers allowedValuePapers WHERE p = :p", Long.class)
+					.setParameter("p", em.getReference(Portfolio.class, portfolioId))
+					.getResultList();
+			return allowedValuePapers.contains(valuePaperId);
+		}catch(NoResultException e){
+			return false;
+		}catch(Exception e){
+			throw new AppException(e);
+		}
+	}
+	
 	public List<Portfolio> getPortfoliosByStockMarketGame(long stockMarketGameId) {
 		try{
 			StockMarketGame smg = em.getReference(StockMarketGame.class, stockMarketGameId);

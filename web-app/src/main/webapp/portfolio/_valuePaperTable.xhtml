@@ -41,7 +41,7 @@
 		    	</p:link>
 		    </div>
 		    <div>
-				<p:link styleClass="btn-buy" outcome="/protected/order/create.xhtml" title="Kaufen" rendered="#{pvp.valuePaper.type != 'BOND' and portfolioContext.contextId != null}">
+				<p:link styleClass="btn-buy" outcome="/protected/order/create.xhtml" title="Kaufen" rendered="#{portfolioViewBean.isOrderCreationRendered(pvp)}">
 					<span class="inline fa fa-shopping-cart" />
 					<span class="inline fa fa-plus" />
 					<f:param name="valuePaper" value="#{pvp.valuePaper.id}" />
@@ -49,7 +49,7 @@
 				</p:link>
 			</div>
 			<div>
-				<p:link styleClass="btn-sell" outcome="/protected/order/create.xhtml" title="Verkaufen" rendered="#{pvp.valuePaper.type != 'BOND' and portfolioContext.contextId != null}">
+				<p:link styleClass="btn-sell" outcome="/protected/order/create.xhtml" title="Verkaufen" rendered="#{portfolioViewBean.isOrderCreationRendered(pvp)}">
 					<span class="inline fa fa-shopping-cart" />
 					<span class="inline fa fa-minus" />
 					<f:param name="valuePaper" value="#{pvp.valuePaper.id}" />

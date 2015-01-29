@@ -92,15 +92,17 @@ public class OrderService extends AbstractService {
 		}
 		
 		portfolio.getCurrentCapital().setValue(newCapitalValue);
-		
-		OrderFeeTransactionEntry entry = new OrderFeeTransactionEntry();
-		entry.setOrder(order);
-		entry.setPortfolio(order.getPortfolio());
-		entry.setValue(orderFee);
 		em.persist(order);
-		em.persist(entry);
 		orderAdded.fire(order);
-		transactionAdded.fire(entry);
+		
+		if (orderFee.getValue().compareTo(BigDecimal.ZERO) != 0) {
+			OrderFeeTransactionEntry entry = new OrderFeeTransactionEntry();
+			entry.setOrder(order);
+			entry.setPortfolio(order.getPortfolio());
+			entry.setValue(orderFee);
+			em.persist(entry);
+			transactionAdded.fire(entry);
+		}
 	}
 
 	/**

@@ -61,7 +61,7 @@ public class StockMarketGameDataAccess {
 			throw new AppException(e);
 		}
 	}
-
+	
 	public  StockMarketGame getStockMarketGameByID(Long id){
 		try{
 

@@ -25,9 +25,12 @@ import org.primefaces.model.chart.DateAxis;
 import org.primefaces.model.chart.LineChartModel;
 import org.primefaces.model.chart.LineChartSeries;
 
+import at.ac.tuwien.ase09.context.PortfolioContext;
 import at.ac.tuwien.ase09.data.AnalystOpinionDataAccess;
 import at.ac.tuwien.ase09.data.DividendHistoryEntryDataAccess;
 import at.ac.tuwien.ase09.data.NewsItemDataAccess;
+import at.ac.tuwien.ase09.data.PortfolioDataAccess;
+import at.ac.tuwien.ase09.data.StockMarketGameDataAccess;
 import at.ac.tuwien.ase09.data.ValuePaperDataAccess;
 import at.ac.tuwien.ase09.data.ValuePaperPriceEntryDataAccess;
 import at.ac.tuwien.ase09.exception.EntityNotFoundException;
@@ -65,6 +68,12 @@ public class ValuePaperViewBean implements Serializable{
 
 	@Inject
 	private AnalystOpinionDataAccess analystOpinionDataAccess;
+	
+	@Inject
+	private PortfolioContext portfolioContext;
+	
+	@Inject
+	private PortfolioDataAccess portfolioDataAccess;
 
 	private ValuePaper valuePaper = null;
 	private NewsItem selectedNewsItem = null;
@@ -80,6 +89,8 @@ public class ValuePaperViewBean implements Serializable{
 
 	private Map<String, String> mainValuePaperAttributes = null;
 	private Map<String, String> additionalValuePaperAttributes = null;
+	
+	private boolean isValuePaperAllowed = false;
 
 
 	public void init() throws IOException {
@@ -91,6 +102,10 @@ public class ValuePaperViewBean implements Serializable{
 			loadStockDividendHistoryEntries();
 			loadStockAnalystOpinions();
 			createLineChartModels();
+			
+			if(portfolioContext.getContextId() != null){
+				isValuePaperAllowed = portfolioDataAccess.isValuePaperAllowedForPortfolio(portfolioContext.getContextId(), valuePaper.getId());
+			}
 		}
 		else{
 			FacesContext context = FacesContext.getCurrentInstance();
@@ -183,9 +198,11 @@ public class ValuePaperViewBean implements Serializable{
 	public void setSelectedAnalystOpinion(AnalystOpinion selectedAnalystOpinion) {
 		this.selectedAnalystOpinion = selectedAnalystOpinion;
 	}
-
-
-
+	
+	public boolean isOrderCreationRendered(){
+		return valuePaper.getType() != ValuePaperType.BOND 
+				&& isValuePaperAllowed;
+	}
 
 	public ValuePaperPriceEntry getLastPriceEntry() {
 
@@ -272,7 +289,7 @@ public class ValuePaperViewBean implements Serializable{
 			}
 		});
 	}
-
+	
 	private void loadStockAnalystOpinions() {
 		stockAnalystOpinionList = analystOpinionDataAccess.getAnalystOpinionsByValuePaperCode(valuePaper.getCode());
 

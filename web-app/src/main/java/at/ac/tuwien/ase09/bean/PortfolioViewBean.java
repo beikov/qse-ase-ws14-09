@@ -180,6 +180,12 @@ public class PortfolioViewBean implements Serializable {
         }*/
     }
     
+    public boolean isOrderCreationRendered(PortfolioValuePaper pvp){
+    	boolean isValuePaperAllowed = portfolioDataAccess.isValuePaperAllowedForPortfolio(portfolio.getId(), pvp.getValuePaper().getId());
+	    return pvp.getValuePaper().getType() != ValuePaperType.BOND 
+				&& isValuePaperAllowed;
+    }
+    
     public boolean isOrderCancelable(Order order) {
 		if (order.getStatus() == OrderStatus.OPEN && isOwner) {
 			if (order.getValidTo() == null) {

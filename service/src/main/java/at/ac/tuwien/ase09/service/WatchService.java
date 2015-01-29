@@ -45,7 +45,7 @@ public class WatchService extends AbstractService {
 	
 	public void removeWatch(Watch watch) {
 		Watch w = em.getReference(Watch.class, watch.getId());
-		w.setDeleted(true);
+//		w.setDeleted(true);
 		em.merge(w);
 		em.flush();
 		watchDeleted.fire(watch);
