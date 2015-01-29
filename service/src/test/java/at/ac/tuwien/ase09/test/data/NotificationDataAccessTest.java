@@ -43,7 +43,7 @@ public class NotificationDataAccessTest extends AbstractServiceTest<Notification
 	private NotificationService notiService;
 	
 	@Deployment
-	protected static WebArchive createContainerTestBaseDeployment() {
+	protected static WebArchive createDeployment() {
 		return createServiceTestBaseDeployment()
 				.addClass(UserService.class)
 				.addClass(NotificationService.class)

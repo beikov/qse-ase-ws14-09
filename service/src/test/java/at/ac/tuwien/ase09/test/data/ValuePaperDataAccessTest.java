@@ -3,15 +3,16 @@ package at.ac.tuwien.ase09.test.data;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Currency;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 
 import at.ac.tuwien.ase09.data.ValuePaperDataAccess;
@@ -19,6 +20,7 @@ import at.ac.tuwien.ase09.exception.EntityNotFoundException;
 import at.ac.tuwien.ase09.model.AnalystOpinion;
 import at.ac.tuwien.ase09.model.DividendHistoryEntry;
 import at.ac.tuwien.ase09.model.Fund;
+import at.ac.tuwien.ase09.model.Money;
 import at.ac.tuwien.ase09.model.NewsItem;
 import at.ac.tuwien.ase09.model.Stock;
 import at.ac.tuwien.ase09.model.StockBond;
@@ -319,6 +321,7 @@ public class ValuePaperDataAccessTest extends AbstractServiceTest<ValuePaperData
 		analystOpinion.setSource("ORF");
 		analystOpinion.setCreated(created);
 		analystOpinion.setStock(stock);
+		analystOpinion.setTargetPrice(new Money(BigDecimal.ZERO, Currency.getInstance("EUR")));
 		
 		dataManager.persist(stock);
 		dataManager.persist(analystOpinion);
@@ -343,11 +346,13 @@ public class ValuePaperDataAccessTest extends AbstractServiceTest<ValuePaperData
 		analystOpinion1.setSource("ORF");
 		analystOpinion1.setCreated(created);
 		analystOpinion1.setStock(stock);
+		analystOpinion1.setTargetPrice(new Money(BigDecimal.ZERO, Currency.getInstance("EUR")));
 
 		AnalystOpinion analystOpinion2 = new AnalystOpinion();
 		analystOpinion2.setSource("ARD");
 		analystOpinion2.setCreated(created);
 		analystOpinion2.setStock(stock);
+		analystOpinion2.setTargetPrice(new Money(BigDecimal.ZERO, Currency.getInstance("EUR")));
 		
 		dataManager.persist(stock);
 		dataManager.persist(analystOpinion1);

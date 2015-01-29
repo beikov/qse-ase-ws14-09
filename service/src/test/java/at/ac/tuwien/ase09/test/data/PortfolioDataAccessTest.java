@@ -25,9 +25,11 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.junit.Before;
 import org.junit.Test;
 
+import at.ac.tuwien.ase09.currency.CurrencyConversionService;
 import at.ac.tuwien.ase09.data.AnalystOpinionDataAccess;
 import at.ac.tuwien.ase09.data.NewsItemDataAccess;
 import at.ac.tuwien.ase09.data.PortfolioDataAccess;
+import at.ac.tuwien.ase09.data.StockMarketGameDataAccess;
 import at.ac.tuwien.ase09.data.TransactionEntryDataAccess;
 import at.ac.tuwien.ase09.data.ValuePaperPriceEntryDataAccess;
 import at.ac.tuwien.ase09.exception.EntityNotFoundException;
@@ -84,7 +86,9 @@ public class PortfolioDataAccessTest extends AbstractServiceTest<PortfolioDataAc
 						ValuePaperPriceEntryDataAccess.class, 
 						NewsItemDataAccess.class, 
 						AnalystOpinionDataAccess.class,
-						TransactionEntryDataAccess.class
+						TransactionEntryDataAccess.class,
+						StockMarketGameDataAccess.class,
+						CurrencyConversionService.class
 				);
 	}
 	

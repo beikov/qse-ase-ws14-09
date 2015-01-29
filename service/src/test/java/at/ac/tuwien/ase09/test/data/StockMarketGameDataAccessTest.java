@@ -9,10 +9,17 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Before;
 import org.junit.Test;
 
+import at.ac.tuwien.ase09.currency.CurrencyConversionService;
+import at.ac.tuwien.ase09.data.AnalystOpinionDataAccess;
+import at.ac.tuwien.ase09.data.NewsItemDataAccess;
+import at.ac.tuwien.ase09.data.PortfolioDataAccess;
 import at.ac.tuwien.ase09.data.StockMarketGameDataAccess;
+import at.ac.tuwien.ase09.data.ValuePaperPriceEntryDataAccess;
 import at.ac.tuwien.ase09.data.ValuePaperScreenerAccess;
 import at.ac.tuwien.ase09.exception.EntityNotFoundException;
 import at.ac.tuwien.ase09.model.Fund;
@@ -33,6 +40,18 @@ private static final long serialVersionUID = 1L;
 	private StockMarketGameDataAccess stockMarketGameDataAccess;
 	
 	private StockMarketGame game2=new StockMarketGame();
+	
+	@Deployment
+	protected static WebArchive createDeployment(){
+		return createServiceTestBaseDeployment()
+				.addClass(StockMarketGameDataAccess.class)
+				.addClass(PortfolioDataAccess.class)
+				.addClass(ValuePaperPriceEntryDataAccess.class)
+				.addClass(NewsItemDataAccess.class)
+				.addClass(AnalystOpinionDataAccess.class)
+				.addClass(StockMarketGameDataAccess.class)
+				.addClass(CurrencyConversionService.class);
+	}
 	
 	@Before
 	public void  init()
