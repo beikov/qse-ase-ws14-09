@@ -9,6 +9,7 @@ import javax.persistence.EntityManager;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.runner.RunWith;
 
+import at.ac.tuwien.ase09.context.UserAccount;
 import at.ac.tuwien.ase09.context.UserContext;
 import at.ac.tuwien.ase09.test.persistence.DataManager;
 
@@ -28,6 +29,7 @@ public abstract class AbstractServiceTest<T extends AbstractServiceTest<T>> exte
     			.addPackage("at.ac.tuwien.ase09.test")
     			.addClass(AbstractContainerTest.class)
     			.addClass(UserContext.class)
+    			.addClass(UserAccount.class)
     			.addClass(AbstractServiceTest.class);
     }
 }

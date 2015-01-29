@@ -54,7 +54,6 @@ public class ValuePaperScreenerAccessTest extends AbstractServiceTest<ValuePaper
 				.addPackage("at.ac.tuwien.ase09.filter")
 				.addClass(ValuePaperScreenerAccess.class)
 				.addClass(TestUserContext.class)
-				.addClass(UserAccount.class)
 				.addAsLibraries(resolver.resolve("at.ac.tuwien.ase09:parser").withoutTransitivity().asFile())
 				.addAsLibraries(resolver.resolve("org.antlr:antlr4-runtime:4.3").withoutTransitivity().asFile());
 	}

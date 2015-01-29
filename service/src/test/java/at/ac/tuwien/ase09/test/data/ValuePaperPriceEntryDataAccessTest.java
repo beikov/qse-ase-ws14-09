@@ -4,9 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
-import java.text.DateFormat;
 import java.util.Calendar;
-import java.util.Date;
+import java.util.Currency;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -15,10 +14,10 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.Archive;
 import org.junit.Test;
 
-import at.ac.tuwien.ase09.data.ValuePaperDataAccess;
 import at.ac.tuwien.ase09.data.ValuePaperPriceEntryDataAccess;
 import at.ac.tuwien.ase09.exception.EntityNotFoundException;
 import at.ac.tuwien.ase09.model.Fund;
+import at.ac.tuwien.ase09.model.Money;
 import at.ac.tuwien.ase09.model.Portfolio;
 import at.ac.tuwien.ase09.model.PortfolioValuePaper;
 import at.ac.tuwien.ase09.model.Stock;
@@ -172,9 +171,12 @@ public class ValuePaperPriceEntryDataAccessTest extends AbstractServiceTest<Valu
 		
 		Portfolio portfolio = new Portfolio();
 		portfolio.setOwner(u);
+		portfolio.setCurrentCapital(new Money(BigDecimal.ZERO, Currency.getInstance("EUR")));
 		
 		PortfolioValuePaper pvp = new PortfolioValuePaper();
 		pvp.setPortfolio(portfolio);
+		pvp.setBuyPrice(BigDecimal.ZERO);
+		pvp.setVolume(0);
 		
 		Stock s = new Stock();
 		s.setCode("AT123456");
