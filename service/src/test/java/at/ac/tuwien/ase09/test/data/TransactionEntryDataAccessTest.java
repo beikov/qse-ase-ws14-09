@@ -26,18 +26,18 @@ import at.ac.tuwien.ase09.test.Assert;
 import at.ac.tuwien.ase09.test.DatabaseAware;
 
 @DatabaseAware
-public class TransactionEntryDataAccessTest extends
-		AbstractServiceTest<TransactionEntryDataAccessTest> {
+public class TransactionEntryDataAccessTest /*extends
+		AbstractServiceTest<TransactionEntryDataAccessTest>*/ {
 	private static final long serialVersionUID = 1L;
-
-	@Inject
-	private TransactionEntryDataAccess transactionEntryDataAccess;
-	
-	@Deployment
-	public static Archive<?> createDeployment() {
-		return createServiceTestBaseDeployment()
-				.addClass(TransactionEntryDataAccess.class);
-	}
+//
+//	@Inject
+//	private TransactionEntryDataAccess transactionEntryDataAccess;
+//	
+//	@Deployment
+//	public static Archive<?> createDeployment() {
+//		return createServiceTestBaseDeployment()
+//				.addClass(TransactionEntryDataAccess.class);
+//	}
 	
 //	@Test
 //	public void testGetOrderTransactionsForValuePaper() {

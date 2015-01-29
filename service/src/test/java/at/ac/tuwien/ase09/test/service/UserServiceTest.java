@@ -11,9 +11,11 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.Archive;
 import org.junit.Test;
 
+import at.ac.tuwien.ase09.data.NotificationDataAccess;
 import at.ac.tuwien.ase09.data.PortfolioDataAccess;
 import at.ac.tuwien.ase09.data.UserDataAccess;
 import at.ac.tuwien.ase09.model.User;
+import at.ac.tuwien.ase09.service.NotificationService;
 import at.ac.tuwien.ase09.service.PortfolioService;
 import at.ac.tuwien.ase09.service.UserService;
 import at.ac.tuwien.ase09.test.AbstractServiceTest;
@@ -30,7 +32,10 @@ public class UserServiceTest extends AbstractServiceTest<UserServiceTest>{
 	@Deployment
 	public static Archive<?> createDeployment() {
 		return createServiceTestBaseDeployment()
-				.addClasses(UserService.class);
+				.addClasses(
+						UserService.class,
+						NotificationService.class,
+						NotificationDataAccess.class);
 	}
 	
 	@Test

@@ -12,6 +12,7 @@ import org.junit.Test;
 
 import at.ac.tuwien.ase09.bean.PortfolioBean;
 import at.ac.tuwien.ase09.bean.PortfolioCreationViewBean;
+import at.ac.tuwien.ase09.bean.PortfolioViewBean;
 import at.ac.tuwien.ase09.model.Money;
 import at.ac.tuwien.ase09.model.Portfolio;
 import at.ac.tuwien.ase09.test.AbstractSeleniumTest;
@@ -23,14 +24,28 @@ import at.ac.tuwien.ase09.test.portfolio.pageobject.PortfolioVisibilitySettings;
 
 @DatabaseAware
 public class PortfolioCreationTest extends AbstractSeleniumTest {
+	private static final long serialVersionUID = 1L;
+
 	@Deployment(testable=false)
 	public static Archive<?> createDeployment(){
 		final String webapp_src = "src/main/webapp";
 		Archive<?> archive = createSeleniumTestBaseDeployment()
-			.addAsWebResource(new File(webapp_src + "/protected/portfolio/list.xhtml"), "/protected/portfolio/list.xhtml")
+			.addAsWebResource(new File(webapp_src + "/portfolio/_analystOpinions.xhtml"), "/portfolio/_analystOpinions.xhtml")
+			.addAsWebResource(new File(webapp_src + "/portfolio/_charts.xhtml"), "/portfolio/_charts.xhtml")
+			.addAsWebResource(new File(webapp_src + "/portfolio/_hidden.xhtml"), "/portfolio/_hidden.xhtml")
+			.addAsWebResource(new File(webapp_src + "/portfolio/_news.xhtml"), "/portfolio/_news.xhtml")
+			.addAsWebResource(new File(webapp_src + "/portfolio/_orderTable.xhtml"), "/portfolio/_orderTable.xhtml")
+			.addAsWebResource(new File(webapp_src + "/portfolio/_portfolio.xhtml"), "/portfolio/_portfolio.xhtml")
+			.addAsWebResource(new File(webapp_src + "/portfolio/_stats.xhtml"), "/portfolio/_stats.xhtml")
+			.addAsWebResource(new File(webapp_src + "/portfolio/_transactionTable.xhtml"), "/portfolio/_transactionTable.xhtml")
+			.addAsWebResource(new File(webapp_src + "/portfolio/_valuePaperTable.xhtml"), "/portfolio/_valuePaperTable.xhtml")
+			.addAsWebResource(new File(webapp_src + "/portfolio/view.xhtml"), "/portfolio/view.xhtml")
+			
 			.addAsWebResource(new File(webapp_src + "/protected/portfolio/create.xhtml"), "/protected/portfolio/create.xhtml")
+			
 			.addAsWebResource(new File(webapp_src + "/resources/portfolioVisibility/portfolioVisibility.xhtml"), "/resources/portfolioVisibility/portfolioVisibility.xhtml")
 			.addClass(PortfolioBean.class)
+			.addClass(PortfolioViewBean.class)
 			.addClass(PortfolioCreationViewBean.class);
 	
 		System.out.println(archive.toString(true));

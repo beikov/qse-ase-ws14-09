@@ -20,6 +20,7 @@ import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.WebDriver;
 
+import at.ac.tuwien.ase09.context.UserAccount;
 import at.ac.tuwien.ase09.context.UserContext;
 import at.ac.tuwien.ase09.keycloak.UserInfo;
 import at.ac.tuwien.ase09.model.User;
@@ -64,6 +65,7 @@ public abstract class AbstractSeleniumTest extends AbstractContainerTest<Abstrac
 			/* data access / service*/
 			.addPackage("at.ac.tuwien.ase09.data")
 			.addPackage("at.ac.tuwien.ase09.service")
+			.addPackage("at.ac.tuwien.ase09.notification")
 			.addPackage("at.ac.tuwien.ase09.filter")
 			/* servlet filter */
 			.addClass(CharsetEncodingFilter.class)
@@ -89,7 +91,7 @@ public abstract class AbstractSeleniumTest extends AbstractContainerTest<Abstrac
 			/* keycloak */
 			.addClass(UserInfo.class)
 			
-			.addClasses(UserContext.class, TestUserContext.class)
+			.addClasses(UserContext.class, UserAccount.class, TestUserContext.class)
 			.addAsWebInfResource(new File(webapp_src + "/WEB-INF/templates/template.xhtml"), "/templates/template.xhtml")
 			.addAsWebInfResource(new File(webapp_src + "/WEB-INF/includes/navi.xhtml"), "/includes/navi.xhtml")
 			.setWebXML("test-web.xml");

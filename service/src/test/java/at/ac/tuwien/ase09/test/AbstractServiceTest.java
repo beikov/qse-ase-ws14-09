@@ -11,6 +11,7 @@ import org.junit.runner.RunWith;
 
 import at.ac.tuwien.ase09.context.UserAccount;
 import at.ac.tuwien.ase09.context.UserContext;
+import at.ac.tuwien.ase09.service.AbstractService;
 import at.ac.tuwien.ase09.test.persistence.DataManager;
 
 @RunWith(ServerSideDatabaseAwareArquillianRunner.class)
@@ -30,6 +31,7 @@ public abstract class AbstractServiceTest<T extends AbstractServiceTest<T>> exte
     			.addClass(AbstractContainerTest.class)
     			.addClass(UserContext.class)
     			.addClass(UserAccount.class)
+    			.addClass(AbstractService.class)
     			.addClass(AbstractServiceTest.class);
     }
 }

@@ -1,31 +1,34 @@
 package at.ac.tuwien.ase09.test.data;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import javax.annotation.Resource;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.transaction.UserTransaction;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Before;
 import org.junit.Test;
 
+import at.ac.tuwien.ase09.currency.CurrencyConversionService;
+import at.ac.tuwien.ase09.data.AnalystOpinionDataAccess;
+import at.ac.tuwien.ase09.data.NewsItemDataAccess;
 import at.ac.tuwien.ase09.data.NotificationDataAccess;
-import at.ac.tuwien.ase09.model.StockMarketGame;
+import at.ac.tuwien.ase09.data.PortfolioDataAccess;
+import at.ac.tuwien.ase09.data.StockMarketGameDataAccess;
+import at.ac.tuwien.ase09.data.ValuePaperPriceEntryDataAccess;
 import at.ac.tuwien.ase09.model.User;
 import at.ac.tuwien.ase09.model.notification.FollowerAddedNotification;
-import at.ac.tuwien.ase09.model.notification.GameStartedNotification;
 import at.ac.tuwien.ase09.model.notification.Notification;
+import at.ac.tuwien.ase09.notification.NotificationSingleton;
 import at.ac.tuwien.ase09.service.NotificationService;
 import at.ac.tuwien.ase09.service.UserService;
-import at.ac.tuwien.ase09.test.AbstractContainerTest;
 import at.ac.tuwien.ase09.test.AbstractServiceTest;
 import at.ac.tuwien.ase09.test.DatabaseAware;
 
@@ -45,9 +48,16 @@ public class NotificationDataAccessTest extends AbstractServiceTest<Notification
 	@Deployment
 	protected static WebArchive createDeployment() {
 		return createServiceTestBaseDeployment()
-				.addClass(UserService.class)
-				.addClass(NotificationService.class)
-				.addClass(NotificationDataAccess.class);
+				.addClasses(
+						UserService.class,
+						PortfolioDataAccess.class,
+						ValuePaperPriceEntryDataAccess.class,
+						NewsItemDataAccess.class,
+						AnalystOpinionDataAccess.class,
+						CurrencyConversionService.class,
+						StockMarketGameDataAccess.class,
+						NotificationService.class,
+						NotificationDataAccess.class);
 	}
 	
 	private User u1,u2;
@@ -65,6 +75,8 @@ public class NotificationDataAccessTest extends AbstractServiceTest<Notification
 
 	@Test
 	public void testGetNotificationsForUserReturnsNotifications(){
+		int i = data.getNotificationsForUser(u1.getId()).size();
+		
 		FollowerAddedNotification fn = new FollowerAddedNotification();
 		fn.setCreated(Calendar.getInstance());
 		fn.setFollower(u2);
@@ -77,7 +89,7 @@ public class NotificationDataAccessTest extends AbstractServiceTest<Notification
 		fn.setUser(u1);
 		notiService.addNotification(fn);
 
-		assertTrue(data.getNotificationsForUser(u1.getId()).size() == 2);
+		assertTrue(data.getNotificationsForUser(u1.getId()).size() == i+2);
 	}
 
 	@Test
@@ -107,7 +119,6 @@ public class NotificationDataAccessTest extends AbstractServiceTest<Notification
 		for(int i=0; i<3; i++){
 			fn = new FollowerAddedNotification();
 			Calendar created = Calendar.getInstance();
-			created.setTime(new Date(i));
 			fn.setCreated(created);
 			fn.setFollower(u2);
 			fn.setUser(u1);
@@ -116,8 +127,8 @@ public class NotificationDataAccessTest extends AbstractServiceTest<Notification
 		}
 		
 		List<? extends Notification> received = data.getNotificationsForUser(u1.getId());
-		for(int i=2; i>=0; i--){
-			assertEquals(received.get(i),notifications.get(i));
+		for(int i=2,j=0; i>=0; i--,j++){
+			assertEquals(received.get(j),notifications.get(i));
 		}
 	}
 

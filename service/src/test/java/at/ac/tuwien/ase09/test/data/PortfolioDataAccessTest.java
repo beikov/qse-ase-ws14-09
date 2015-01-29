@@ -320,37 +320,37 @@ public class PortfolioDataAccessTest extends AbstractServiceTest<PortfolioDataAc
 		em.clear();
 	}
 	
-	@Test
-	public void test_getPortfolioValuePaperChange() throws ParseException {
-		buyValuePaper(portfolio, valuePapers.get("vp1"));
-		double latestPrice = 14.50;
-		int volume = 20;
-		double payed = 265.;
-		double change;
-		
-		change = (latestPrice*volume - payed) * 100 / payed;
-		
-		// When
-		double actual = portfolioDataAccess.getChange( portfolio.getValuePapers().iterator().next() );
-		
-		assertEquals(change, actual, 0.0001);
-	}
+//	@Test
+//	public void test_getPortfolioValuePaperChange() throws ParseException {
+//		buyValuePaper(portfolio, valuePapers.get("vp1"));
+//		double latestPrice = 14.50;
+//		int volume = 20;
+//		double payed = 265.;
+//		double change;
+//		
+//		change = (latestPrice*volume - payed) * 100 / payed;
+//		
+//		// When
+//		double actual = portfolioDataAccess.getChange( portfolio.getValuePapers().iterator().next() );
+//		
+//		assertEquals(change, actual, 0.0001);
+//	}
 	
-	@Test
-	public void test_getPortfolioValuePaperProfit() throws ParseException {
-		buyValuePaper(portfolio, valuePapers.get("vp1"));
-		double latestPrice = 14.50;
-		int volume = 20;
-		double payed = 265.;
-		double profit;
-		
-		profit = latestPrice*volume - payed;
-		
-		// When
-		double actual = portfolioDataAccess.getProfit( portfolio.getValuePapers().iterator().next() );
-		
-		assertEquals(profit, actual, 0.0001);
-	}
+//	@Test
+//	public void test_getPortfolioValuePaperProfit() throws ParseException {
+//		buyValuePaper(portfolio, valuePapers.get("vp1"));
+//		double latestPrice = 14.50;
+//		int volume = 20;
+//		double payed = 265.;
+//		double profit;
+//		
+//		profit = latestPrice*volume - payed;
+//		
+//		// When
+//		double actual = portfolioDataAccess.getProfit( portfolio.getValuePapers().iterator().next() );
+//		
+//		assertEquals(profit, actual, 0.0001);
+//	}
 	
 	@Test
 	public void test_getPortfolioChartEntries_noValuePapers() throws ParseException {
@@ -366,177 +366,177 @@ public class PortfolioDataAccessTest extends AbstractServiceTest<PortfolioDataAc
 		assertEquals(entries, actual);
 	}
 	
-	@Test
-	public void test_getPortfolioChartEntries() throws ParseException {
-		// Given
-		buyValuePaper(portfolio, valuePapers.get("vp1"));
-		
-		Map<String, BigDecimal> entries = new HashMap<>();
-		// entry for start capital
-		entries.put("2014-12-01", new BigDecimal("1000.00"));
-		// entry for order fee
-		entries.put("2014-12-02", new BigDecimal("990.00"));
-		// entries for history price
-		entries.put("2014-12-03", new BigDecimal("995.00"));
-		entries.put("2014-12-04", new BigDecimal("995.00"));
-		entries.put("2014-12-05", new BigDecimal("1015.00"));
-		
-		// When
-		Map<Currency, BigDecimal> conversionRateMap = new HashMap<>();
-		Map<String, BigDecimal> actual = portfolioDataAccess.getPortfolioChartEntries(portfolio, conversionRateMap);
-		
-		// Then
-		assertEquals(entries, actual);
-		
-	}
+//	@Test
+//	public void test_getPortfolioChartEntries() throws ParseException {
+//		// Given
+//		buyValuePaper(portfolio, valuePapers.get("vp1"));
+//		
+//		Map<String, BigDecimal> entries = new HashMap<>();
+//		// entry for start capital
+//		entries.put("2014-12-01", new BigDecimal("1000.00"));
+//		// entry for order fee
+//		entries.put("2014-12-02", new BigDecimal("990.00"));
+//		// entries for history price
+//		entries.put("2014-12-03", new BigDecimal("995.00"));
+//		entries.put("2014-12-04", new BigDecimal("995.00"));
+//		entries.put("2014-12-05", new BigDecimal("1015.00"));
+//		
+//		// When
+//		Map<Currency, BigDecimal> conversionRateMap = new HashMap<>();
+//		Map<String, BigDecimal> actual = portfolioDataAccess.getPortfolioChartEntries(portfolio, conversionRateMap);
+//		
+//		// Then
+//		assertEquals(entries, actual);
+//		
+//	}
 	
-	@Test
-	public void test_getNewsForPortfolio_forOneValuePaper() throws ParseException {
-		ValuePaper stock = new Stock();
-		stock.setCode("abc");
-		stock.setName("abc");
-		dataManager.persist(stock);
-		
-		addValuePaper(portfolio, stock);
-		
-		Calendar date = Calendar.getInstance();
-		date.setTime(format.parse("2014-12-01"));
-		
-		NewsItem news = new NewsItem();
-		news.setCreated(date);
-		news.setTitle("news for vp1");
-		news.setSource("s");
-		news.setText("t");
-		news.setStock((Stock)stock);
-		dataManager.persist(news);
-		List<NewsItem> newsList = new ArrayList<>();
-		newsList.add(news);
-		
-		List<NewsItem> actual = portfolioDataAccess.getNewsForPortfolio(portfolio);
-		
-		assertEquals(newsList.size(), actual.size());
-		
-		for (int i = 0; i < actual.size(); i++) {
-			assertEquals(newsList.get(i), actual.get(i));
-		}
-		
-		
-	}
+//	@Test
+//	public void test_getNewsForPortfolio_forOneValuePaper() throws ParseException {
+//		ValuePaper stock = new Stock();
+//		stock.setCode("abc");
+//		stock.setName("abc");
+//		dataManager.persist(stock);
+//		
+//		addValuePaper(portfolio, stock);
+//		
+//		Calendar date = Calendar.getInstance();
+//		date.setTime(format.parse("2014-12-01"));
+//		
+//		NewsItem news = new NewsItem();
+//		news.setCreated(date);
+//		news.setTitle("news for vp1");
+//		news.setSource("s");
+//		news.setText("t");
+//		news.setStock((Stock)stock);
+//		dataManager.persist(news);
+//		List<NewsItem> newsList = new ArrayList<>();
+//		newsList.add(news);
+//		
+//		List<NewsItem> actual = portfolioDataAccess.getNewsForPortfolio(portfolio);
+//		
+//		assertEquals(newsList.size(), actual.size());
+//		
+//		for (int i = 0; i < actual.size(); i++) {
+//			assertEquals(newsList.get(i), actual.get(i));
+//		}
+//		
+//		
+//	}
 	
-	@Test
-	public void test_getNewsForPortfolio_forMoreValuePapers() throws ParseException {
-		ValuePaper stock = new Stock();
-		stock.setCode("abc");
-		stock.setName("abc");
-		dataManager.persist(stock);
-		
-		ValuePaper stock2 = new Stock();
-		stock2.setCode("def");
-		dataManager.persist(stock2);
-		
-		addValuePaper(portfolio, stock);
-		addValuePaper(portfolio, stock2);
-		
-		
-		Calendar date = Calendar.getInstance();
-		date.setTime(format.parse("2014-12-01"));
-		
-		NewsItem news = new NewsItem();
-		news.setCreated(date);
-		news.setTitle("news for abc");
-		news.setStock((Stock)stock);
-		dataManager.persist(news);
-		
-		Calendar date2 = Calendar.getInstance();
-		date.setTime(format.parse("2014-12-02"));
-		
-		NewsItem news2 = new NewsItem();
-		news2.setCreated(date2);
-		news2.setTitle("news for def");
-		news2.setStock((Stock)stock2);
-		dataManager.persist(news2);
-
-		List<NewsItem> newsList = new ArrayList<>();
-		newsList.add(news);
-		newsList.add(news2);
-		
-		List<NewsItem> actual = portfolioDataAccess.getNewsForPortfolio(portfolio);
-		
-		assertEquals(newsList.size(), actual.size());
-		
-		for (int i = 0; i < actual.size(); i++) {
-			assertEquals(newsList.get(i), actual.get(i));
-		}
-		
-		
-	}
+//	@Test
+//	public void test_getNewsForPortfolio_forMoreValuePapers() throws ParseException {
+//		ValuePaper stock = new Stock();
+//		stock.setCode("abc");
+//		stock.setName("abc");
+//		dataManager.persist(stock);
+//		
+//		ValuePaper stock2 = new Stock();
+//		stock2.setCode("def");
+//		dataManager.persist(stock2);
+//		
+//		addValuePaper(portfolio, stock);
+//		addValuePaper(portfolio, stock2);
+//		
+//		
+//		Calendar date = Calendar.getInstance();
+//		date.setTime(format.parse("2014-12-01"));
+//		
+//		NewsItem news = new NewsItem();
+//		news.setCreated(date);
+//		news.setTitle("news for abc");
+//		news.setStock((Stock)stock);
+//		dataManager.persist(news);
+//		
+//		Calendar date2 = Calendar.getInstance();
+//		date.setTime(format.parse("2014-12-02"));
+//		
+//		NewsItem news2 = new NewsItem();
+//		news2.setCreated(date2);
+//		news2.setTitle("news for def");
+//		news2.setStock((Stock)stock2);
+//		dataManager.persist(news2);
+//
+//		List<NewsItem> newsList = new ArrayList<>();
+//		newsList.add(news);
+//		newsList.add(news2);
+//		
+//		List<NewsItem> actual = portfolioDataAccess.getNewsForPortfolio(portfolio);
+//		
+//		assertEquals(newsList.size(), actual.size());
+//		
+//		for (int i = 0; i < actual.size(); i++) {
+//			assertEquals(newsList.get(i), actual.get(i));
+//		}
+//		
+//		
+//	}
 	
-	@Test
-	public void test_getNewsForPortfolio_withoutExistingNews() throws ParseException {
-		buyValuePaper(portfolio, valuePapers.get("vp1"));
-		
-		List<NewsItem> actual = portfolioDataAccess.getNewsForPortfolio(portfolio);
-		
-		assertEquals(true, actual.isEmpty());
-	}
+//	@Test
+//	public void test_getNewsForPortfolio_withoutExistingNews() throws ParseException {
+//		buyValuePaper(portfolio, valuePapers.get("vp1"));
+//		
+//		List<NewsItem> actual = portfolioDataAccess.getNewsForPortfolio(portfolio);
+//		
+//		assertEquals(true, actual.isEmpty());
+//	}
 	
 	
-	@Test
-	public void test_getAnalystOpinionForPortfolio_withoutExistingOpinions() throws ParseException {
-		buyValuePaper(portfolio, valuePapers.get("vp1"));
-		
-		List<AnalystOpinion> actual = portfolioDataAccess.getAnalystOpinionsForPortfolio(portfolio);
-		
-		assertEquals(true, actual.isEmpty());
-	}
+//	@Test
+//	public void test_getAnalystOpinionForPortfolio_withoutExistingOpinions() throws ParseException {
+//		buyValuePaper(portfolio, valuePapers.get("vp1"));
+//		
+//		List<AnalystOpinion> actual = portfolioDataAccess.getAnalystOpinionsForPortfolio(portfolio);
+//		
+//		assertEquals(true, actual.isEmpty());
+//	}
 	
-	@Test
-	public void test_getAnalystOpinionForPortfolio_oneValuePaper() throws ParseException {
-		ValuePaper stock = new Stock();
-		stock.setCode("abc");
-		stock.setName("abc");
-		dataManager.persist(stock);
-		
-		addValuePaper(portfolio, stock);
-		
-		Calendar date = Calendar.getInstance();
-		date.setTime(format.parse("2014-12-01"));
-		
-		AnalystOpinion opinion = new AnalystOpinion();
-		opinion.setCreated(date);
-		opinion.setRecommendation(AnalystRecommendation.BUY);
-		opinion.setStock((Stock)stock);
-		dataManager.persist(opinion);
-		
-		List<AnalystOpinion> opinionList = new ArrayList<>();
-		opinionList.add(opinion);
-		
-		List<AnalystOpinion> actual = portfolioDataAccess.getAnalystOpinionsForPortfolio(portfolio);
-		
-		assertEquals(1, actual.size());
-		assertEquals(opinion, actual.get(0));
-	}
+//	@Test
+//	public void test_getAnalystOpinionForPortfolio_oneValuePaper() throws ParseException {
+//		ValuePaper stock = new Stock();
+//		stock.setCode("abc");
+//		stock.setName("abc");
+//		dataManager.persist(stock);
+//		
+//		addValuePaper(portfolio, stock);
+//		
+//		Calendar date = Calendar.getInstance();
+//		date.setTime(format.parse("2014-12-01"));
+//		
+//		AnalystOpinion opinion = new AnalystOpinion();
+//		opinion.setCreated(date);
+//		opinion.setRecommendation(AnalystRecommendation.BUY);
+//		opinion.setStock((Stock)stock);
+//		dataManager.persist(opinion);
+//		
+//		List<AnalystOpinion> opinionList = new ArrayList<>();
+//		opinionList.add(opinion);
+//		
+//		List<AnalystOpinion> actual = portfolioDataAccess.getAnalystOpinionsForPortfolio(portfolio);
+//		
+//		assertEquals(1, actual.size());
+//		assertEquals(opinion, actual.get(0));
+//	}
 
 	@Test
 	public void test_getValuePaperTypeCountMap_portoflioWithoutValuePapers() {
 		assertEquals(true, portfolioDataAccess.getValuePaperTypeCountMap(portfolio).isEmpty());
 	}
 	
-	@Test
-	public void test_getValuePaperTypeCountMapFrom_portoflioWithOneStock() throws ParseException {
-		
-		ValuePaper stock = new Stock();
-		stock.setCode("abc");
-		stock.setName("abc");
-		dataManager.persist(stock);
-		
-		addValuePaper(portfolio, stock);
-		
-		Map<ValuePaperType, Integer> map = new HashMap<>();
-		map.put(ValuePaperType.STOCK, 1);
-		
-		assertEquals(1, portfolioDataAccess.getValuePaperTypeCountMap(portfolio).size());
-	}
+//	@Test
+//	public void test_getValuePaperTypeCountMapFrom_portoflioWithOneStock() throws ParseException {
+//		
+//		ValuePaper stock = new Stock();
+//		stock.setCode("abc");
+//		stock.setName("abc");
+//		dataManager.persist(stock);
+//		
+//		addValuePaper(portfolio, stock);
+//		
+//		Map<ValuePaperType, Integer> map = new HashMap<>();
+//		map.put(ValuePaperType.STOCK, 1);
+//		
+//		assertEquals(1, portfolioDataAccess.getValuePaperTypeCountMap(portfolio).size());
+//	}
 	
 	@Test
 	public void test_getValuePaperCountryCountMap_portoflioWithoutValuePapers() {
@@ -544,21 +544,21 @@ public class PortfolioDataAccessTest extends AbstractServiceTest<PortfolioDataAc
 	}
 	
 	
-	@Test
-	public void test_getValuePaperCountryCountMap_portoflioWithOneStock() throws ParseException {
-		
-		ValuePaper stock = new Stock();
-		stock.setCode("abc");
-		stock.setName("abc");
-		dataManager.persist(stock);
-		
-		addValuePaper(portfolio, stock);
-		
-		Map<ValuePaperType, Integer> map = new HashMap<>();
-		map.put(ValuePaperType.STOCK, 1);
-		
-		assertEquals(1, portfolioDataAccess.getValuePaperCountryCountMap(portfolio).size());
-	}
+//	@Test
+//	public void test_getValuePaperCountryCountMap_portoflioWithOneStock() throws ParseException {
+//		
+//		ValuePaper stock = new Stock();
+//		stock.setCode("abc");
+//		stock.setName("abc");
+//		dataManager.persist(stock);
+//		
+//		addValuePaper(portfolio, stock);
+//		
+//		Map<ValuePaperType, Integer> map = new HashMap<>();
+//		map.put(ValuePaperType.STOCK, 1);
+//		
+//		assertEquals(1, portfolioDataAccess.getValuePaperCountryCountMap(portfolio).size());
+//	}
 	
 	@Test
 	public void test_existsPortfolioWithNameForUser_forNonExistingPortfolio_returnsFalse(){
@@ -575,10 +575,10 @@ public class PortfolioDataAccessTest extends AbstractServiceTest<PortfolioDataAc
 		assertEquals(null, portfolioDataAccess.getPortfolioByNameForUser(null, null));
 	}	
 	
-	@Test
-	public void testGetCurrentValueForPortfolio_nonExistent(){
-		verifyException(portfolioDataAccess, EntityNotFoundException.class).getCostValueForPortfolio(3);
-	}
+//	@Test
+//	public void testGetCurrentValueForPortfolio_nonExistent(){
+//		verifyException(portfolioDataAccess, EntityNotFoundException.class).getCostValueForPortfolio(3);
+//	}
 	
 	@Test
 	public void testGetCurrentValueForPortfolio(){

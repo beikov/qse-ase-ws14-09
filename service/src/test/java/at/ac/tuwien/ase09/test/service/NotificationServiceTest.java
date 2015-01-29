@@ -1,11 +1,15 @@
 package at.ac.tuwien.ase09.test.service;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Calendar;
 
 import javax.inject.Inject;
 
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.shrinkwrap.api.Archive;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -15,11 +19,11 @@ import at.ac.tuwien.ase09.model.notification.FollowerAddedNotification;
 import at.ac.tuwien.ase09.model.notification.Notification;
 import at.ac.tuwien.ase09.service.NotificationService;
 import at.ac.tuwien.ase09.service.UserService;
-import at.ac.tuwien.ase09.test.AbstractContainerTest;
+import at.ac.tuwien.ase09.test.AbstractServiceTest;
 import at.ac.tuwien.ase09.test.DatabaseAware;
 
 @DatabaseAware
-public class NotificationServiceTest  extends AbstractContainerTest<NotificationServiceTest> {
+public class NotificationServiceTest  extends AbstractServiceTest<NotificationServiceTest> {
 	private static final long serialVersionUID = 1L;
 	
 	@Inject
@@ -34,6 +38,15 @@ public class NotificationServiceTest  extends AbstractContainerTest<Notification
 	private FollowerAddedNotification fn;
 
 	private User u1,u2;
+	
+	@Deployment
+	public static Archive<?> createDeployment() {
+		return createServiceTestBaseDeployment()
+				.addClasses(
+						UserService.class,
+						NotificationService.class,
+						NotificationDataAccess.class);
+	}
 	
 	@Before
 	public void init(){
