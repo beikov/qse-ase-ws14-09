@@ -43,10 +43,10 @@ public class DatetimeAttributePWatchCompilerTest {
 		String[] operators = { ">", ">=", "<", "<=", "=", "!=", "<>" };
 		String[][] literals = {
 				{ "CURRENT_TIMESTAMP", "CURRENT_TIMESTAMP" },
-				{ "TIMESTAMP('2014-01-01')", "CURRENT_TIMESTAMP.withDate(2014,1,1)" },
-				{ "TIMESTAMP('2014-01-01 00:00:00')", "CURRENT_TIMESTAMP.withDate(2014,1,1).withTime(0,0,0,0)" },
-				{ "TIMESTAMP('2014-01-01 00:00:00.000')", "CURRENT_TIMESTAMP.withDate(2014,1,1).withTime(0,0,0,0)" },
-				{ "TIMESTAMP('2014-01-01 01:01:01.100')", "CURRENT_TIMESTAMP.withDate(2014,1,1).withTime(1,1,1,100)" }
+				{ "TIMESTAMP('2014-01-01')", "CURRENT_TIMESTAMP.withDate(2014,0,1)" },
+				{ "TIMESTAMP('2014-01-01 00:00:00')", "CURRENT_TIMESTAMP.withDate(2014,0,1).withTime(0,0,0,0)" },
+				{ "TIMESTAMP('2014-01-01 00:00:00.000')", "CURRENT_TIMESTAMP.withDate(2014,0,1).withTime(0,0,0,0)" },
+				{ "TIMESTAMP('2014-01-01 01:01:01.100')", "CURRENT_TIMESTAMP.withDate(2014,0,1).withTime(1,1,1,100)" }
 		};
 		
 		List<Object[]> parameters = new ArrayList<>(baseParameters.length * operators.length * literals.length);

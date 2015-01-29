@@ -160,7 +160,7 @@ public class NumericAttributePWatchCompilerTest {
 		if (isStock) {
 			expectedExpression += "Stock(id = " + valuePaperId + ").std:lastevent() AS " + STOCK_ALIAS;
 		} else {
-			expectedExpression += "ValuePaperPriceEntry(id = " + valuePaperId + ").std:lastevent() AS " + PRICE_ENTRY_ALIAS;
+			expectedExpression += "ValuePaperPriceEntry(valuePaperId = " + valuePaperId + ").std:lastevent() AS " + PRICE_ENTRY_ALIAS;
 		}
 		
 		expectedExpression += " WHERE ";

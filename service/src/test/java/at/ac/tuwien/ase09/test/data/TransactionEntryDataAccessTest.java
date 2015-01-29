@@ -26,19 +26,19 @@ import at.ac.tuwien.ase09.test.Assert;
 import at.ac.tuwien.ase09.test.DatabaseAware;
 
 @DatabaseAware
-public class TransactionEntryDataAccessTest /*extends
-		AbstractServiceTest<TransactionEntryDataAccessTest>*/ {
+public class TransactionEntryDataAccessTest {//extends AbstractServiceTest<TransactionEntryDataAccessTest> {
 	private static final long serialVersionUID = 1L;
-//
+
 //	@Inject
 //	private TransactionEntryDataAccess transactionEntryDataAccess;
 //	
 //	@Deployment
 //	public static Archive<?> createDeployment() {
 //		return createServiceTestBaseDeployment()
+//				.addAsResource("META-INF/test-ejb-jar.xml", "META-INF/ejb-jar.xml")
 //				.addClass(TransactionEntryDataAccess.class);
 //	}
-	
+//	
 //	@Test
 //	public void testGetOrderTransactionsForValuePaper() {
 //		// Given

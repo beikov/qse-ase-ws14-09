@@ -17,9 +17,9 @@ public class PWatchCompilerTest {
 		String pwatchExpression = "COUNTRY = 'DE' AND PRICE > 100";
 		String actualExpression = PWatchCompiler.compileJpql(pwatchExpression, ValuePaperType.STOCK, null);
 		String expectedExpression = "SELECT " + STOCK_ALIAS + " FROM Stock " + STOCK_ALIAS;
-		expectedExpression += " JOIN " + STOCK_ALIAS + ".priceEntries " + PRICE_ENTRY_ALIAS + " ON ";
+		expectedExpression += " JOIN " + STOCK_ALIAS + ".priceEntries " + PRICE_ENTRY_ALIAS + " WHERE ";
 		expectedExpression += PRICE_ENTRY_ALIAS + ".created = (SELECT MAX(e.created) FROM ValuePaperPriceEntry e WHERE e.valuePaper = " + STOCK_ALIAS + ")";
-		expectedExpression += " WHERE " + STOCK_ALIAS + ".country = 'DE' AND " + PRICE_ENTRY_ALIAS + ".price > 100";
+		expectedExpression += " AND " + STOCK_ALIAS + ".country = 'DE' AND " + PRICE_ENTRY_ALIAS + ".price > 100";
 		assertEquals(expectedExpression, actualExpression);
 	}
 
@@ -61,7 +61,6 @@ public class PWatchCompilerTest {
 		PWatchCompiler.compileEpl("", 1L);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
 	public void testEmptyExpressionJpql() {
 		PWatchCompiler.compileJpql("", ValuePaperType.STOCK, null);
 	}

@@ -31,7 +31,7 @@ import at.ac.tuwien.ase09.test.AbstractServiceTest;
 import at.ac.tuwien.ase09.test.DatabaseAware;
 
 @DatabaseAware
-public class StockMarketGameServiceTest /*extends AbstractServiceTest<StockMarketGameServiceTest>*/{
+public class StockMarketGameServiceTest {//extends AbstractServiceTest<StockMarketGameServiceTest> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -41,10 +41,10 @@ public class StockMarketGameServiceTest /*extends AbstractServiceTest<StockMarke
 //	@Deployment
 //	public static Archive<?> createDeployment() {
 //		return createServiceTestBaseDeployment()
+//				.addAsResource("META-INF/test-ejb-jar.xml", "META-INF/ejb-jar.xml")
 //				.addClasses(
 //						StockMarketGameService.class,
 //						NotificationSingleton.class,
-//						TestNotificationSingleton.class,
 //						PortfolioDataAccess.class,
 //						StockMarketGameDataAccess.class,
 //						NotificationService.class,

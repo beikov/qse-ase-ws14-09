@@ -30,7 +30,7 @@ import at.ac.tuwien.ase09.test.DatabaseAware;
 
 
 @DatabaseAware
-public class PortfolioServiceTest /*extends AbstractServiceTest<PortfolioServiceTest>*/ {
+public class PortfolioServiceTest {//extends AbstractServiceTest<PortfolioServiceTest> {
 	private static final long serialVersionUID = 1L;
 
 //	@Inject
@@ -48,6 +48,7 @@ public class PortfolioServiceTest /*extends AbstractServiceTest<PortfolioService
 //	@Deployment
 //	public static Archive<?> createDeployment() {
 //		return createServiceTestBaseDeployment()
+//				.addAsResource("META-INF/test-ejb-jar.xml", "META-INF/ejb-jar.xml")
 //				.addClasses(
 //						ValuePaperPriceEntryDataAccess.class,
 //						NewsItemDataAccess.class,
